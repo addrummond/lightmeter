@@ -73,8 +73,8 @@ uint8_t irad_at_ocv_and_rdc(uint8_t ocv, uint8_t rdc)
     return ocv - k;
 }
 
-// This table maps [log10 lux]*60 to EV.
-uint8_t lux_to_ev[] = {
+// This table maps [log10 irrad]*60 to EV.
+uint8_t irrad_to_ev[] = {
     /* -1 */    24, X,
     /* -0.5 */  28, X
     /* 0 */     32, X,
