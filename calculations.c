@@ -32,7 +32,7 @@ uint8_t ocv_at_temperature(uint8_t temp)
 //
 // Slope with log10 RDC is 1/25, or 1/63 in units of 0.4C.
 // Constant is 2.41 when current is in pA (10^n -> 10^n+3), but 1.41 because of 1.0 offset.
-// Slope becomes 0 when we take into account 00.00... fix point.
+// Slope becomes 1 when we take into account 00.00... fix point.
 //
 uint8_t rdc_at_temperature(uint8_t temperature)
 {
