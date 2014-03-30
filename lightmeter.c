@@ -56,7 +56,7 @@ void setupOutputPorts()
 
 void handleMeasurement()
 {
-    uint8_t v = convert_from_reference_voltage(ADCW);
+    uint8_t v = convert_from_reference_voltage(adc_value);
     uint8_t ev = get_ev100_at_temperature_voltage(178/*20C*/, v);
     uint8_t outOfEight = ev / 8;
 
