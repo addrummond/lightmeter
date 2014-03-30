@@ -32,7 +32,6 @@ uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage)
     return TEMP_AND_VOLTAGE_TO_EV[absval_i] + c;
 }
 
-// refv_v is in 10ths of a volt.
 uint8_t convert_from_reference_voltage(uint16_t adc_out)
 {
 #if REFERENCE_VOLTAGE_MV == 5000
