@@ -35,13 +35,13 @@ uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage)
 // refv_v is in 10ths of a volt.
 uint8_t convert_from_reference_voltage(uint16_t adc_out)
 {
-#if REFERENCE_VOLTAGE_TENTHS == 50
+#if REFERENCE_VOLTAGE_MV == 5000
     return adc_out / 4;
-#elif REFERENCE_VOLTAGE_TENTHS == 33
+#elif REFERENCE_VOLTAGE_MV == 3300
     return (adc_out / 2) + (adc_out / 10);
-#elif REFERENCE_VOLTAGE_TENTHS == 25
+#elif REFERENCE_VOLTAGE_MV == 2500
     return adc_out / 8;
-#elif REFERENCE_VOLTAGE_TENTHS == 16 // Actually 1.65
+#elif REFERENCE_VOLTAGE_MV == 1650
     return adc_out / 16;
 #else
 #error "Can't handle that reference voltage"
