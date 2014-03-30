@@ -78,9 +78,7 @@ def temp_and_voltage_to_ev(temp, v):
 # to make the table more compact, each row (series of voltages) is stored
 # with the first 8-bit value followed by a series of (compacted) 1-bit values,
 # where each 1-bit value indicates the (always positive) difference with the
-# previous value. Each row is of the form:
-#
-#     8-bit 15*1-bit,  8-bit 15*1-bit,  8-bit 15*1-bit, 8-bit 15*1-bit, 8-bit 15*1-bit,  8-bit 15*1-bit,  8-bit 15*1-bit, 8-bit 15*1-bit
+# previous value.
 #
 # The value of any given cell can therefore be determined by doing at most
 # 15 additions. Each addition takes 1 clock cycle. If we conservatively assume
@@ -93,9 +91,9 @@ def temp_and_voltage_to_ev(temp, v):
 #             voltage
 #
 #               (0) (2) (4) (8)
-#  temp  (0)    ev  ev  ev  ev ...
-#        (16)   ev  ev  ev  ev ...
-#        (32)   ev  ev  ev  ev ...
+#  temp  (0)    ev diffs diffs ev diffs diffs ...
+#        (16)   ev diffs diffs ev diffs diffs ...
+#        (32)   ev diffs diffs ev diffs diffs ...
 #             ...
 def output_table():
     sys.stdout.write('    { ')

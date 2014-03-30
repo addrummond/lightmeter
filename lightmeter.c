@@ -4,6 +4,9 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
+#include <constants.h>
+#include <calculate.h>
+
 /*
                          1 ---- 8         VCC
      ADC neg in    (PB3) 2 ---- 7 (PB2)   LED right   (least sig)
@@ -33,8 +36,9 @@ void setupADC()
     ADCSRB &= ~(1 << BIN);
     // Sets prescaler to 128, which at 8MHz gives a 62KHz ADC.
     ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
+
     // Left adjust ADC result to allow easy 8 bit reading 
-    ADMUX |= (1 << ADLAR); 
+    //    ADMUX |= (1 << ADLAR); 
 
     // Enable ADC.
     ADCSRA |= (1 << ADEN);
@@ -52,13 +56,14 @@ void setupOutputPorts()
 
 void handleMeasurement()
 {
-    uint8_t adch = adc_value >> 8;
-    uint8_t outOfEight = adch >> 5;
+    uint8_t v = convert_from_reference_voltage(ADCW);
+    uint8_t ev = get_ev100_at_temperature_voltage(178/*20C*/, v);
+    uint8_t outOfEight = ev / 8;
+
     uint8_t led = ((outOfEight & 0b100)>> 2) | (outOfEight & 0b010) | ((outOfEight & 0b001) << 2);
     PORTB &= ~(0b111);
     PORTB |= led;
 }
-
 
 void ledTest()
 {
