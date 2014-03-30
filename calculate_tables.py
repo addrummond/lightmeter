@@ -8,13 +8,6 @@ import sys
 def temp_to_rdc(temp):
     return (temp / 16.0) + 1.0
 
-# http://www.vishay.com/docs/80085/measurem.pdf, Fig 20, p. 7
-# Temp in C, OCV in mV.
-# Slope is -2.857142857142857.
-# Constant is 442.85714285714298
-#def temp_to_ocv(temp):
-#    return (temp * -2.857142857142857) + 442.85714285714298
-
 # Slope of all lines is 62.5 with log10 irrad.
 # See http://www.vishay.com/docs/80085/measurem.pdf, Fig 19, p. 7.
 def ocv_and_rdc_to_irrad(ocv, rdc):
