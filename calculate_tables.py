@@ -144,7 +144,7 @@ if __name__ == '__main__':
     sys.stdout.write("""
 #include <stdint.h>
 
-const uint8_t TEMP_AND_VOLTAGE_TO_EV =
+const uint8_t TEMP_AND_VOLTAGE_TO_EV[] =
 """)
    
     output_table()
