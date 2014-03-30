@@ -42,6 +42,10 @@ uint8_t convert_from_reference_voltage(uint16_t adc_out)
     return adc_out / 4;
 #elif REFERENCE_VOLTAGE_TENTHS == 33
     return (adc_out / 2) + (adc_out / 10);
+#elif REFERENCE_VOLTAGE_TENTHS = 25
+    return adc_out / 8
+#elif REFERENCE_VOLTAGE_TENTHS = 16 // Actually 1.65
+    return adc_out / 16
 #else
 #error "Can't handle that reference voltage"
     return 0;
