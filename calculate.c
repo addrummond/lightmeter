@@ -1,4 +1,6 @@
 #include <stdint.h>
+#include <assert.h>
+#include <constants.h>
 
 extern const uint8_t *TEMP_AND_VOLTAGE_TO_EV;
 
@@ -31,4 +33,17 @@ uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage)
     uint8_t c = count_bits_in_word(bits);
 
     return TEMP_AND_VOLTAGE_TO_EV[row_start + absval_i] + c;
+}
+
+// refv_v is in 10ths of a volt.
+uint8_t convert_from_reference_voltage(uint16_t adc_out, uint8_t refv_v)
+{
+#if REFERENCE_VOLTAGE_TENTHS == 50
+    return adc_out / 4;
+#elif REFERENCE_VOLTAGE_TENTHS == 33
+    return (adc_out / 2) + (adc_out / 10);
+#else
+#error "Can't handle that reference voltage"
+    return 0;
+#endif
 }
