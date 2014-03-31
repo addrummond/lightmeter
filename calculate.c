@@ -1,11 +1,14 @@
 #include <stdint.h>
 #include <assert.h>
 #include <constants.h>
+#ifdef TEST
+#    include <stdio.h>
+#endif
 
-extern const uint8_t *TEMP_AND_VOLTAGE_TO_EV;
+extern const uint8_t TEMP_AND_VOLTAGE_TO_EV[];
 
 // See http://stackoverflow.com/questions/109023/how-to-count-the-number-of-set-bits-in-a-32-bit-integer
-inline uint8_t count_bits_in_word(uint16_t word)
+uint8_t count_bits_in_word(uint16_t word)
 {
     uint8_t c = 0;
     for (; word; ++c)
@@ -17,8 +20,9 @@ inline uint8_t count_bits_in_word(uint16_t word)
 // temp/voltage are encoded.
 uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage)
 {
-    uint16_t row_start = temperature * 8; //(temperature / 16) * 128;
-    uint16_t absval_i = row_start + (voltage / 16); // / 2 / 8
+    uint16_t row_start = (uint16_t)temperature;
+    row_start += row_start/2; // temperature / 16 * 24 [24 bytes per row]
+    uint16_t absval_i = row_start + (uint16_t)(voltage / 16); // / 2 / 8
     uint16_t bits_to_add = voltage % 16;
 
     uint16_t bits = TEMP_AND_VOLTAGE_TO_EV[absval_i + 1];
@@ -47,3 +51,18 @@ uint8_t convert_from_reference_voltage(uint16_t adc_out)
     return 0;
 #endif
 }
+
+#ifdef TEST
+
+int main()
+{
+    for (uint8_t temp = 0; temp <= 255; ++temp) {
+        for (uint8_t voltage = 0; voltage <= 255; ++voltage) {
+            printf("temp = %i, voltage = %i, ev*8 = %i\n", temp, voltage, get_ev100_at_temperature_voltage(temp, voltage));
+        }
+    }
+
+    return 0;
+}
+
+#endif
