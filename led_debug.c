@@ -21,6 +21,6 @@ void debug_led_show_byte(uint8_t byte)
         PORTB |= (((leds[i] & 4) << LED_RIGHT_PB) |
                   ((leds[i] & 2) << LED_MIDDLE_PB) |
                   ((leds[i] & 1) << LED_LEFT_PB));
-        _delay_ms(100);
+        _delay_ms(1000);
     }
 }
