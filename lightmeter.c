@@ -49,9 +49,6 @@ void setupADC()
     // Sets prescaler to 128, which at 8MHz gives a 62KHz ADC.
     ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
 
-    // Left adjust ADC result to allow easy 8 bit reading 
-    //    ADMUX |= (1 << ADLAR); 
-
     // Enable ADC.
     ADCSRA |= (1 << ADEN);
     // Start taking readings.
