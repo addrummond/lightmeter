@@ -28,8 +28,7 @@ uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage)
     uint16_t bits = TEMP_AND_VOLTAGE_TO_EV[absval_i + 1];
     bits <<= 8;
     bits |= TEMP_AND_VOLTAGE_TO_EV[absval_i + 2];
-    static const uint16_t all_set = 0xFFFF;
-    bits &= all_set << (16 - bits_to_add);
+    bits &= (uint16_t)0xFF << (16 - bits_to_add);
 
     uint8_t c = count_bits_in_word(bits);
 
