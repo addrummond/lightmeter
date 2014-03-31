@@ -62,31 +62,35 @@ def temp_and_voltage_to_ev(temp, v):
     lux = irrad_to_illum(irrad)
     return lux_to_ev_at_100(lux)
 
-# Temperature, EV and voltage are all represented as unsigned 8-bit values
-# on the microcontroller.
+# Temperature, EV and voltage are all represented as unsigned 8-bit
+# values on the microcontroller.
 #
 # Temperature: from -51C to 51C in 0.4C intervals (0 = -51C)
 # Voltage: from 0mV to 510mV in 2mV intervals.
 # EV: from -5 to 26EV in 1/8 EV intervals.
 #
-# The table is a 2D array of bytes mapping (temperature, voltage) to EV*8.
-# Temperature goes up in steps of 16 (in terms of the 8-bit value).
-# Voltage goes up in steps of 2 (in terms of the 8-bit value).
+# The table is a 2D array of bytes mapping (temperature, voltage) to
+# EV*8.  Temperature goes up in steps of 16 (in terms of the 8-bit
+# value).  Voltage goes up in steps of 2 (in terms of the 8-bit
+# value).
 #
-# The resulting table would take up (256/2)*(256/16) = 2048 bytes = 2K,
-# which would just about fit in the attiny85's 8K of flash. However,
-# to make the table more compact, each row (series of voltages) is stored
-# with the first 8-bit value followed by a series of (compacted) 1-bit values,
-# where each 1-bit value indicates the (always positive) difference with the
-# previous value.
+# The resulting table would take up (256/2)*(256/16) = 2048 bytes =
+# 2K, which would just about fit in the attiny85's 8K of
+# flash. However, to make the table more compact, each row (series of
+# voltages) is stored with the first 8-bit value followed by a series
+# of (compacted) 1-bit values, where each 1-bit value indicates the
+# (always positive) difference with the previous value.
 #
-# The value of any given cell can therefore be determined by doing at most
-# 15 additions. Each addition takes 1 clock cycle. If we conservatively assume
-# 10 cycles for each iteration of the loop, that's 150 cycles, which at 8MHz
-# is about 1/150th of a second.
+# The layout used for each row is as follows. There are eight groups
+# of three bytes, where the first byte in each group is an absolute EV
+# value and the next two bytes give 1-bit differences.  The value of
+# any given cell can therefore be determined by doing at most 15
+# additions. Each addition takes 1 clock cycle. If we conservatively
+# assume 10 cycles for each iteration of the loop, that's 150 cycles,
+# which at 8MHz is about 1/150th of a second.
 #
-# Each row is therefore 16 bytes, meaning that the table as a whole takes
-# up a more managable 256 bytes.
+# Each row is therefore 24 bytes, meaning that the table as a whole takes
+# up a more managable 384 bytes.
 #
 #             voltage
 #               (0)                 (32)
