@@ -71,29 +71,31 @@ def temp_and_voltage_to_ev(temp, v):
 #
 # The table is a 2D array of bytes mapping (temperature, voltage) to
 # EV*8.  Temperature goes up in steps of 16 (in terms of the 8-bit
-# value).  Voltage goes up in steps of 2 (in terms of the 8-bit
+# value).  Voltage goes up in steps of 1 (in terms of the 8-bit
 # value).
 #
-# The resulting table would take up (256/2)*(256/16) = 2048 bytes =
-# 2K, which would just about fit in the attiny85's 8K of
+# The resulting table would take up (256/1)*(256/16) = 4096 bytes =
+# 4K, which would just about fit in the attiny85's 8K of
 # flash. However, to make the table more compact, each row (series of
 # voltages) is stored with the first 8-bit value followed by a series
-# of (compacted) 1-bit values, where each 1-bit value indicates the
+# of (compacted) 2-bit values, where each 1-bit value indicates the
 # (always positive) difference with the previous value.
 #
-# The layout used for each row is as follows. There are eight groups
-# of three bytes, where the first byte in each group is an absolute EV
-# value and the next two bytes give 1-bit differences.  The value of
-# any given cell can therefore be determined by doing at most 15
-# additions. Each addition takes 1 clock cycle. If we conservatively
-# assume 10 cycles for each iteration of the loop, that's 150 cycles,
-# which at 8MHz is about 1/150th of a second.
+# The layout used for each row is as follows. There are 16 groups of
+# three bytes, where the first byte in each group is an absolute EV
+# value and the next two bytes give 1-bit differences. (For
+# simplicity, the first bit is always 0, i.e., it gives the difference
+# of abs_ev with abs_ev+0).  The value of any given cell can therefore be
+# determined by doing at most 15 additions. Each addition takes 1
+# clock cycle. If we conservatively assume 10 cycles for each
+# iteration of the loop, that's 150 cycles, which at 8MHz is about
+# 1/150th of a second.
 #
-# Each row is therefore 24 bytes, meaning that the table as a whole takes
-# up a more managable 384 bytes.
+# Each row is therefore 48 bytes, meaning that the table as a whole takes
+# up a more managable 768 bytes.
 #
 #             voltage
-#               (0)                 (32)
+#               (0)                 (16)
 #  temp  (0)    ev  diffs diffs     ev   diffs diffs ...
 #        (16)   ev  diffs diffs     ev   diffs diffs ...
 #        (32)   ev  diffs diffs     ev   diffs diffs ...
@@ -104,7 +106,7 @@ def output_table():
     for t in xrange(0, 256, 16):
         temperature = (t * 0.4) - 51.0
 
-        for sv in xrange(0, 256, 32):
+        for sv in xrange(0, 256, 16):
             # Write the absolute 8-bit EV value.
             voltage = sv * 2.0
             ev = temp_and_voltage_to_ev(temperature, voltage)
@@ -113,26 +115,49 @@ def output_table():
                 sys.stdout.write("      ")
             sys.stdout.write("%i," % eight)
 
-            # Write the 1-bit differences (two bytes).
+            # Write the 2-bit differences (two bytes).
             prev = eight
             for j in xrange(0, 2):
                 eight2 = None
-                o = ""
-                for v in xrange(sv + 2, sv + 16, 2):
+                o = "0b"
+                for k in xrange(0, 8):
+                    v = (sv + (j * 8.0) + k) * 2.0
                     ev2 = temp_and_voltage_to_ev(temperature, v)
                     eight2 = int(round(ev2 * 8))
+#                    sys.stderr.write('TAVX ' + str(temperature) + ',' + str(v) + "," + str(eight2) +'\n')
+                    assert eight2 - prev == 0 or not (j == 0 and k == 0)
                     assert eight2 - prev <= 1
+                    assert eight2 - prev >= 0
+#                    sys.stderr.write(str(eight2 - prev) + "\n")
                     if eight2 - prev == 0:
                         o += '0'
-                    else:
+                    elif eight2 - prev == 1:
                         o += '1'
+                    else:
+                        assert False
                     prev = eight2
-                sys.stdout.write("%i," % int(o,2))
-                prev = eight2
+                sys.stdout.write("%s," % o)
 
         sys.stdout.write('\n')
 
     sys.stdout.write('    }')
+
+# Straight up array that we use to test that the bitshifting logic is
+# working correctly.
+def output_test_table():
+    sys.stdout.write('    { ')
+    for t in xrange(0, 256, 16):
+        temperature = (t * 0.4) - 51.0
+        for v in xrange(0, 256):
+            voltage = v * 2.0
+#            sys.stderr.write('TAVY ' + str(temperature) + ',' + str(voltage) + '\n')
+            ev = temp_and_voltage_to_ev(temperature, voltage)
+            eight = int(round(ev * 8))
+            if v == 0 and t != 0:
+                sys.stdout.write("     ")
+            sys.stdout.write("%i," % eight)
+        sys.stdout.write('\n')
+    sys.stdout.write('    }');
 
 if __name__ == '__main__':
     sys.stdout.write("""
@@ -142,5 +167,7 @@ const uint8_t TEMP_AND_VOLTAGE_TO_EV[] =
 """)
    
     output_table()
-    
-    sys.stdout.write(";\n")
+    sys.stdout.write(';\n#ifdef TEST\n')
+    sys.stdout.write('const uint8_t TEST_TEMP_AND_VOLTAGE_TO_EV[] =\n')
+    output_test_table()
+    sys.stdout.write(';\n#endif\n')
