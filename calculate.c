@@ -33,17 +33,25 @@ uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage)
         bits2 &= 0xFF << (16 - bits_to_add);
 
     // See http://stackoverflow.com/questions/109023/how-to-count-the-number-of-set-bits-in-a-32-bit-integer
+    uint8_t r = TEMP_AND_VOLTAGE_TO_EV_ABS[i];
+#ifdef TEST
     uint8_t c = 0;
-    for (; bits1; ++c)
+#define INCC ,++c
+#else
+#define INCC
+#endif
+    for (; bits1; ++r INCC)
         bits1 &= bits1 - 1;
-    for (; bits2; ++c)
+    for (; bits2; ++r INCC)
         bits2 &= bits2 - 1;
 
 #ifdef TEST
     printf("voltage = %i, count = %i, bitsper = %i, abs %i, absi = %i, r = %i\n", voltage, c, bits_to_add, TEMP_AND_VOLTAGE_TO_EV_ABS[i], i, TEMP_AND_VOLTAGE_TO_EV_ABS[i] + c);
 #endif
 
-    return TEMP_AND_VOLTAGE_TO_EV_ABS[i] + c;
+    return r;
+
+#undef INCC
 }
 
 uint8_t convert_from_reference_voltage(uint16_t adc_out)
