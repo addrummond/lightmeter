@@ -36,10 +36,10 @@ uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage)
     uint16_t bits = TEMP_AND_VOLTAGE_TO_EV[absval_i + 1];
     bits <<= 8;
     bits |= TEMP_AND_VOLTAGE_TO_EV[absval_i + 2];
-    bits &= (uint16_t)0xFF << (16 - bits_to_add);
+    bits &= (uint16_t)0xFFFF << (16 - bits_to_add);
 
     uint8_t c = count_bits_in_word(bits);
-    printf("voltage = %i, count = %i, bitsper = %i, abs %i, absi = %i, r = %i\n", voltage, c, bits_to_add, TEMP_AND_VOLTAGE_TO_EV[absval_i], absval_i, TEMP_AND_VOLTAGE_TO_EV[absval_i] + c);
+    //    printf("voltage = %i, count = %i, bitsper = %i, abs %i, absi = %i, r = %i\n", voltage, c, bits_to_add, TEMP_AND_VOLTAGE_TO_EV[absval_i], absval_i, TEMP_AND_VOLTAGE_TO_EV[absval_i] + c);
 
     return TEMP_AND_VOLTAGE_TO_EV[absval_i] + c;
 }
