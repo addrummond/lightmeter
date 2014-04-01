@@ -81,17 +81,17 @@ def temp_and_voltage_to_ev(temp, v):
 # of (compacted) 1-bit values, where each 1-bit value indicates the
 # (always positive) difference with the previous value.
 #
-# The layout used for each row is as follows. There are 16 groups of
-# three bytes, where the first byte in each group is an absolute EV
-# value and the next two bytes give 1-bit differences. (For
-# simplicity, the first bit is always 0, i.e., it gives the difference
-# of abs_ev with abs_ev+0).  The value of any given cell can therefore be
-# determined by doing at most 15 additions. Each addition takes 1
-# clock cycle. If we conservatively assume 10 cycles for each
-# iteration of the loop, that's 150 cycles, which at 8MHz is about
-# 1/150th of a second.
+# The initial idea was to use the following layout for each row. 16
+# groups of three bytes, where the first byte in each group is an
+# absolute EV value and the next two bytes give 1-bit
+# differences. (For simplicity, the first bit is always 0, i.e., it
+# gives the difference of abs_ev with abs_ev+0).  The value of any
+# given cell can therefore be determined by doing at most 15
+# additions. Each addition takes 1 clock cycle. If we conservatively
+# assume 10 cycles for each iteration of the loop, that's 150 cycles,
+# which at 8MHz is about 1/150th of a second.
 #
-# Each row is therefore 48 bytes, meaning that the table as a whole takes
+# In this layou each row is 48 bytes, meaning that the table as a whole takes
 # up a more managable 768 bytes.
 #
 #             voltage
@@ -100,13 +100,12 @@ def temp_and_voltage_to_ev(temp, v):
 #        (16)   ev  diffs diffs     ev   diffs diffs ...
 #        (32)   ev  diffs diffs     ev   diffs diffs ...
 #
-# As a final optimization, we note that there are only 14 distinct
-# diffs 8-bit patterns. We can therefore replace each
-# [diffs diffs] sequence with the sequence [ev i], where i is a single
-# byte containing two 4-bit indices into an array of 14 bytes (one for
-# each bit pattern). # This gives us a table where each row is 32 bytes,
-# so together with the 12-byte bit pattern array, the entire thing takes
-# up 524 bytes.
+# There are only 14 distinct diffs 8-bit patterns. We can therefore
+# replace each [diffs diffs] sequence with the sequence [ev i], where
+# i is a single byte containing two 4-bit indices (one for each 8-bit
+# bit pattern) into an array of 14 bytes. This gives us a table where
+# each row is 32 bytes, so together with the 12-byte bit pattern
+# array, the entire thing takes up 524 bytes.
 #
 # Finally, since the array itself now takes up 512 bytes, we can split
 # it into two arrays (one for the absolute value bytes and one for the
