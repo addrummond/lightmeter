@@ -78,7 +78,7 @@ def temp_and_voltage_to_ev(temp, v):
 # 4K, which would just about fit in the attiny85's 8K of
 # flash. However, to make the table more compact, each row (series of
 # voltages) is stored with the first 8-bit value followed by a series
-# of (compacted) 2-bit values, where each 1-bit value indicates the
+# of (compacted) 1-bit values, where each 1-bit value indicates the
 # (always positive) difference with the previous value.
 #
 # The layout used for each row is as follows. There are 16 groups of
