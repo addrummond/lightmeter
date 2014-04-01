@@ -18,7 +18,7 @@
 const uint8_t ADMUX_CLEAR_SOURCE = ~((1 << MUX3) | (1 << MUX2) | (1 << MUX1) | (1 << MUX0));
 // Set differential ADC with PB4 pos, PB3 neg, and 1x gain (see atiny85 datasheet p. 135).
 const uint8_t ADMUX_LIGHT_SOURCE = (0 << MUX3) | (1 << MUX2) | (1 << MUX1) | (0 << MUX0); // 0110
-const uint8_t ADMUX_TEMPERATURE_SOURCE = (1 << MUX3) | (1 << MUX 2) | (1 << MUX1) | (1 << MUX0);
+const uint8_t ADMUX_TEMPERATURE_SOURCE = (1 << MUX3) | (1 << MUX2) | (1 << MUX1) | (1 << MUX0);
 
 // Save result of ADC on interrupt.
 volatile static uint16_t adc_light_value = 0;
