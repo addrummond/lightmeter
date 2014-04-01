@@ -30,7 +30,7 @@ uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage)
 {
     uint16_t row_start = ((uint16_t)temperature & ~15) << 1; // (temperature / 16) * 32 [32 bytes per row]
     uint16_t absval_i = row_start + ((voltage >> 3) & ~1); // ((v/2)/16)*2
-    uint16_t bits_to_add = (voltage & 15) + 1; // (voltage % 16) + 1
+    uint8_t bits_to_add = (voltage & 15) + 1; // (voltage % 16) + 1
 
     uint8_t bit_pattern_indices = TEMP_AND_VOLTAGE_TO_EV[absval_i + 1];
     uint16_t bits = TEMP_AND_VOLTAGE_TO_EV_BITPATTERNS[bit_pattern_indices >> 4] << 8;
