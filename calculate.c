@@ -46,7 +46,9 @@ uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage)
         bits2 &= bits2 - 1;
 
 #ifdef TEST
-    printf("voltage = %i, count = %i, bitsper = %i, abs %i, absi = %i, r = %i\n", voltage, c, bits_to_add, TEMP_AND_VOLTAGE_TO_EV_ABS[i], i, TEMP_AND_VOLTAGE_TO_EV_ABS[i] + c);
+    printf("voltage = %i, count = %i, bitsper = %i, abs %i, absi = %i, r = %i\n",
+           voltage, c, bits_to_add, TEMP_AND_VOLTAGE_TO_EV_ABS[i],
+           i, TEMP_AND_VOLTAGE_TO_EV_ABS[i] + c);
 #endif
 
     return r;
