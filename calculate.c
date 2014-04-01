@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <assert.h>
 #include <constants.h>
+#include <divmulutils.h>
 #ifdef TEST
 #    include <stdio.h>
 #endif
@@ -58,18 +59,36 @@ uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage)
 
 uint8_t convert_from_reference_voltage(uint16_t adc_out)
 {
+    // In each case, we want to do ((2^10 / ref_v) * adc_out) / 2.
+
 #if REFERENCE_VOLTAGE_MV == 5000
-    return adc_out / 4;
+    // We multiply by 4.883 to get mV, then divide by 2 because we work in units
+    // of 2mV. Thus we need to multiply by 2.44, or in other words double, add
+    // half and then subtract 8/100 (not quite right but easier than multiplying by 6).
+    adc_out = adc_out + (adc_out > 1);
+    adc_out -= (bitfiddle_uint16_approx_div_by_100(adc_out) << 3);
 #elif REFERENCE_VOLTAGE_MV == 3300
-    return (adc_out / 2) + (adc_out / 10);
+    // We multiply by 3.22 to get mV, then divide by 2 because we work
+    // in units of 2mV. Thus we need to multiply by 1.61, which
+    // approximately amounts to adding 1/10 then 1/100.
+    adc_out += (adc_out >> 1) + bitfiddle_uint16_approx_div_by_10(adc_out);
 #elif REFERENCE_VOLTAGE_MV == 2500
-    return adc_out / 8;
+    // We multiply by 2.44 to get mV, then divide by 2 because we work in units
+    // of 2mV. Thus we need to multiply by 1.22
+    // which amounts to adding 2/10 and 2/100.
+    adc_out += bitfiddle_uint16_approx_div_by_10(adc_out) + bitfiddle_uint16_approx_div_by_100(adc_out);
 #elif REFERENCE_VOLTAGE_MV == 1650
-    return adc_out / 16;
+    // We multiply by 1.611 to get mV, then divide by 2 because we work in units of 2mV.
+    // Thus we need to multiply by 0.81, which amounts to taking half then adding 3/10
+    // and 1/100 of the original.
+    uint16_t tenth = bitfiddle_uint16_approx_div_by_10(adc_out);
+    adc_out = (adc_out >> 1) + tenth + tenth + tenth + bitfiddle_uint16_approx_div_by_100(adc_out);
 #else
 #error "Can't handle that reference voltage"
     return 0;
 #endif
+
+    return (uint8_t)(adc_out & 0xFF);
 }
 
 #ifdef TEST
