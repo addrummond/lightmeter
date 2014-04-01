@@ -16,6 +16,7 @@
  */
 
 const uint8_t ADMUX_CLEAR_SOURCE = ~((1 << MUX3) | (1 << MUX2) | (1 << MUX1) | (1 << MUX0));
+// Set differential ADC with PB4 pos, PB3 neg, and 1x gain (see atiny85 datasheet p. 135).
 const uint8_t ADMUX_LIGHT_SOURCE = (0 << MUX3) | (1 << MUX2) | (1 << MUX1) | (0 << MUX0); // 0110
 const uint8_t ADMUX_TEMPERATURE_SOURCE = (1 << MUX3) | (1 << MUX 2) | (1 << MUX1) | (1 << MUX0);
 
@@ -50,7 +51,7 @@ void setup_ADC()
 {
     // Set ref voltage to VCC.
     ADMUX = (0 << REFS1) | (0 << REFS0);
-    // Set differential ADC with PB4 pos, PB3 neg, and 1x gain (see atiny85 datasheet p. 135).
+    // Set ADC source to temperature sensor.
     ADMUX |= ADMUX_TEMPERATURE_SOURCE;
     // Auto triggering (this needs to be set for turning on counter interrupt ADCSRB to take effect).
     ADCSRA |= (1 << ADATE);
