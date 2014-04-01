@@ -99,10 +99,17 @@ def temp_and_voltage_to_ev(temp, v):
 #  temp  (0)    ev  diffs diffs     ev   diffs diffs ...
 #        (16)   ev  diffs diffs     ev   diffs diffs ...
 #        (32)   ev  diffs diffs     ev   diffs diffs ...
-#             ...
+#
+# As a final optimization, we note that there are only 14 distinct
+# diffs 8-bit patterns. We can therefore replace each
+# [diffs diffs] sequence with the sequence [ev i], where i is a single
+# byte containing two 4-bit indices into an array of 14 bytes (one for
+# each bit pattern). # This gives us a table where each row is 32 bytes,
+# so together with the 12-byte bit pattern array, the entire thing takes
+# up 526 bytes.
 def output_table():
-    sys.stdout.write('    { ')
-
+    bitpatterns = [ ]
+    vallist = [ ]
     for t in xrange(0, 256, 16):
         temperature = (t * 0.4) - 51.0
 
@@ -113,13 +120,14 @@ def output_table():
             eight = int(round(ev * 8))
             if sv == 0 and t != 0:
                 sys.stdout.write("      ")
-            sys.stdout.write("%i," % eight)
 
             # Write the 2-bit differences (two bytes).
             prev = eight
+            num = ""
+            bpis = [ None, None ]
             for j in xrange(0, 2):
                 eight2 = None
-                o = "0b"
+                o = ""
                 for k in xrange(0, 8):
                     v = (sv + (j * 8.0) + k) * 2.0
                     ev2 = temp_and_voltage_to_ev(temperature, v)
@@ -136,11 +144,29 @@ def output_table():
                     else:
                         assert False
                     prev = eight2
-                sys.stdout.write("%s," % o)
+                ix = None
+                try:
+                    ix = bitpatterns.index(o)
+                except ValueError:
+                    bitpatterns.append(o)
+                    ix = len(bitpatterns)-1
+                assert ix < 16
+                bpis[j] = ix
 
-        sys.stdout.write('\n')
+            vallist.append(eight)
+            vallist.append(bpis[0] << 4 | bpis[1])
 
-    sys.stdout.write('    }')
+    sys.stdout.write('const uint8_t TEMP_AND_VOLTAGE_TO_EV_BITPATTERNS[] = {\n')
+    for p in bitpatterns:
+        sys.stdout.write('0b%s,' % p)
+    sys.stdout.write('\n};\n')
+
+    sys.stdout.write('const uint8_t TEMP_AND_VOLTAGE_TO_EV[] = {')
+    for i in xrange(len(vallist)):
+        if i % 32 == 0:
+            sys.stdout.write('\n    ');
+        sys.stdout.write('%i,' % vallist[i])
+    sys.stdout.write('\n};\n')
 
 # Straight up array that we use to test that the bitshifting logic is
 # working correctly.
@@ -160,14 +186,9 @@ def output_test_table():
     sys.stdout.write('    }');
 
 if __name__ == '__main__':
-    sys.stdout.write("""
-#include <stdint.h>
-
-const uint8_t TEMP_AND_VOLTAGE_TO_EV[] =
-""")
-   
+    sys.stdout.write("#include <stdint.h>\n")
     output_table()
-    sys.stdout.write(';\n#ifdef TEST\n')
+    sys.stdout.write('\n#ifdef TEST\n')
     sys.stdout.write('const uint8_t TEST_TEMP_AND_VOLTAGE_TO_EV[] =\n')
     output_test_table()
     sys.stdout.write(';\n#endif\n')
