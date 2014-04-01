@@ -5,7 +5,8 @@
 #    include <stdio.h>
 #endif
 
-extern const uint8_t TEMP_AND_VOLTAGE_TO_EV[];
+extern const uint8_t TEMP_AND_VOLTAGE_TO_EV_ABS[];
+extern const uint8_t TEMP_AND_VOLTAGE_TO_EV_DIFFS[];
 extern const uint8_t TEMP_AND_VOLTAGE_TO_EV_BITPATTERNS[];
 #ifdef TEST
 extern const uint8_t TEST_TEMP_AND_VOLTAGE_TO_EV[];
@@ -28,21 +29,21 @@ uint8_t count_bits_in_word(uint16_t word)
 // this code really definitely needs to run quickly, I'm doing it explicitly here.
 uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage)
 {
-    uint16_t row_start = ((uint16_t)temperature & ~15) << 1; // (temperature / 16) * 32 [32 bytes per row]
-    uint16_t absval_i = row_start + ((voltage >> 3) & ~1); // ((v/2)/16)*2
+    uint8_t row_start = ((uint16_t)temperature & ~15); // (temperature / 16) * 16 [16 bytes per row]
+    uint8_t i = row_start + (voltage >> 4); // voltage/16
     uint8_t bits_to_add = (voltage & 15) + 1; // (voltage % 16) + 1
 
-    uint8_t bit_pattern_indices = TEMP_AND_VOLTAGE_TO_EV[absval_i + 1];
+    uint8_t bit_pattern_indices = TEMP_AND_VOLTAGE_TO_EV_DIFFS[i];
     uint16_t bits = TEMP_AND_VOLTAGE_TO_EV_BITPATTERNS[bit_pattern_indices >> 4] << 8;
     bits |= TEMP_AND_VOLTAGE_TO_EV_BITPATTERNS[bit_pattern_indices & 0x0F];
     bits &= (uint16_t)0xFFFF << (16 - bits_to_add);
 
     uint8_t c = count_bits_in_word(bits);
 #ifdef TEST
-    printf("voltage = %i, count = %i, bitsper = %i, abs %i, absi = %i, r = %i\n", voltage, c, bits_to_add, TEMP_AND_VOLTAGE_TO_EV[absval_i], absval_i, TEMP_AND_VOLTAGE_TO_EV[absval_i] + c);
+    printf("voltage = %i, count = %i, bitsper = %i, abs %i, absi = %i, r = %i\n", voltage, c, bits_to_add, TEMP_AND_VOLTAGE_TO_EV_ABS[i], i, TEMP_AND_VOLTAGE_TO_EV_ABS[i] + c);
 #endif
 
-    return TEMP_AND_VOLTAGE_TO_EV[absval_i] + c;
+    return TEMP_AND_VOLTAGE_TO_EV_ABS[i] + c;
 }
 
 uint8_t convert_from_reference_voltage(uint16_t adc_out)

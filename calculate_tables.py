@@ -106,10 +106,16 @@ def temp_and_voltage_to_ev(temp, v):
 # byte containing two 4-bit indices into an array of 14 bytes (one for
 # each bit pattern). # This gives us a table where each row is 32 bytes,
 # so together with the 12-byte bit pattern array, the entire thing takes
-# up 526 bytes.
+# up 524 bytes.
+#
+# Finally, since the array itself now takes up 512 bytes, we can split
+# it into two arrays (one for the absolute value bytes and one for the
+# diff bit pattern index bytes) so that each separate array can be
+# indexed by a single byte.
 def output_table():
     bitpatterns = [ ]
-    vallist = [ ]
+    vallist_abs = [ ]
+    vallist_diffs = [ ]
     for t in xrange(0, 256, 16):
         temperature = (t * 0.4) - 51.0
 
@@ -153,19 +159,25 @@ def output_table():
                 assert ix < 16
                 bpis[j] = ix
 
-            vallist.append(eight)
-            vallist.append(bpis[0] << 4 | bpis[1])
+            vallist_abs.append(eight)
+            vallist_diffs.append(bpis[0] << 4 | bpis[1])
 
     sys.stdout.write('const uint8_t TEMP_AND_VOLTAGE_TO_EV_BITPATTERNS[] = {\n')
     for p in bitpatterns:
         sys.stdout.write('0b%s,' % p)
     sys.stdout.write('\n};\n')
 
-    sys.stdout.write('const uint8_t TEMP_AND_VOLTAGE_TO_EV[] = {')
-    for i in xrange(len(vallist)):
+    sys.stdout.write('const uint8_t TEMP_AND_VOLTAGE_TO_EV_ABS[] = {')
+    for i in xrange(len(vallist_abs)):
         if i % 32 == 0:
             sys.stdout.write('\n    ');
-        sys.stdout.write('%i,' % vallist[i])
+        sys.stdout.write('%i,' % vallist_abs[i])
+    sys.stdout.write('\n};\n')
+    sys.stdout.write('const uint8_t TEMP_AND_VOLTAGE_TO_EV_DIFFS[] = {')
+    for i in xrange(len(vallist_diffs)):
+        if i % 32 == 0:
+            sys.stdout.write('\n    ');
+        sys.stdout.write('%i,' % vallist_diffs[i])
     sys.stdout.write('\n};\n')
 
 def output_full_table_as_comment():
