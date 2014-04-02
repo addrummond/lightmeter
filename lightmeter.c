@@ -120,6 +120,8 @@ USB_PUBLIC uchar usbFunctionSetup(uchar data[8]) {
 
 int main()
 {
+    //    setup_output_ports();
+
     wdt_enable(WDTO_1S);
 
     usbInit();
