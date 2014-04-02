@@ -27,35 +27,15 @@ const uint8_t ADMUX_LIGHT_SOURCE_REF_VOLTAGE = (0 << REFS2) | (0 << REFS1) | (0 
 // Save result of ADC on interrupt.
 volatile static uint16_t adc_light_value = 0;
 volatile static uint16_t adc_temperature_value = 300; // About 25C
+volatile static bool next_is_temperature = true;
 ISR(ADC_vect) {
-    static uint8_t counter = 2;
-
-    if (counter == 2) {
-        // We're reading the temperature.
-        adc_temperature_value = ADCW + ADC_TEMPERATURE_OFFSET;
-        // Set it back to measuring light level for next time.
-        ADMUX &= ADMUX_CLEAR_REF_VOLTAGE;
-        ADMUX |= ADMUX_LIGHT_SOURCE_REF_VOLTAGE;
-        ADMUX &= ADMUX_CLEAR_SOURCE;
-        ADMUX |= ADMUX_LIGHT_SOURCE;
-    }
-    else {
-        // We're reading the light level.
+    if (next_is_temperature)
+        adc_temperature_value = ADCW;
+    else
         adc_light_value = ADCW;
-    }
 
     TIFR |= (1<<OCF0A); // Clear timer compare match flag.
-
-    if (counter == 0) {
-        // Next time read the temperature, not the light level.
-        ADMUX &= ADMUX_CLEAR_REF_VOLTAGE;
-        ADMUX |= ADMUX_TEMP_REF_VOLTAGE;
-        ADMUX |= ADMUX_TEMPERATURE_SOURCE; // 1111, so no need to clear bits first.
-    }
-
     ADCSRA |= (1 << ADSC);
-
-    counter += 2; // Will overflow back to 0 eventually.
 }
 
 void setup_ADC()
@@ -63,8 +43,9 @@ void setup_ADC()
 
     ADMUX = (0 << REFS1) | (0 << REFS0);
     // Set ADC source to temperature sensor.
-    ADMUX |= ADMUX_TEMPERATURE_SOURCE;
-    ADMUX |= ADMUX_TEMP_REF_VOLTAGE;
+    //ADMUX |= ADMUX_TEMPERATURE_SOURCE;
+    //    ADMUX |= ADMUX_TEMP_REF_VOLTAGE;
+    ADMUX |= ADMUX_LIGHT_SOURCE | ADMUX_LIGHT_SOURCE_REF_VOLTAGE; // TODO TEST CODE TODO
     // Auto triggering (this needs to be set for turning on counter interrupt ADCSRB to take effect).
     ADCSRA |= (1 << ADATE);
     // Enable ADC interrupt.
@@ -139,7 +120,31 @@ int main()
 
     setup_ADC();
 
-    for (;;) {
+    uint8_t counter;
+    for (counter = 0;; counter += 4) { // Will overflow every 64 loops, so about every 16 seconds.
+        // This looks like it ought not to work reliably, since we might be changing
+        // ADMUX in the middle of an ADC conversion. However, the docs say that the
+        // ADMUX register is buffered so that updates only take effect when it is safe.
+        // This code relies on the assumption that during any given call to the ADC
+        // interrupt the values of ADCL and ADCH will always be the values for the
+        // measurement specified in the most recent update to ADMUX.
+
+        if (counter == 0) {
+            // Make the next ADC reading a temperature reading.
+            ADMUX &= ADMUX_CLEAR_REF_VOLTAGE;
+            ADMUX |= ADMUX_TEMP_REF_VOLTAGE;
+            ADMUX |= ADMUX_TEMPERATURE_SOURCE; // 1111, so no need to clear bits first.
+            next_is_temperature = true;
+        }
+        else if (counter == 4) {
+            // Make the next ADC reading a light reading.
+            ADMUX &= ADMUX_CLEAR_REF_VOLTAGE;
+            ADMUX |= ADMUX_LIGHT_SOURCE_REF_VOLTAGE;
+            ADMUX &= ADMUX_CLEAR_SOURCE;
+            ADMUX |= ADMUX_LIGHT_SOURCE;
+            next_is_temperature = false;
+        }
+
         handle_measurement();
         _delay_ms(250);
     }
