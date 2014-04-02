@@ -41,7 +41,7 @@ ISR(ADC_vect) {
     }
     else {
         // We're reading the light level.
-        adc_light_value = 0b1111111111;//ADCW;
+        adc_light_value = ADCW;
     }
 
     TIFR |= (1<<OCF0A); // Clear timer compare match flag.
