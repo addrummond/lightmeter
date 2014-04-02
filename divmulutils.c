@@ -18,10 +18,12 @@ uint16_t bitfiddle_uint16_approx_div_by_5(uint16_t n)
            - (n >> 4) + (n >> 6) - (n >> 8) + (n >> 10) - (n >> 12) + (n >> 14);
 }
 
-// Temporary implementation. TODO.
 uint16_t bitfiddle_uint16_approx_div_by_100(uint16_t n)
 {
-    return  bitfiddle_uint16_approx_div_by_10(bitfiddle_uint16_approx_div_by_10(n));
+    // Similar to above. Max error is 3. Addition of &~1 does not reduce max
+    // error but reduces average error.
+    return (   (n >> 6) // div by 64
+             - (n >> 8) - (n >> 12) - (n >> 9) + (n >> 11) ) & ~1;
 }
 
 #ifdef TEST
@@ -56,7 +58,23 @@ int main()
         }
 
         if (i % 256 == 0) {
-            printf("Error at div/10 i = %i: %i (real result = %i, approx result = %i)\n", i, diff, x, y);
+            printf("Error at div/5 i = %i: %i (real result = %i, approx result = %i)\n", i, diff, x, y);
+        }
+    }
+
+    printf("Testing approx div by 100\n");
+    for (unsigned i = 0; i < 65536; ++i) {
+        uint16_t x = (uint16_t)i / 100;
+        uint16_t y = bitfiddle_uint16_approx_div_by_100((uint16_t)i);
+
+        uint16_t diff;
+        if ((x >= y && (diff = (x - y)) > 3) || (y > x && (diff = (y - x)) > 3)) {
+            printf("Not approx equal div/100 for i = %i: real value = %i, bithack value = %i\n", i, x, y);
+            return 1;
+        }
+
+        if (i % 256 == 0) {
+            printf("Error at div/100 i = %i: %i (real result = %i, approx result = %i)\n", i, diff, x, y);
         }
     }
 
