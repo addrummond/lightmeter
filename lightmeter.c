@@ -12,9 +12,9 @@
 
 /*
                          1 ---- 8         VCC
-     ADC neg in    (PB3) 2 ---- 7 (PB2)   LED right   (least sig)
-     ADC pos in    (PB4) 3 ---- 6 (PB1)   LED 2
-            GND          4 ---- 5 (PB0)   LED left    (most sig)
+     ADC neg in    (PB3) 2 ---- 7 (PB2)   USB D+
+     ADC pos in    (PB4) 3 ---- 6 (PB1)   LED
+            GND          4 ---- 5 (PB0)   USB D-
  */
 
 const uint8_t ADMUX_CLEAR_SOURCE = ~((1 << MUX3) | (1 << MUX2) | (1 << MUX1) | (1 << MUX0));
@@ -25,6 +25,8 @@ const uint8_t ADMUX_TEMPERATURE_SOURCE = (1 << MUX3) | (1 << MUX2) | (1 << MUX1)
 const uint8_t ADMUX_CLEAR_REF_VOLTAGE = 0b00101111; // Couldn't do this with macros without getting overflow warning for some reason.
 const uint8_t ADMUX_TEMP_REF_VOLTAGE = (0 << REFS2) | (1 << REFS1) | (0 << REFS0); // 1.1V internal reference
 const uint8_t ADMUX_LIGHT_SOURCE_REF_VOLTAGE = (0 << REFS2) | (0 << REFS1) | (0 << REFS0); // VCC
+
+volatile static uint8_t last_ev_reading = 0;
 
 // Save result of ADC on interrupt.
 volatile static uint16_t adc_light_value = 0;
@@ -74,43 +76,34 @@ void setup_ADC()
 
     // Enable global interrupts.
     sei();
+
+    PORTB |= 0b00000010;
+    _delay_ms(100);
+    PORTB &= ~0b00000010;
 }
 
 void setup_output_ports()
 {
-    DDRB = 0b00000111; // Set PB2 - PB0 as output ports.
+    PORTB = 0b00000010; // Set PB1 as output port.
 }
 
 void led_test(void);
 void handle_measurement()
 {
     // Copy the volatile value, which could change in the middle of this function.
-    /*uint16_t adc_light_nonvol_value = adc_light_value;
+    uint16_t adc_light_nonvol_value = adc_light_value;
 
     uint8_t v = convert_from_reference_voltage(adc_light_nonvol_value);
     uint8_t ev = get_ev100_at_temperature_voltage(178, v); // 128 = 20C
-    // Bit of a hack.
-    uint8_t out_of_eight = ev >> 5;
 
-    uint8_t led = ((out_of_eight & 0b100) >> 2) | (out_of_eight & 0b010) | ((out_of_eight & 0b001) << 2);*/
-    //    PORTB &= ~(0b111);
-    //    PORTB |= led;
+    last_ev_reading = ev;
 }
 
 void led_test()
 {
-    PORTB &= ~(0b111);
-    _delay_ms(500);
-    PORTB |= 0b1;
-    _delay_ms(500);
-    PORTB &= ~(0b1);
-    PORTB |= 0b10;
+    PORTB |= (0b10);
     _delay_ms(500);
     PORTB &= ~(0b10);
-    PORTB |= 0b100;
-    _delay_ms(500);
-    PORTB &= ~(0b100);
-    _delay_ms(500);
 }
 
 const uchar testbuffer[] = "Hello world XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX!"; // length 64
@@ -119,6 +112,10 @@ USB_PUBLIC uchar usbFunctionSetup(uchar setupData[8]) {
 
     switch (rq->bRequest) {
     case 100: {
+        DDRB |= 0b00000010;
+        _delay_ms(200);
+        DDRB &= ~0b00000010;
+
         usbMsgLen_t len = 64;
         if (len > rq->wLength.word)
             len = rq->wLength.word;
@@ -132,7 +129,8 @@ USB_PUBLIC uchar usbFunctionSetup(uchar setupData[8]) {
 
 int main()
 {
-    //    setup_output_ports();
+    setup_output_ports();
+    led_test();
 
     wdt_enable(WDTO_1S);
 

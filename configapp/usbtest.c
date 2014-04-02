@@ -160,7 +160,11 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    printf("Data received: %c, %c, %c\n", buffer[0], buffer[1], buffer[2]);
+    printf("Data received %i bytes: [", nBytes);
+    for (int i = 0; i < nBytes; ++i) {
+        printf("%c", buffer[i]);
+    }
+    printf("]\n");
 
 /*    if(strcmp(argv[1], "on") == 0) {
         nBytes = libusb_control_transfer(
