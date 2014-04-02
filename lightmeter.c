@@ -91,8 +91,8 @@ void handle_measurement()
     uint8_t out_of_eight = ev >> 5;
 
     uint8_t led = ((out_of_eight & 0b100) >> 2) | (out_of_eight & 0b010) | ((out_of_eight & 0b001) << 2);
-    PORTB &= ~(0b111);
-    PORTB |= led;
+    //    PORTB &= ~(0b111);
+    //    PORTB |= led;
 }
 
 void led_test()
@@ -113,8 +113,8 @@ void led_test()
 
 int main()
 {
-    setup_output_ports();
-    led_test();
+    //    setup_output_ports();
+    //    led_test();
 
     _delay_ms(1000);
 
