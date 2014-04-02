@@ -85,14 +85,14 @@ void led_test(void);
 void handle_measurement()
 {
     // Copy the volatile value, which could change in the middle of this function.
-    uint16_t adc_light_nonvol_value = adc_light_value;
+    /*uint16_t adc_light_nonvol_value = adc_light_value;
 
     uint8_t v = convert_from_reference_voltage(adc_light_nonvol_value);
     uint8_t ev = get_ev100_at_temperature_voltage(178, v); // 128 = 20C
     // Bit of a hack.
     uint8_t out_of_eight = ev >> 5;
 
-    uint8_t led = ((out_of_eight & 0b100) >> 2) | (out_of_eight & 0b010) | ((out_of_eight & 0b001) << 2);
+    uint8_t led = ((out_of_eight & 0b100) >> 2) | (out_of_eight & 0b010) | ((out_of_eight & 0b001) << 2);*/
     //    PORTB &= ~(0b111);
     //    PORTB |= led;
 }
@@ -113,7 +113,20 @@ void led_test()
     _delay_ms(500);
 }
 
-USB_PUBLIC uchar usbFunctionSetup(uchar data[8]) {
+const uchar testbuffer[] = "Hello world XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX!"; // length 64
+USB_PUBLIC uchar usbFunctionSetup(uchar setupData[8]) {
+    usbRequest_t *rq = (void *)setupData;
+
+    switch (rq->bRequest) {
+    case 100: {
+        usbMsgLen_t len = 64;
+        if (len > rq->wLength.word)
+            len = rq->wLength.word;
+        usbMsgPtr = (usbMsgPtr_t)testbuffer;
+        return len;
+    } break;
+    }
+
     return 0;
 }
 

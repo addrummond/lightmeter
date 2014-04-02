@@ -24,7 +24,7 @@
 // used to get descriptor strings for device identification 
 static int usbGetDescriptorString(libusb_device_handle *dev, int index, int langid, 
                                   char *buf, int buflen) {
-    char buffer[256];
+    unsigned char buffer[256];
     int rval, i;
 
     // make standard request GET_DESCRIPTOR, type string and given index 
@@ -65,7 +65,6 @@ static int usbGetDescriptorString(libusb_device_handle *dev, int index, int lang
 static libusb_device_handle * usbOpenDevice(int vendor, char *vendorName, 
                                             int product, char *productName) {
     int e;
-    libusb_device *dev;
     char devVendor[256], devProduct[256];
     
     libusb_device_handle * handle = NULL;
@@ -124,11 +123,11 @@ static libusb_device_handle * usbOpenDevice(int vendor, char *vendorName,
 }
 
 int main(int argc, char **argv) {
-	 libusb_device_handle *handle = NULL;
+    libusb_device_handle *handle = NULL;
     int nBytes = 0;
-    char buffer[256];
+    unsigned char buffer[256];
 
-    if(argc < 2) {
+    /*    if(argc < 2) {
         printf("Usage:\n");
         printf("usbtext.exe on\n");
         printf("usbtext.exe off\n");
@@ -136,16 +135,34 @@ int main(int argc, char **argv) {
         printf("usbtext.exe write\n");
         printf("usbtext.exe in <string>\n");
         exit(1);
-    }
+        }*/
 	
-    handle = usbOpenDevice(0x16C0, "codeandlife.com", 0x05DC, "USBexample");
+    handle = usbOpenDevice(0x16c0, "ibexsoft", 0x05DC, "luxatron");
 	
     if(handle == NULL) {
         fprintf(stderr, "Could not find USB device!\n");
         exit(1);
     }
     
-    if(strcmp(argv[1], "on") == 0) {
+    printf("Device found...\n");
+
+    nBytes = libusb_control_transfer(
+        handle,
+        LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_IN/*device to host */,
+        100,    // request
+        0, 0,   // wvalue, windex
+        buffer,
+        64,     // how much to read
+        5000    // 5000ms timeout
+    );
+    if (nBytes < 0) {
+        fprintf(stderr, "%s", libusb_strerror(nBytes));
+        return 1;
+    }
+
+    printf("Data received: %c, %c, %c\n", buffer[0], buffer[1], buffer[2]);
+
+/*    if(strcmp(argv[1], "on") == 0) {
         nBytes = libusb_control_transfer(
             handle, 
             LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_IN, 
@@ -155,13 +172,13 @@ int main(int argc, char **argv) {
         nBytes = libusb_control_transfer(
             handle, 
             LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_IN, 
-            USB_LED_OFF, 0, 0, (char *)buffer, sizeof(buffer), 5000
+            USB_LED_OFF, 0, 0, buffer, sizeof(buffer), 5000
         );
-    } else if(strcmp(argv[1], "out") == 0) {
+    } else if (strcmp(argv[1], "out") == 0) {
         nBytes = libusb_control_transfer(
             handle, 
             LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_IN, 
-            USB_DATA_OUT, 0, 0, (char *)buffer, sizeof(buffer), 5000
+            USB_DATA_OUT, 0, 0, buffer, sizeof(buffer), 5000
         );
         printf("Got %d bytes: %s\n", nBytes, buffer);
     } else if(strcmp(argv[1], "write") == 0) {
@@ -169,7 +186,7 @@ int main(int argc, char **argv) {
             handle, 
             LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_IN, 
             USB_DATA_WRITE, 'T' + ('E' << 8), 'S' + ('T' << 8), 
-            (char *)buffer, sizeof(buffer), 5000
+            buffer, sizeof(buffer), 5000
         );
     } else if(strcmp(argv[1], "in") == 0 && argc > 2) {
         nBytes = libusb_control_transfer(
@@ -177,7 +194,7 @@ int main(int argc, char **argv) {
             LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_OUT, 
             USB_DATA_IN, 0, 0, argv[2], strlen(argv[2])+1, 5000
         );
-    }
+        }*/
 	
     if(nBytes < 0)
         fprintf(stderr, "USB error: %s\n", libusb_strerror(nBytes));
