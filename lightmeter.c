@@ -1,8 +1,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <avr/io.h>
+#include <avr/wdt.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
+
+#include <usbdrv.h>
 
 #include <constants.h>
 #include <calculate.h>
@@ -111,10 +114,36 @@ void led_test()
     _delay_ms(500);
 }
 
+USB_PUBLIC uchar usbFunctionSetup(uchar data[8]) {
+    return 0;
+}
+
 int main()
 {
-    //    setup_output_ports();
-    //    led_test();
+    wdt_enable(WDTO_1S);
+
+    usbInit();
+
+    usbDeviceDisconnect();
+    uint8_t i;
+    for (i = 0; i < 250; ++i) {
+        wdt_reset();
+        _delay_ms(2);
+    }
+    usbDeviceConnect();
+
+    sei();
+
+    for (;;) {
+        wdt_reset();
+        usbPoll();
+    }
+
+    return 0;
+
+    /*
+    setup_output_ports();
+    led_test();
 
     _delay_ms(1000);
 
@@ -148,6 +177,7 @@ int main()
         handle_measurement();
         _delay_ms(250);
     }
-
+    
     return 0;
+    */
 }
