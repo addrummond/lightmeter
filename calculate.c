@@ -72,7 +72,7 @@ uint8_t convert_from_reference_voltage(uint16_t adc_out)
     // We multiply by 4.883 to get mV, then divide by 2 because we work in units
     // of 2mV. Thus we need to multiply by 2.44, or in other words, double, add
     // half and then subtract 6/100.
-    uint8_t hund = bitfiddle_uint16_approx_div_by_100(adc_out);
+    uint16_t hund = bitfiddle_uint16_approx_div_by_100(adc_out);
     adc_out += adc_out + (adc_out > 1)
                        - (hund << 1) + (hund << 2);
     return adc_out;
