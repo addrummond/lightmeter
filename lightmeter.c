@@ -77,8 +77,6 @@ void setup_ADC()
     ADCSRB |= ((0 << ADTS2) | (1 << ADTS1) | (1 << ADTS0)); // Timer/Counter0 Compare Match A
     TCCR0B &= ~((1 << CS02) | (1 << CS01) | (1 << CS00));
     TCCR0B |= ((1 << CS02) | (0 << CS01) | (0 << CS00)); // prescaler: clock/256
-   //    TCCR0A &= ~((1 << COM0A1) | (1 << COM0A0));
-    //    TCCR0A |= (1 << COM0A1 | (0 << COM0A0)); // Clear OC0A/OC0B on Compare Match
     TCNT0 = 0;
     OCR0A = 4; // TO-----------
     // Turn off bipolar input mode.
