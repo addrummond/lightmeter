@@ -1,7 +1,7 @@
 #!/bin/sh
 
 VUSB=./vusb-20121206/usbdrv/
-CFLAGS="-I ./ -I./vusb-20121206/usbdrv/ -Wall -O2 -fno-move-loop-invariants -fno-tree-scev-cprop -fno-inline-small-functions -DF_CPU=16000000 -mmcu=attiny85"
+CFLAGS="-I ./ -I./vusb-20121206/usbdrv/ -Wall -O2 -fno-move-loop-invariants -fno-tree-scev-cprop -fno-inline-small-functions -DF_CPU=16000000L -mmcu=attiny85"
 
 python calculate_tables.py > tables.c
 
