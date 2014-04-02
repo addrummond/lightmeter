@@ -1,4 +1,4 @@
-#define REFERENCE_VOLTAGE_MV 5000
+#define REFERENCE_VOLTAGE_MV 5300
 
 // See p. 133 of atiny85 data sheet.
 // TODO: At some point these values should be
