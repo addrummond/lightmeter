@@ -1,7 +1,7 @@
 #define REFERENCE_VOLTAGE_MV 5500
 
 // Divide by number specified, then << by number specified.
-#define OP_AMP_GAIN_DIVIDE 5
+#define OP_AMP_GAIN_DIVIDE 100
 #define OP_AMP_GAIN_LSHIFT 0
 
 // See p. 133 of atiny85 data sheet.
