@@ -61,7 +61,7 @@ uint8_t convert_from_reference_voltage(uint16_t adc_out)
 {
     // In each case, we want to do ((2^10 / ref_v) * adc_out) / 2.
 
-#if REFERENCE_VOLTAGE_MV = 5300
+#if REFERENCE_VOLTAGE_MV == 5300
     // We multiply by 5.1758 to get mV, then divide by 2 because we work in units
     // of 2mV. Thus we need to multiply by 2.59, or in other words, double, add
     // half, add one tenth and then subtract 1/100.
@@ -95,7 +95,17 @@ uint8_t convert_from_reference_voltage(uint16_t adc_out)
     adc_out = (adc_out >> 1) + tenth + tenth + tenth + bitfiddle_uint16_approx_div_by_100(adc_out);
 #else
 #error "Can't handle that reference voltage"
-    return 0;
+    return 0; // Never executed.
+#endif
+
+    // We now divide to adjust for the op amp gain.
+#define f(x) g(x)
+#define g(x) bitfiddle_uint16_approx_div_by_ ## x
+    adc_out = f(OP_AMP_GAIN_DIVIDE)(adc_out);
+#undef f
+#undef g
+#if OP_AMP_GAIN_LSHIFT > 0
+    adc_out <<= OP_AMP_GAIN_SHIFT;
 #endif
 
     return (uint8_t)(adc_out & 0xFF);
