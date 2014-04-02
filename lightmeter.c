@@ -77,10 +77,6 @@ void setup_ADC()
 
     // Enable global interrupts.
     sei();
-
-    PORTB |= 0b00000010;
-    _delay_ms(100);
-    PORTB &= ~0b00000010;
 }
 
 void setup_output_ports()
@@ -95,7 +91,7 @@ void handle_measurement()
     uint16_t adc_light_nonvol_value = adc_light_value;
 
     uint8_t v = convert_from_reference_voltage(adc_light_nonvol_value);
-    uint8_t ev = get_ev100_at_temperature_voltage(178, v); // 128 = 20C
+    uint8_t ev = get_ev100_at_temperature_voltage(178, v); // 178 = 20C
 
     last_ev_reading = ev;
 }
@@ -123,6 +119,14 @@ USB_PUBLIC uchar usbFunctionSetup(uchar setupData[8]) {
         usbMsgPtr = (usbMsgPtr_t)(&last_ev_reading); // This is volatile, but I think it's ok.
         return 1;
     } break;
+    case USB_BREQUEST_GET_RAW_TEMPERATURE: {
+        usbMsgPtr = (usbMsgPtr_t)(&adc_temperature_value);
+        return 2;
+    } break;
+    case USB_BREQUEST_GET_RAW_LIGHT: {
+        usbMsgPtr = (usbMsgPtr_t)(&adc_light_value);
+        return 2;
+    } break;
     }
 
     return 0;
@@ -131,6 +135,8 @@ USB_PUBLIC uchar usbFunctionSetup(uchar setupData[8]) {
 int main()
 {
     setup_output_ports();
+    setup_ADC();
+
     led_test();
 
     wdt_enable(WDTO_1S);
@@ -163,7 +169,7 @@ int main()
                 ADMUX |= ADMUX_TEMPERATURE_SOURCE; // 1111, so no need to clear bits first.
                 next_is_temperature = true;
             }
-            else if (cnt == 1) {
+            else if (cnt == 0b100000) {
                 // Make the next ADC reading a light reading.
                 ADMUX &= ADMUX_CLEAR_REF_VOLTAGE;
                 ADMUX |= ADMUX_LIGHT_SOURCE_REF_VOLTAGE;
