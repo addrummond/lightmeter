@@ -1,4 +1,4 @@
-#define REFERENCE_VOLTAGE_MV 5300
+#define REFERENCE_VOLTAGE_MV 5500
 
 // Divide by number specified, then << by number specified.
 #define OP_AMP_GAIN_DIVIDE 5

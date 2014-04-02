@@ -61,11 +61,11 @@ uint8_t convert_from_reference_voltage(uint16_t adc_out)
 {
     // In each case, we want to do ((2^10 / ref_v) * adc_out) / 2.
 
-#if REFERENCE_VOLTAGE_MV == 5300
-    // We multiply by 5.1758 to get mV, then divide by 2 because we work in units
-    // of 2mV. Thus we need to multiply by 2.59, or in other words, double, add
-    // half, add one tenth and then subtract 1/100.
-    adc_out += adc_out + (adc_out >> 1) + bitfiddle_uint16_approx_div_by_10(adc_out)
+#if REFERENCE_VOLTAGE_MV == 5500
+    // We multiply by 5.371 to get mV, then divide by 2 because we work in units
+    // of 2mV. Thus we need to multiply by 2.69, or in other words, double, add
+    // half, add two tenths and then subtract 1/100.
+    adc_out += adc_out + (adc_out >> 1) + (bitfiddle_uint16_approx_div_by_10(adc_out) << 1)
                                         - bitfiddle_uint16_approx_div_by_100(adc_out);
     return adc_out;
 #elif REFERENCE_VOLTAGE_MV == 5000
