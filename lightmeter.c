@@ -8,6 +8,7 @@
 #include <usbdrv.h>
 
 #include <constants.h>
+#include <usbconstants.h>
 #include <calculate.h>
 
 /*
@@ -111,16 +112,16 @@ USB_PUBLIC uchar usbFunctionSetup(uchar setupData[8]) {
     usbRequest_t *rq = (void *)setupData;
 
     switch (rq->bRequest) {
-    case 100: {
-        DDRB |= 0b00000010;
-        _delay_ms(200);
-        DDRB &= ~0b00000010;
-
+    case USB_BREQUEST_GET_TEST_MSG: {
         usbMsgLen_t len = 64;
         if (len > rq->wLength.word)
             len = rq->wLength.word;
         usbMsgPtr = (usbMsgPtr_t)testbuffer;
         return len;
+    } break;
+    case USB_BREQUEST_GET_EV: {
+        usbMsgPtr = (usbMsgPtr_t)(&last_ev_reading); // This is volatile, but I think it's ok.
+        return 1;
     } break;
     }
 
