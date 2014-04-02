@@ -146,50 +146,40 @@ int main()
 
     sei();
 
-    for (;;) {
+    // The main loop. This handles USB polling and looks at the latest exposure
+    // reading every so often.
+    uint8_t cnt;
+    for (cnt = 0;; ++cnt) {
         wdt_reset();
         usbPoll();
+
+        if ((cnt & 0b11111) == 0) { // Every 160ms, give or take.
+            // Do lightmetery stuff.
+            if (cnt == 0) {
+                // Make the next ADC reading a temperature reading.
+                ADMUX &= ADMUX_CLEAR_REF_VOLTAGE;
+                ADMUX |= ADMUX_TEMP_REF_VOLTAGE;
+                ADMUX |= ADMUX_TEMPERATURE_SOURCE; // 1111, so no need to clear bits first.
+                next_is_temperature = true;
+            }
+            else if (cnt == 1) {
+                // Make the next ADC reading a light reading.
+                ADMUX &= ADMUX_CLEAR_REF_VOLTAGE;
+                ADMUX |= ADMUX_LIGHT_SOURCE_REF_VOLTAGE;
+                ADMUX &= ADMUX_CLEAR_SOURCE;
+                ADMUX |= ADMUX_LIGHT_SOURCE;
+                next_is_temperature = false;
+            }
+
+            handle_measurement();
+        }
+        else {
+            // usbPoll needs to be called at least every 50ms. Tried using higher
+            // values < 50 than the one here but they seemed to make reading data
+            // from the device noticably slow.
+            _delay_ms(10);
+        }
     }
 
     return 0;
-
-    /*
-    setup_output_ports();
-    led_test();
-
-    _delay_ms(1000);
-
-    setup_ADC();
-
-    uint8_t counter;
-    for (counter = 0;; counter += 4) { // Will overflow every 64 loops, so about every 16 seconds.
-        // This looks like it ought not to work reliably, since we might be changing
-        // ADMUX in the middle of an ADC conversion. However, the docs say that the
-        // ADMUX register is buffered so that updates only take effect when it is safe.
-        // This code relies on the assumption that during any given call to the ADC
-        // interrupt the values of ADCL and ADCH will always be the values for the
-        // measurement specified in the most recent update to ADMUX.
-
-        if (counter == 0) {
-            // Make the next ADC reading a temperature reading.
-            ADMUX &= ADMUX_CLEAR_REF_VOLTAGE;
-            ADMUX |= ADMUX_TEMP_REF_VOLTAGE;
-            ADMUX |= ADMUX_TEMPERATURE_SOURCE; // 1111, so no need to clear bits first.
-            next_is_temperature = true;
-        }
-        else if (counter == 4) {
-            // Make the next ADC reading a light reading.
-            ADMUX &= ADMUX_CLEAR_REF_VOLTAGE;
-            ADMUX |= ADMUX_LIGHT_SOURCE_REF_VOLTAGE;
-            ADMUX &= ADMUX_CLEAR_SOURCE;
-            ADMUX |= ADMUX_LIGHT_SOURCE;
-            next_is_temperature = false;
-        }
-
-        handle_measurement();
-        _delay_ms(250);
-    }
-    
-    return 0;
-    */
 }
