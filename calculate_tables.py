@@ -448,82 +448,65 @@ shutter_speeds = [
     'XXX'
 ]
 
+#
+# Apertures are represented using unsigned 8-bit values. They go from
+# 1.0 to 32 in 1/8th stop steps.
+#
+# The table is quarter-stop resolution only, since eighth-stop apertures are unwieldy.
+# Instead, we display something like "1.1+1/8 stop" (for the f-stop 3/8ths of a stop above 1.0).
+#
+# To keep each entry two two characters, decimal points are not included. We rely on the fact
+# that all two-digit apertures <= 9.6 have a decimal point in the middle while all other
+# apertures do not.
+#
+# Each entry in the table is 1-byte (two 4-byte characters), so the whole table is 40 bytes.
+#
+
 apertures_bitmap = [
     None, '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', 'X'
 ]
 apertures = [
+    '10', ###
+    '11',
+    '12',
+    '13',
     '14', ###
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
+    '15',
+    '17',
+    '18',
+    '2', ###
+    '22',
+    '24',
+    '26',
     '28', ###
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
+    '31',
+    '34',
+    '37',
     '4', ###
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
+    '44',
+    '48',
+    '52',
     '56', ###
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
+    '62',
+    '67',
+    '73',
     '8', ###
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
+    '87',
+    '95',
+    '10',
     '11', ###
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
+    '12',
+    '14',
+    '15',
     '16', ###
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
+    '17',
+    '19',
+    '21',
     '22', ###
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    '32', ###
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
-    'XX',
+    '24', # made up, TODO CHECK
+    '27', # made up, TODO CHECK
+    '30', # made up, TODO CHECK
+    '32'
 ]
 
 def output_shutter_speeds():

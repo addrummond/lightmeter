@@ -53,20 +53,39 @@ void shutter_speed_to_string(uint8_t speed, exposure_string_output_t *eso)
 
 void aperture_to_string(uint8_t aperture, aperture_string_output_t *aso)
 {
-    uint8_t b = APERTURES[aperture];
+    uint8_t b = APERTURES[aperture >> 1];
     aso->chars[0] = APERTURES_BITMAP[b & 0xF];
 
     uint8_t high = (b >> 4) & 0xF;
     uint8_t c = APERTURES_BITMAP[high];
-    if (high != 0 && aperture < AP_F8) {
+    uint8_t last = 1;
+
+    if (high != 0)
+        ++last;
+
+    if (aperture <= AP_F9_5+1) {
         aso->chars[1] = '.';
         aso->chars[2] = c;
-        aso->chars[3] = '\0';
+        ++last;
     }
     else {
         aso->chars[1] = c;
-        aso->chars[2] = '\0';
     }
+
+    if (aperture & 1) {
+        aso->chars[last++] = '+';
+        aso->chars[last++] = '1';
+        aso->chars[last++] = '/';
+        aso->chars[last++] = '8';
+        aso->chars[last++] = 's';
+        aso->chars[last++] = 't';
+        aso->chars[last++] = 'p';
+    }
+
+    aso->chars[last] = '\0';
+
+    ++last;
+    aso->length = last;
 }
 
 #ifdef TEST

@@ -10,13 +10,14 @@
 #define SS_8000TH   152
 #define SS_16000TH  160
 
-#define SS_MIN 0
-#define SS_MAX 160
+#define SS_MIN      0
+#define SS_MAX      160
 
-#define AP_F8       40
+#define AP_F8       48
+#define AP_F9_5     52
 
 #define AP_MIN      0
-#define AP_MAX      72
+#define AP_MAX      82
 
 typedef struct exposure_string_output {
     uint8_t chars[9];
@@ -24,7 +25,7 @@ typedef struct exposure_string_output {
 } exposure_string_output_t;
 
 typedef struct aperture_string_output {
-    uint8_t chars[4];
+    uint8_t chars[11];
     uint8_t length; // Does not incluze null terminator.
 } aperture_string_output_t;
 
