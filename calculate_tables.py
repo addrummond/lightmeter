@@ -258,7 +258,7 @@ def test_output():
             print "T %f V %f EV %f" % (temperature, voltage, temp_and_voltage_to_ev(temperature, voltage))
 
 #
-# Shutter speed tables.
+# Shutter speed and aperture tables.
 #
 
 #
@@ -445,7 +445,85 @@ shutter_speeds = [
     'XXX',
     'XXX',
     'XXX',
-    'XXX',
+    'XXX'
+]
+
+apertures_bitmap = [
+    None, '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', 'X'
+]
+apertures = [
+    '14', ###
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    '28', ###
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    '24', ###
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    '56', ###
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    '8', ###
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    '11', ###
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    '16', ###
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    '22', ###
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    '32', ###
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
+    'XX',
 ]
 
 def output_shutter_speeds():
@@ -474,6 +552,24 @@ def output_shutter_speeds():
             sys.stdout.write("'%s'," % c) # None of the chars need escaping.
     sys.stdout.write('};\n')
 
+def output_apertures():
+    sys.stdout.write('const uint8_t APERTURES[] = {\n')
+    for a in apertures:
+        n1 = apertures_bitmap.index(a[1]) if len(a) > 1 else 0
+        n2 = apertures_bitmap.index(a[0])
+        sys.stdout.write('0b' +
+                         (n2 & 8 and '1' or '0') + (n2 & 4 and '1' or '0') + (n2 & 2 and '1' or '0') + (n2 & 1 and '1' or '0') +
+                         (n1 & 8 and '1' or '0') + (n1 & 4 and '1' or '0') + (n1 & 2 and '1' or '0') + (n1 & 1 and '1' or '0') +
+                         ',')
+    sys.stdout.write('};\n')
+    sys.stdout.write('const uint8_t APERTURES_BITMAP[] = { ')
+    for a in apertures_bitmap:
+        if a is None:
+            sys.stdout.write("'\\0',")
+        else:
+            sys.stdout.write("'%s'," % a)
+    sys.stdout.write('};\n')
+
 #
 # Final output generation.
 #
@@ -488,6 +584,7 @@ def output():
     output_test_table()
     sys.stdout.write(';\n#endif\n')
     output_shutter_speeds()
+    output_apertures()
     sys.stdout.write('\n#endif')
 
 if __name__ == '__main__':

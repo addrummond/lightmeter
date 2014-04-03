@@ -14,6 +14,8 @@
 
 extern uint8_t SHUTTER_SPEEDS[];
 extern uint8_t SHUTTER_SPEEDS_BITMAP[];
+extern uint8_t APERTURES[];
+extern uint8_t APERTURES_BITMAP[];
 
 void shutter_speed_to_string(uint8_t speed, exposure_string_output_t *eso)
 {
@@ -36,7 +38,7 @@ void shutter_speed_to_string(uint8_t speed, exposure_string_output_t *eso)
         bytei += ((shift & 4) >> 2);
     }
 
-    // Add any required trailing zeros.
+    // Add any required trailing zeros. TODO: could probably get rid of the conditionals.
     if (speed >= SS_1000TH)
         eso->chars[j++] = '0';
     if (speed >= SS_16000TH)
@@ -49,16 +51,42 @@ void shutter_speed_to_string(uint8_t speed, exposure_string_output_t *eso)
     eso->length = j;
 }
 
+void aperture_to_string(uint8_t aperture, aperture_string_output_t *aso)
+{
+    uint8_t b = APERTURES[aperture];
+    aso->chars[0] = APERTURES_BITMAP[b & 0xF];
+
+    uint8_t high = (b >> 4) & 0xF;
+    uint8_t c = APERTURES_BITMAP[high];
+    if (high != 0 && aperture >= AP_F8) {
+        aso->chars[1] = '.';
+        aso->chars[2] = c;
+        aso->chars[3] = '\0';
+    }
+    else {
+        aso->chars[1] = c;
+        aso->chars[2] = '\0';
+    }
+}
+
 #ifdef TEST
 
 int main()
 {
     exposure_string_output_t eso;
-
     uint8_t s;
     for (s = SS_MIN; s <= SS_MAX; ++s) {
         shutter_speed_to_string(s, &eso);
         printf("SS: %s\n", eso.chars);
+    }
+
+    printf("\n");
+
+    uint8_t a;
+    aperture_string_output_t aso;
+    for (a = AP_MIN; a <= AP_MAX; ++a) {
+        aperture_to_string(a, &aso);
+        printf("A:  %s\n", aso.chars);
     }
 }
 
