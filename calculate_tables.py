@@ -269,186 +269,217 @@ def test_output():
 #     5s     Five seconds
 #     1s+1/4 One and one quarter seconds.
 #
-# We want a way to represent each character using 3 bits.
-#
-# To do this we note that digits 6 and 8 are rare and that no shutter speed
-# ever ends with '1' except 1 itself.
-shutter_speeds = [
-    '1X', ###
-    '56X',
-    '53X',
-    '49X',
-    '45X',
-    '41X',
-    '38X',
-    '34X',
-    '30X', ###
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '15X', ###
-    '0',
-    '0',
-    '0',
-    '12X',
-    '0',
-    '0',
-    '0',
-    '8X', ###
-    '0',
-    '0',
-    '0',
-    '6X',
-    '0',
-    '0',
-    '0',
-    '4X', ###
-    '0',
-    '0',
-    '0',
-    '3S',
-    '0',
-    '0',
-    '0',
-    '2X', ###
-    '0',
-    '0',
-    '0',
-    '1X1X2',
-    '0',
-    '0',
-    '0',
-    '1X', ###
-    '0',
-    '0',
-    '0',
-    '3X4',
-    '0',
-    '0',
-    '0',
-    '1X2', ###
-    '15X32',
-    '7X16',
-    '13X32',
-    '3X8',
-    '11X32',
-    '5X16',
-    '9X32',
-    '1X4', ###
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '1X8', ###
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '1X15', ###
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '1X30', ###
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '1X60', ###
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '1X125', ###
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '1X250', ###
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '1X500', ###
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '1X1000', ###
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '1X2000', ###
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '1X4000', ###
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '1X8000', ###
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '1X16000', ###
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
-    '0',
+# We want a way to represent each character using 4 bits. There are max 5
+# characters per speed, so we have a total of (168*20)/8 = 420 bytes.
+shutter_speeds_bitmap = [
+    None, # Zero is reserved as a terminator for strings < 5 chars.
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '/', '+', 'S', 'X', 'M'
 ]
+shutter_speeds = [
+    '1M', ###
+    '56S',
+    '53S',
+    '49S',
+    '45S',
+    '41S',
+    '38S',
+    '34S',
+    '39S',
+    '28S',
+    '27S',
+    '25S',
+    '23S',
+    '21S',
+    '29S',
+    '17S',
+    '15S', ###
+    '15S',
+    '14S',
+    '13S',
+    '12S',
+    '11S',
+    '10S',
+    '9S',
+    '8S', ###
+    '7+3/4', # 'S' preceding plus is not included.
+    '7+1/2', 
+    '7S',
+    '6S',
+    '5+1/2',
+    '5S',
+    '4+1/2',
+    '4S', ###
+    '3+3/4',
+    '3+1/2',  
+    '3+1/4',
+    '3S',
+    '2+3/4',
+    '2+1/2',
+    '2+1/4',
+    '2S', ###
+    '2S',
+    '1+3/4',
+    '1+1/2',
+    '1+1/2',
+    '1+1/2',
+    '1+1/4',
+    '1+1/4',
+    '1S', ###
+    '1S',
+    '1S',
+    '1S',
+    '3/4',   # TODO Maybe add some extra detail in this region.
+    '3/4',
+    '3/4',
+    '3/4',
+    '1/2', ###
+    '15/32',
+    '7/16',
+    '13/32',
+    '3/8',
+    '11/32',
+    '5/16',
+    '9/32',
+    '1/4', ###
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    '1/8', ###
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    '1/15', ###
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    '1/30', ###
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    '1/60', ### 
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    '1/125', ###
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    '1/250', ###
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    '1/500', ###
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    # Last one zero not included from this point on.
+    '1/100', ###
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    '1/200', ###
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    '1/400', ###
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    '1/800', ###
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    # Last two zeros not included.
+    '1/160', 
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+    'XXX',
+]
+
+def output_shutter_speeds():
+    sys.stdout.write('const uint8_t SHUTTER_SPEEDS[] = {\n')
+    bits = []
+    for speed in shutter_speeds:
+        x = 0
+        for c in speed:
+            x += 1
+            n = shutter_speeds_bitmap.index(c)
+            bits.append((n & 8 and '1' or '0') + (n & 4 and '1' or '0') + (n & 2 and '1' or '0') + (n & 1 and '1' or '0'))
+        for i in xrange(5 - x):
+            bits.append('0000')
+    for i in xrange(0, len(bits)-1, 2):
+        if i < len(bits) - 1:
+            sys.stdout.write('0b' + bits[i+1] + bits[i] + ',')
+        else:
+            sys.stdout.write('0b' + bits[i] + ',')
+    sys.stdout.write('};\n')
+#    sys.stdout.write('// ' + ' '.join(bits));
+    sys.stdout.write('const uint8_t SHUTTER_SPEEDS_BITMAP[] = { ')
+    for c in shutter_speeds_bitmap:
+        if c is None:
+            sys.stdout.write("'\\0',")
+        else:
+            sys.stdout.write("'%s'," % c) # None of the chars need escaping.
+    sys.stdout.write('};\n')
 
 #
 # Final output generation.
 #
 
 def output():
+    sys.stdout.write('#ifndef TABLES_H\n#define TABLES_H\n\n')
     sys.stdout.write("#include <stdint.h>\n")
     output_full_table_as_comment()
     output_table()
@@ -456,6 +487,8 @@ def output():
     sys.stdout.write('const uint8_t TEST_TEMP_AND_VOLTAGE_TO_EV[] =\n')
     output_test_table()
     sys.stdout.write(';\n#endif\n')
+    output_shutter_speeds()
+    sys.stdout.write('\n#endif')
 
 if __name__ == '__main__':
 #    test_output()
