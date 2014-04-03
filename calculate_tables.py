@@ -6,7 +6,7 @@ import sys
 ##########
 
 reference_voltage = 5500.0 # mV
-op_amp_gain       = 100.0
+op_amp_gain       = 56.4/2.0
 
 ##########
 
@@ -32,11 +32,11 @@ def ocv_and_rdc_to_irrad(ocv, rdc):
 
     # -20.0 because graph in measurem.pdf is not for BPW34,
     # which has a 20mV higher OCV listed on data sheet.
-    l1Val = (ocv - 155.0 - 20.0) / slope
-    l2Val = (ocv - 100.0 - 20.0) / slope
-    l3Val = (ocv - 47.0 - 20.0)  / slope
-    l4Val = (ocv - 12.0 - 20.0)  / slope
-    l5Val = (ocv - 5.0 - 20.0)   / slope
+    l1Val = (ocv - 275.0 - 20.0) / slope
+    l2Val = (ocv - 212.5 - 20.0) / slope
+    l3Val = (ocv - 160.0 - 20.0)  / slope
+    l4Val = (ocv - 100.0 - 20.0)  / slope
+    l5Val = (ocv - 62.5 - 20.0)   / slope
 
 #    print l1Val, l2Val, l3Val, l4Val, l5Val
 
@@ -60,7 +60,7 @@ def ocv_and_rdc_to_irrad(ocv, rdc):
 
 # We can get log10 illum (lux) from log10 irrad by adding 3.
 # This can be inferred from figs 3 and 4 on p. 3 of http://www.vishay.com/docs/81521/bpw34.pdf
-def irrad_to_illum(irrad):
+def irrad_to_lux(irrad):
     return irrad + 2.7
 
 # Convert lux to EV at ISO 100.
@@ -73,7 +73,7 @@ def lux_to_ev_at_100(lux):
 def temp_and_voltage_to_ev(temp, v):
     rdc = temp_to_rdc(temp)
     irrad = ocv_and_rdc_to_irrad(v, rdc)
-    lux = irrad_to_illum(irrad)
+    lux = irrad_to_lux(irrad)
     return lux_to_ev_at_100(lux)
 
 # Temperature, EV and voltage are all represented as unsigned 8-bit
@@ -234,6 +234,11 @@ def output_test_table():
     sys.stdout.write('    }');
 
 def test_output():
+#    irrad = ocv_and_rdc_to_irrad(0, temp_to_rdc(20))
+#    lux = irrad_to_lux(irrad)
+#    print "ZERO", irrad, lux, lux_to_ev_at_100(lux)
+#    return
+
     for t in xrange(0, 256, 16):
         print "%f, %f" % (t * 0.4 - 51.0, temp_to_rdc(t * 0.4 - 51.0))
     print
