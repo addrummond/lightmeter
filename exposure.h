@@ -18,7 +18,14 @@
 #define AP_F9_5     52
 
 #define AP_MIN      0
-#define AP_MAX      82
+#define AP_MAX      80
+
+#define ISO_MIN     0
+#define ISO_MAX     144 // 1600000
+
+#define EV_MIN      0
+#define EV_MAX      254
+
 
 typedef struct shutter_string_output {
     uint8_t chars[9];
@@ -33,7 +40,7 @@ typedef struct aperture_string_output {
 #define APERTURE_STRING_OUTPUT_STRING(aso) ((aso).chars)
 
 typedef struct iso_string_output {
-    uint8_t chars[8];
+    uint8_t chars[9];
     uint8_t length; // Does not include null terminator.
     uint8_t offset;
 } iso_string_output_t;
