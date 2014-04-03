@@ -1,6 +1,5 @@
 import math
 import sys
-import re
 
 ##########
 # Configuration values.
@@ -103,7 +102,7 @@ def temp_and_voltage_to_ev(temp, v):
 # assume 10 cycles for each iteration of the loop, that's 150 cycles,
 # which at 8MHz is about 1/150th of a second.
 #
-# In this layou each row is 48 bytes, meaning that the table as a whole takes
+# In this layout each row is 48 bytes, meaning that the table as a whole takes
 # up a more managable 768 bytes.
 #
 #             voltage
