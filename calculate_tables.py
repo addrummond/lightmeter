@@ -6,8 +6,8 @@ import re
 # Configuration values.
 ##########
 
-reference_voltage = 5500.0 #mV
-op_amp_gain       = 10.0 # Ought to be 100 -- off by *10 error in calcs somewhere?
+reference_voltage = 5500.0 # mV
+op_amp_gain       = 10.0   # Ought to be 100 -- off by *10 error in calcs somewhere?
 
 ##########
 
