@@ -11,6 +11,10 @@ irradience_constant_adjustment = 0.0
 
 ##########
 
+#
+# EV table.
+#
+
 bv_to_voltage = ((1/256.0) * reference_voltage) / op_amp_gain
 
 # http://www.vishay.com/docs/81521/bpw34.pdf, Fig 1, p. 2.
@@ -252,6 +256,197 @@ def test_output():
         for v in xrange(0, 256, 8):
             voltage = v * bv_to_voltage
             print "T %f V %f EV %f" % (temperature, voltage, temp_and_voltage_to_ev(temperature, voltage))
+
+#
+# Shutter speed tables.
+#
+
+#
+# Shutter speeds are represented using 13 characters: 0-9, '/', '+' and 'S'.
+# E.g.:
+#
+#     1/8    One eigth of a second
+#     5s     Five seconds
+#     1s+1/4 One and one quarter seconds.
+#
+# We want a way to represent each character using 3 bits.
+#
+# To do this we note that digits 6 and 8 are rare and that no shutter speed
+# ever ends with '1' except 1 itself.
+shutter_speeds = [
+    '1X', ###
+    '56X',
+    '53X',
+    '49X',
+    '45X',
+    '41X',
+    '38X',
+    '34X',
+    '30X', ###
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '15X', ###
+    '0',
+    '0',
+    '0',
+    '12X',
+    '0',
+    '0',
+    '0',
+    '8X', ###
+    '0',
+    '0',
+    '0',
+    '6X',
+    '0',
+    '0',
+    '0',
+    '4X', ###
+    '0',
+    '0',
+    '0',
+    '3S',
+    '0',
+    '0',
+    '0',
+    '2X', ###
+    '0',
+    '0',
+    '0',
+    '1X1X2',
+    '0',
+    '0',
+    '0',
+    '1X', ###
+    '0',
+    '0',
+    '0',
+    '3X4',
+    '0',
+    '0',
+    '0',
+    '1X2', ###
+    '15X32',
+    '7X16',
+    '13X32',
+    '3X8',
+    '11X32',
+    '5X16',
+    '9X32',
+    '1X4', ###
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '1X8', ###
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '1X15', ###
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '1X30', ###
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '1X60', ###
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '1X125', ###
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '1X250', ###
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '1X500', ###
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '1X1000', ###
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '1X2000', ###
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '1X4000', ###
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '1X8000', ###
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '1X16000', ###
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+    '0',
+]
+
+#
+# Final output generation.
+#
 
 def output():
     sys.stdout.write("#include <stdint.h>\n")
