@@ -5,8 +5,9 @@ import sys
 # Configuration values.
 ##########
 
-reference_voltage = 5500.0 # mV
-op_amp_gain       = 56.4/2.0
+reference_voltage              = 5500.0 # mV
+op_amp_gain                    = 56.4/2.0
+irradience_constant_adjustment = 0.0
 
 ##########
 
@@ -32,11 +33,14 @@ def ocv_and_rdc_to_irrad(ocv, rdc):
 
     # -20.0 because graph in measurem.pdf is not for BPW34,
     # which has a 20mV higher OCV listed on data sheet.
-    l1Val = (ocv - 275.0 - 20.0) / slope
-    l2Val = (ocv - 212.5 - 20.0) / slope
-    l3Val = (ocv - 160.0 - 20.0)  / slope
-    l4Val = (ocv - 100.0 - 20.0)  / slope
-    l5Val = (ocv - 62.5 - 20.0)   / slope
+    # UPDATE: Adding the -20 appears to make it less accurate;
+    # it seems that the graph is more-or-less correct for the BPW34 too.
+    ica = irradience_constant_adjustment
+    l1Val = (ocv - 275.0 + ica) / slope
+    l2Val = (ocv - 212.5 + ica) / slope
+    l3Val = (ocv - 160.0 + ica) / slope
+    l4Val = (ocv - 100.0 + ica) / slope
+    l5Val = (ocv - 62.5  + ica) / slope
 
 #    print l1Val, l2Val, l3Val, l4Val, l5Val
 
