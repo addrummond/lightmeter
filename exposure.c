@@ -15,7 +15,6 @@
 extern uint8_t SHUTTER_SPEEDS[];
 extern uint8_t SHUTTER_SPEEDS_BITMAP[];
 
-// Returns length of string. Not zero-terminated.
 void shutter_speed_to_string(uint8_t speed, exposure_string_output_t *eso)
 {
     uint16_t bytei = (uint16_t)speed;
