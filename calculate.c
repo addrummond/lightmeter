@@ -19,6 +19,8 @@ extern const uint8_t TEST_TEMP_AND_VOLTAGE_TO_EV[];
 // since the attiny doesn't have hardware division or multiplication.
 // gcc would probably do most of these optimizations automatically, but since
 // this code really definitely needs to run quickly, I'm doing it explicitly here.
+//
+// 'voltage' is in 1/256ths of the reference voltage.
 uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage)
 {
     uint8_t row_start = ((uint16_t)temperature & ~15); // (temperature / 16) * 16 [16 bytes per row]
@@ -55,60 +57,6 @@ uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage)
     return r;
 
 #undef INCC
-}
-
-uint8_t convert_from_reference_voltage(uint16_t adc_out)
-{
-    // In each case, we want to do ((2^10 / ref_v) * adc_out) / 2.
-
-#if REFERENCE_VOLTAGE_MV == 5500
-    // We multiply by 5.371 to get mV, then divide by 2 because we work in units
-    // of 2mV. Thus we need to multiply by 2.69, or in other words, double, add
-    // half, add two tenths and then subtract 1/100.
-    adc_out += adc_out + (adc_out >> 1) + (bitfiddle_uint16_approx_div_by_10(adc_out) << 1)
-                                        - bitfiddle_uint16_approx_div_by_100(adc_out);
-    return adc_out;
-#elif REFERENCE_VOLTAGE_MV == 5000
-    // We multiply by 4.883 to get mV, then divide by 2 because we work in units
-    // of 2mV. Thus we need to multiply by 2.44, or in other words, double, add
-    // half and then subtract 6/100.
-    uint16_t hund = bitfiddle_uint16_approx_div_by_100(adc_out);
-    adc_out += adc_out + (adc_out > 1)
-                       - (hund << 1) + (hund << 2);
-    return adc_out;
-#elif REFERENCE_VOLTAGE_MV == 3300
-    // We multiply by 3.22 to get mV, then divide by 2 because we work
-    // in units of 2mV. Thus we need to multiply by 1.61, which
-    // approximately amounts to adding 1/10 then 1/100.
-    adc_out += (adc_out >> 1) + bitfiddle_uint16_approx_div_by_10(adc_out) +
-                                bitfiddle_uint16_approx_div_by_100(adcout);
-#elif REFERENCE_VOLTAGE_MV == 2500
-    // We multiply by 2.44 to get mV, then divide by 2 because we work in units
-    // of 2mV. Thus we need to multiply by 1.22
-    // which amounts to adding 2/10 and 2/100.
-    adc_out += bitfiddle_uint16_approx_div_by_10(adc_out) + bitfiddle_uint16_approx_div_by_100(adc_out);
-#elif REFERENCE_VOLTAGE_MV == 1650
-    // We multiply by 1.611 to get mV, then divide by 2 because we work in units of 2mV.
-    // Thus we need to multiply by 0.81, which amounts to taking half then adding 3/10
-    // and 1/100 of the original.
-    uint16_t tenth = bitfiddle_uint16_approx_div_by_10(adc_out);
-    adc_out = (adc_out >> 1) + tenth + tenth + tenth + bitfiddle_uint16_approx_div_by_100(adc_out);
-#else
-#error "Can't handle that reference voltage"
-    return 0; // Never executed.
-#endif
-
-    // We now divide to adjust for the op amp gain.
-#define f(x) g(x)
-#define g(x) bitfiddle_uint16_approx_div_by_ ## x
-    adc_out = f(OP_AMP_GAIN_DIVIDE)(adc_out);
-#undef f
-#undef g
-#if OP_AMP_GAIN_LSHIFT > 0
-    adc_out <<= OP_AMP_GAIN_SHIFT;
-#endif
-
-    return (uint8_t)(adc_out & 0xFF);
 }
 
 #ifdef TEST

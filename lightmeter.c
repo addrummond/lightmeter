@@ -90,8 +90,9 @@ void handle_measurement()
     // Copy the volatile value, which could change in the middle of this function.
     uint16_t adc_light_nonvol_value = adc_light_value;
 
-    uint8_t v = convert_from_reference_voltage(adc_light_nonvol_value);
-    uint8_t ev = get_ev100_at_temperature_voltage(178, v); // 178 = 20C
+    // Div by 4 because we're going from units of 1/1024 to units of 1/256.
+    // (Could left adjust everything, but we might want the full 10 bits for temps.)
+    uint8_t ev = get_ev100_at_temperature_voltage(178, (uint8_t)(adc_light_nonvol_value >> 2)); // 178 = 20C
 
     last_ev_reading = ev;
 }

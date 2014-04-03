@@ -1,5 +1,17 @@
 import math
 import sys
+import re
+
+##########
+# Configuration values.
+##########
+
+reference_voltage = 5500.0 #mV
+op_amp_gain       = 10.0 # Ought to be 100 -- off by *10 error in calcs somewhere?
+
+##########
+
+bv_to_voltage = ((1/256.0) * reference_voltage) / op_amp_gain
 
 # http://www.vishay.com/docs/81521/bpw34.pdf, Fig 1, p. 2.
 # Temp in C, RDC in log10 pA.
@@ -66,7 +78,7 @@ def temp_and_voltage_to_ev(temp, v):
 # values on the microcontroller.
 #
 # Temperature: from -51C to 51C in 0.4C intervals (0 = -51C)
-# Voltage: from 0mV to 510mV in 2mV intervals.
+# Voltage: from 0 up in 1/256ths of the reference voltage.
 # EV: from -5 to 26EV in 1/8 EV intervals.
 #
 # The table is a 2D array of bytes mapping (temperature, voltage) to
@@ -120,13 +132,13 @@ def output_table():
 
         for sv in xrange(0, 256, 16):
             # Write the absolute 8-bit EV value.
-            voltage = sv * 2.0
+            voltage = sv * bv_to_voltage
             ev = temp_and_voltage_to_ev(temperature, voltage)
             eight = int(round(ev * 8))
             if sv == 0 and t != 0:
                 sys.stdout.write("      ")
 
-            # Write the 2-bit differences (two bytes).
+            # Write the 1-bit differences (two bytes).
             prev = eight
             num = ""
             bpis = [ None, None ]
@@ -134,7 +146,7 @@ def output_table():
                 eight2 = None
                 o = ""
                 for k in xrange(0, 8):
-                    v = (sv + (j * 8.0) + k) * 2.0
+                    v = (sv + (j * 8.0) + k) * bv_to_voltage
                     ev2 = temp_and_voltage_to_ev(temperature, v)
                     eight2 = int(round(ev2 * 8))
 #                    sys.stderr.write('TAVX ' + str(temperature) + ',' + str(v) + "," + str(eight2) +'\n')
@@ -194,7 +206,7 @@ def output_full_table_as_comment():
         sys.stdout.write(s)
     sys.stdout.write('\n')
     for v in xrange(0, 256):
-        voltage = v * 2.0
+        voltage = v * bv_to_voltage
         sys.stdout.write("// %03d   " % voltage)
         for t in xrange(0, 256, 16):
             temperature = (t * 0.4) - 51.0
@@ -209,7 +221,7 @@ def output_test_table():
     for t in xrange(0, 256, 16):
         temperature = (t * 0.4) - 51.0
         for v in xrange(0, 256):
-            voltage = v * 2.0
+            voltage = v * bv_to_voltage
 #            sys.stderr.write('TAVY ' + str(temperature) + ',' + str(voltage) + '\n')
             ev = temp_and_voltage_to_ev(temperature, voltage)
             eight = int(round(ev * 8))
@@ -219,7 +231,18 @@ def output_test_table():
         sys.stdout.write('\n')
     sys.stdout.write('    }');
 
-if __name__ == '__main__':
+def test_output():
+    for t in xrange(0, 256, 16):
+        print "%f, %f" % (t * 0.4 - 51.0, temp_to_rdc(t * 0.4 - 51.0))
+    print
+    print
+    for t in xrange(0, 256, 16):
+        temperature = t * 0.4 - 51.0
+        for v in xrange(0, 256, 8):
+            voltage = v * bv_to_voltage
+            print "T %f V %f EV %f" % (temperature, voltage, temp_and_voltage_to_ev(temperature, voltage))
+
+def output():
     sys.stdout.write("#include <stdint.h>\n")
     output_full_table_as_comment()
     output_table()
@@ -227,3 +250,10 @@ if __name__ == '__main__':
     sys.stdout.write('const uint8_t TEST_TEMP_AND_VOLTAGE_TO_EV[] =\n')
     output_test_table()
     sys.stdout.write(';\n#endif\n')
+
+if __name__ == '__main__':
+#    test_output()
+    output()
+
+
+
