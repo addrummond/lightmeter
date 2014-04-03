@@ -19,14 +19,23 @@
 #define AP_MIN      0
 #define AP_MAX      82
 
-typedef struct exposure_string_output {
+typedef struct shutter_string_output {
     uint8_t chars[9];
     uint8_t length; // Does not include null terminator.
-} exposure_string_output_t;
+} shutter_string_output_t;
+#define SHUTTER_STRING_OUTPUT_STRING(eso) ((eso).chars)
 
 typedef struct aperture_string_output {
     uint8_t chars[11];
-    uint8_t length; // Does not incluze null terminator.
+    uint8_t length; // Does not include null terminator.
 } aperture_string_output_t;
+#define APERTURE_STRING_OUTPUT_STRING(aso) ((aso).chars)
+
+typedef struct iso_string_output {
+    uint8_t chars[8];
+    uint8_t length; // Does not include null terminator.
+    uint8_t offset;
+} iso_string_output_t;
+#define ISO_STRING_OUTPUT_STRING(iso) (&((iso).chars[(iso).offset]))
 
 #endif

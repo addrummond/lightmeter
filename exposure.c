@@ -17,7 +17,7 @@ extern uint8_t SHUTTER_SPEEDS_BITMAP[];
 extern uint8_t APERTURES[];
 extern uint8_t APERTURES_BITMAP[];
 
-void shutter_speed_to_string(uint8_t speed, exposure_string_output_t *eso)
+void shutter_speed_to_string(uint8_t speed, shutter_string_output_t *eso)
 {
     uint16_t bytei = (uint16_t)speed;
     bytei = (bytei << 1) + (bytei >> 1);
@@ -88,15 +88,117 @@ void aperture_to_string(uint8_t aperture, aperture_string_output_t *aso)
     aso->length = last;
 }
 
+void iso_to_string(uint8_t iso, iso_string_output_t *out)
+{
+    // Repeatedly double via base 10 add with carry.
+    // For ISOs <= 24(=25) we start from 6.
+    // For larger ISOs we start from 100.
+    // Special case at the end to convert 24 -> 25;
+    //
+    // TODO: This doesn't yet handle 1/8, 1/4 or 1/2 stop ISOs.
+    // This is a tricky problem since there's no real convention
+    // for how to number these. Maybe just add a special case
+    // for ISO 125, since films hardly ever use any other non-full-stop
+    // ISO ratings?
+
+    // Init all to 0.
+    uint8_t i;
+    for (i = 0; i < sizeof(out->chars); ++i)
+        out->chars[i] = 0;
+
+    uint8_t end = sizeof(out->chars) - 2;
+    uint8_t start = end;
+    uint8_t times_to_double;
+
+    if (iso <= 16/*ISO 24*/) {
+        out->chars[end] = 6;
+        times_to_double = iso >> 3;
+    }
+    else {
+        out->chars[end] = 0;
+        out->chars[--start] = 5;
+        iso -= 16;
+        times_to_double = iso >> 3;
+    }
+
+    uint8_t carry;
+    for (uint8_t c = 0; c < times_to_double; ++c) {
+        i = 0;
+        carry = 0;
+
+        for (i = end; i >= start; --i) {
+            uint8_t doubled = (out->chars[i] << 1) + carry;
+            if (doubled > 9) {
+                out->chars[i] = doubled - 10;
+                carry = 1;
+                if (i == start)
+                    --start;
+            }
+            else {
+                carry = 0;
+                out->chars[i] = doubled;
+            }
+        }
+    }
+
+    if (carry == 1) {
+        out->chars[--start] = 1;
+    }
+
+    // Add base ASCII code for digits.
+    for (i = start; i <= end; ++i) {
+        out->chars[i] += 48;
+    }
+    // All chars were initialized to zero so it's already null-terminated.
+
+    // 24 -> 25
+    if (out->chars[end] == '4' && out->chars[end-1] == '2')
+        out->chars[end] = '5';
+
+    out->offset = start;
+}
+
+// We represent ISO in 1/8 stops, with 0 as ISO 6.
+uint8_t aperture_given_shutter_speed_iso_ev(uint8_t speed_, uint8_t iso_, uint8_t ev_)
+{
+    // We know that at for EV=3, ISO = 6, speed = 1minute, aperture = 22.
+    // Thus for EV = -5, ISO = 6, speed = 1minute, aperture = 22 - 8stops.
+
+    int16_t the_aperture = (int16_t)AP_MAX + 8;
+    int16_t the_speed = SS_1M;
+    int16_t the_ev = 4*8; // -1 EV. +4 from base because we're on ISO 6 but EVs are given w.r.t. ISO 100.
+    int16_t the_iso = 0;
+
+    int16_t given_speed = (int16_t)speed_;
+    int16_t given_iso = (int16_t)iso_;
+    int16_t given_ev = (int16_t)ev_ + 4;
+
+    int16_t isodiff = given_iso - the_iso; // Will always be positive or 0
+    the_aperture -= isodiff;
+    the_ev += isodiff;
+
+    int16_t shutdiff = the_speed - given_speed; // Will always be positive.
+    the_ev += shutdiff;
+
+    int16_t evdiff = given_ev - the_ev;
+    the_aperture -= evdiff;
+
+    if (the_aperture > (int16_t)AP_MAX)
+        return AP_MAX;
+    else if (the_aperture < (int16_t)AP_MIN)
+        return AP_MIN;
+    return the_aperture;
+}
+
 #ifdef TEST
 
 int main()
 {
-    exposure_string_output_t eso;
+    shutter_string_output_t eso;
     uint8_t s;
     for (s = SS_MIN; s <= SS_MAX; ++s) {
         shutter_speed_to_string(s, &eso);
-        printf("SS: %s\n", eso.chars);
+        printf("SS: %s\n", SHUTTER_STRING_OUTPUT_STRING(eso));
     }
 
     printf("\n");
@@ -105,7 +207,15 @@ int main()
     aperture_string_output_t aso;
     for (a = AP_MIN; a < AP_MAX; ++a) {
         aperture_to_string(a, &aso);
-        printf("A:  %s\n", aso.chars);
+        printf("A:  %s\n", APERTURE_STRING_OUTPUT_STRING(aso));
+    }
+
+    printf("\nExposures at ISO 100:\n");
+
+    iso_string_output_t iso;
+    for (uint8_t i = 0; i < 15*8; i += 8) {
+        iso_to_string(i /* ISO 100 */, &iso);
+        printf("ISO: %s\n", ISO_STRING_OUTPUT_STRING(iso));
     }
 }
 
