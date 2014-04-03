@@ -41,7 +41,7 @@ void shutter_speed_to_string(uint8_t speed, shutter_string_output_t *eso)
     // Add any required trailing zeros. TODO: could probably get rid of the conditionals.
     if (speed >= SS_1000TH)
         eso->chars[j++] = '0';
-    if (speed >= SS_16000TH)
+    if (speed >= SS_10000TH)
         eso->chars[j++] = '0';
 
     // Add '\0' termination.

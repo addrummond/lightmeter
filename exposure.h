@@ -8,6 +8,7 @@
 #define SS_15TH     80
 #define SS_1000TH   128
 #define SS_8000TH   152
+#define SS_10000TH  154
 #define SS_16000TH  160
 
 #define SS_MIN      0
