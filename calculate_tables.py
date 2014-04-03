@@ -6,7 +6,7 @@ import sys
 ##########
 
 reference_voltage = 5500.0 # mV
-op_amp_gain       = 10.0   # Ought to be 100 -- off by *10 error in calcs somewhere?
+op_amp_gain       = 100.0
 
 ##########
 
@@ -17,7 +17,7 @@ bv_to_voltage = ((1/256.0) * reference_voltage) / op_amp_gain
 # Slope is 1/16 with y in log10.
 # Constant is 1.
 def temp_to_rdc(temp):
-    return (temp / 16.0) + 1.0
+    return (temp / 16.0) + 3.0
 
 # Slope of all lines is 62.5 with log10 irrad.
 # See http://www.vishay.com/docs/80085/measurem.pdf, Fig 19, p. 7.
@@ -59,13 +59,16 @@ def ocv_and_rdc_to_irrad(ocv, rdc):
         return l5Val
 
 # We can get log10 illum (lux) from log10 irrad by adding 3.
+# This can be inferred from figs 3 and 4 on p. 3 of http://www.vishay.com/docs/81521/bpw34.pdf
 def irrad_to_illum(irrad):
-    return irrad + 3.0
+    return irrad + 2.7
 
 # Convert lux to EV at ISO 100.
 # See http://stackoverflow.com/questions/5401738/how-to-convert-between-lux-and-exposure-value
 def lux_to_ev_at_100(lux):
-    return lux * 2.5
+    # TODO: Could probably do this all in log space for greater accuracy.
+    lux = math.pow(10, lux)
+    return math.log(lux/2.5, 2)
 
 def temp_and_voltage_to_ev(temp, v):
     rdc = temp_to_rdc(temp)
