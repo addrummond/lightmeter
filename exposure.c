@@ -112,14 +112,20 @@ void iso_to_string(uint8_t iso, iso_string_output_t *out)
 
     if (iso <= 16/*ISO 24*/) {
         out->chars[end] = 6;
-        times_to_double = iso >> 3;
     }
-    else {
+    else if (iso < 64/*ISO 1600*/) {
         out->chars[end] = 0;
         out->chars[--start] = 5;
         iso -= 16;
-        times_to_double = iso >> 3;
     }
+    else {
+        out->chars[end] = 0;
+        out->chars[--start] = 0;
+        out->chars[--start] = 6;
+        out->chars[--start] = 1;
+        iso -= 50;
+    }
+    times_to_double = iso >> 3;
 
     uint8_t carry;
     for (uint8_t c = 0; c < times_to_double; ++c) {
