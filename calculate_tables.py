@@ -468,7 +468,7 @@ apertures = [
     'XX',
     'XX',
     'XX',
-    '24', ###
+    '4', ###
     'XX',
     'XX',
     'XX',
@@ -555,8 +555,8 @@ def output_shutter_speeds():
 def output_apertures():
     sys.stdout.write('const uint8_t APERTURES[] = {\n')
     for a in apertures:
-        n1 = apertures_bitmap.index(a[1]) if len(a) > 1 else 0
-        n2 = apertures_bitmap.index(a[0])
+        n1 = apertures_bitmap.index(a[0])
+        n2 = apertures_bitmap.index(a[1]) if len(a) > 1 else 0
         sys.stdout.write('0b' +
                          (n2 & 8 and '1' or '0') + (n2 & 4 and '1' or '0') + (n2 & 2 and '1' or '0') + (n2 & 1 and '1' or '0') +
                          (n1 & 8 and '1' or '0') + (n1 & 4 and '1' or '0') + (n1 & 2 and '1' or '0') + (n1 & 1 and '1' or '0') +

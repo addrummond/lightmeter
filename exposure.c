@@ -58,7 +58,7 @@ void aperture_to_string(uint8_t aperture, aperture_string_output_t *aso)
 
     uint8_t high = (b >> 4) & 0xF;
     uint8_t c = APERTURES_BITMAP[high];
-    if (high != 0 && aperture >= AP_F8) {
+    if (high != 0 && aperture < AP_F8) {
         aso->chars[1] = '.';
         aso->chars[2] = c;
         aso->chars[3] = '\0';
@@ -84,7 +84,7 @@ int main()
 
     uint8_t a;
     aperture_string_output_t aso;
-    for (a = AP_MIN; a <= AP_MAX; ++a) {
+    for (a = AP_MIN; a < AP_MAX; ++a) {
         aperture_to_string(a, &aso);
         printf("A:  %s\n", aso.chars);
     }
