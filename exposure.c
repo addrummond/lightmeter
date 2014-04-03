@@ -30,9 +30,8 @@ void shutter_speed_to_string(uint8_t speed, shutter_string_output_t *eso)
     bool already_got_slash = false;
     for (i = 0, j = 0; i < 5; ++j, ++i, shift ^= 4) {
         uint8_t nibble = (SHUTTER_SPEEDS[bytei] >> shift) & 0xF;
-        if (nibble == 0) {
+        if (nibble == 0)
             break;
-        }
 
         uint8_t c = SHUTTER_SPEEDS_BITMAP[nibble];
         if ((c == '+' || c == '-') && !already_got_slash) {
