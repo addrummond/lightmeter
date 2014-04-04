@@ -210,7 +210,6 @@ void iso_to_string(uint8_t iso, iso_string_output_t *out)
 uint8_t aperture_given_shutter_speed_iso_ev(uint8_t speed_, uint8_t iso_, uint8_t ev_)
 {
     // We know that for EV=3, ISO = 100, speed = 1minute, aperture = 22.
-    // So we subtract 8 stops from this to get the exposure at EV -5.
 
     if (speed_ > SS_MAX)
         speed_ = SS_MAX;
