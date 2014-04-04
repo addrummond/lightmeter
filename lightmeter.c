@@ -10,6 +10,7 @@
 #include <constants.h>
 #include <usbconstants.h>
 #include <calculate.h>
+#include <exposure.h>
 
 /*
                          1 ---- 8         VCC
@@ -84,6 +85,18 @@ void setup_output_ports()
     PORTB = 0b00000010; // Set PB1 as output port.
 }
 
+volatile uint8_t shutter_speed = 0;
+volatile uint8_t aperture = 0;
+volatile uint8_t iso = 0;
+
+typedef enum priority {
+    NO_PRIORITY, SHUTTER_PRIORITY, APERTURE_PRIORITY
+} priority_t;
+volatile priority_t priority = NO_PRIORITY;
+
+aperture_string_output_t calculated_aperture_string;
+shutter_string_output_t calculated_shutter_speed_string;
+
 void led_test(void);
 void handle_measurement()
 {
@@ -95,6 +108,11 @@ void handle_measurement()
     uint8_t ev = get_ev100_at_temperature_voltage(178, (uint8_t)(adc_light_nonvol_value >> 2)); // 178 = 20C
 
     last_ev_reading = ev;
+
+    if (priority == SHUTTER_PRIORITY) {
+        uint8_t ap = aperture_given_shutter_speed_iso_ev(shutter_speed, iso, ev);
+        aperture_to_string(ap, &calculated_aperture_string);
+    }
 }
 
 void led_test()
@@ -105,6 +123,7 @@ void led_test()
 }
 
 const uchar testbuffer[] = "Hello world XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX!"; // length 64
+
 USB_PUBLIC uchar usbFunctionSetup(uchar setupData[8]) {
     usbRequest_t *rq = (void *)setupData;
 
@@ -119,6 +138,24 @@ USB_PUBLIC uchar usbFunctionSetup(uchar setupData[8]) {
     case USB_BREQUEST_GET_EV: {
         usbMsgPtr = (usbMsgPtr_t)(&last_ev_reading); // This is volatile, but I think it's ok.
         return 1;
+    } break;
+    case USB_BREQUEST_GET_SHUTTER_PRIORITY_EXPOSURE: {
+        if (! calculated_aperture_string.length) // No exposure calculated yet.
+            return 0;
+        usbMsgPtr = (usbMsgPtr_t)(APERTURE_STRING_OUTPUT_STRING(calculated_aperture_string));
+        return calculated_aperture_string.length + 1; // Include '\0' terminator.
+    } break;
+    case USB_BREQUEST_SET_SHUTTER_SPEED: {
+        shutter_speed = rq->wValue.bytes[0];
+        iso = rq->wIndex.bytes[0];
+        priority = SHUTTER_PRIORITY;
+        return 0;
+    } break;
+    case USB_BREQUEST_SET_APERTURE: {
+        aperture = rq->wValue.bytes[0];
+        iso = rq->wIndex.bytes[0];
+        priority = APERTURE_PRIORITY;
+        return 0;
     } break;
     case USB_BREQUEST_GET_RAW_TEMPERATURE: {
         usbMsgPtr = (usbMsgPtr_t)(&adc_temperature_value);

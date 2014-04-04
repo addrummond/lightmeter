@@ -32,7 +32,7 @@ void shutter_speed_to_string(uint8_t speed, shutter_string_output_t *eso)
     uint8_t previous = 0;
     bool already_got_slash = false;
     for (i = 0, j = 0; i < 5; ++j, ++i, shift ^= 4) {
-        uint8_t nibble = (SHUTTER_SPEEDS[bytei] >> shift) & 0xF;
+        nibble = (SHUTTER_SPEEDS[bytei] >> shift) & 0xF;
         if (nibble == 0)
             break;
 
@@ -169,8 +169,8 @@ void iso_to_string(uint8_t iso, iso_string_output_t *out)
     }
     times_to_double = iso >> 3;
 
-    uint8_t carry;
-    for (uint8_t c = 0; c < times_to_double; ++c) {
+    uint8_t carry = 0, c;
+    for (c = 0; c < times_to_double; ++c) {
         i = 0;
         carry = 0;
 

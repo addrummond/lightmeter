@@ -15,6 +15,7 @@
 #include <libusb.h>
 
 #include <usbconstants.h>
+#include <exposure.h>
 
 #include <assert.h>
 
@@ -211,6 +212,43 @@ int main(int argc, char **argv) {
         assert(nBytes == 2);
 
         printf("Raw light: %i\n", (int)buffer[0] | (((int)buffer[1]) << 8));
+    }
+    else if (!strcmp(argv[1], "shutter15")) {
+        nBytes = libusb_control_transfer(
+            handle,
+            LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_IN/*device to host */,
+            USB_BREQUEST_SET_SHUTTER_SPEED,
+            80 /*1/15*/, 3*8/*iso 100*/,
+            buffer,
+            0,
+            5000
+        );
+        if (nBytes < 0) {
+            fprintf(stderr, "%s", libusb_strerror(nBytes));
+            return 1;
+        }
+
+        printf("Shutter speed set to 1/15 at ISO 100\n");
+    }
+    else if (!strcmp(argv[1], "shutter15")) {
+        aperture_string_output_t aso;
+        nBytes = libusb_control_transfer(
+            handle,
+            LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_IN/*device to host */,
+            USB_BREQUEST_GET_SHUTTER_PRIORITY_EXPOSURE,
+            0, 0,
+            buffer,
+            sizeof(aso.chars),
+            5000
+        );
+        if (nBytes < 0) {
+            fprintf(stderr, "%s", libusb_strerror(nBytes));
+            return 1;
+        }
+
+        assert(nBytes = sizeof(aso.chars));
+
+        printf("Aperture is %s\n", buffer);
     }
     else {
         fprintf(stderr, "Unrecognized command\n");
