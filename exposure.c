@@ -100,13 +100,15 @@ void aperture_to_string(uint8_t aperture, aperture_string_output_t *aso)
     if (high != 0)
         ++last;
 
-    if (aperture <= AP_F9_5+1) {
-        aso->chars[1] = '.';
-        aso->chars[2] = c;
-        ++last;
-    }
-    else {
-        aso->chars[1] = c;
+    if (high) {
+        if (aperture <= AP_F9_5+1) {
+            aso->chars[1] = '.';
+            aso->chars[2] = c;
+            ++last;
+        }
+        else {
+            aso->chars[1] = c;
+        }
     }
 
     if (aperture & 1) {
@@ -207,8 +209,8 @@ void iso_to_string(uint8_t iso, iso_string_output_t *out)
 // We represent ISO in 1/8 stops, with 0 as ISO 6.
 uint8_t aperture_given_shutter_speed_iso_ev(uint8_t speed_, uint8_t iso_, uint8_t ev_)
 {
-    // We know that at for EV=3, ISO = 6, speed = 1minute, aperture = 22.
-    // Thus for EV = -5, ISO = 6, speed = 1minute, aperture = 22 - 8stops.
+    // We know that for EV=3, ISO = 100, speed = 1minute, aperture = 22.
+    // So we subtract 8 stops from this to get the exposure at EV -5.
 
     if (speed_ > SS_MAX)
         speed_ = SS_MAX;
@@ -217,14 +219,14 @@ uint8_t aperture_given_shutter_speed_iso_ev(uint8_t speed_, uint8_t iso_, uint8_
     if (ev_ > EV_MAX)
         ev_ = EV_MAX;
 
-    int16_t the_aperture = ((int16_t)AP_MAX) + 8;
+    int16_t the_aperture = 9*8; // F22
     int16_t the_speed = SS_1M;
-    int16_t the_ev = 4*8; // -1 EV. +4 from base because we're on ISO 6 but EVs are given w.r.t. ISO 100.
-    int16_t the_iso = 0;
+    int16_t the_ev = ((3+5)*8); // 3 EV
+    int16_t the_iso = 3*8;      // 100 ISO
 
     int16_t given_speed = (int16_t)speed_;
     int16_t given_iso = (int16_t)iso_;
-    int16_t given_ev = (int16_t)ev_ + 4;
+    int16_t given_ev = (int16_t)ev_;
 
     int16_t isodiff = given_iso - the_iso; // Will always be positive or 0
     the_aperture += isodiff;
@@ -268,25 +270,25 @@ int main()
     iso_string_output_t iso;
     for (uint8_t i = 0; i < 15*8; i += 8) {
         iso_to_string(i /* ISO 100 */, &iso);
-        printf("ISO: %s\n", ISO_STRING_OUTPUT_STRING(iso));
+        printf("ISO: %s [%i]\n", ISO_STRING_OUTPUT_STRING(iso), i);
     }
 
-    printf("Testing aperture_given_shutter_speed_iso_ev\n");
+    printf("\nTesting aperture_given_shutter_speed_iso_ev\n");
     uint8_t is, ss, ev, ap;
     for (is = ISO_MIN; is <= ISO_MAX; ++is) {
         for (ss = SS_MIN; ss <= SS_MAX; ++ss) {
-            for (ev = 40; ev <= EV_MAX; ++ev) {
+             for (ev = 40; ev <= EV_MAX; ++ev) {
                 ap = aperture_given_shutter_speed_iso_ev(ss, is, ev);
                 shutter_speed_to_string(ss, &sso);
                 aperture_to_string(ap, &aso);
                 iso_to_string(is, &iso);
-                printf("ISO %s,  %s  %s (%i)   [%i, %i, %i : %i]\n",
+                printf("ISO %s,  %s  %s (EV = %.2f)   [%i, %i, %i : %i]\n",
                        ISO_STRING_OUTPUT_STRING(iso),
                        SHUTTER_STRING_OUTPUT_STRING(sso),
                        APERTURE_STRING_OUTPUT_STRING(aso),
-                       ev/8,
+                       ((float)(((int16_t)(ev))-(5*8)))/8.0,
                        is, ss, ev, ap);
-            }
+             }
         }
     }
 }
