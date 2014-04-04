@@ -144,7 +144,7 @@ def output_table():
             # Write the absolute 8-bit EV value.
             voltage = sv * bv_to_voltage
             ev = temp_and_voltage_to_ev(temperature, voltage)
-            eight = int(round(ev * 8))
+            eight = int(round((ev+5.0) * 8.0))
             if sv == 0 and t != 0:
                 sys.stdout.write("      ")
 
@@ -158,7 +158,7 @@ def output_table():
                 for k in xrange(0, 8):
                     v = (sv + (j * 8.0) + k) * bv_to_voltage
                     ev2 = temp_and_voltage_to_ev(temperature, v)
-                    eight2 = int(round(ev2 * 8))
+                    eight2 = int(round((ev2+5.0) * 8.0))
 #                    sys.stderr.write('TAVX ' + str(temperature) + ',' + str(v) + "," + str(eight2) +'\n')
                     assert eight2 - prev == 0 or not (j == 0 and k == 0)
                     assert eight2 - prev <= 1
@@ -224,6 +224,18 @@ def output_full_table_as_comment():
             sys.stdout.write('%02d   ' % ev)
         sys.stdout.write('\n')
 
+# This is useful for santiy checking calculations. It outputs a graph of
+# amplified voltage against EV which can be compared with voltage readings
+# over the two input pins.
+def output_sanity_graph():
+    f = open("santitygraph.csv", "w")
+    temperature = (51.0 + 20.0)/0.4
+    for v in xrange(0, 256):
+        voltage = v * bv_to_voltage
+        ev = temp_and_voltage_to_ev(temperature, voltage)
+        f.write("%f,%f\n" % (voltage * op_amp_gain, ev))
+    f.close()
+
 # Straight up array that we use to test that the bitshifting logic is
 # working correctly.
 def output_test_table():
@@ -234,7 +246,7 @@ def output_test_table():
             voltage = v * bv_to_voltage
 #            sys.stderr.write('TAVY ' + str(temperature) + ',' + str(voltage) + '\n')
             ev = temp_and_voltage_to_ev(temperature, voltage)
-            eight = int(round(ev * 8))
+            eight = int(round((ev+5.0) * 8.0))
             if v == 0 and t != 0:
                 sys.stdout.write("     ")
             sys.stdout.write("%i," % eight)
@@ -566,6 +578,8 @@ def output_apertures():
 #
 
 def output():
+    output_sanity_graph()
+
     sys.stdout.write('#ifndef TABLES_H\n#define TABLES_H\n\n')
     sys.stdout.write("#include <stdint.h>\n")
     sys.stdout.write("#include <readbyte.h>\n")
