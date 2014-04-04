@@ -66,7 +66,6 @@ int main()
 {
     // Test that compressed table is giving correct values by comparing to uncompressed table.
     for (int t = 0; t < 256; ++t) {
-        printf("LOOP %i\n", t);
         for (int v = 0; v < 246; ++v) {
           uint8_t uncompressed = pgm_read_byte(&TEST_TEMP_AND_VOLTAGE_TO_EV[(256 * ((unsigned)t/16)) + (unsigned)v]);
             uint8_t compressed = get_ev100_at_temperature_voltage((uint8_t)t, (uint8_t)v);
