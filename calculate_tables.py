@@ -276,6 +276,7 @@ def test_output():
 #
 #     A -> 16
 #     B -> 32
+#
 shutter_speeds_bitmap = [
     None, # Zero is reserved as a terminator for strings < 5 chars.
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '/', '+', '-',
