@@ -175,7 +175,7 @@ int main(int argc, char **argv) {
         }
         assert(nBytes == 1);
 
-        printf("EV: %f\n", ((float)buffer[0])/8.0);
+        printf("EV: %f\n", ((float)(buffer[0]-(5*8)))/8.0);
     }
     else if (!strcmp(argv[1], "getrawtemp")) {
         nBytes = libusb_control_transfer(
