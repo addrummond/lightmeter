@@ -19,6 +19,13 @@
             GND          4 ---- 5 (PB0)   USB D-
  */
 
+static uint8_t setting_ADC_TEMPERATURE_OFFSET = 0;
+
+void read_settings_from_eeprom()
+{
+    setting_ADC_TEMPERATURE_OFFSET = read_byte_setting(BYTE_SETTING_ADC_TEMPERATURE_OFFSET);
+}
+
 const uint8_t ADMUX_CLEAR_SOURCE = ~((1 << MUX3) | (1 << MUX2) | (1 << MUX1) | (1 << MUX0));
 // Set differential ADC with PB4 pos, PB3 neg, and 1x gain (see atiny85 datasheet p. 135).
 const uint8_t ADMUX_LIGHT_SOURCE = (0 << MUX3) | (1 << MUX2) | (1 << MUX1) | (0 << MUX0); // 0110
@@ -183,6 +190,8 @@ USB_PUBLIC uchar usbFunctionSetup(uchar setupData[8]) {
 
 int main()
 {
+    read_settings_from_eeprom();
+
     setup_output_ports();
     setup_ADC();
 
