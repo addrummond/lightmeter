@@ -7,7 +7,7 @@
 
 #include <usbdrv.h>
 
-#include <constants.h>
+#include <settings.h>
 #include <usbconstants.h>
 #include <calculate.h>
 #include <exposure.h>
@@ -125,6 +125,8 @@ void led_test()
 const uchar testbuffer[] = "Hello world XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX!"; // length 64
 
 USB_PUBLIC uchar usbFunctionSetup(uchar setupData[8]) {
+    static uint8_t buf[1];
+
     usbRequest_t *rq = (void *)setupData;
 
     switch (rq->bRequest) {
@@ -134,6 +136,15 @@ USB_PUBLIC uchar usbFunctionSetup(uchar setupData[8]) {
             len = rq->wLength.word;
         usbMsgPtr = (usbMsgPtr_t)testbuffer;
         return len;
+    } break;
+    case USB_BREQUEST_READ_BYTE_SETTING: {
+        buf[0] = read_byte_setting(rq->wIndex.bytes[0]);
+        usbMsgPtr = (usbMsgPtr_t)buf;
+        return 1;
+    } break;
+    case USB_BREQUEST_WRITE_BYTE_SETTING: {
+        write_byte_setting(rq->wIndex.bytes[0], rq->wValue.bytes[0]);
+        return 0;
     } break;
     case USB_BREQUEST_GET_EV: {
         usbMsgPtr = (usbMsgPtr_t)(&last_ev_reading); // This is volatile, but I think it's ok.
