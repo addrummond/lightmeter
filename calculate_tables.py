@@ -566,7 +566,8 @@ def output_apertures():
 
 def output():
     sys.stdout.write('#ifndef TABLES_H\n#define TABLES_H\n\n')
-    sys.stdout.write("#include <stdint.h>\n#include<avr/pgmspace.h>\n")
+    sys.stdout.write("#include <stdint.h>\n")
+    sys.stdout.write("#include <readbyte.h>\n")
     output_full_table_as_comment()
     output_table()
     sys.stdout.write('\n#ifdef TEST\n')
