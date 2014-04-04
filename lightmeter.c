@@ -184,7 +184,7 @@ int main()
         else {
             // usbPoll needs to be called at least every 50ms. Tried using higher
             // values < 50 than the one here but they seemed to make reading data
-            // from the device noticably slow.
+            // from the device noticeably slow.
             _delay_ms(10);
         }
     }
