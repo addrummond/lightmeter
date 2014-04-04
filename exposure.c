@@ -5,6 +5,7 @@
 // from 1 minute to 1/16000 in 1/8-stop steps. Some key points
 // on the scale are defined in exposure.h
 
+#include <readbyte.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <exposure.h>
@@ -32,11 +33,11 @@ void shutter_speed_to_string(uint8_t speed, shutter_string_output_t *eso)
     uint8_t previous = 0;
     bool already_got_slash = false;
     for (i = 0, j = 0; i < 5; ++j, ++i, shift ^= 4) {
-        nibble = (SHUTTER_SPEEDS[bytei] >> shift) & 0xF;
+      nibble = (pgm_read_byte(&SHUTTER_SPEEDS[bytei]) >> shift) & 0xF;
         if (nibble == 0)
             break;
 
-        uint8_t c = SHUTTER_SPEEDS_BITMAP[nibble];
+        uint8_t c = pgm_read_byte(&SHUTTER_SPEEDS_BITMAP[nibble]);
         if ((c == '+' || c == '-') && !already_got_slash) {
             eso->chars[j++] = 'S';
             eso->chars[j] = c;
@@ -90,11 +91,11 @@ void aperture_to_string(uint8_t aperture, aperture_string_output_t *aso)
     if (aperture > AP_MAX)
         aperture = AP_MAX;
 
-    uint8_t b = APERTURES[aperture >> 1];
-    aso->chars[0] = APERTURES_BITMAP[b & 0xF];
+    uint8_t b = pgm_read_byte(&APERTURES[aperture >> 1]);
+    aso->chars[0] = pgm_read_byte(&APERTURES_BITMAP[b & 0xF]);
 
     uint8_t high = (b >> 4) & 0xF;
-    uint8_t c = APERTURES_BITMAP[high];
+    uint8_t c = pgm_read_byte(&APERTURES_BITMAP[high]);
     uint8_t last = 1;
 
     if (high != 0)

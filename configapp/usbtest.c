@@ -230,7 +230,7 @@ int main(int argc, char **argv) {
 
         printf("Shutter speed set to 1/15 at ISO 100\n");
     }
-    else if (!strcmp(argv[1], "shutter15")) {
+    else if (!strcmp(argv[1], "ap")) {
         aperture_string_output_t aso;
         nBytes = libusb_control_transfer(
             handle,

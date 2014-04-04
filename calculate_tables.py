@@ -183,18 +183,18 @@ def output_table():
             vallist_abs.append(eight)
             vallist_diffs.append(bpis[0] << 4 | bpis[1])
 
-    sys.stdout.write('const uint8_t TEMP_AND_VOLTAGE_TO_EV_BITPATTERNS[] = {\n')
+    sys.stdout.write('const uint8_t TEMP_AND_VOLTAGE_TO_EV_BITPATTERNS[] PROGMEM = {\n')
     for p in bitpatterns:
         sys.stdout.write('0b%s,' % p)
     sys.stdout.write('\n};\n')
 
-    sys.stdout.write('const uint8_t TEMP_AND_VOLTAGE_TO_EV_ABS[] = {')
+    sys.stdout.write('const uint8_t TEMP_AND_VOLTAGE_TO_EV_ABS[] PROGMEM = {')
     for i in xrange(len(vallist_abs)):
         if i % 32 == 0:
             sys.stdout.write('\n    ');
         sys.stdout.write('%i,' % vallist_abs[i])
     sys.stdout.write('\n};\n')
-    sys.stdout.write('const uint8_t TEMP_AND_VOLTAGE_TO_EV_DIFFS[] = {')
+    sys.stdout.write('const uint8_t TEMP_AND_VOLTAGE_TO_EV_DIFFS[] PROGMEM = {')
     for i in xrange(len(vallist_diffs)):
         if i % 32 == 0:
             sys.stdout.write('\n    ');
@@ -517,7 +517,7 @@ apertures = [
 ]
 
 def output_shutter_speeds():
-    sys.stdout.write('const uint8_t SHUTTER_SPEEDS[] = {\n')
+    sys.stdout.write('const uint8_t SHUTTER_SPEEDS[] PROGMEM = {\n')
     bits = []
     for speed in shutter_speeds:
         x = 0
@@ -534,7 +534,7 @@ def output_shutter_speeds():
             sys.stdout.write('0b' + bits[i] + ',')
     sys.stdout.write('};\n')
 #    sys.stdout.write('// ' + ' '.join(bits));
-    sys.stdout.write('const uint8_t SHUTTER_SPEEDS_BITMAP[] = { ')
+    sys.stdout.write('const uint8_t SHUTTER_SPEEDS_BITMAP[] PROGMEM = { ')
     for c in shutter_speeds_bitmap:
         if c is None:
             sys.stdout.write("'\\0',")
@@ -543,7 +543,7 @@ def output_shutter_speeds():
     sys.stdout.write('};\n')
 
 def output_apertures():
-    sys.stdout.write('const uint8_t APERTURES[] = {\n')
+    sys.stdout.write('const uint8_t APERTURES[] PROGMEM = {\n')
     for a in apertures:
         n1 = apertures_bitmap.index(a[0])
         n2 = apertures_bitmap.index(a[1]) if len(a) > 1 else 0
@@ -552,7 +552,7 @@ def output_apertures():
                          (n1 & 8 and '1' or '0') + (n1 & 4 and '1' or '0') + (n1 & 2 and '1' or '0') + (n1 & 1 and '1' or '0') +
                          ',')
     sys.stdout.write('};\n')
-    sys.stdout.write('const uint8_t APERTURES_BITMAP[] = { ')
+    sys.stdout.write('const uint8_t APERTURES_BITMAP[] PROGMEM = { ')
     for a in apertures_bitmap:
         if a is None:
             sys.stdout.write("'\\0',")
@@ -566,11 +566,11 @@ def output_apertures():
 
 def output():
     sys.stdout.write('#ifndef TABLES_H\n#define TABLES_H\n\n')
-    sys.stdout.write("#include <stdint.h>\n")
+    sys.stdout.write("#include <stdint.h>\n#include<avr/pgmspace.h>\n")
     output_full_table_as_comment()
     output_table()
     sys.stdout.write('\n#ifdef TEST\n')
-    sys.stdout.write('const uint8_t TEST_TEMP_AND_VOLTAGE_TO_EV[] =\n')
+    sys.stdout.write('const uint8_t TEST_TEMP_AND_VOLTAGE_TO_EV[] PROGMEM =\n')
     output_test_table()
     sys.stdout.write(';\n#endif\n')
     output_shutter_speeds()

@@ -1,3 +1,4 @@
+#include <readbyte.h>
 #include <stdint.h>
 #include <assert.h>
 #include <constants.h>
@@ -27,16 +28,16 @@ uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage)
     uint8_t i = row_start + (voltage >> 4); // voltage/16
     uint8_t bits_to_add = (voltage & 15) + 1; // (voltage % 16) + 1
 
-    uint8_t bit_pattern_indices = TEMP_AND_VOLTAGE_TO_EV_DIFFS[i];
-    uint8_t bits1 = TEMP_AND_VOLTAGE_TO_EV_BITPATTERNS[bit_pattern_indices >> 4];
-    uint8_t bits2 = TEMP_AND_VOLTAGE_TO_EV_BITPATTERNS[bit_pattern_indices & 0x0F];
+    uint8_t bit_pattern_indices = pgm_read_byte(&TEMP_AND_VOLTAGE_TO_EV_DIFFS[i]);
+    uint8_t bits1 = pgm_read_byte(&TEMP_AND_VOLTAGE_TO_EV_BITPATTERNS[bit_pattern_indices >> 4]);
+    uint8_t bits2 = pgm_read_byte(&TEMP_AND_VOLTAGE_TO_EV_BITPATTERNS[bit_pattern_indices & 0x0F]);
     if (bits_to_add < 8)
         bits1 &= 0xFF << (8 - bits_to_add);
     if (bits_to_add < 16)
         bits2 &= 0xFF << (16 - bits_to_add);
 
     // See http://stackoverflow.com/questions/109023/how-to-count-the-number-of-set-bits-in-a-32-bit-integer
-    uint8_t r = TEMP_AND_VOLTAGE_TO_EV_ABS[i];
+    uint8_t r = pgm_read_byte(&TEMP_AND_VOLTAGE_TO_EV_ABS[i]);
 #ifdef TEST
     uint8_t c = 0;
 #define INCC ,++c
@@ -50,8 +51,8 @@ uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage)
 
 #ifdef TEST
     printf("voltage = %i, count = %i, bitsper = %i, abs %i, absi = %i, r = %i\n",
-           voltage, c, bits_to_add, TEMP_AND_VOLTAGE_TO_EV_ABS[i],
-           i, TEMP_AND_VOLTAGE_TO_EV_ABS[i] + c);
+           voltage, c, bits_to_add, pgm_read_byte(&TEMP_AND_VOLTAGE_TO_EV_ABS[i]),
+           i, pgm_read_byte(&TEMP_AND_VOLTAGE_TO_EV_ABS[i]) + c);
 #endif
 
     return r;
@@ -67,7 +68,7 @@ int main()
     for (int t = 0; t < 256; ++t) {
         printf("LOOP %i\n", t);
         for (int v = 0; v < 246; ++v) {
-            uint8_t uncompressed = TEST_TEMP_AND_VOLTAGE_TO_EV[(256 * ((unsigned)t/16)) + (unsigned)v];
+          uint8_t uncompressed = pgm_read_byte(&TEST_TEMP_AND_VOLTAGE_TO_EV[(256 * ((unsigned)t/16)) + (unsigned)v]);
             uint8_t compressed = get_ev100_at_temperature_voltage((uint8_t)t, (uint8_t)v);
             if (uncompressed != compressed) {
                 printf("Values not equal for t = %i, v = %i: compressed = %i, uncompressed = %i\n", (unsigned)t, (unsigned)v, (unsigned)compressed, (unsigned)uncompressed);
