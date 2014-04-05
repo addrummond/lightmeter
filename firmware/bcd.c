@@ -128,39 +128,35 @@ bool bcd_gt(uint8_t *digits1, uint8_t length1, uint8_t *digits2, uint8_t length2
 static const uint8_t TEN[] = { 0, 10, 20, 30, 40, 50, 60, 70, 80, 90 };
 uint8_t *bcd_div_by(uint8_t *digits, uint8_t length, uint8_t by)
 {
-    uint8_t left = 0;
-    uint8_t right = 0;
-
-    uint8_t n = 0;
+    uint8_t n = digits[0];
     uint8_t *rdigits = digits;
-    while (right < length) {
-        if (left == right) {
-            n = digits[right];
-        }
-        else {
-            assert(right-left == 1);
-            n = TEN[digits[right]];
+    uint8_t outi;
+    uint8_t rem = 0;
+    for (outi = 0; outi < length; ++outi) {
+        n = digits[outi];
+        n += 10*rem;
+        if (n < by && outi != length - 1) {
+            n = TEN[n];
+            n += digits[outi+1];
+            digits[outi++] = 0;
         }
 
-        if (n > by) {
-            uint8_t c;
-            for (c = 0; n >= by; ++c, n -= by);
+        //        printf("N: %i (%i)\n", n, rem);
 
-            uint8_t j;
-            for (j = left; j < right; ++j)
-                digits[j] = 0;
-            digits[right] = c;
+        uint8_t c;
+        for (c = 0; n >= by; ++c, n -= by);
+        rem = n;
 
-            rdigits += (right - left);
-            left = ++right;
+        uint8_t j;
+        digits[outi] = c;
 
-        }
-        else {
-            ++right;
-        }
+        //        printf("C %i\n", c);
     }
 
-    return rdigits;
+    // Strip leading zeroes.
+    for (; digits < (digits + length) && *digits == 0; ++digits);
+
+    return digits;
 }
 
 #ifdef TEST
@@ -278,6 +274,15 @@ static void div_by_test2()
     assert(!strcmp((char *)r, "249"));
 }
 
+static void div_by_test3()
+{
+    uint8_t digits[] = { 3, 2, 1, '\0' };
+    uint8_t *r = bcd_div_by(digits, 3, 9);
+    bcd_to_string(r, bcd_length_after_op(digits, 3, r));
+    printf("321 / 9 = %s\n", r);
+    assert(!strcmp((char *)r, "35"));
+}
+
 int main()
 {
     add_test1();
@@ -293,6 +298,7 @@ int main()
 
     div_by_test1();
     div_by_test2();
+    div_by_test3();
 }
 
 #endif
