@@ -129,7 +129,6 @@ static const uint8_t TEN[] = { 0, 10, 20, 30, 40, 50, 60, 70, 80, 90 };
 uint8_t *bcd_div_by(uint8_t *digits, uint8_t length, uint8_t by)
 {
     uint8_t n = digits[0];
-    uint8_t *rdigits = digits;
     uint8_t outi;
     uint8_t rem = 0;
     for (outi = 0; outi < length; ++outi) {
