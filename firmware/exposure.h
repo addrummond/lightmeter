@@ -22,6 +22,7 @@
 
 #define ISO_MIN     0
 #define ISO_MAX     144 // 1600000
+#define ISO_DECIMAL_MAX_DIGITS 7
 
 #define EV_MIN      0
 #define EV_MAX      254

@@ -8,7 +8,9 @@
 #include <readbyte.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <assert.h>
 #include <exposure.h>
+#include <bcd.h>
 #include <divmulutils.h>
 #ifdef TEST
 #include <stdio.h>
@@ -128,83 +130,33 @@ void aperture_to_string(uint8_t aperture, aperture_string_output_t *aso)
     aso->length = last;
 }
 
-void iso_to_string(uint8_t iso, iso_string_output_t *out)
+// Convert a BCD ISO number into the closest equivalent 8-bit representation.
+// In the 8-bit representation, ISOs start from 6 and go up in steps of 1/8 stop.
+static const uint8_t BCD_50[] = { 5, 0 };
+static const uint8_t BCD_6[] = { 6 };
+uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
 {
-    // Repeatedly double via base 10 add with carry.
-    // For ISOs <= 24(=25) we start from 6.
-    // For larger ISOs we start from 100.
-    // Special case at the end to convert 24 -> 25;
-    //
-    // TODO: This doesn't yet handle 1/8, 1/4 or 1/2 stop ISOs.
-    // This is a tricky problem since there's no real convention
-    // for how to number these. Maybe just add a special case
-    // for ISO 125, since films hardly ever use any other non-full-stop
-    // ISO ratings?
+    assert(length <= ISO_DECIMAL_MAX_DIGITS);
 
-    if (iso > ISO_MAX)
-        iso = ISO_MAX;
-
-    // Init all to 0.
+    uint8_t tdigits_[length];
+    uint8_t *tdigits = tdigits_;
     uint8_t i;
-    for (i = 0; i < sizeof(out->chars); ++i)
-        out->chars[i] = 0;
+    for (i = 0; i < length; ++i)
+        tdigits_[i] = digits[i];
 
-    uint8_t end = sizeof(out->chars) - 2;
-    uint8_t start = end;
-    uint8_t times_to_double;
+    uint8_t *r = tdigits;
+    uint8_t iso8bit;
+    for (iso8bit = 0; bcd_gteq(r, length, BCD_6, sizeof(BCD_6)); ++iso8bit) {
+        // ISO 26 -> 25
+        if (length == 2 && r[0] == 2 && r[1] == 5)
+            r[1] = 6;
 
-    if (iso <= 16/*ISO 24*/) {
-        out->chars[end] = 6;
-    }
-    else if (iso < 64/*ISO 1600*/) {
-        out->chars[end] = 0;
-        out->chars[--start] = 5;
-        iso -= 16;
-    }
-    else {
-        out->chars[end] = 0;
-        out->chars[--start] = 0;
-        out->chars[--start] = 6;
-        out->chars[--start] = 1;
-        iso -= 50;
-    }
-    times_to_double = iso >> 3;
-
-    uint8_t carry = 0, c;
-    for (c = 0; c < times_to_double; ++c) {
-        i = 0;
-        carry = 0;
-
-        for (i = end; i >= start; --i) {
-            uint8_t doubled = (out->chars[i] << 1) + carry;
-            if (doubled > 9) {
-                out->chars[i] = doubled - 10;
-                carry = 1;
-                if (i == start)
-                    --start;
-            }
-            else {
-                carry = 0;
-                out->chars[i] = doubled;
-            }
-        }
+        r = bcd_div_by_lt10(r, length, 2);
+        length = bcd_length_after_op(tdigits, length, r);
+        tdigits = r;
     }
 
-    if (carry == 1) {
-        out->chars[--start] = 1;
-    }
-
-    // Add base ASCII code for digits.
-    for (i = start; i <= end; ++i) {
-        out->chars[i] += 48;
-    }
-    // All chars were initialized to zero so it's already null-terminated.
-
-    // 24 -> 25
-    if (out->chars[end] == '4' && out->chars[end-1] == '2')
-        out->chars[end] = '5';
-
-    out->offset = start;
+    return iso8bit;
 }
 
 // We represent ISO in 1/8 stops, with 0 as ISO 6.
@@ -249,6 +201,7 @@ uint8_t aperture_given_shutter_speed_iso_ev(uint8_t speed_, uint8_t iso_, uint8_
 
 int main()
 {
+#if 0
     shutter_string_output_t sso;
     uint8_t s;
     for (s = SS_MIN; s <= SS_MAX; ++s) {
@@ -291,6 +244,43 @@ int main()
              }
         }
     }
+#endif
+
+    static uint8_t isobcds[] = {
+        7,   1, 6, 0, 0, 0, 0, 0,  0,
+        6,   0, 8, 0, 0, 0, 0, 0,  0,
+        6,   0, 4, 0, 0, 0, 0, 0,  0,
+        6,   0, 2, 0, 0, 0, 0, 0,  0,
+        6,   0, 1, 0, 0, 0, 0, 0,  0,
+        5,   0, 0, 5, 0, 0, 0, 0,  0,
+        5,   0, 0, 2, 5, 0, 0, 0,  0,
+        5,   0, 0, 1, 2, 5, 0, 0,  0,
+        4,   0, 0, 6, 4, 0, 0, 0,  0,
+        4,   0, 0, 0, 3, 2, 0, 0,  0,
+        4,   0, 0, 0, 1, 6, 0, 0,  0,
+        3,   0, 0, 0, 0, 8, 0, 0,  0,
+        3,   0, 0 ,0 ,0, 4, 0, 0,  0,
+        3,   0, 0, 0, 0, 2, 0, 0,  0,
+        3,   0, 0, 0, 0, 1, 0, 0,  0,
+        2,   0, 0, 0, 0, 0, 5, 0,  0,
+        2,   0, 0, 0, 0, 0, 2, 5,  0,
+        2,   0, 0, 0, 0, 0, 1, 2,  0,
+        1,   0, 0, 0, 0, 0, 0, 6,  0 
+    };
+
+    uint8_t i;
+    for (i = 0; i < 9*18; i += 9) {
+        uint8_t length = isobcds[i];
+        uint8_t offset = i+8-length;
+        uint8_t *isodigits = isobcds+offset;
+
+        uint8_t stops = iso_bcd_to_stops(isodigits, length);
+        bcd_to_string(isodigits, length);
+
+        printf("ISO %s = %i stops from ISO 6\n", isodigits, stops);
+    }
+
+    return 0;
 }
 
 #endif

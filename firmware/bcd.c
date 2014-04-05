@@ -53,7 +53,7 @@ uint8_t *bcd_add(uint8_t *digits1, uint8_t digits1_length,
     return digits1;
 }
 
-uint8_t bcd_length_after_op(uint8_t *oldptr, uint8_t oldlength, uint8_t *newptr)
+uint8_t bcd_length_after_op(const uint8_t *oldptr, uint8_t oldlength, const uint8_t *newptr)
 {
     return oldlength + (oldptr - newptr);
 }
@@ -66,7 +66,7 @@ void bcd_to_string(uint8_t *digits, uint8_t length)
 
 // Save some code space by implementing <, <=, >, >=, = in one function.
 // This function is called by macros bcd_lt, bcd_gteq, etc.
-bool bcd_cmp(uint8_t *digits1, uint8_t length1, uint8_t *digits2, uint8_t length2,
+bool bcd_cmp(const uint8_t *digits1, uint8_t length1, const uint8_t *digits2, uint8_t length2,
              uint8_t which /* 0 == eq, 1 = lteq, 2 = gteq, 3 = lt, 4 = gt */)
 {
     uint8_t i, j;
@@ -125,7 +125,7 @@ bool bcd_cmp(uint8_t *digits1, uint8_t length1, uint8_t *digits2, uint8_t length
         }
     }
 
-    return (which >= 0 && which == 2);
+    return (which >= 0 || which == 2);
 }
 
 static const uint8_t TEN[] = { 0, 10, 20, 30, 40, 50, 60, 70, 80, 90 };
