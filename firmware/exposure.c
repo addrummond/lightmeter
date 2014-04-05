@@ -190,13 +190,13 @@ bool iso_is_full_stop(const uint8_t *digits, uint8_t length)
             uint8_t j;
             for (j = 0; j < checkzeroes_length; ++j) {
                 if (digits[j+checkzeroes_offset] != 0)
-                    goto break_main;
+                    goto continue_main;
             }
 
             return true;
         }
 
-break_main:;
+continue_main:;
     }
 
     return false;
