@@ -181,7 +181,27 @@ static void gt_test3()
     uint8_t digits2[] = { 8, 8, 6, '\0' };
 
     bool v = bcd_gt(digits2, 3, digits1, 3);
-    printf("886 > 978 = %s\n", v ? "true" : false);
+    printf("886 > 978 = %s\n", v ? "true" : "false");
+    assert(!v);
+}
+
+static void gt_test4()
+{
+    uint8_t digits1[] = { 9, 7, 8, '\0' };
+    uint8_t digits2[] = { 8, 6, '\0' };
+
+    bool v = bcd_gt(digits1, 3, digits2, 2);
+    printf("978 > 86 = %s\n", v ? "true" : "false");
+    assert(v);
+}
+
+static void gt_test5()
+{
+    uint8_t digits1[] = { 9, 7, 8, '\0' };
+    uint8_t digits2[] = { 8, 6, '\0' };
+
+    bool v = bcd_gt(digits2, 2, digits1, 3);
+    printf("86 > 978 = %s\n", v ? "true" : "false");
     assert(!v);
 }
 
@@ -194,6 +214,9 @@ int main()
 
     gt_test1();
     gt_test2();
+    gt_test3();
+    gt_test4();
+    gt_test5();
 }
 
 #endif
