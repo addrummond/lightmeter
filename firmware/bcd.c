@@ -5,6 +5,7 @@
 
 #include <assert.h>
 #include <stdint.h>
+#include <stdbool.h>
 #ifdef TEST
 #include <stdio.h>
 #include <string.h>
@@ -62,9 +63,55 @@ void bcd_to_string(uint8_t *digits, uint8_t length)
         digits[i] += 48;
 }
 
+bool bcd_gt(uint8_t *digits1, uint8_t length1, uint8_t *digits2, uint8_t length2)
+{
+    uint8_t i, j;
+    uint8_t zeroes1 = 0;
+    uint8_t zeroes2 = 0;
+    uint8_t lmax;
+    if (length2 > length1) {
+        zeroes1 = length2 - length1;
+        lmax = length2;
+    }
+    else {
+        zeroes2 = length1 - length2;
+        lmax = length1;
+    }
+
+    i = 0, j = 0;
+    for (; i < length1;) {
+        uint8_t a, b;
+        if (zeroes1) {
+            a = 0;
+            --zeroes1;
+        }
+        else {
+            a = digits1[i];
+            ++i;
+        }
+
+        if (zeroes2) {
+            b = 0;
+            --zeroes2;
+        }
+        else {
+            b = digits2[j];
+            ++j;
+        }
+
+        if (a < b)
+            return false;
+        if (a > b)
+            return true;
+    }
+
+    // If we get here, they're equal.
+    return false;
+}
+
 #ifdef TEST
 
-void add_test1()
+static void add_test1()
 {
     uint8_t digits1[] = { 1, 2, 3, '\0' };
     uint8_t digits2[] = { 4, 5, 6, '\0' };
@@ -75,7 +122,7 @@ void add_test1()
     assert(!strcmp((char *)r, "579"));
 }
 
-void add_test2()
+static void add_test2()
 {
     uint8_t digits1[] = { '\0', 9, 7, 8, '\0' };
     uint8_t digits2[] = {       8, 8, 6, '\0' };
@@ -86,7 +133,7 @@ void add_test2()
     assert(!strcmp((char *)r, "1864"));
 }
 
-void add_test3()
+static void add_test3()
 {
     uint8_t digits1[] = { '\0', 0, 0, 8, '\0' };
     uint8_t digits2[] = {       8, 8, 6, '\0' };
@@ -97,7 +144,7 @@ void add_test3()
     assert(!strcmp((char *)r, "894"));
 }
 
-void add_test4()
+static void add_test4()
 {
     uint8_t digits1[] = { 1, '\0' };
     uint8_t digits2[] = { 2, '\0' };
@@ -108,12 +155,45 @@ void add_test4()
     assert(!strcmp((char *)r, "3"));
 }
 
+static void gt_test1()
+{
+    uint8_t digits1[] = { 9, 7, 8, '\0' };
+    uint8_t digits2[] = { 8, 8, 6, '\0' };
+
+    bool v = bcd_gt(digits1, 3, digits2, 3);
+    printf("978 > 886 = %s\n", v ? "true" : false);
+    assert(v);
+}
+
+static void gt_test2()
+{
+    uint8_t digits1[] = { 9, 7, 8, '\0' };
+    uint8_t digits2[] = { 9, 7, 8, '\0' };
+
+    bool v = bcd_gt(digits1, 3, digits2, 3);
+    printf("978 > 978 = %s\n", v ? "true" : "false");
+    assert(!v);
+}
+
+static void gt_test3()
+{
+    uint8_t digits1[] = { 9, 7, 8, '\0' };
+    uint8_t digits2[] = { 8, 8, 6, '\0' };
+
+    bool v = bcd_gt(digits2, 3, digits1, 3);
+    printf("886 > 978 = %s\n", v ? "true" : false);
+    assert(!v);
+}
+
 int main()
 {
     add_test1();
     add_test2();
     add_test3();
     add_test4();
+
+    gt_test1();
+    gt_test2();
 }
 
 #endif
