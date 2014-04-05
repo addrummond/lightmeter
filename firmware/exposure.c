@@ -150,13 +150,16 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
         // ISO 26 -> 25
         if (length == 2 && r[0] == 2 && r[1] == 5)
             r[1] = 6;
+        // ISO 12500 -> 12800
+        if (length == 6 && r[0] == '1' && r[1] == '2' && r[2] == '5' && r[3] == '0' && r[4] == '0' && r[5] == '0')
+            r[2] = 8;
 
         r = bcd_div_by_lt10(r, length, 2);
         length = bcd_length_after_op(tdigits, length, r);
         tdigits = r;
     }
 
-    return iso8bit;
+    return iso8bit-1;
 }
 
 // We represent ISO in 1/8 stops, with 0 as ISO 6.
@@ -255,7 +258,7 @@ int main()
         5,   0, 0, 5, 0, 0, 0, 0,  0,
         5,   0, 0, 2, 5, 0, 0, 0,  0,
         5,   0, 0, 1, 2, 5, 0, 0,  0,
-        4,   0, 0, 6, 4, 0, 0, 0,  0,
+        4,   0, 0, 0, 6, 4, 0, 0,  0,
         4,   0, 0, 0, 3, 2, 0, 0,  0,
         4,   0, 0, 0, 1, 6, 0, 0,  0,
         3,   0, 0, 0, 0, 8, 0, 0,  0,
@@ -269,7 +272,7 @@ int main()
     };
 
     uint8_t i;
-    for (i = 0; i < 9*18; i += 9) {
+    for (i = 0; i < 9*19; i += 9) {
         uint8_t length = isobcds[i];
         uint8_t offset = i+8-length;
         uint8_t *isodigits = isobcds+offset;
