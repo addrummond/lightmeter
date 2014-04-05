@@ -159,7 +159,7 @@ static const uint8_t FULL_STOP_ISOS[] PROGMEM = {
     6, 0              // 6
 };
 
-bool iso_is_full_stop(uint8_t *digits, uint8_t length)
+bool iso_is_full_stop(const uint8_t *digits, uint8_t length)
 {
     // Special case: 12500 is not in table (because it has 3 non-zero digits).
     if (length == 5 && digits[0] == 1 && digits[1] == 2 && digits[2] == 5 && digits[3] == 0 && digits[4] == 0)
