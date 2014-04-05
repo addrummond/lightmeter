@@ -6,6 +6,7 @@
 #include <assert.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <bcd.h>
 #ifdef TEST
 #include <stdio.h>
 #include <string.h>
@@ -63,7 +64,9 @@ void bcd_to_string(uint8_t *digits, uint8_t length)
         digits[i] += 48;
 }
 
-bool bcd_gt(uint8_t *digits1, uint8_t length1, uint8_t *digits2, uint8_t length2)
+// Save some code space by implementing <, <=, >, >=, = in one function.
+bool bcd_cmp(uint8_t *digits1, uint8_t length1, uint8_t *digits2, uint8_t length2,
+             uint8_t which /* 0 == eq, 1 = lteq, 2 = gteq, 3 = lt, 4 = gt */)
 {
     uint8_t i, j;
     uint8_t zeroes1 = 0;
@@ -80,7 +83,7 @@ bool bcd_gt(uint8_t *digits1, uint8_t length1, uint8_t *digits2, uint8_t length2
 
     i = 0, j = 0;
     for (; i < length1;) {
-        uint8_t a, b;
+        int8_t a, b;
         if (zeroes1) {
             a = 0;
             --zeroes1;
@@ -99,35 +102,36 @@ bool bcd_gt(uint8_t *digits1, uint8_t length1, uint8_t *digits2, uint8_t length2
             ++j;
         }
 
-        if (a < b)
-            return false;
-        if (a > b)
-            return true;
+        int8_t diff = a - b;
+        if (diff != 0) {
+            switch (which) {
+            case 0: {
+                return false;
+            } break;
+            case 1: {
+                return diff < 0;
+            } break;
+            case 2: {
+                return diff > 0;
+            } break;
+            case 3: {
+                return diff < 0;
+            } break;
+            case 4: {
+                return diff > 0;
+            } break;
+            }
+        }
     }
 
-    // If we get here, they're equal.
-    return false;
+    return (which >= 0 && which == 2);
 }
 
-/*uint8_t *bcd_inc_by(uint8_t *digits, uint8_t length, uint8_t by)
-{
-    uint8_t x;
-
-    uint8_t hunds;
-    for (x = by, hunds = 0; x >= 100; x -= 100, ++hunds);
-    uint8_t tens;
-    for (x = by, tens = 0; x >= 10; x -= 10, ++tens);
-    uint8_t ones = by - hunds - tens;
-
-    digits[0] += ones;
-    if (length > 2) {
-        ...
-    }
-}*/
-
 static const uint8_t TEN[] = { 0, 10, 20, 30, 40, 50, 60, 70, 80, 90 };
-uint8_t *bcd_div_by(uint8_t *digits, uint8_t length, uint8_t by)
+uint8_t *bcd_div_by_lt10(uint8_t *digits, uint8_t length, uint8_t by)
 {
+    assert(by < 10);
+
     uint8_t n = digits[0];
     uint8_t outi;
     uint8_t rem = 0;
@@ -210,7 +214,7 @@ static void gt_test1()
     uint8_t digits2[] = { 8, 8, 6, '\0' };
 
     bool v = bcd_gt(digits1, 3, digits2, 3);
-    printf("978 > 886 = %s\n", v ? "true" : false);
+    printf("978 > 886 = %s\n", v ? "true" : "false");
     assert(v);
 }
 
@@ -258,7 +262,7 @@ static void div_by_test1()
 {
     uint8_t digits[] = { 8, '\0' };
 
-    uint8_t *r = bcd_div_by(digits, 1, 4);
+    uint8_t *r = bcd_div_by_lt10(digits, 1, 4);
     bcd_to_string(r, bcd_length_after_op(digits, 1, r));
     printf("8 / 4 = %s\n", r);
     assert(!strcmp((char *)r, "2"));
@@ -267,7 +271,7 @@ static void div_by_test1()
 static void div_by_test2()
 {
     uint8_t digits[] = { 9, 9, 9, '\0' };
-    uint8_t *r = bcd_div_by(digits, 3, 4);
+    uint8_t *r = bcd_div_by_lt10(digits, 3, 4);
     bcd_to_string(r, bcd_length_after_op(digits, 3, r));
     printf("999 / 4 = %s\n", r);
     assert(!strcmp((char *)r, "249"));
@@ -276,7 +280,7 @@ static void div_by_test2()
 static void div_by_test3()
 {
     uint8_t digits[] = { 3, 2, 1, '\0' };
-    uint8_t *r = bcd_div_by(digits, 3, 9);
+    uint8_t *r = bcd_div_by_lt10(digits, 3, 9);
     bcd_to_string(r, bcd_length_after_op(digits, 3, r));
     printf("321 / 9 = %s\n", r);
     assert(!strcmp((char *)r, "35"));
