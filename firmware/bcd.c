@@ -65,6 +65,7 @@ void bcd_to_string(uint8_t *digits, uint8_t length)
 }
 
 // Save some code space by implementing <, <=, >, >=, = in one function.
+// This function is called by macros bcd_lt, bcd_gteq, etc.
 bool bcd_cmp(uint8_t *digits1, uint8_t length1, uint8_t *digits2, uint8_t length2,
              uint8_t which /* 0 == eq, 1 = lteq, 2 = gteq, 3 = lt, 4 = gt */)
 {
