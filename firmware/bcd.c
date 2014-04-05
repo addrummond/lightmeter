@@ -52,7 +52,7 @@ uint8_t *bcd_add(uint8_t *digits1, uint8_t digits1_length,
     return digits1;
 }
 
-uint8_t bcd_length_after_add(uint8_t *oldptr, uint8_t oldlength, uint8_t *newptr)
+uint8_t bcd_length_after_op(uint8_t *oldptr, uint8_t oldlength, uint8_t *newptr)
 {
     return oldlength + (oldptr - newptr);
 }
@@ -109,6 +109,60 @@ bool bcd_gt(uint8_t *digits1, uint8_t length1, uint8_t *digits2, uint8_t length2
     return false;
 }
 
+/*uint8_t *bcd_inc_by(uint8_t *digits, uint8_t length, uint8_t by)
+{
+    uint8_t x;
+
+    uint8_t hunds;
+    for (x = by, hunds = 0; x >= 100; x -= 100, ++hunds);
+    uint8_t tens;
+    for (x = by, tens = 0; x >= 10; x -= 10, ++tens);
+    uint8_t ones = by - hunds - tens;
+
+    digits[0] += ones;
+    if (length > 2) {
+        ...
+    }
+}*/
+
+static const uint8_t TEN[] = { 0, 10, 20, 30, 40, 50, 60, 70, 80, 90 };
+uint8_t *bcd_div_by(uint8_t *digits, uint8_t length, uint8_t by)
+{
+    uint8_t left = 0;
+    uint8_t right = 0;
+
+    uint8_t n = 0;
+    uint8_t *rdigits = digits;
+    while (right < length) {
+        if (left == right) {
+            n = digits[right];
+        }
+        else {
+            assert(right-left == 1);
+            n = TEN[digits[right]];
+        }
+
+        if (n > by) {
+            uint8_t c;
+            for (c = 0; n >= by; ++c, n -= by);
+
+            uint8_t j;
+            for (j = left; j < right; ++j)
+                digits[j] = 0;
+            digits[right] = c;
+
+            rdigits += (right - left);
+            left = ++right;
+
+        }
+        else {
+            ++right;
+        }
+    }
+
+    return rdigits;
+}
+
 #ifdef TEST
 
 static void add_test1()
@@ -117,7 +171,7 @@ static void add_test1()
     uint8_t digits2[] = { 4, 5, 6, '\0' };
 
     uint8_t *r = bcd_add(digits1, 3, digits2, 3);
-    bcd_to_string(r, bcd_length_after_add(digits1, 3, r));
+    bcd_to_string(r, bcd_length_after_op(digits1, 3, r));
     printf("123 + 456 = %s\n", r);
     assert(!strcmp((char *)r, "579"));
 }
@@ -128,7 +182,7 @@ static void add_test2()
     uint8_t digits2[] = {       8, 8, 6, '\0' };
 
     uint8_t *r = bcd_add(digits1+1, 3, digits2, 3);
-    bcd_to_string(r, bcd_length_after_add(digits1+1, 3, r));
+    bcd_to_string(r, bcd_length_after_op(digits1+1, 3, r));
     printf("978 + 886 = %s\n", r);
     assert(!strcmp((char *)r, "1864"));
 }
@@ -139,7 +193,7 @@ static void add_test3()
     uint8_t digits2[] = {       8, 8, 6, '\0' };
 
     uint8_t *r = bcd_add(digits1+1, 3, digits2, 3);
-    bcd_to_string(r, bcd_length_after_add(digits1+1, 3, r));
+    bcd_to_string(r, bcd_length_after_op(digits1+1, 3, r));
     printf("008 + 886 = %s\n", r);
     assert(!strcmp((char *)r, "894"));
 }
@@ -150,7 +204,7 @@ static void add_test4()
     uint8_t digits2[] = { 2, '\0' };
 
     uint8_t *r = bcd_add(digits1, 1, digits2, 1);
-    bcd_to_string(r, bcd_length_after_add(digits1, 1, r));
+    bcd_to_string(r, bcd_length_after_op(digits1, 1, r));
     printf("1 + 2 = %s\n", r);
     assert(!strcmp((char *)r, "3"));
 }
@@ -205,6 +259,25 @@ static void gt_test5()
     assert(!v);
 }
 
+static void div_by_test1()
+{
+    uint8_t digits[] = { 8, '\0' };
+
+    uint8_t *r = bcd_div_by(digits, 1, 4);
+    bcd_to_string(r, bcd_length_after_op(digits, 1, r));
+    printf("8 / 4 = %s\n", r);
+    assert(!strcmp((char *)r, "2"));
+}
+
+static void div_by_test2()
+{
+    uint8_t digits[] = { 9, 9, 9, '\0' };
+    uint8_t *r = bcd_div_by(digits, 3, 4);
+    bcd_to_string(r, bcd_length_after_op(digits, 3, r));
+    printf("999 / 4 = %s\n", r);
+    assert(!strcmp((char *)r, "249"));
+}
+
 int main()
 {
     add_test1();
@@ -217,6 +290,9 @@ int main()
     gt_test3();
     gt_test4();
     gt_test5();
+
+    div_by_test1();
+    div_by_test2();
 }
 
 #endif
