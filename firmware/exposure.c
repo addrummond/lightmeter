@@ -12,6 +12,7 @@
 #include <exposure.h>
 #include <bcd.h>
 #include <divmulutils.h>
+#include <readbyte.h>
 #ifdef TEST
 #include <stdio.h>
 #endif
@@ -134,32 +135,103 @@ void aperture_to_string(uint8_t aperture, aperture_string_output_t *aso)
 // In the 8-bit representation, ISOs start from 6 and go up in steps of 1/8 stop.
 static const uint8_t BCD_50[] = { 5, 0 };
 static const uint8_t BCD_6[] = { 6 };
+// Table storing full-stop ISO numbers. Does not include 12500 which must be
+// checked for separately. First byte is big-endian 4-bit BCD rep of first
+// two digits followed by number of trailing zeros.
+static const uint8_t FULL_STOP_ISOS[] PROGMEM = {
+    1 | (6 << 4), 5,  // 1600000
+    8, 5,             // 800000
+    4, 5,             // 400000
+    2, 5,             // 200000
+    1, 5,             // 100000
+    5, 4,             // 50000
+    2 | (5 << 4), 3,  // 25000 [skip 12500 next]
+    6 | (4 << 4), 2,  // 6400
+    3 | (2 << 4), 2,  // 3200
+    1 | (6 << 4), 2,  // 1600
+    8, 2,             // 800
+    4, 2,             // 400
+    2, 2,             // 200
+    1, 2,             // 100
+    5, 1,             // 50
+    2 | (5 << 4), 0,  // 25
+    1 | (2 << 4), 0,  // 12
+    6, 0              // 6
+};
+
+bool iso_is_full_stop(uint8_t *digits, uint8_t length)
+{
+    // Special case: 12500 is not in table (because it has 3 non-zero digits).
+    if (length == 5 && digits[0] == 1 && digits[1] == 2 && digits[2] == 5 && digits[3] == 0 && digits[4] == 0)
+        return true;
+
+    uint8_t i;
+    for (i = 0; i < sizeof(FULL_STOP_ISOS); i += 2) {
+        uint8_t d = pgm_read_byte(&FULL_STOP_ISOS[i]);
+        uint8_t nsigs = 1;
+        if (d & 0xF0)
+            ++nsigs;
+        uint8_t nzeroes = pgm_read_byte(&FULL_STOP_ISOS[i+1]);
+        if (nsigs + nzeroes == length) {
+            uint8_t d1 = d & 0xF;
+            uint8_t checkzeroes_length = length - 1;
+            uint8_t checkzeroes_offset = 1;
+            if (nsigs == 2) {
+                uint8_t d2 = d >> 4;
+                checkzeroes_offset = 2;
+                --checkzeroes_length;
+                if (digits[0] != d1 || digits[1] != d2)
+                    continue;
+            }
+            else if (digits[0] != d1) {
+                continue;
+            }
+
+            uint8_t j;
+            for (j = 0; j < checkzeroes_length; ++j) {
+                if (digits[j+checkzeroes_offset] != 0)
+                    goto break_main;
+            }
+
+            return true;
+        }
+
+break_main:;
+    }
+
+    return false;
+}
+
 uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
 {
     assert(length <= ISO_DECIMAL_MAX_DIGITS);
 
-    uint8_t tdigits_[length];
+    uint8_t l = length;
+
+    uint8_t tdigits_[l];
     uint8_t *tdigits = tdigits_;
     uint8_t i;
-    for (i = 0; i < length; ++i)
+    for (i = 0; i < l; ++i)
         tdigits_[i] = digits[i];
 
     uint8_t *r = tdigits;
-    uint8_t iso8bit;
-    for (iso8bit = 0; bcd_gteq(r, length, BCD_6, sizeof(BCD_6)); ++iso8bit) {
+    uint8_t count;
+    for (count = 0; bcd_gteq(r, l, BCD_6, sizeof(BCD_6)); ++count) {
         // ISO 26 -> 25
-        if (length == 2 && r[0] == 2 && r[1] == 5)
+        if (l == 2 && r[0] == 2 && r[1] == 5)
             r[1] = 6;
         // ISO 12500 -> 12800
-        if (length == 6 && r[0] == '1' && r[1] == '2' && r[2] == '5' && r[3] == '0' && r[4] == '0' && r[5] == '0')
+        if (l == 6 && r[0] == '1' && r[1] == '2' && r[2] == '5' && r[3] == '0' && r[4] == '0' && r[5] == '0')
             r[2] = 8;
 
-        r = bcd_div_by_lt10(r, length, 2);
-        length = bcd_length_after_op(tdigits, length, r);
+        r = bcd_div_by_lt10(r, l, 2);
+        l = bcd_length_after_op(tdigits, l, r);
         tdigits = r;
     }
 
-    return iso8bit-1;
+    uint8_t stops = (count-1)*8;
+
+    return stops;
 }
 
 // We represent ISO in 1/8 stops, with 0 as ISO 6.
@@ -204,7 +276,6 @@ uint8_t aperture_given_shutter_speed_iso_ev(uint8_t speed_, uint8_t iso_, uint8_
 
 int main()
 {
-#if 0
     shutter_string_output_t sso;
     uint8_t s;
     for (s = SS_MIN; s <= SS_MAX; ++s) {
@@ -221,14 +292,6 @@ int main()
         printf("A:  %s\n", APERTURE_STRING_OUTPUT_STRING(aso));
     }
 
-    printf("\nExposures at ISO 100:\n");
-
-    iso_string_output_t iso;
-    for (uint8_t i = 0; i < 15*8; i += 8) {
-        iso_to_string(i /* ISO 100 */, &iso);
-        printf("ISO: %s [%i]\n", ISO_STRING_OUTPUT_STRING(iso), i);
-    }
-
     printf("\nTesting aperture_given_shutter_speed_iso_ev\n");
     uint8_t is, ss, ev, ap;
     for (is = ISO_MIN; is <= ISO_MAX; ++is) {
@@ -237,9 +300,8 @@ int main()
                 ap = aperture_given_shutter_speed_iso_ev(ss, is, ev);
                 shutter_speed_to_string(ss, &sso);
                 aperture_to_string(ap, &aso);
-                iso_to_string(is, &iso);
-                printf("ISO %s,  %s  %s (EV = %.2f)   [%i, %i, %i : %i]\n",
-                       ISO_STRING_OUTPUT_STRING(iso),
+                printf("ISO %f stops from 6,  %s  %s (EV = %.2f)   [%i, %i, %i : %i]\n",
+                       ((float)is) / 8.0,
                        SHUTTER_STRING_OUTPUT_STRING(sso),
                        APERTURE_STRING_OUTPUT_STRING(aso),
                        ((float)(((int16_t)(ev))-(5*8)))/8.0,
@@ -247,7 +309,6 @@ int main()
              }
         }
     }
-#endif
 
     static uint8_t isobcds[] = {
         7,   1, 6, 0, 0, 0, 0, 0,  0,
@@ -277,10 +338,11 @@ int main()
         uint8_t offset = i+8-length;
         uint8_t *isodigits = isobcds+offset;
 
+        bool is_full = iso_is_full_stop(isodigits, length);
         uint8_t stops = iso_bcd_to_stops(isodigits, length);
         bcd_to_string(isodigits, length);
 
-        printf("ISO %s = %i stops from ISO 6\n", isodigits, stops);
+        printf("ISO %s (%sfull) = %i stops from ISO 6\n", isodigits, is_full ? "" : "not ", stops/8);
     }
 
     return 0;

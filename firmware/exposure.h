@@ -40,17 +40,8 @@ typedef struct aperture_string_output {
 } aperture_string_output_t;
 #define APERTURE_STRING_OUTPUT_STRING(aso) ((aso).chars)
 
-typedef struct iso_string_output {
-    uint8_t chars[9];
-    uint8_t length; // Does not include null terminator.
-    uint8_t offset;
-} iso_string_output_t;
-#define ISO_STRING_OUTPUT_STRING(iso) (&((iso).chars[(iso).offset]))
-
-
 void shutter_speed_to_string(uint8_t speed, shutter_string_output_t *eso);
 void aperture_to_string(uint8_t aperture, aperture_string_output_t *aso);
-void iso_to_string(uint8_t iso, iso_string_output_t *out);
 uint8_t aperture_given_shutter_speed_iso_ev(uint8_t speed_, uint8_t iso_, uint8_t ev_);
 
 #endif
