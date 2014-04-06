@@ -250,6 +250,24 @@ int main(int argc, char **argv) {
 
         printf("Aperture is %s\n", buffer);
     }
+    else if (!strcmp(argv[1], "setiso")) {
+        uint8_t len = strlen(argv[2]);
+        nBytes = libusb_control_transfer(
+            handle,
+            LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_OUT/*host to device */,
+            USB_BREQUEST_GET_SHUTTER_PRIORITY_EXPOSURE,
+            0, 0,
+            (uint8_t *)(argv[2]),
+            len,
+            5000
+        );
+        if (nBytes < 0) {
+            fprintf(stderr, "%s", libusb_strerror(nBytes));
+            return 1;
+        }
+
+        printf("ISO set\n");
+    }
     else {
         fprintf(stderr, "Unrecognized command\n");
     }
