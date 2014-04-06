@@ -218,7 +218,7 @@ int main(int argc, char **argv) {
             handle,
             LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_IN/*device to host */,
             USB_BREQUEST_SET_SHUTTER_SPEED,
-            80 /*1/15*/, 3*8/*iso 100*/,
+            80 /*1/15*/, 0,
             buffer,
             0,
             5000
@@ -228,7 +228,7 @@ int main(int argc, char **argv) {
             return 1;
         }
 
-        printf("Shutter speed set to 1/15 at ISO 100\n");
+        printf("Shutter speed set to 1/15\n");
     }
     else if (!strcmp(argv[1], "ap")) {
         aperture_string_output_t aso;

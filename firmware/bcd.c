@@ -89,15 +89,17 @@ uint8_t bcd_length_after_op(const uint8_t *oldptr, uint8_t oldlength, const uint
 
 void bcd_to_string(uint8_t *digits, uint8_t length)
 {
-    for (uint8_t i = 0; i < length; ++i)
+    uint8_t i;
+    for (i = 0; i < length; ++i)
         digits[i] += 48;
 }
 
-#ifndef TEST
+#ifdef TEST
 void debug_print_bcd(uint8_t *digits, uint8_t length)
 {
     uint8_t digits2[length + 1];
-    for (uint8_t i = 0; i < length; ++i)
+    uint8_t i;
+    for (i = 0; i < length; ++i)
         digits2[i] = digits[i];
     digits2[length] = 0;
     bcd_to_string(digits2, length);
@@ -108,20 +110,15 @@ void debug_print_bcd(uint8_t *digits, uint8_t length)
 // Save some code space by implementing <, <=, >, >=, = in one function.
 // This function is called by macros bcd_lt, bcd_gteq, etc.
 bool bcd_cmp(const uint8_t *digits1, uint8_t length1, const uint8_t *digits2, uint8_t length2,
-             uint8_t which /* 0 == eq, 1 = lteq, 2 = gteq, 3 = lt, 4 = gt */)
+             uint8_t which) // 0 == eq, 1 = lteq, 2 = gteq, 3 = lt, 4 = gt)
 {
     uint8_t i, j;
     uint8_t zeroes1 = 0;
     uint8_t zeroes2 = 0;
-    uint8_t lmax;
-    if (length2 > length1) {
+    if (length2 > length1)
         zeroes1 = length2 - length1;
-        lmax = length2;
-    }
-    else {
+    else
         zeroes2 = length1 - length2;
-        lmax = length1;
-    }
 
     i = 0, j = 0;
     for (; i < length1;) {
@@ -192,7 +189,6 @@ uint8_t *bcd_div_by_lt10(uint8_t *digits, uint8_t length, uint8_t by)
         for (c = 0; n >= by; ++c, n -= by);
         rem = n;
 
-        uint8_t j;
         digits[outi] = c;
     }
 

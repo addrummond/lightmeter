@@ -7,7 +7,7 @@
 
 #include <usbdrv.h>
 
-#include <settings.h>
+#include <state.h>
 #include <usbconstants.h>
 #include <calculate.h>
 #include <exposure.h>
@@ -18,13 +18,6 @@
      ADC pos in    (PB4) 3 ---- 6 (PB1)   LED
             GND          4 ---- 5 (PB0)   USB D-
  */
-
-static uint8_t setting_ADC_TEMPERATURE_OFFSET = 0;
-
-void read_settings_from_eeprom()
-{
-    setting_ADC_TEMPERATURE_OFFSET = read_byte_setting(BYTE_SETTING_ADC_TEMPERATURE_OFFSET);
-}
 
 const uint8_t ADMUX_CLEAR_SOURCE = ~((1 << MUX3) | (1 << MUX2) | (1 << MUX1) | (1 << MUX0));
 // Set differential ADC with PB4 pos, PB3 neg, and 1x gain (see atiny85 datasheet p. 135).
@@ -94,15 +87,11 @@ void setup_output_ports()
 
 volatile uint8_t shutter_speed = 0;
 volatile uint8_t aperture = 0;
-volatile uint8_t iso = 0;
 
 typedef enum priority {
     NO_PRIORITY, SHUTTER_PRIORITY, APERTURE_PRIORITY
 } priority_t;
 volatile priority_t priority = NO_PRIORITY;
-
-aperture_string_output_t calculated_aperture_string;
-shutter_string_output_t calculated_shutter_speed_string;
 
 void led_test(void);
 void handle_measurement()
@@ -117,8 +106,8 @@ void handle_measurement()
     last_ev_reading = ev;
 
     if (priority == SHUTTER_PRIORITY) {
-        uint8_t ap = aperture_given_shutter_speed_iso_ev(shutter_speed, iso, ev);
-        aperture_to_string(ap, &calculated_aperture_string);
+        uint8_t ap = aperture_given_shutter_speed_iso_ev(global_meter_state.shutter_speed, global_meter_state.stops_iso, ev);
+        aperture_to_string(ap, &global_meter_state.aperture_string);
     }
 }
 
@@ -129,11 +118,14 @@ void led_test()
     PORTB &= ~(0b10);
 }
 
-const uchar testbuffer[] = "Hello world XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX!"; // length 64
+const uchar testbuffer[] = "Hello world test message consisting of 64 bytes................."; // length 64
+
+static uint8_t last_brequest;
+static uint8_t usb_input_buffer[64];
+static uint8_t usb_input_buffer_current_position;
+static uint8_t usb_input_buffer_bytes_remaining;
 
 USB_PUBLIC uchar usbFunctionSetup(uchar setupData[8]) {
-    static uint8_t buf[1];
-
     usbRequest_t *rq = (void *)setupData;
 
     switch (rq->bRequest) {
@@ -144,34 +136,31 @@ USB_PUBLIC uchar usbFunctionSetup(uchar setupData[8]) {
         usbMsgPtr = (usbMsgPtr_t)testbuffer;
         return len;
     } break;
-    case USB_BREQUEST_READ_BYTE_SETTING: {
-        buf[0] = read_byte_setting(rq->wIndex.bytes[0]);
-        usbMsgPtr = (usbMsgPtr_t)buf;
-        return 1;
-    } break;
-    case USB_BREQUEST_WRITE_BYTE_SETTING: {
-        write_byte_setting(rq->wIndex.bytes[0], rq->wValue.bytes[0]);
-        return 0;
-    } break;
     case USB_BREQUEST_GET_EV: {
         usbMsgPtr = (usbMsgPtr_t)(&last_ev_reading); // This is volatile, but I think it's ok.
         return 1;
     } break;
     case USB_BREQUEST_GET_SHUTTER_PRIORITY_EXPOSURE: {
-        if (! calculated_aperture_string.length) // No exposure calculated yet.
+        if (! global_meter_state.aperture_string.length) // No exposure calculated yet.
             return 0;
-        usbMsgPtr = (usbMsgPtr_t)(APERTURE_STRING_OUTPUT_STRING(calculated_aperture_string));
-        return calculated_aperture_string.length + 1; // Include '\0' terminator.
+        usbMsgPtr = (usbMsgPtr_t)(APERTURE_STRING_OUTPUT_STRING(global_meter_state.aperture_string));
+        return global_meter_state.aperture_string.length + 1; // Include '\0' terminator.
+    } break;
+    case USB_BREQUEST_SET_ISO: {
+        last_brequest = rq->bRequest;
+        usb_input_buffer_current_position = 0;
+        usb_input_buffer_bytes_remaining = rq->wLength.word;
+        if (usb_input_buffer_bytes_remaining > sizeof(usb_input_buffer))
+            usb_input_buffer_bytes_remaining = sizeof(usb_input_buffer);
+        return USB_NO_MSG; // Go to usbFunctionWrite
     } break;
     case USB_BREQUEST_SET_SHUTTER_SPEED: {
         shutter_speed = rq->wValue.bytes[0];
-        iso = rq->wIndex.bytes[0];
         priority = SHUTTER_PRIORITY;
         return 0;
     } break;
     case USB_BREQUEST_SET_APERTURE: {
         aperture = rq->wValue.bytes[0];
-        iso = rq->wIndex.bytes[0];
         priority = APERTURE_PRIORITY;
         return 0;
     } break;
@@ -188,9 +177,36 @@ USB_PUBLIC uchar usbFunctionSetup(uchar setupData[8]) {
     return 0;
 }
 
+USB_PUBLIC uchar usbFunctionWrite(uchar *data, uchar len)
+{
+    if (len > usb_input_buffer_bytes_remaining)
+        len = usb_input_buffer_bytes_remaining;
+
+    usb_input_buffer_bytes_remaining -= len;
+    uint8_t i;
+    for (i = 0; i < len; ++i)
+        usb_input_buffer[usb_input_buffer_current_position++] = data[i];
+
+    if (usb_input_buffer_bytes_remaining != 0)
+        return 0;
+
+    switch (last_brequest) {
+    case USB_BREQUEST_SET_ISO: {
+        global_meter_state.bcd_iso_length = usb_input_buffer_current_position;
+        for (i = 0; i < usb_input_buffer_current_position; ++i) {
+            global_meter_state.bcd_iso[i] = usb_input_buffer[i];
+        }
+
+        global_meter_state.stops_iso = iso_bcd_to_stops(global_meter_state.bcd_iso, global_meter_state.bcd_iso_length);
+    } break;
+    }
+
+    return 1;
+}
+
 int main()
 {
-    read_settings_from_eeprom();
+    initialize_global_meter_state();
 
     setup_output_ports();
     setup_ADC();

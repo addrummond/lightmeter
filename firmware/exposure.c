@@ -173,8 +173,6 @@ static uint8_t *full_stop_iso_into_bcd(uint8_t byte1, uint8_t zeroes, uint8_t *d
     if (byte1 & 0xF0)
         digits[length-ilength-1] = byte1 >> 4;
 
-    debug_print_bcd(digits + length - ilength, ilength);
-
     return digits + length - ilength;
 }
 
