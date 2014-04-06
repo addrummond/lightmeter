@@ -425,7 +425,7 @@ shutter_speeds = [
     '/813',
     '/875',
     '/938',
-    '/100', ### # Last one zero not included from this point on.
+    '/100', ### # Last zero not included from this point on.
     '/130',
     '/125',
     '/138',
