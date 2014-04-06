@@ -62,7 +62,7 @@ uint8_t *bcd_sub(uint8_t *digits1, uint8_t digits1_length, uint8_t *digits2, uin
         i = i_-1;
         j = j_-1;
 
-        if (digits1[i] < digits2[i]) {
+        if (digits1[i] < digits2[j]) {
             // Borrow
             assert(i > 0);
 
@@ -165,7 +165,7 @@ bool bcd_cmp(const uint8_t *digits1, uint8_t length1, const uint8_t *digits2, ui
         }
     }
 
-    return (which >= 0 || which == 2);
+    return (which >= 0 && which <= 2);
 }
 
 static const uint8_t TEN[] = { 0, 10, 20, 30, 40, 50, 60, 70, 80, 90 };
@@ -236,6 +236,17 @@ static void add_test3()
     bcd_to_string(r, bcd_length_after_op(digits1+1, 3, r));
     printf("008 + 886 = %s\n", r);
     assert(!strcmp((char *)r, "894"));
+}
+
+static void sub_test1()
+{
+    uint8_t digits1[] = { '\0', 8, 8, 6, '\0' };
+    uint8_t digits2[] = {             8, '\0' };
+
+    uint8_t *r = bcd_sub(digits1+1, 3, digits2, 1);
+    bcd_to_string(r, bcd_length_after_op(digits1+1, 3, r));
+    printf("886 - 8 = %s\n", r);
+    assert(!strcmp((char *)r, "878"));
 }
 
 static void add_test4()
@@ -333,6 +344,8 @@ int main()
     add_test2();
     add_test3();
     add_test4();
+
+    sub_test1();
 
     gt_test1();
     gt_test2();
