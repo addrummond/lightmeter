@@ -311,10 +311,6 @@ uint8_t aperture_given_shutter_speed_iso_ev(uint8_t speed_, uint8_t iso_, uint8_
     int16_t given_iso = (int16_t)iso_;
     int16_t given_ev = (int16_t)ev_;
 
-    int16_t isodiff = given_iso - the_iso; // Will always be positive or 0
-    the_aperture += isodiff;
-    the_ev += isodiff;
-
     int16_t shutdiff = given_speed - the_speed; // Will always be positive.
     the_ev += shutdiff;
 
@@ -325,14 +321,13 @@ uint8_t aperture_given_shutter_speed_iso_ev(uint8_t speed_, uint8_t iso_, uint8_
         return AP_MAX;
     else if (the_aperture < (int16_t)AP_MIN)
         return AP_MIN;
-    return the_aperture;
+    return the_aperture + (given_iso - the_iso);
 }
 
 #ifdef TEST
 
 int main()
 {
-#if 0
     shutter_string_output_t sso;
     uint8_t s;
     for (s = SS_MIN; s <= SS_MAX; ++s) {
@@ -352,8 +347,21 @@ int main()
     printf("\nTesting aperture_given_shutter_speed_iso_ev\n");
     uint8_t is, ss, ev, ap;
     for (is = ISO_MIN; is <= ISO_MAX; ++is) {
+        ss = 12*8; // 1/60
+        ev = 15*8;
+        ap = aperture_given_shutter_speed_iso_ev(ss, is, ev);
+        shutter_speed_to_string(ss, &sso);
+        aperture_to_string(ap, &aso);
+        printf("ISO %f stops from 6,  %s  %s (EV = %.2f)   [%i, %i, %i : %i]\n",
+               ((float)is) / 8.0,
+               SHUTTER_STRING_OUTPUT_STRING(sso),
+               APERTURE_STRING_OUTPUT_STRING(aso),
+               ((float)(((int16_t)(ev))-(5*8)))/8.0,
+               is, ss, ev, ap);
+    }
+    /*for (is = ISO_MIN; is <= ISO_MAX; ++is) {
         for (ss = SS_MIN; ss <= SS_MAX; ++ss) {
-             for (ev = 40; ev <= EV_MAX; ++ev) {
+          for (ev = 40; ev <= EV_MAX; ++ev) {
                 ap = aperture_given_shutter_speed_iso_ev(ss, is, ev);
                 shutter_speed_to_string(ss, &sso);
                 aperture_to_string(ap, &aso);
@@ -365,8 +373,7 @@ int main()
                        is, ss, ev, ap);
              }
         }
-    }
-#endif
+        }*/
 
     static uint8_t isobcds[] = {
         7,   1, 6, 0, 0, 0, 0, 0,  0,
