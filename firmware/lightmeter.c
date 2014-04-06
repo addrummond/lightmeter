@@ -154,6 +154,10 @@ USB_PUBLIC uchar usbFunctionSetup(uchar setupData[8]) {
             usb_input_buffer_bytes_remaining = sizeof(usb_input_buffer);
         return USB_NO_MSG; // Go to usbFunctionWrite
     } break;
+    case USB_BREQUEST_GET_STOPS_ISO: {
+        usbMsgPtr = (usbMsgPtr_t)(&(global_meter_state.stops_iso));
+        return 1;
+    } break;
     case USB_BREQUEST_SET_SHUTTER_SPEED: {
         shutter_speed = rq->wValue.bytes[0];
         priority = SHUTTER_PRIORITY;
@@ -196,6 +200,7 @@ USB_PUBLIC uchar usbFunctionWrite(uchar *data, uchar len)
         for (i = 0; i < usb_input_buffer_current_position; ++i) {
             global_meter_state.bcd_iso[i] = usb_input_buffer[i];
         }
+        string_to_bcd(global_meter_state.bcd_iso, usb_input_buffer_current_position);
 
         global_meter_state.stops_iso = iso_bcd_to_stops(global_meter_state.bcd_iso, global_meter_state.bcd_iso_length);
     } break;

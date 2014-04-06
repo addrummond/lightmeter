@@ -94,6 +94,13 @@ void bcd_to_string(uint8_t *digits, uint8_t length)
         digits[i] += 48;
 }
 
+void string_to_bcd(uint8_t *digits, uint8_t length)
+{
+    uint8_t i;
+    for (i = 0; i < length; ++i)
+        digits[i] -= 48;
+}
+
 #ifdef TEST
 void debug_print_bcd(uint8_t *digits, uint8_t length)
 {

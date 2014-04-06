@@ -1,11 +1,14 @@
 #include <state.h>
+#include <exposure.h>
 
 #include <avr/eeprom.h>
 
 meter_state_t global_meter_state = {
     { 0, 0, 0, 0, 1, 0, 0 },   // bcd_iso
     3,                         // bcd_iso_length
-    4                          // stops_iso
+    4,                         // stops_iso
+    48,                        // aperture (f8)
+    96,                        // shutter speed (1/125)
 };
 
 void write_meter_state(const meter_state_t *ms)
@@ -20,10 +23,13 @@ void read_meter_state(meter_state_t *ms)
 
 void initialize_global_meter_state()
 {
+    aperture_to_string(global_meter_state.aperture, &(global_meter_state.aperture_string));
+    shutter_speed_to_string(global_meter_state.shutter_speed, &(global_meter_state.shutter_speed_string));
+
     // We assume that EEPROM has never been written if the first byte is zero.
     // In this case, we don't do anything, since the global_meter_state variable
     // has already been initialized with the defaults.
     //    if (eeprom_read_byte((void *)0) != 0) {
-        read_meter_state(&global_meter_state);
+    //        read_meter_state(&global_meter_state);
         //    }
 }

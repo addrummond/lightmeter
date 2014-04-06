@@ -213,12 +213,30 @@ int main(int argc, char **argv) {
 
         printf("Raw light: %i\n", (int)buffer[0] | (((int)buffer[1]) << 8));
     }
-    else if (!strcmp(argv[1], "shutter15")) {
+    else if (!strcmp(argv[1], "getstopsiso")) {
+        nBytes = libusb_control_transfer(
+            handle,
+            LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_IN/*device to host */,
+            USB_BREQUEST_GET_STOPS_ISO,
+            0, 0,   // wvalue, windex
+            buffer,
+            1,      // how much to read
+            5000    // 5000ms timeout
+        );
+        if (nBytes < 0) {
+            fprintf(stderr, "%s", libusb_strerror(nBytes));
+            return 1;
+        }
+        assert(nBytes == 1);
+
+        printf("ISO in stops from ISO 6: %i\n", (int)buffer[0]);
+    }
+    else if (!strcmp(argv[1], "shutter15") || !strcmp(argv[1], "shutter250")) {
         nBytes = libusb_control_transfer(
             handle,
             LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_IN/*device to host */,
             USB_BREQUEST_SET_SHUTTER_SPEED,
-            80 /*1/15*/, 0,
+            argv[1][7] == '1' ? 80 /*1/15*/ : 112 /*1/200*/, 0,
             buffer,
             0,
             5000
@@ -228,7 +246,7 @@ int main(int argc, char **argv) {
             return 1;
         }
 
-        printf("Shutter speed set to 1/15\n");
+        printf("Shutter speed set to %s\n", argv[1][7] == '1' ? "1/15" : "1/250");
     }
     else if (!strcmp(argv[1], "ap")) {
         aperture_string_output_t aso;
@@ -252,17 +270,18 @@ int main(int argc, char **argv) {
     }
     else if (!strcmp(argv[1], "setiso")) {
         uint8_t len = strlen(argv[2]);
+        printf("LENGTH %i\n", len);
         nBytes = libusb_control_transfer(
             handle,
             LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_OUT/*host to device */,
-            USB_BREQUEST_GET_SHUTTER_PRIORITY_EXPOSURE,
+            USB_BREQUEST_SET_ISO,
             0, 0,
             (uint8_t *)(argv[2]),
             len,
             5000
         );
         if (nBytes < 0) {
-            fprintf(stderr, "%s", libusb_strerror(nBytes));
+            fprintf(stderr, "USB ERROR: %s\n", libusb_strerror(nBytes));
             return 1;
         }
 
