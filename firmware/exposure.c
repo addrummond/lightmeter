@@ -131,8 +131,6 @@ void aperture_to_string(uint8_t aperture, aperture_string_output_t *aso)
     aso->length = last;
 }
 
-// Convert a BCD ISO number into the closest equivalent 8-bit representation.
-// In the 8-bit representation, ISOs start from 6 and go up in steps of 1/8 stop.
 static const uint8_t BCD_50[] = { 5, 0 };
 static const uint8_t BCD_6[] = { 6 };
 // Table storing full-stop ISO numbers. Does not include 12500 which must be
@@ -223,6 +221,8 @@ continue_main:;
     return false;
 }
 
+// Convert a BCD ISO number into the closest equivalent 8-bit representation.
+// In the 8-bit representation, ISOs start from 6 and go up in steps of 1/8 stop.
 uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
 {
     assert(length <= ISO_DECIMAL_MAX_DIGITS);
