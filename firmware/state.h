@@ -26,6 +26,9 @@ typedef struct meter_state {
     uint8_t aperture;
     uint8_t shutter_speed;
 
+    uint8_t pos_exp_comp;
+    uint8_t neg_exp_comp;
+
     aperture_string_output_t aperture_string;
     shutter_string_output_t shutter_speed_string;
 } meter_state_t;
