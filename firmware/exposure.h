@@ -42,7 +42,9 @@ typedef struct aperture_string_output {
 
 void shutter_speed_to_string(uint8_t speed, shutter_string_output_t *eso);
 void aperture_to_string(uint8_t aperture, aperture_string_output_t *aso);
-uint8_t aperture_given_shutter_speed_iso_ev(uint8_t speed_, uint8_t iso_, uint8_t ev_);
+uint8_t x_given_shutter_speed_iso_ev(uint8_t given_x_, uint8_t iso_, uint8_t ev_, uint8_t x);
+#define aperture_given_shutter_speed_iso_ev(a,b,c) x_given_shutter_speed_iso_ev(a,b,c,0)
+#define shutter_speed_given_aperture_iso_ev(a,b,c) x_given_shutter_speed_iso_ev(a,b,c,1)
 uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length);
 
 #endif
