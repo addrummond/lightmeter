@@ -7,6 +7,11 @@ import sys
 
 reference_voltage              = 5500.0 # mV
 op_amp_gain                    = 56.4/2.0
+
+# The graph in measurem.pdf is not for the BPW34.
+# The BPW34 has a 20mV higher OCV listed on its data sheet compared
+# to the diode graphed in measurem.pdf. However, adding a 20mV
+# offset here appears to decrease rather than increase accuracy.
 irradience_constant_adjustment = 0.0
 
 ##########
@@ -35,10 +40,6 @@ def ocv_and_rdc_to_irrad(ocv, rdc):
 
     slope = 62.5 # Negative slope
 
-    # -20.0 because graph in measurem.pdf is not for BPW34,
-    # which has a 20mV higher OCV listed on data sheet.
-    # UPDATE: Adding the -20 appears to make it less accurate;
-    # it seems that the graph is more-or-less correct for the BPW34 too.
     ica = irradience_constant_adjustment
     l1Val = (ocv - 275.0 + ica) / slope
     l2Val = (ocv - 212.5 + ica) / slope
