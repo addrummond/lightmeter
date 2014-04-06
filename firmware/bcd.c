@@ -53,6 +53,22 @@ uint8_t *bcd_add(uint8_t *digits1, uint8_t digits1_length,
     return digits1;
 }
 
+uint8_t *bcd_sub(uint8_t *digits1, uint8_t digits1_length, uint8_t *digits2, uint8_t digits2_length)
+{
+    assert(digits1_length >= digits2_length);
+
+    uint8_t i, j;
+    uint8_t shorter_by = 0;
+    for (i = digits1_length-1, j = digits2_length-1; j >= 0; --i, --j) {
+        assert(digits1[i] >= digits2[j]);
+        digits1[i] -= digits2[j];
+        if (digits1[i] == 0)
+            ++shorter_by;
+    }
+
+    return digits1 + shorter_by;
+}
+
 uint8_t bcd_length_after_op(const uint8_t *oldptr, uint8_t oldlength, const uint8_t *newptr)
 {
     return oldlength + (oldptr - newptr);

@@ -139,24 +139,23 @@ static const uint8_t BCD_6[] = { 6 };
 // checked for separately. First byte is big-endian 4-bit BCD rep of first
 // two digits followed by number of trailing zeros.
 static const uint8_t FULL_STOP_ISOS[] PROGMEM = {
-    1 | (6 << 4), 5,  // 1600000
-    8, 5,             // 800000
-    4, 5,             // 400000
-    2, 5,             // 200000
-    1, 5,             // 100000
-    5, 4,             // 50000
-    2 | (5 << 4), 3,  // 25000 [skip 12500 next]
-    6 | (4 << 4), 2,  // 6400
-    3 | (2 << 4), 2,  // 3200
-    1 | (6 << 4), 2,  // 1600
-    8, 2,             // 800
-    4, 2,             // 400
-    2, 2,             // 200
-    1, 2,             // 100
-    5, 1,             // 50
-    2 | (5 << 4), 0,  // 25
+    6, 0,             // 6
     1 | (2 << 4), 0,  // 12
-    6, 0              // 6
+    2 | (5 << 4), 0,  // 25
+    5, 1,             // 50
+    1, 2,             // 100
+    2, 2,             // 200
+    4, 2,             // 400
+    8, 2,             // 800
+    1 | (6 << 4), 2,  // 1600
+    3 | (2 << 4), 2,  // 3200
+    6 | (4 << 4), 2,  // 6400
+    2 | (5 << 4), 3,  // 25000 [skip 12500 next]
+    5, 4,             // 50000
+    1, 5,             // 100000
+    2, 5,             // 200000
+    4, 5,             // 400000
+    1 | (6 << 4), 5   // 1600000
 };
 
 bool iso_is_full_stop(const uint8_t *digits, uint8_t length)
@@ -230,6 +229,43 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
     }
 
     uint8_t stops = (count-1)*8;
+
+    // If it's not a full-stop ISO number then we've calculated the stop equivalent
+    // of the next full-stop ISO number ABOVE the given number.
+    // Now we find out how many times we need to subtract one eighth to
+    // get to the full stop ISO below the specified ISO.
+    if (! iso_is_full_stop(digits, length)) {
+        uint8_t x = count;
+        uint8_t nextup = pgm_read_byte(&FULL_STOP_ISOS[x]);
+        uint8_t nextup_zeroes = pgm_read_byte(&FULL_STOP_ISOS[x + 1]);
+        uint8_t nextup_sigs = (nextup & 0xF0 ? 2 : 1);
+        uint8_t nextup_length = nextup_zeroes + nextup_sigs;
+        uint8_t nextup_digits[ISO_DECIMAL_MAX_DIGITS];
+        nextup_digits[ISO_DECIMAL_MAX_DIGITS-1-nextup_zeroes] = nextup;
+        if (nextup & 0xF0)
+            nextup_digits[ISO_DECIMAL_MAX_DIGITS-2-nextup_zeroes] = nextup & 0x0F;
+        uint8_t j;
+        for (j = ISO_DECIMAL_MAX_DIGITS - nextup_zeroes; j < ISO_DECIMAL_MAX_DIGITS; ++j)
+            nextup_digits[j] = 0;
+
+        // Calculate 1/8.
+        uint8_t eighth_digits[nextup_length];
+        for (j = 0; j < nextup_length; ++j)
+            eighth_digits[j] = nextup_digits[j + ISO_DECIMAL_MAX_DIGITS - nextup_length];
+        uint8_t *er = bcd_div_by_lt10(eighth_digits, nextup_length, 8);
+        uint8_t eighth_length = bcd_length_after_op(eighth_digits, nextup_length, er);
+
+        uint8_t subs;
+        l = nextup_length;
+        uint8_t *or = nextup_digits, *r = nextup_digits;
+        for (subs = 0; bcd_gt(r, l, digits, length); ++subs) {
+            r = bcd_sub(r, l, eighth_digits, eighth_length);
+            l = bcd_length_after_op(or, l, r);
+            or = r;
+        }
+
+        stops -= subs;
+    }
 
     return stops;
 }
