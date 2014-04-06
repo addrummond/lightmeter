@@ -155,8 +155,30 @@ static const uint8_t FULL_STOP_ISOS[] PROGMEM = {
     1, 5,             // 100000
     2, 5,             // 200000
     4, 5,             // 400000
+    8, 5,             // 800000
     1 | (6 << 4), 5   // 1600000
 };
+
+static uint8_t *full_stop_iso_into_bcd(uint8_t byte1, uint8_t zeroes, uint8_t *digits, uint8_t length)
+{
+    uint8_t sigs = 1;
+    if (byte1 & 0xF0)
+        ++sigs;
+    uint8_t ilength = sigs + zeroes;
+
+    uint8_t i;
+    for (i = 0; i < zeroes; ++i) {
+        digits[length-zeroes-1+i] = 0;
+    }
+
+    digits[length-ilength] = byte1 & 0xF;
+    if (byte1 & 0xF0)
+        digits[length-ilength-1] = byte1 >> 4;
+
+    debug_print_bcd(digits + length - ilength, ilength);
+
+    return digits + length - ilength;
+}
 
 bool iso_is_full_stop(const uint8_t *digits, uint8_t length)
 {
@@ -235,23 +257,17 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
     // Now we find out how many times we need to subtract one eighth to
     // get to the full stop ISO below the specified ISO.
     if (! iso_is_full_stop(digits, length)) {
-        uint8_t nextup = pgm_read_byte(&FULL_STOP_ISOS[count << 1]);
-        uint8_t nextup_zeroes = pgm_read_byte(&FULL_STOP_ISOS[(count << 1) + 1]);
-        uint8_t nextup_sigs = (nextup & 0xF0 ? 2 : 1);
-        uint8_t nextup_length = nextup_zeroes + nextup_sigs;
         uint8_t nextup_digits_[ISO_DECIMAL_MAX_DIGITS];
-        uint8_t *nextup_digits = nextup_digits_ + ISO_DECIMAL_MAX_DIGITS - nextup_length;
-        nextup_digits_[ISO_DECIMAL_MAX_DIGITS-1-nextup_zeroes] = nextup;
-        if (nextup & 0xF0)
-            nextup_digits_[ISO_DECIMAL_MAX_DIGITS-2-nextup_zeroes] = nextup & 0x0F;
-        uint8_t j;
-        for (j = ISO_DECIMAL_MAX_DIGITS - nextup_zeroes; j < ISO_DECIMAL_MAX_DIGITS; ++j) {
-            nextup_digits_[j] = 0;
-        }
+        uint8_t *nextup_digits = full_stop_iso_into_bcd(pgm_read_byte(&FULL_STOP_ISOS[(count << 1)]),
+                                                        pgm_read_byte(&FULL_STOP_ISOS[(count << 1) + 1]),
+                                                        nextup_digits_,
+                                                        ISO_DECIMAL_MAX_DIGITS);
+        uint8_t nextup_length = ISO_DECIMAL_MAX_DIGITS - (nextup_digits - nextup_digits_);
 
         // Calculate 1/16. (Because half of x*(1/8)x is x*(1/16).)
         // TODO: Currently we have to do two divisions because of limited BCD functionality -- gross.
         uint8_t eighth_digits_[nextup_length];
+        uint8_t j;
         for (j = 0; j < nextup_length; ++j)
             eighth_digits_[j] = nextup_digits[j];
         uint8_t *eighth_digits = bcd_div_by_lt10(eighth_digits_, nextup_length, 8);
@@ -368,6 +384,8 @@ int main()
         3,   0, 0, 0, 0, 8, 0, 0,  0,
         3,   0, 0 ,0 ,0, 4, 0, 0,  0,
         3,   0, 0, 0, 0, 2, 0, 0,  0,
+        3,   0, 0, 0, 0, 1, 7, 4,  0,
+        3,   0, 0, 0, 0, 1, 6, 2,  0,
         3,   0, 0, 0, 0, 1, 5, 0,  0,
         3,   0, 0, 0, 0, 1, 2, 5,  0,
         3,   0, 0, 0, 0, 1, 1, 2,  0,
