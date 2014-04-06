@@ -186,16 +186,12 @@ uint8_t *bcd_div_by_lt10(uint8_t *digits, uint8_t length, uint8_t by)
             digits[outi++] = 0;
         }
 
-        //        printf("N: %i (%i)\n", n, rem);
-
         uint8_t c;
         for (c = 0; n >= by; ++c, n -= by);
         rem = n;
 
         uint8_t j;
         digits[outi] = c;
-
-        //        printf("C %i\n", c);
     }
 
     // Strip leading zeroes.
