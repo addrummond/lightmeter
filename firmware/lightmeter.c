@@ -99,7 +99,11 @@ void handle_measurement()
 
     if (global_meter_state.priority == SHUTTER_PRIORITY) {
         uint8_t ap = aperture_given_shutter_speed_iso_ev(global_meter_state.shutter_speed, global_meter_state.stops_iso, ev);
-        aperture_to_string(ap, &global_meter_state.aperture_string);
+        aperture_to_string(ap, &(global_meter_state.aperture_string));
+    }
+    else if (global_meter_state.priority == APERTURE_PRIORITY) {
+        uint8_t shut = shutter_speed_given_aperture_iso_ev(global_meter_state.aperture, global_meter_state.stops_iso, ev);
+        shutter_speed_to_string(shut, &(global_meter_state.shutter_speed_string));
     }
 }
 
