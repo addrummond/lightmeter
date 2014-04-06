@@ -85,14 +85,6 @@ void setup_output_ports()
     PORTB = 0b00000010; // Set PB1 as output port.
 }
 
-volatile uint8_t shutter_speed = 0;
-volatile uint8_t aperture = 0;
-
-typedef enum priority {
-    NO_PRIORITY, SHUTTER_PRIORITY, APERTURE_PRIORITY
-} priority_t;
-volatile priority_t priority = NO_PRIORITY;
-
 void led_test(void);
 void handle_measurement()
 {
@@ -105,7 +97,7 @@ void handle_measurement()
 
     last_ev_reading = ev;
 
-    if (priority == SHUTTER_PRIORITY) {
+    if (global_meter_state.priority == SHUTTER_PRIORITY) {
         uint8_t ap = aperture_given_shutter_speed_iso_ev(global_meter_state.shutter_speed, global_meter_state.stops_iso, ev);
         aperture_to_string(ap, &global_meter_state.aperture_string);
     }
@@ -159,13 +151,13 @@ USB_PUBLIC uchar usbFunctionSetup(uchar setupData[8]) {
         return 1;
     } break;
     case USB_BREQUEST_SET_SHUTTER_SPEED: {
-        shutter_speed = rq->wValue.bytes[0];
-        priority = SHUTTER_PRIORITY;
+        global_meter_state.shutter_speed = rq->wValue.bytes[0];
+        global_meter_state.priority = SHUTTER_PRIORITY;
         return 0;
     } break;
     case USB_BREQUEST_SET_APERTURE: {
-        aperture = rq->wValue.bytes[0];
-        priority = APERTURE_PRIORITY;
+        global_meter_state.aperture = rq->wValue.bytes[0];
+        global_meter_state.priority = APERTURE_PRIORITY;
         return 0;
     } break;
     case USB_BREQUEST_GET_RAW_TEMPERATURE: {

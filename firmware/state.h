@@ -12,13 +12,20 @@
 // to use this in future to specify the locations of other blocks.
 #define STATE_BLOCK_START_ADDR ((void *)4);
 
+typedef enum priority {
+    NO_PRIORITY, SHUTTER_PRIORITY, APERTURE_PRIORITY
+} priority_t;
+
 typedef struct meter_state {
     uint8_t bcd_iso[ISO_DECIMAL_MAX_DIGITS];
     uint8_t bcd_iso_length;
     uint8_t stops_iso;
 
+    priority_t priority;
+
     uint8_t aperture;
     uint8_t shutter_speed;
+
     aperture_string_output_t aperture_string;
     shutter_string_output_t shutter_speed_string;
 } meter_state_t;

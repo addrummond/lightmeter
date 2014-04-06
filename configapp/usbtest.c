@@ -270,7 +270,6 @@ int main(int argc, char **argv) {
     }
     else if (!strcmp(argv[1], "setiso")) {
         uint8_t len = strlen(argv[2]);
-        printf("LENGTH %i\n", len);
         nBytes = libusb_control_transfer(
             handle,
             LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_OUT/*host to device */,
