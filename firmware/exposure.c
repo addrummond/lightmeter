@@ -235,9 +235,6 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
     // Now we find out how many times we need to subtract one eighth to
     // get to the full stop ISO below the specified ISO.
     if (! iso_is_full_stop(digits, length)) {
-        printf("HERE!!!!!\n");
-        debug_print_bcd(digits, length);
-        printf("\n");
         uint8_t nextup = pgm_read_byte(&FULL_STOP_ISOS[count << 1]);
         uint8_t nextup_zeroes = pgm_read_byte(&FULL_STOP_ISOS[(count << 1) + 1]);
         uint8_t nextup_sigs = (nextup & 0xF0 ? 2 : 1);
@@ -252,33 +249,27 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
             nextup_digits_[j] = 0;
         }
 
-        printf("BCD ");
-        debug_print_bcd(nextup_digits, nextup_length);
-        printf("\n");
-
-        // Calculate 1/8.
+        // Calculate 1/16. (Because half of x*(1/8)x is x*(1/16).)
+        // TODO: Currently we have to do two divisions because of limited BCD functionality -- gross.
         uint8_t eighth_digits_[nextup_length];
         for (j = 0; j < nextup_length; ++j)
-            eighth_digits_[j] = nextup_digits[j + ISO_DECIMAL_MAX_DIGITS - nextup_length];
+            eighth_digits_[j] = nextup_digits[j];
         uint8_t *eighth_digits = bcd_div_by_lt10(eighth_digits_, nextup_length, 8);
         uint8_t eighth_length = bcd_length_after_op(eighth_digits_, nextup_length, eighth_digits);
+        uint8_t *tmp = bcd_div_by_lt10(eighth_digits, eighth_length, 2);
+        eighth_length = bcd_length_after_op(eighth_digits, eighth_length, tmp);
+        eighth_digits = tmp;
 
         uint8_t subs;
         l = nextup_length;
         uint8_t *r = nextup_digits;
         for (subs = 0; bcd_gt(r, l, digits, length); ++subs) {
-            printf("SUB ");
-            debug_print_bcd(eighth_digits, eighth_length);
-            printf(" FROM ");
-            debug_print_bcd(r, l);
-            printf("\n");
             r = bcd_sub(r, l, eighth_digits, eighth_length);
             l = bcd_length_after_op(nextup_digits, l, r);
             nextup_digits = r;
         }
-        printf("SUBS %i\n", subs);
 
-        stops -= subs;
+        stops += 8 - subs + 1;
     }
 
     return stops;
@@ -378,6 +369,9 @@ int main()
         3,   0, 0 ,0 ,0, 4, 0, 0,  0,
         3,   0, 0, 0, 0, 2, 0, 0,  0,
         3,   0, 0, 0, 0, 1, 5, 0,  0,
+        3,   0, 0, 0, 0, 1, 2, 5,  0,
+        3,   0, 0, 0, 0, 1, 1, 2,  0,
+        3,   0, 0, 0, 0, 1, 0, 0,  0,
         2,   0, 0, 0, 0, 0, 5, 0,  0,
         2,   0, 0, 0, 0, 0, 2, 5,  0,
         2,   0, 0, 0, 0, 0, 1, 2,  0,
@@ -385,7 +379,7 @@ int main()
     };
 
     uint8_t i;
-    for (i = 0; i < 9*19; i += 9) {
+    for (i = 0; i < sizeof(isobcds); i += 9) {
         uint8_t length = isobcds[i];
         uint8_t offset = i+8-length;
         uint8_t *isodigits = isobcds+offset;
@@ -394,7 +388,7 @@ int main()
         uint8_t stops = iso_bcd_to_stops(isodigits, length);
         bcd_to_string(isodigits, length);
 
-        printf("ISO %s (%sfull) = %i stops from ISO 6\n", isodigits, is_full ? "" : "not ", stops/8);
+        printf("ISO %s (%sfull) = %.2f stops from ISO 6\n", isodigits, is_full ? "" : "not ", ((float)stops)/8.0);
     }
 
     return 0;
