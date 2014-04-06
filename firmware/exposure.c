@@ -235,34 +235,48 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
     // Now we find out how many times we need to subtract one eighth to
     // get to the full stop ISO below the specified ISO.
     if (! iso_is_full_stop(digits, length)) {
-        uint8_t x = count;
-        uint8_t nextup = pgm_read_byte(&FULL_STOP_ISOS[x]);
-        uint8_t nextup_zeroes = pgm_read_byte(&FULL_STOP_ISOS[x + 1]);
+        printf("HERE!!!!!\n");
+        debug_print_bcd(digits, length);
+        printf("\n");
+        uint8_t nextup = pgm_read_byte(&FULL_STOP_ISOS[count << 1]);
+        uint8_t nextup_zeroes = pgm_read_byte(&FULL_STOP_ISOS[(count << 1) + 1]);
         uint8_t nextup_sigs = (nextup & 0xF0 ? 2 : 1);
         uint8_t nextup_length = nextup_zeroes + nextup_sigs;
-        uint8_t nextup_digits[ISO_DECIMAL_MAX_DIGITS];
-        nextup_digits[ISO_DECIMAL_MAX_DIGITS-1-nextup_zeroes] = nextup;
+        uint8_t nextup_digits_[ISO_DECIMAL_MAX_DIGITS];
+        uint8_t *nextup_digits = nextup_digits_ + ISO_DECIMAL_MAX_DIGITS - nextup_length;
+        nextup_digits_[ISO_DECIMAL_MAX_DIGITS-1-nextup_zeroes] = nextup;
         if (nextup & 0xF0)
-            nextup_digits[ISO_DECIMAL_MAX_DIGITS-2-nextup_zeroes] = nextup & 0x0F;
+            nextup_digits_[ISO_DECIMAL_MAX_DIGITS-2-nextup_zeroes] = nextup & 0x0F;
         uint8_t j;
-        for (j = ISO_DECIMAL_MAX_DIGITS - nextup_zeroes; j < ISO_DECIMAL_MAX_DIGITS; ++j)
-            nextup_digits[j] = 0;
+        for (j = ISO_DECIMAL_MAX_DIGITS - nextup_zeroes; j < ISO_DECIMAL_MAX_DIGITS; ++j) {
+            nextup_digits_[j] = 0;
+        }
+
+        printf("BCD ");
+        debug_print_bcd(nextup_digits, nextup_length);
+        printf("\n");
 
         // Calculate 1/8.
-        uint8_t eighth_digits[nextup_length];
+        uint8_t eighth_digits_[nextup_length];
         for (j = 0; j < nextup_length; ++j)
-            eighth_digits[j] = nextup_digits[j + ISO_DECIMAL_MAX_DIGITS - nextup_length];
-        uint8_t *er = bcd_div_by_lt10(eighth_digits, nextup_length, 8);
-        uint8_t eighth_length = bcd_length_after_op(eighth_digits, nextup_length, er);
+            eighth_digits_[j] = nextup_digits[j + ISO_DECIMAL_MAX_DIGITS - nextup_length];
+        uint8_t *eighth_digits = bcd_div_by_lt10(eighth_digits_, nextup_length, 8);
+        uint8_t eighth_length = bcd_length_after_op(eighth_digits_, nextup_length, eighth_digits);
 
         uint8_t subs;
         l = nextup_length;
-        uint8_t *or = nextup_digits, *r = nextup_digits;
+        uint8_t *r = nextup_digits;
         for (subs = 0; bcd_gt(r, l, digits, length); ++subs) {
+            printf("SUB ");
+            debug_print_bcd(eighth_digits, eighth_length);
+            printf(" FROM ");
+            debug_print_bcd(r, l);
+            printf("\n");
             r = bcd_sub(r, l, eighth_digits, eighth_length);
-            l = bcd_length_after_op(or, l, r);
-            or = r;
+            l = bcd_length_after_op(nextup_digits, l, r);
+            nextup_digits = r;
         }
+        printf("SUBS %i\n", subs);
 
         stops -= subs;
     }
@@ -312,6 +326,7 @@ uint8_t aperture_given_shutter_speed_iso_ev(uint8_t speed_, uint8_t iso_, uint8_
 
 int main()
 {
+#if 0
     shutter_string_output_t sso;
     uint8_t s;
     for (s = SS_MIN; s <= SS_MAX; ++s) {
@@ -345,6 +360,7 @@ int main()
              }
         }
     }
+#endif
 
     static uint8_t isobcds[] = {
         7,   1, 6, 0, 0, 0, 0, 0,  0,
@@ -361,7 +377,7 @@ int main()
         3,   0, 0, 0, 0, 8, 0, 0,  0,
         3,   0, 0 ,0 ,0, 4, 0, 0,  0,
         3,   0, 0, 0, 0, 2, 0, 0,  0,
-        3,   0, 0, 0, 0, 1, 0, 0,  0,
+        3,   0, 0, 0, 0, 1, 5, 0,  0,
         2,   0, 0, 0, 0, 0, 5, 0,  0,
         2,   0, 0, 0, 0, 0, 2, 5,  0,
         2,   0, 0, 0, 0, 0, 1, 2,  0,

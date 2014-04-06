@@ -25,7 +25,6 @@ uint8_t *bcd_add(uint8_t *digits1, uint8_t digits1_length,
     uint8_t end2 = digits2_length - 1;
 
     uint8_t carry = 0;
-    carry = 0;
 
     uint8_t i, j;
     for (i = end1+1, j = end2+1; j > 0; --i, --j) {
@@ -57,11 +56,26 @@ uint8_t *bcd_sub(uint8_t *digits1, uint8_t digits1_length, uint8_t *digits2, uin
 {
     assert(digits1_length >= digits2_length);
 
-    uint8_t i, j;
+    uint8_t i_, j_, i, j;
     uint8_t shorter_by = 0;
-    for (i = digits1_length-1, j = digits2_length-1; j >= 0; --i, --j) {
-        assert(digits1[i] >= digits2[j]);
+    for (i_ = digits1_length, j_ = digits2_length; j_ > 0; --i_, --j_) {
+        i = i_-1;
+        j = j_-1;
+
+        if (digits1[i] < digits2[i]) {
+            // Borrow
+            assert(i > 0);
+
+            uint8_t k, l;
+            for (k = i - 1; digits1[k] == 0; --k); // Given that digits1 >= digits2 we must find a non-zero eventually.
+            for (l = k; l < i; ++l) {
+                --digits1[l];
+                digits1[l+1] += 10;
+            }
+        }
+
         digits1[i] -= digits2[j];
+
         if (digits1[i] == 0)
             ++shorter_by;
     }
@@ -78,6 +92,16 @@ void bcd_to_string(uint8_t *digits, uint8_t length)
 {
     for (uint8_t i = 0; i < length; ++i)
         digits[i] += 48;
+}
+
+void debug_print_bcd(uint8_t *digits, uint8_t length)
+{
+    uint8_t digits2[length + 1];
+    for (uint8_t i = 0; i < length; ++i)
+        digits2[i] = digits[i];
+    digits2[length] = 0;
+    bcd_to_string(digits2, length);
+    printf("%s", digits2);
 }
 
 // Save some code space by implementing <, <=, >, >=, = in one function.
