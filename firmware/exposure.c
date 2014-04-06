@@ -291,7 +291,7 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
 }
 
 // We represent ISO in 1/8 stops, with 0 as ISO 6.
-uint8_t x_given_shutter_speed_iso_ev(uint8_t given_x_, uint8_t iso_, uint8_t ev_, uint8_t x) // x=0: aperture, x=1: shutter_speed
+uint8_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, uint8_t ev_, uint8_t x) // x=0: aperture, x=1: shutter_speed
 {
     // We know that for EV=3, ISO = 100, speed = 1minute, aperture = 22.
 
