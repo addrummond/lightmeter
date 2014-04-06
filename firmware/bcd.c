@@ -57,7 +57,6 @@ uint8_t *bcd_sub(uint8_t *digits1, uint8_t digits1_length, uint8_t *digits2, uin
     assert(digits1_length >= digits2_length);
 
     uint8_t i_, j_, i, j;
-    uint8_t shorter_by = 0;
     for (i_ = digits1_length, j_ = digits2_length; j_ > 0; --i_, --j_) {
         i = i_-1;
         j = j_-1;
@@ -75,12 +74,12 @@ uint8_t *bcd_sub(uint8_t *digits1, uint8_t digits1_length, uint8_t *digits2, uin
         }
 
         digits1[i] -= digits2[j];
-
-        if (digits1[i] == 0)
-            ++shorter_by;
     }
 
-    return digits1 + shorter_by;
+    // Strip leading zeroes.
+    for (; *digits1 == 0; ++digits1);
+
+    return digits1;
 }
 
 uint8_t bcd_length_after_op(const uint8_t *oldptr, uint8_t oldlength, const uint8_t *newptr)
@@ -265,12 +264,12 @@ static void sub_test1()
 static void sub_test2()
 {
     uint8_t digits1[] = { '\0', 1, 5, 2, '\0' };
-    uint8_t digits2[] = {             8, '\0' };
+    uint8_t digits2[] = {          1, 2, '\0' };
 
-    uint8_t *r = bcd_sub(digits1+1, 3, digits2, 1);
+    uint8_t *r = bcd_sub(digits1+1, 3, digits2, 2);
     bcd_to_string(r, bcd_length_after_op(digits1+1, 3, r));
-    printf("152 - 8 = %s\n", r);
-    assert(!strcmp((char *)r, "144"));
+    printf("152 - 12 = %s\n", r);
+    assert(!strcmp((char *)r, "140"));
 }
 
 static void gt_test1()
