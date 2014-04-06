@@ -93,6 +93,7 @@ void bcd_to_string(uint8_t *digits, uint8_t length)
         digits[i] += 48;
 }
 
+#ifndef __AVR__
 void debug_print_bcd(uint8_t *digits, uint8_t length)
 {
     uint8_t digits2[length + 1];
@@ -102,6 +103,7 @@ void debug_print_bcd(uint8_t *digits, uint8_t length)
     bcd_to_string(digits2, length);
     printf("%s", digits2);
 }
+#endif
 
 // Save some code space by implementing <, <=, >, >=, = in one function.
 // This function is called by macros bcd_lt, bcd_gteq, etc.
