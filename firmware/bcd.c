@@ -178,7 +178,9 @@ uint8_t *bcd_div_by_lt10(uint8_t *digits, uint8_t length, uint8_t by)
     uint8_t rem = 0;
     for (outi = 0; outi < length; ++outi) {
         n = digits[outi];
-        n += 10*rem;
+        uint8_t rem8 = rem << 3;
+        n += rem8;
+        n += rem + rem;
         if (n < by && outi != length - 1) {
             n = TEN[n];
             n += digits[outi+1];
@@ -338,6 +340,15 @@ static void div_by_test3()
     assert(!strcmp((char *)r, "35"));
 }
 
+static void div_by_test4()
+{
+    uint8_t digits[] = { 2, 0, 0, '\0' };
+    uint8_t *r = bcd_div_by_lt10(digits, 3, 8);
+    bcd_to_string(r, bcd_length_after_op(digits, 3, r));
+    printf("200 / 8 = %s\n", r);
+    assert(!strcmp((char *)r, "25"));
+}
+
 int main()
 {
     add_test1();
@@ -356,6 +367,7 @@ int main()
     div_by_test1();
     div_by_test2();
     div_by_test3();
+    div_by_test4();
 }
 
 #endif
