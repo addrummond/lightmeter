@@ -254,12 +254,13 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
 
     // If it's not a full-stop ISO number then we've calculated the stop equivalent
     // of the next full-stop ISO number ABOVE the given number.
-    // Now we find out how many times we need to subtract one eighth to
+    // Now we find out how many times we need to subtract one sixteenth to
     // get to the full stop ISO below the specified ISO.
     if (! iso_is_full_stop(digits, length)) {
         uint8_t nextup_digits_[ISO_DECIMAL_MAX_DIGITS];
-        uint8_t *nextup_digits = full_stop_iso_into_bcd(pgm_read_byte(&FULL_STOP_ISOS[(count << 1)]),
-                                                        pgm_read_byte(&FULL_STOP_ISOS[(count << 1) + 1]),
+        uint8_t dcount = count << 1;
+        uint8_t *nextup_digits = full_stop_iso_into_bcd(pgm_read_byte(&FULL_STOP_ISOS[dcount]),
+                                                        pgm_read_byte(&FULL_STOP_ISOS[dcount + 1]),
                                                         nextup_digits_,
                                                         ISO_DECIMAL_MAX_DIGITS);
         uint8_t nextup_length = ISO_DECIMAL_MAX_DIGITS - (nextup_digits - nextup_digits_);
@@ -270,11 +271,10 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
         uint8_t j;
         for (j = 0; j < nextup_length; ++j)
             eighth_digits_[j] = nextup_digits[j];
-        uint8_t *eighth_digits = bcd_div_by_lt10(eighth_digits_, nextup_length, 8);
-        uint8_t eighth_length = bcd_length_after_op(eighth_digits_, nextup_length, eighth_digits);
-        uint8_t *tmp = bcd_div_by_lt10(eighth_digits, eighth_length, 2);
-        eighth_length = bcd_length_after_op(eighth_digits, eighth_length, tmp);
-        eighth_digits = tmp;
+        uint8_t *rr = bcd_div_by_lt10(eighth_digits_, nextup_length, 8);
+        uint8_t eighth_length = bcd_length_after_op(eighth_digits_, nextup_length, rr);
+        uint8_t *eighth_digits = bcd_div_by_lt10(rr, eighth_length, 2);
+        eighth_length = bcd_length_after_op(rr, eighth_length, eighth_digits);
 
         uint8_t subs;
         l = nextup_length;
