@@ -266,7 +266,8 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
         uint8_t nextup_length = ISO_DECIMAL_MAX_DIGITS - (nextup_digits - nextup_digits_);
 
         // Calculate 1/16. (Because half of x*(1/8)x is x*(1/16).)
-        // TODO: Currently we have to do two divisions because of limited BCD functionality -- gross.
+        // TODO: Currently we have to do two divisions (one by 8 then one by 2)
+        // because of limited BCD functionality -- gross.
         uint8_t eighth_digits_[nextup_length];
         uint8_t j;
         for (j = 0; j < nextup_length; ++j)
