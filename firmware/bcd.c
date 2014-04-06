@@ -240,6 +240,17 @@ static void add_test3()
     assert(!strcmp((char *)r, "894"));
 }
 
+static void add_test4()
+{
+    uint8_t digits1[] = { 1, '\0' };
+    uint8_t digits2[] = { 2, '\0' };
+
+    uint8_t *r = bcd_add(digits1, 1, digits2, 1);
+    bcd_to_string(r, bcd_length_after_op(digits1, 1, r));
+    printf("1 + 2 = %s\n", r);
+    assert(!strcmp((char *)r, "3"));
+}
+
 static void sub_test1()
 {
     uint8_t digits1[] = { '\0', 8, 8, 6, '\0' };
@@ -251,15 +262,15 @@ static void sub_test1()
     assert(!strcmp((char *)r, "878"));
 }
 
-static void add_test4()
+static void sub_test2()
 {
-    uint8_t digits1[] = { 1, '\0' };
-    uint8_t digits2[] = { 2, '\0' };
+    uint8_t digits1[] = { '\0', 1, 5, 2, '\0' };
+    uint8_t digits2[] = {             8, '\0' };
 
-    uint8_t *r = bcd_add(digits1, 1, digits2, 1);
-    bcd_to_string(r, bcd_length_after_op(digits1, 1, r));
-    printf("1 + 2 = %s\n", r);
-    assert(!strcmp((char *)r, "3"));
+    uint8_t *r = bcd_sub(digits1+1, 3, digits2, 1);
+    bcd_to_string(r, bcd_length_after_op(digits1+1, 3, r));
+    printf("152 - 8 = %s\n", r);
+    assert(!strcmp((char *)r, "144"));
 }
 
 static void gt_test1()
@@ -357,6 +368,7 @@ int main()
     add_test4();
 
     sub_test1();
+    sub_test2();
 
     gt_test1();
     gt_test2();
