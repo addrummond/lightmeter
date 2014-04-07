@@ -13,7 +13,6 @@ meter_state_t global_meter_state = {
     48,                        // aperture (f8)
     96,                        // shutter speed (1/125)
 
-    0,                         // pos_exp_comp
     0,                         // neg_exp_comp
 
     // aperture_string and shutter_speed_string are initialized in

@@ -13,7 +13,7 @@
 #define STATE_BLOCK_START_ADDR ((void *)4);
 
 typedef enum priority {
-    NO_PRIORITY, SHUTTER_PRIORITY, APERTURE_PRIORITY
+    NO_PRIORITY=0, SHUTTER_PRIORITY=1, APERTURE_PRIORITY=2
 } priority_t;
 
 typedef struct meter_state {
@@ -26,8 +26,7 @@ typedef struct meter_state {
     uint8_t aperture;
     uint8_t shutter_speed;
 
-    uint8_t pos_exp_comp;
-    uint8_t neg_exp_comp;
+    int8_t exp_comp;
 
     aperture_string_output_t aperture_string;
     shutter_string_output_t shutter_speed_string;
