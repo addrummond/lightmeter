@@ -254,6 +254,13 @@ int main()
             }
 
             handle_measurement();
+
+            // A bit less often still, save settings to EEPROM.
+            // TODO: Not sure about the power consumption implications of writing to EEPROM
+            // this frequently. Will it use a lot of power? Or wear out the EEPROM quickly?
+            if (cnt == 255) {
+                write_meter_state(&global_meter_state);
+            }
         }
         else {
             // usbPoll needs to be called at least every 50ms. Tried using higher
