@@ -13,15 +13,20 @@
 #include <exposure.h>
 
 /*
-                         1 ---- 8         VCC
-     ADC neg in    (PB3) 2 ---- 7 (PB2)   USB D+
-     ADC pos in    (PB4) 3 ---- 6 (PB1)   LED
-            GND          4 ---- 5 (PB0)   USB D-
+                   1 ---- 8         VCC
+     ADC in  (PB3) 2 ---- 7 (PB2)   USB D+
+                   3 ---- 6 (PB1)   LED
+     GND           4 ---- 5 (PB0)   USB D-
  */
 
 const uint8_t ADMUX_CLEAR_SOURCE = ~((1 << MUX3) | (1 << MUX2) | (1 << MUX1) | (1 << MUX0));
+
 // Set differential ADC with PB4 pos, PB3 neg, and 1x gain (see atiny85 datasheet p. 135).
-const uint8_t ADMUX_LIGHT_SOURCE = (0 << MUX3) | (1 << MUX2) | (1 << MUX1) | (0 << MUX0); // 0110
+//const uint8_t ADMUX_LIGHT_SOURCE = (0 << MUX3) | (1 << MUX2) | (1 << MUX1) | (0 << MUX0); // 0110
+
+// Set single-ended ADC with PB3 as input.
+const uint8_t ADMUX_LIGHT_SOURCE = (0 << MUX3) | (0 << MUX2) | (1 << MUX1) | (1 << MUX0);
+
 const uint8_t ADMUX_TEMPERATURE_SOURCE = (1 << MUX3) | (1 << MUX2) | (1 << MUX1) | (1 << MUX0);
 
 const uint8_t ADMUX_CLEAR_REF_VOLTAGE = 0b00101111; // Couldn't do this with macros without getting overflow warning for some reason.
