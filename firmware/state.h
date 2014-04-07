@@ -10,7 +10,7 @@
 
 // We leave four bytes of space at the beginning, in case we need
 // to use this in future to specify the locations of other blocks.
-#define STATE_BLOCK_START_ADDR ((void *)4);
+#define STATE_BLOCK_START_ADDR ((void *)4)
 
 typedef enum priority {
     NO_PRIORITY=0, SHUTTER_PRIORITY=1, APERTURE_PRIORITY=2
