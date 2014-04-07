@@ -13,10 +13,13 @@
 #include <exposure.h>
 
 /*
-                   1 ---- 8         VCC
-     ADC in  (PB3) 2 ---- 7 (PB2)   USB D+
-                   3 ---- 6 (PB1)   LED
-     GND           4 ---- 5 (PB0)   USB D-
+                       1 ---- 8         VCC
+     ADC in      (PB3) 2 ---- 7 (PB2)   USB D+
+     Gain switch (PB4) 3 ---- 6 (PB1)   LED
+     GND               4 ---- 5 (PB0)   USB D-
+
+     Setting PB4 high allows one of the resistors to be skipped, reducing
+     op amp gain.
  */
 
 const uint8_t ADMUX_CLEAR_SOURCE = ~((1 << MUX3) | (1 << MUX2) | (1 << MUX1) | (1 << MUX0));
@@ -87,7 +90,7 @@ void setup_ADC()
 
 void setup_output_ports()
 {
-    PORTB = 0b00000010; // Set PB1 as output port.
+    DDRB = 0b00001010; // Set PB1 and PB4 as output ports.
 }
 
 void led_test(void);
@@ -119,6 +122,15 @@ void led_test()
     PORTB &= ~(0b10);
 }
 
+void set_gain(gain_t gain)
+{
+    PORTB &= ~(0b1000);
+    if (gain == HIGH_GAIN)
+        PORTB |= 0b1000;
+
+    global_meter_state.gain = gain;
+}
+
 const uchar testbuffer[] = "Hello world test message consisting of 64 bytes................."; // length 64
 
 static uint8_t last_brequest;
@@ -139,6 +151,13 @@ USB_PUBLIC uchar usbFunctionSetup(uchar setupData[8]) {
     } break;
     case USB_BREQUEST_GET_EV: {
         usbMsgPtr = (usbMsgPtr_t)(&last_ev_reading); // This is volatile, but I think it's ok.
+        return 1;
+    } break;
+    case USB_BREQUEST_SET_GAIN: {
+        set_gain(rq->wValue.bytes[0] ? HIGH_GAIN : NORMAL_GAIN);
+    } break;
+    case USB_BREQUEST_GET_GAIN: {
+        usbMsgPtr = (usbMsgPtr_t)(&(global_meter_state.gain));
         return 1;
     } break;
     case USB_BREQUEST_GET_SHUTTER_PRIORITY_EXPOSURE: {

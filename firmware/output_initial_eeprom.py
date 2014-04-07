@@ -17,6 +17,8 @@ eeprom = [
     
     0,                                                             # exp comp
 
+    0,                                                             # gain (normal gain)
+
     ord('8'), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                        # aperture_string_output.chars
     1,                                                             # aperture_string_output.length
     ord('1'), ord('/'), ord('1'), ord('2'), ord('5'), 0, 0, 0, 0,  # shutter_string_ouput.chars

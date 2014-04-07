@@ -248,6 +248,41 @@ int main(int argc, char **argv) {
 
         printf("Shutter speed set to %s\n", argv[1][7] == '1' ? "1/15" : "1/250");
     }
+    else if (!strcmp(argv[1], "setgain")) {
+        nBytes = libusb_control_transfer(
+            handle,
+            LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_IN/*device to host */,
+            USB_BREQUEST_SET_GAIN,
+            !strcmp(argv[2], "high") ? 1 : 0, 0,
+            buffer,
+            0,
+            5000
+        );
+        if (nBytes < 0) {
+            fprintf(stderr, "%s", libusb_strerror(nBytes));
+            return 1;
+        }
+
+        printf("Gain set to %s\n", argv[2]);
+    }
+    else if (!strcmp(argv[1], "getgain")) {
+        nBytes = libusb_control_transfer(
+            handle,
+            LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_IN/*device to host */,
+            USB_BREQUEST_GET_GAIN,
+            0, 0,
+            buffer,
+            1,
+            5000
+        );
+        if (nBytes < 0) {
+            fprintf(stderr, "%s", libusb_strerror(nBytes));
+            return 1;
+        }
+        assert(nBytes == 1);
+
+        printf("Gain is %i\n", buffer[0]);
+    }
     else if (!strcmp(argv[1], "ap")) {
         aperture_string_output_t aso;
         nBytes = libusb_control_transfer(

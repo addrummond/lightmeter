@@ -12,6 +12,8 @@
 #define USB_BREQUEST_WRITE_BYTE_SETTING             9
 #define USB_BREQUEST_SET_ISO                        10
 #define USB_BREQUEST_GET_STOPS_ISO                  11
+#define USB_BREQUEST_SET_GAIN                       12
+#define USB_BREQUEST_GET_GAIN                       13
 
 #define USB_BREQUEST_GET_TEST_MSG                   100
 

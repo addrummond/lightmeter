@@ -6,7 +6,9 @@ import sys
 ##########
 
 reference_voltage              = 5500.0 # mV
-op_amp_gain                    = 56.4/2.0
+op_amp_normal_gain             = 56.4/2.0
+op_amp_low_light_gain          = 100.0/2.0
+normal_light_min_ev            = 5.5
 
 # The graph in measurem.pdf is not for the BPW34.
 # The BPW34 has a 20mV higher OCV listed on its data sheet compared
@@ -21,7 +23,7 @@ irradience_constant_adjustment = 0.0
 # EV table.
 #
 
-bv_to_voltage = ((1/256.0) * reference_voltage) / op_amp_gain
+bv_to_voltage = ((1/256.0) * reference_voltage)
 
 # http://www.vishay.com/docs/81521/bpw34.pdf, Fig 1, p. 2.
 # Temp in C, RDC in log10 pA.
@@ -135,17 +137,30 @@ def temp_and_voltage_to_ev(temp, v):
 # it into two arrays (one for the absolute value bytes and one for the
 # diff bit pattern index bytes) so that each separate array can be
 # indexed by a single byte.
-def output_table():
+def output_table(level): # level == 'NORMAL' or level == 'LOW'
     bitpatterns = [ ]
     vallist_abs = [ ]
     vallist_diffs = [ ]
+    startend_voltage_8bit = None
+    gain = op_amp_normal_gain
+    if level == 'LOW':
+        gain = op_amp_low_light_gain
     for t in xrange(0, 256, 16):
         temperature = (t * 0.4) - 51.0
 
         for sv in xrange(0, 256, 16):
             # Write the absolute 8-bit EV value.
-            voltage = sv * bv_to_voltage
+            voltage = sv * (bv_to_voltage / gain)
             ev = temp_and_voltage_to_ev(temperature, voltage)
+            if level == 'NORMAL':
+                if ev < normal_light_min_ev:
+                    continue
+                if startend_voltage_8bit is None:
+                    startend_voltage_8bit = sv
+            elif level == 'LOW':
+                if ev >= normal_light_min_ev:
+                    startend_voltage_8bit = sv
+                    break
             eight = int(round((ev+5.0) * 8.0))
             if sv == 0 and t != 0:
                 sys.stdout.write("      ")
@@ -158,7 +173,7 @@ def output_table():
                 eight2 = None
                 o = ""
                 for k in xrange(0, 8):
-                    v = (sv + (j * 8.0) + k) * bv_to_voltage
+                    v = (sv + (j * 8.0) + k) * (bv_to_voltage / gain)
                     ev2 = temp_and_voltage_to_ev(temperature, v)
                     eight2 = int(round((ev2+5.0) * 8.0))
 #                    sys.stderr.write('TAVX ' + str(temperature) + ',' + str(v) + "," + str(eight2) +'\n')
@@ -185,26 +200,28 @@ def output_table():
             vallist_abs.append(eight)
             vallist_diffs.append(bpis[0] << 4 | bpis[1])
 
-    sys.stdout.write('const uint8_t TEMP_AND_VOLTAGE_TO_EV_BITPATTERNS[] PROGMEM = {\n')
+    sys.stdout.write('const uint8_t ' + level + '_LIGHT_TEMP_AND_VOLTAGE_TO_EV_BITPATTERNS[] PROGMEM = {\n')
     for p in bitpatterns:
         sys.stdout.write('0b%s,' % p)
     sys.stdout.write('\n};\n')
 
-    sys.stdout.write('const uint8_t TEMP_AND_VOLTAGE_TO_EV_ABS[] PROGMEM = {')
+    sys.stdout.write('const uint8_t ' + level + '_LIGHT_TEMP_AND_VOLTAGE_TO_EV_ABS[] PROGMEM = {')
     for i in xrange(len(vallist_abs)):
         if i % 32 == 0:
             sys.stdout.write('\n    ');
         sys.stdout.write('%i,' % vallist_abs[i])
     sys.stdout.write('\n};\n')
-    sys.stdout.write('const uint8_t TEMP_AND_VOLTAGE_TO_EV_DIFFS[] PROGMEM = {')
+    sys.stdout.write('const uint8_t ' + level + '_LIGHT_TEMP_AND_VOLTAGE_TO_EV_DIFFS[] PROGMEM = {')
     for i in xrange(len(vallist_diffs)):
         if i % 32 == 0:
             sys.stdout.write('\n    ');
         sys.stdout.write('%i,' % vallist_diffs[i])
     sys.stdout.write('\n};\n')
 
+    sys.stdout.write('const uint8_t ' + level + '_LIGHT_' + (level == 'NORMAL' and 'MIN' or 'MAX') + '_VOLTAGE = ' + str(startend_voltage_8bit) + ';\n')
+
 def output_full_table_as_comment():
-    sys.stdout.write('// EV @ ISO 100 for given temp (C) and voltage (mV)\n')
+    sys.stdout.write('// Normal light EV @ ISO 100 for given temp (C) and voltage (mV)\n')
     sys.stdout.write('//      ')
     for t in xrange(0, 256, 16):
         temperature = (t * 0.4) - 51.0
@@ -218,7 +235,7 @@ def output_full_table_as_comment():
         sys.stdout.write(s)
     sys.stdout.write('\n')
     for v in xrange(0, 256):
-        voltage = v * bv_to_voltage
+        voltage = v * (bv_to_voltage / op_amp_normal_gain)
         sys.stdout.write("// %03d   " % voltage)
         for t in xrange(0, 256, 16):
             temperature = (t * 0.4) - 51.0
@@ -233,19 +250,19 @@ def output_sanity_graph():
     f = open("santitygraph.csv", "w")
     temperature = (51.0 + 20.0)/0.4
     for v in xrange(0, 256):
-        voltage = v * bv_to_voltage
+        voltage = v * (bv_to_voltage / op_amp_normal_gain)
         ev = temp_and_voltage_to_ev(temperature, voltage)
-        f.write("%f,%f\n" % (voltage * op_amp_gain, ev))
+        f.write("%f,%f\n" % (voltage * op_amp_normal_gain, ev))
     f.close()
 
 # Straight up array that we use to test that the bitshifting logic is
-# working correctly.
+# working correctly. (Test will currently only be performed for normal light table.)
 def output_test_table():
     sys.stdout.write('    { ')
     for t in xrange(0, 256, 16):
         temperature = (t * 0.4) - 51.0
         for v in xrange(0, 256):
-            voltage = v * bv_to_voltage
+            voltage = v * (bv_to_voltage / op_amp_normal_gain)
 #            sys.stderr.write('TAVY ' + str(temperature) + ',' + str(voltage) + '\n')
             ev = temp_and_voltage_to_ev(temperature, voltage)
             eight = int(round((ev+5.0) * 8.0))
@@ -255,21 +272,6 @@ def output_test_table():
         sys.stdout.write('\n')
     sys.stdout.write('    }');
 
-def test_output():
-#    irrad = ocv_and_rdc_to_irrad(0, temp_to_rdc(20))
-#    lux = irrad_to_lux(irrad)
-#    print "ZERO", irrad, lux, lux_to_ev_at_100(lux)
-#    return
-
-    for t in xrange(0, 256, 16):
-        print "%f, %f" % (t * 0.4 - 51.0, temp_to_rdc(t * 0.4 - 51.0))
-    print
-    print
-    for t in xrange(0, 256, 16):
-        temperature = t * 0.4 - 51.0
-        for v in xrange(0, 256, 8):
-            voltage = v * bv_to_voltage
-            print "T %f V %f EV %f" % (temperature, voltage, temp_and_voltage_to_ev(temperature, voltage))
 
 #
 # Shutter speed and aperture tables.
@@ -586,7 +588,8 @@ def output():
     sys.stdout.write("#include <stdint.h>\n")
     sys.stdout.write("#include <readbyte.h>\n")
     output_full_table_as_comment()
-    output_table()
+    output_table('NORMAL')
+    output_table('LOW')
     sys.stdout.write('\n#ifdef TEST\n')
     sys.stdout.write('const uint8_t TEST_TEMP_AND_VOLTAGE_TO_EV[] PROGMEM =\n')
     output_test_table()
@@ -596,7 +599,6 @@ def output():
     sys.stdout.write('\n#endif')
 
 if __name__ == '__main__':
-#    test_output()
     output()
 
 
