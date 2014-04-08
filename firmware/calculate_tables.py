@@ -170,10 +170,10 @@ def output_table(level): # level == 'NORMAL' or level == 'LOW'
             vallist_abs.append(eight)
             vallist_diffs.append(bpis[0] << 4 | bpis[1])
 
-    for v in xrange(0, 16):
-        for t in xrange(0, 256, 16):
-            sys.stderr.write(str(vallist_abs[t + v]) + " ")
-        sys.stderr.write("\n")
+#    for v in xrange(0, 16):
+#        for t in xrange(0, 256, 16):
+#            sys.stderr.write(str(vallist_abs[t + v]) + " ")
+#        sys.stderr.write("\n")
 
     sys.stdout.write('const uint8_t ' + level + '_LIGHT_TEMP_AND_VOLTAGE_TO_EV_BITPATTERNS[] PROGMEM = {\n')
     for p in bitpatterns:
