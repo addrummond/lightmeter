@@ -1,6 +1,7 @@
 #include <readbyte.h>
 #include <stdint.h>
 #include <assert.h>
+#include <divmulutils.h>
 #include <calculate.h>
 #ifdef TEST
 #    include <stdio.h>
