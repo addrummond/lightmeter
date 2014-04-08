@@ -56,10 +56,8 @@ void setup_ADC()
 {
 
     ADMUX = (0 << REFS1) | (0 << REFS0);
-    // Set ADC source to temperature sensor.
-    //ADMUX |= ADMUX_TEMPERATURE_SOURCE;
-    //    ADMUX |= ADMUX_TEMP_REF_VOLTAGE;
-    ADMUX |= ADMUX_LIGHT_SOURCE | ADMUX_LIGHT_SOURCE_REF_VOLTAGE; // TODO TEST CODE TODO
+    // Set ADC source to light sensor.
+    ADMUX |= ADMUX_LIGHT_SOURCE | ADMUX_LIGHT_SOURCE_REF_VOLTAGE;
     // Auto triggering (this needs to be set for turning on counter interrupt ADCSRB to take effect).
     ADCSRA |= (1 << ADATE);
     // Enable ADC interrupt.
