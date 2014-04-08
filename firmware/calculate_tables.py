@@ -213,29 +213,6 @@ def output_table(level): # level == 'NORMAL' or level == 'LOW'
         sys.stdout.write('%i,' % vallist_diffs[i])
     sys.stdout.write('\n};\n')
 
-def output_full_table_as_comment():
-    sys.stdout.write('// Normal light EV @ ISO 100 for given temp (C) and voltage (mV)\n')
-    sys.stdout.write('//      ')
-    for t in xrange(0, 256, 16):
-        temperature = (t * 0.4) - 51.0
-        s = None
-        if temperature < 0:
-            s = "%02d  " % abs(temperature)
-        else:
-            s = "%02d  " % temperature
-        if s[0] != '-':
-            s = ' ' + s
-        sys.stdout.write(s)
-    sys.stdout.write('\n')
-    for v in xrange(0, 256):
-        voltage = v * (bv_to_voltage / op_amp_normal_gain)
-        sys.stdout.write("// %03d   " % voltage)
-        for t in xrange(0, 256, 16):
-            temperature = (t * 0.4) - 51.0
-            ev = temp_and_voltage_to_ev(temperature, voltage)
-            sys.stdout.write('%02d   ' % ev)
-        sys.stdout.write('\n')
-
 # This is useful for santiy checking calculations. It outputs a graph of
 # amplified voltage against EV which can be compared with voltage readings
 # over the two input pins.
@@ -580,7 +557,6 @@ def output():
     sys.stdout.write('#ifndef TABLES_H\n#define TABLES_H\n\n')
     sys.stdout.write("#include <stdint.h>\n")
     sys.stdout.write("#include <readbyte.h>\n")
-#    output_full_table_as_comment()
     output_table('NORMAL')
     output_table('LOW')
     sys.stdout.write('\n#ifdef TEST\n')
