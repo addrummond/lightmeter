@@ -42,32 +42,13 @@ def ocv_and_rdc_to_irrad(ocv, rdc):
 
     slope = 62.5 # Negative slope
 
-    ica = irradience_constant_adjustment
-    l1Val = (ocv - 275.0 + ica) / slope
-    l2Val = (ocv - 212.5 + ica) / slope
-    l3Val = (ocv - 160.0 + ica) / slope
-    l4Val = (ocv - 100.0 + ica) / slope
-    l5Val = (ocv - 62.5  + ica) / slope
+    # From the lines given in figure 19, we can estimate the equation
+    # which determines the constant for a given rdc.
+    kslope = -56.366
+    kconstant = 331.366
+    k = (kslope * rdc) + kconstant
 
-#    print l1Val, l2Val, l3Val, l4Val, l5Val
-
-    k = None
-    if rdc <= l1:
-        return l1Val
-    elif rdc <= l2:
-        d = (l2 - rdc) / (l2 - l1)
-        return (d * l2Val) + ((1.0-d) * l1Val)
-    elif rdc <= l3:
-        d = (l3 - rdc) / (l3 - l2)
-        return (d * l3Val) + ((1.0-d) * l2Val)
-    elif rdc <= l4:
-        d = (l4 - rdc) / (l4 - l3)
-        return (d * l4Val) + ((1.0-d) * l3Val)
-    elif rdc <= l5:
-        d = (l5 - rdc) / (l5 - l4)
-        return (d * l5Val) + ((1.0-d) * l4Val)
-    else:
-        return l5Val
+    return (ocv - k + irradience_constant_adjustment) / slope
 
 # We can get log10 illum (lux) from log10 irrad by adding 3.
 # This can be inferred from figs 3 and 4 on p. 3 of http://www.vishay.com/docs/81521/bpw34.pdf
@@ -194,6 +175,11 @@ def output_table(level): # level == 'NORMAL' or level == 'LOW'
 
             vallist_abs.append(eight)
             vallist_diffs.append(bpis[0] << 4 | bpis[1])
+
+    for v in xrange(0, 16):
+        for t in xrange(0, 256, 16):
+            sys.stderr.write(str(vallist_abs[t + v]) + " ")
+        sys.stderr.write("\n")
 
     sys.stdout.write('const uint8_t ' + level + '_LIGHT_TEMP_AND_VOLTAGE_TO_EV_BITPATTERNS[] PROGMEM = {\n')
     for p in bitpatterns:
