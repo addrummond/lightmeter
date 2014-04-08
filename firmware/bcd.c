@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <bcd.h>
+#include <readbyte.h>
 #ifdef TEST
 #include <stdio.h>
 #include <string.h>
@@ -173,7 +174,7 @@ bool bcd_cmp(const uint8_t *digits1, uint8_t length1, const uint8_t *digits2, ui
     return (which >= 0 && which <= 2);
 }
 
-static const uint8_t TEN[] = { 0, 10, 20, 30, 40, 50, 60, 70, 80, 90 };
+static const uint8_t TEN[] PROGMEM = { 0, 10, 20, 30, 40, 50, 60, 70, 80, 90 };
 uint8_t *bcd_div_by_lt10(uint8_t *digits, uint8_t length, uint8_t by)
 {
     assert(by < 10);
@@ -187,7 +188,7 @@ uint8_t *bcd_div_by_lt10(uint8_t *digits, uint8_t length, uint8_t by)
         n += rem8;
         n += rem + rem;
         if (n < by && outi != length - 1) {
-            n = TEN[n];
+            n = pgm_read_byte(TEN + n);
             n += digits[outi+1];
             digits[outi++] = 0;
         }
