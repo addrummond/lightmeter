@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <assert.h>
 #include <divmulutils.h>
-#include <state.h>
+#include <calculate.h>
 #ifdef TEST
 #    include <stdio.h>
 #endif
@@ -15,6 +15,7 @@ extern const uint8_t LOW_LIGHT_TEMP_AND_VOLTAGE_TO_EV_DIFFS[];
 extern const uint8_t LOW_LIGHT_TEMP_AND_VOLTAGE_TO_EV_BITPATTERNS[];
 extern const uint8_t NORMAL_LIGHT_MIN_VOLTAGE;
 extern const uint8_t LOW_LIGHT_MAX_VOLTAGE;
+extern const uint8_t LOW_LIGHT_MIN_VOLTAGE;
 #ifdef TEST
 extern const uint8_t TEST_TEMP_AND_VOLTAGE_TO_EV[];
 #endif
@@ -33,21 +34,11 @@ uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage, g
     const uint8_t *ev_abs = NORMAL_LIGHT_TEMP_AND_VOLTAGE_TO_EV_ABS;
     const uint8_t *ev_diffs = NORMAL_LIGHT_TEMP_AND_VOLTAGE_TO_EV_DIFFS;
     const uint8_t *ev_bitpatterns = NORMAL_LIGHT_TEMP_AND_VOLTAGE_TO_EV_BITPATTERNS;
-    uint8_t offset = NORMAL_LIGHT_MIN_VOLTAGE;
-    uint8_t max = 255;
     if (gain == HIGH_GAIN) {
         ev_abs = LOW_LIGHT_TEMP_AND_VOLTAGE_TO_EV_ABS;
         ev_diffs = LOW_LIGHT_TEMP_AND_VOLTAGE_TO_EV_DIFFS;
         ev_bitpatterns = LOW_LIGHT_TEMP_AND_VOLTAGE_TO_EV_BITPATTERNS;
-        offset = 0;
-        max = LOW_LIGHT_MAX_VOLTAGE;
     }
-
-    if (v256 < offset)
-        v256 = offset;
-    v256 -= offset;
-    if (v256 > max)
-        v256 = max;    
 
     uint8_t row_start = ((uint16_t)temperature & ~15); // (temperature / 16) * 16 [16 bytes per row]
     uint8_t i = row_start + (v256); // voltage/16

@@ -7,8 +7,7 @@ import sys
 
 reference_voltage              = 5500.0 # mV
 op_amp_normal_gain             = 56.4/2.0
-op_amp_low_light_gain          = 100.0/2.0
-normal_light_min_ev            = 5.5
+op_amp_low_light_gain          = 112.8/2.0
 
 # The graph in measurem.pdf is not for the BPW34.
 # The BPW34 has a 20mV higher OCV listed on its data sheet compared
@@ -141,7 +140,6 @@ def output_table(level): # level == 'NORMAL' or level == 'LOW'
     bitpatterns = [ ]
     vallist_abs = [ ]
     vallist_diffs = [ ]
-    startend_voltage_8bit = None
     gain = op_amp_normal_gain
     if level == 'LOW':
         gain = op_amp_low_light_gain
@@ -151,17 +149,11 @@ def output_table(level): # level == 'NORMAL' or level == 'LOW'
         for sv in xrange(0, 256, 16):
             # Write the absolute 8-bit EV value.
             voltage = sv * (bv_to_voltage / gain)
+            assert voltage >= 0
             ev = temp_and_voltage_to_ev(temperature, voltage)
-            if level == 'NORMAL':
-                if ev < normal_light_min_ev:
-                    continue
-                if startend_voltage_8bit is None:
-                    startend_voltage_8bit = sv
-            elif level == 'LOW':
-                if ev >= normal_light_min_ev:
-                    startend_voltage_8bit = sv
-                    break
             eight = int(round((ev+5.0) * 8.0))
+            if eight < 0:
+                eight = 0
             if sv == 0 and t != 0:
                 sys.stdout.write("      ")
 
@@ -176,7 +168,10 @@ def output_table(level): # level == 'NORMAL' or level == 'LOW'
                     v = (sv + (j * 8.0) + k) * (bv_to_voltage / gain)
                     ev2 = temp_and_voltage_to_ev(temperature, v)
                     eight2 = int(round((ev2+5.0) * 8.0))
+                    if eight2 < 0:
+                        eight2 = 0
 #                    sys.stderr.write('TAVX ' + str(temperature) + ',' + str(v) + "," + str(eight2) +'\n')
+#                    sys.stderr.write(str(eight2) + " ::: " + str(prev) + "\n\n")
                     assert eight2 - prev == 0 or not (j == 0 and k == 0)
                     assert eight2 - prev <= 1
                     assert eight2 - prev >= 0
@@ -217,8 +212,6 @@ def output_table(level): # level == 'NORMAL' or level == 'LOW'
             sys.stdout.write('\n    ');
         sys.stdout.write('%i,' % vallist_diffs[i])
     sys.stdout.write('\n};\n')
-
-    sys.stdout.write('const uint8_t ' + level + '_LIGHT_' + (level == 'NORMAL' and 'MIN' or 'MAX') + '_VOLTAGE = ' + str(startend_voltage_8bit) + ';\n')
 
 def output_full_table_as_comment():
     sys.stdout.write('// Normal light EV @ ISO 100 for given temp (C) and voltage (mV)\n')
@@ -587,7 +580,7 @@ def output():
     sys.stdout.write('#ifndef TABLES_H\n#define TABLES_H\n\n')
     sys.stdout.write("#include <stdint.h>\n")
     sys.stdout.write("#include <readbyte.h>\n")
-    output_full_table_as_comment()
+#    output_full_table_as_comment()
     output_table('NORMAL')
     output_table('LOW')
     sys.stdout.write('\n#ifdef TEST\n')
