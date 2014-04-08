@@ -11,6 +11,7 @@
 #include <usbconstants.h>
 #include <calculate.h>
 #include <exposure.h>
+#include <divmulutils.h>
 
 /*
                        1 ---- 8         VCC
@@ -50,6 +51,43 @@ ISR(ADC_vect) {
 
     TIFR |= (1<<OCF0A); // Clear timer compare match flag.
     ADCSRA |= (1 << ADSC);
+}
+
+// TODO: These constant will be replaced with members of global_meter_state once
+// this is working correctly. The various _TENTHS could be packed into two bytes.
+//
+// For current test chip, slope = 1.12 and k = 290
+// With -51C offset, k = 341.
+// In units of 0.4C, slope = 2.8 and k = 785
+#define ADC_TEMP_CONSTANT              785
+#define ADC_TEMP_SLOPE_WHOLES          1 // I.e. add one more whole.
+#define ADC_TEMP_SLOPE_EIGHT_TENTHS    1
+#define ADC_TEMP_SLOPE_FOUR_TENTHS     0
+#define ADC_TEMP_SLOPE_TENTHS          0
+#define ADC_TEMP_SLOPE_MINUS_TENTHS    0
+
+static volatile uint8_t current_temp = 190; // 25 C
+
+static void calculate_current_temp()
+{
+    uint16_t t = adc_temperature_value;
+    uint8_t i;
+    uint16_t newt = t;
+    for (i = 0; i < ADC_TEMP_SLOPE_WHOLES; ++i)
+        newt += t;
+    uint16_t tenth = bitfiddle_uint16_approx_div_by_10(newt);
+    for (i = 0; i < ADC_TEMP_SLOPE_TENTHS; ++i)
+        newt += tenth;
+    for (i = 0; i < ADC_TEMP_SLOPE_MINUS_TENTHS; ++i)
+        newt -= tenth;
+    tenth <<= 2;
+    for (i = 0; i < ADC_TEMP_SLOPE_FOUR_TENTHS; ++i)
+        newt += tenth;
+    tenth <<= 1;
+    for (i = 0; i < ADC_TEMP_SLOPE_EIGHT_TENTHS; ++i)
+        newt += tenth;
+
+    current_temp = newt;
 }
 
 void setup_ADC()
@@ -100,7 +138,7 @@ void handle_measurement()
     // Div by 4 because we're going from units of 1/1024 to units of 1/256.
     // (Could left adjust everything, but we might want the full 10 bits for temps.)
     uint8_t ev = get_ev100_at_temperature_voltage(
-        178,  // 178 = 20C
+        current_temp,
         (uint8_t)(adc_light_nonvol_value >> 2),
         global_meter_state.gain
     );
@@ -194,6 +232,10 @@ USB_PUBLIC uchar usbFunctionSetup(uchar setupData[8]) {
         usbMsgPtr = (usbMsgPtr_t)(&adc_temperature_value);
         return 2;
     } break;
+    case USB_BREQUEST_GET_TEMPERATURE: {
+        usbMsgPtr = (usbMsgPtr_t)(&current_temp);
+        return 1;
+    } break;
     case USB_BREQUEST_GET_RAW_LIGHT: {
         usbMsgPtr = (usbMsgPtr_t)(&adc_light_value);
         return 2;
@@ -271,6 +313,8 @@ int main()
                 next_is_temperature = true;
             }
             else if (cnt == 0b100000) {
+                calculate_current_temp();
+
                 // Make the next ADC reading a light reading.
                 ADMUX &= ADMUX_CLEAR_REF_VOLTAGE;
                 ADMUX |= ADMUX_LIGHT_SOURCE_REF_VOLTAGE;

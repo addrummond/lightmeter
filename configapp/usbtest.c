@@ -195,6 +195,24 @@ int main(int argc, char **argv) {
 
         printf("Raw temp: %i\n", (int)buffer[0] | (((int)buffer[1]) << 8));
     }
+    else if (!strcmp(argv[1], "gettemp")) {
+        nBytes = libusb_control_transfer(
+            handle,
+            LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_IN/*device to host */,
+            USB_BREQUEST_GET_RAW_TEMPERATURE,
+            0, 0,   // wvalue, windex
+            buffer,
+            1,      // how much to read
+            5000    // 5000ms timeout
+        );
+        if (nBytes < 0) {
+            fprintf(stderr, "%s", libusb_strerror(nBytes));
+            return 1;
+        }
+        assert(nBytes == 2);
+
+        printf("Temp in C: %f\n", (((float)buffer[0])-51.0)/0.4);
+    }
     else if (!strcmp(argv[1], "getrawlight")) {
         nBytes = libusb_control_transfer(
             handle,

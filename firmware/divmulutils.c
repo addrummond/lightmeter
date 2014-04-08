@@ -11,7 +11,10 @@ uint16_t bitfiddle_uint16_approx_div_by_10(uint16_t n)
            - (n >> 5) + (n >> 7) + (n >> 10) - (n >> 9) - (n >> 11) - (n >> 13);
 }
 
-uint16_t bitfiddle_uint16_approx_div_by_5(uint16_t n)
+//
+// Not currently used; commenting out to reduce code size.
+//
+/*uint16_t bitfiddle_uint16_approx_div_by_5(uint16_t n)
 {
     // Similar to above. Max error is 3.
     return   (n >> 2) // div by 4
@@ -24,7 +27,7 @@ uint16_t bitfiddle_uint16_approx_div_by_100(uint16_t n)
     // error but reduces average error.
     return (   (n >> 6) // div by 64
              - (n >> 8) - (n >> 12) - (n >> 9) + (n >> 11) ) & ~1;
-}
+}*/
 
 #ifdef TEST
 
@@ -46,7 +49,7 @@ int main()
         }
     }
 
-    printf("Testing approx div by 5\n");
+    /*printf("Testing approx div by 5\n");
     for (unsigned i = 0; i < 65536; ++i) {
         uint16_t x = (uint16_t)i / 5;
         uint16_t y = bitfiddle_uint16_approx_div_by_5((uint16_t)i);
@@ -76,7 +79,7 @@ int main()
         if (i % 256 == 0) {
             printf("Error at div/100 i = %i: %i (real result = %i, approx result = %i)\n", i, diff, x, y);
         }
-    }
+    }*/
 
     return 0;
 }

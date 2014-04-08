@@ -14,6 +14,7 @@
 #define USB_BREQUEST_GET_STOPS_ISO                  11
 #define USB_BREQUEST_SET_GAIN                       12
 #define USB_BREQUEST_GET_GAIN                       13
+#define USB_BREQUEST_GET_TEMPERATURE                14
 
 #define USB_BREQUEST_GET_TEST_MSG                   100
 
