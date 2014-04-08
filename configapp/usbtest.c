@@ -253,7 +253,7 @@ int main(int argc, char **argv) {
             handle,
             LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE | LIBUSB_ENDPOINT_IN/*device to host */,
             USB_BREQUEST_SET_GAIN,
-            !strcmp(argv[2], "high") ? 1 : 0, 0,
+            !strcmp(argv[2], "normal") ? 0 : 1, 0,
             buffer,
             0,
             5000
