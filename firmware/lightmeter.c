@@ -90,7 +90,7 @@ void setup_ADC()
 
 void setup_output_ports()
 {
-    DDRB = 0b00001010; // Set PB1 and PB4 as output ports.
+    DDRB = 0b00010010; // Set PB1 and PB4 as output ports.
 }
 
 void led_test(void);
@@ -232,8 +232,8 @@ USB_PUBLIC uchar usbFunctionWrite(uchar *data, uchar len)
 int main()
 {
     initialize_global_meter_state();
-
     setup_output_ports();
+    set_gain(global_meter_state.gain);
     setup_ADC();
 
     led_test();
