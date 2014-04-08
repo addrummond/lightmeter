@@ -34,12 +34,6 @@ def temp_to_rdc(temp):
 # Slope of all lines is 62.5 with log10 irrad.
 # See http://www.vishay.com/docs/80085/measurem.pdf, Fig 19, p. 7.
 def ocv_and_rdc_to_irrad(ocv, rdc):
-    l1 = math.log(10, 10)
-    l2 = math.log(100, 10)
-    l3 = math.log(1000, 10)
-    l4 = math.log(5000, 10)
-    l5 = math.log(30000, 10)
-
     slope = 62.5 # Negative slope
 
     # From the lines given in figure 19, we can estimate the equation
