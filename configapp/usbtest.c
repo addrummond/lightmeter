@@ -209,7 +209,7 @@ int main(int argc, char **argv) {
             fprintf(stderr, "%s", libusb_strerror(nBytes));
             return 1;
         }
-        assert(nBytes == 2);
+        assert(nBytes == 1);
 
         printf("Temp in C: %f\n", (((float)buffer[0])-51.0)/0.4);
     }
