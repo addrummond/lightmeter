@@ -57,12 +57,12 @@ ISR(ADC_vect) {
 // this is working correctly. The various _TENTHS could be packed into two bytes.
 //
 // For current test chip, slope = 1.12 and k = 290
-// With -51C offset, k = 341.
-// In units of 0.4C, slope = 2.8 and k = 785
+// We're going from x to y, 1/slope = 0.89.
+// After 
 #define ADC_TEMP_CONSTANT              785
-#define ADC_TEMP_SLOPE_WHOLES          1 // I.e. add one more whole.
-#define ADC_TEMP_SLOPE_EIGHT_TENTHS    1
-#define ADC_TEMP_SLOPE_FOUR_TENTHS     0
+#define ADC_TEMP_SLOPE_WHOLES          0 // I.e. add one more whole.
+#define ADC_TEMP_SLOPE_EIGHT_TENTHS    0
+#define ADC_TEMP_SLOPE_FOUR_TENTHS     1
 #define ADC_TEMP_SLOPE_TENTHS          0
 #define ADC_TEMP_SLOPE_MINUS_TENTHS    0
 
@@ -72,7 +72,7 @@ static void calculate_current_temp()
 {
     uint16_t t = adc_temperature_value;
     uint8_t i;
-    uint16_t newt = t;
+    uint16_t newt = t - ADC_TEMP_CONSTANT;
     for (i = 0; i < ADC_TEMP_SLOPE_WHOLES; ++i)
         newt += t;
     uint16_t tenth = bitfiddle_uint16_approx_div_by_10(newt);

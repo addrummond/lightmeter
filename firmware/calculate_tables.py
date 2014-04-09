@@ -5,9 +5,14 @@ import sys
 # Configuration values.
 ##########
 
-reference_voltage              = 5500.0 # mV
-op_amp_normal_gain             = 56.4/2.0
-op_amp_low_light_gain          = 112.8/2.0
+reference_voltage                = 5000.0  # mV
+op_amp_normal_resistor           = 220.0   #kOhm
+op_amp_low_light_resistor        = 220.0   #kOhm
+# Table cells not calculated for voltages lower than this.
+# This is because in the region just above v = 0, the changes
+# between different voltage values lead to large discontinuities
+# in EV values which the table compression mechanism can't handle.
+voltage_offset                   = 150     # mV
 
 # The graph in measurem.pdf is not for the BPW34.
 # The BPW34 has a 20mV higher OCV listed on its data sheet compared
@@ -24,43 +29,49 @@ irradience_constant_adjustment = 0.0
 
 bv_to_voltage = ((1/256.0) * reference_voltage)
 
-# http://www.vishay.com/docs/81521/bpw34.pdf, Fig 1, p. 2.
-# Temp in C, RDC in log10 pA.
-# Slope is 1/16 with y in log10.
-# Constant is 1.
-def temp_to_rdc(temp):
-    return (temp / 16.0) + 3.0
+# http://www.vishay.com/docs/81521/bpw34.pdf, p. 2 Fig 2
+# Temp in C.
+def temp_to_rrlc(temp): # Temperature to relative reverse light current
+    return 1.0 # TODO
 
-# Slope of all lines is 62.5 with log10 irrad.
-# See http://www.vishay.com/docs/80085/measurem.pdf, Fig 19, p. 7.
-def ocv_and_rdc_to_irrad(ocv, rdc):
-    slope = 62.5 # Negative slope
+# Log10 reverse light current microamps to log10 lux.
+# http://www.vishay.com/docs/81521/bpw34.pdf, p. 3 Fig 4
+# Useful link for calculating equations from lines (I *always* mess this up doing it by hand):
+# http://www.mathportal.org/calculators/analytic-geometry/two-point-form-calculator.php
+def rlc_to_lux(rlc):
+    k = -1.254
+    slope = 1.054
+    return (rlc - k) / slope
 
-    # From the lines given in figure 19, we can estimate the equation
-    # which determines the constant for a given rdc.
-    kslope = -56.366
-    kconstant = 331.366
-    k = (kslope * rdc) + kconstant
-
-    return (ocv - k + irradience_constant_adjustment) / slope
-
-# We can get log10 illum (lux) from log10 irrad by adding 3.
-# This can be inferred from figs 3 and 4 on p. 3 of http://www.vishay.com/docs/81521/bpw34.pdf
-def irrad_to_lux(irrad):
-    return irrad + 2.7
-
-# Convert lux to EV at ISO 100.
+# Convert log10 lux to EV at ISO 100.
 # See http://stackoverflow.com/questions/5401738/how-to-convert-between-lux-and-exposure-value
 def lux_to_ev_at_100(lux):
     # TODO: Could probably do this all in log space for greater accuracy.
     lux = math.pow(10, lux)
-    return math.log(lux/2.5, 2)
+    ev = math.log(lux/2.5, 2)
+    return ev
 
-def temp_and_voltage_to_ev(temp, v):
-    rdc = temp_to_rdc(temp)
-    irrad = ocv_and_rdc_to_irrad(v, rdc)
-    lux = irrad_to_lux(irrad)
-    return lux_to_ev_at_100(lux)
+# Voltage (mV) and op amp resitor value (kOhm) to EV at the reference temp,
+# which we see from Fig 2 on p.2 of http://www.vishay.com/docs/81521/bpw34.pdf
+# is 40C.
+def voltage_and_oa_resistor_to_ev(v, r):
+    # v = ir => i = v/r
+    v /= 1000.0 # v, mV -> V
+    r *= 1000.0 # kOhm -> ohm
+
+    if v < 1e-06:
+        v = 1e-06
+
+    v = math.log(v, 10)
+    r = math.log(r, 10)
+    i = v - r
+
+    # Get i in microamps.
+    i += math.log(1000000, 10)
+
+    lux = rlc_to_lux(i)
+    ev = lux_to_ev_at_100(lux)
+    return ev
 
 # Temperature, EV and voltage are all represented as unsigned 8-bit
 # values on the microcontroller.
@@ -111,82 +122,85 @@ def temp_and_voltage_to_ev(temp, v):
 # it into two arrays (one for the absolute value bytes and one for the
 # diff bit pattern index bytes) so that each separate array can be
 # indexed by a single byte.
-def output_table(level): # level == 'NORMAL' or level == 'LOW'
+
+def output_temp_table():
+    sys.stdout.write("const uint8_t TEMP_TO_RLC_EV_ADJUST[] PROGMEM = {\n");
+    # TODO: currently specify no adjustment for any temp
+    for t in xrange(0,256):
+        sys.stdout.write("0,")
+    sys.stdout.write("};\n")
+
+def output_ev_table(level): # level == 'NORMAL' or level == 'LOW'
     bitpatterns = [ ]
     vallist_abs = [ ]
     vallist_diffs = [ ]
-    gain = op_amp_normal_gain
+    oar = op_amp_normal_resistor
     if level == 'LOW':
-        gain = op_amp_low_light_gain
-    for t in xrange(0, 256, 16):
-        temperature = (t * 0.4) - 51.0
+        oar = op_amp_low_light_resistor
+    for sv in xrange(0, 256, 16):
+        # Write the absolute 8-bit EV value.
+        voltage = (sv * bv_to_voltage) + voltage_offset
+        assert voltage >= 0
+        if voltage > reference_voltage:
+            break
+        ev = voltage_and_oa_resistor_to_ev(voltage, oar)
+        eight = int(round((ev+5.0) * 8.0))
+        if eight < 0:
+            eight = 0
 
-        for sv in xrange(0, 256, 16):
-            # Write the absolute 8-bit EV value.
-            voltage = sv * (bv_to_voltage / gain)
-            assert voltage >= 0
-            ev = temp_and_voltage_to_ev(temperature, voltage)
-            eight = int(round((ev+5.0) * 8.0))
-            if eight < 0:
-                eight = 0
-            if sv == 0 and t != 0:
-                sys.stdout.write("      ")
+        # Write the 1-bit differences (two bytes).
+        prev = eight
+        num = ""
+        bpis = [ None, None ]
+        for j in xrange(0, 2):
+            eight2 = None
+            o = ""
+            for k in xrange(0, 8):
+                v = ((sv + (j * 8.0) + k) * bv_to_voltage) + voltage_offset
+                ev2 = voltage_and_oa_resistor_to_ev(v, oar)
+                eight2 = int(round((ev2+5.0) * 8.0))
+                if eight2 < 0:
+                    eight2 = 0
+#                print ">>>", eight2, prev
+                assert eight2 - prev == 0 or not (j == 0 and k == 0)
+                assert eight2 - prev <= 1
+                assert eight2 - prev >= 0
+                if eight2 - prev == 0:
+                    o += '0'
+                elif eight2 - prev == 1:
+                    o += '1'
+                else:
+                    assert False
+                prev = eight2
+            ix = None
+            try:
+                ix = bitpatterns.index(o)
+            except ValueError:
+                bitpatterns.append(o)
+                ix = len(bitpatterns)-1
+            assert ix < 16
+            bpis[j] = ix
 
-            # Write the 1-bit differences (two bytes).
-            prev = eight
-            num = ""
-            bpis = [ None, None ]
-            for j in xrange(0, 2):
-                eight2 = None
-                o = ""
-                for k in xrange(0, 8):
-                    v = (sv + (j * 8.0) + k) * (bv_to_voltage / gain)
-                    ev2 = temp_and_voltage_to_ev(temperature, v)
-                    eight2 = int(round((ev2+5.0) * 8.0))
-                    if eight2 < 0:
-                        eight2 = 0
-#                    sys.stderr.write('TAVX ' + str(temperature) + ',' + str(v) + "," + str(eight2) +'\n')
-#                    sys.stderr.write(str(eight2) + " ::: " + str(prev) + "\n\n")
-                    assert eight2 - prev == 0 or not (j == 0 and k == 0)
-                    assert eight2 - prev <= 1
-                    assert eight2 - prev >= 0
-#                    sys.stderr.write(str(eight2 - prev) + "\n")
-                    if eight2 - prev == 0:
-                        o += '0'
-                    elif eight2 - prev == 1:
-                        o += '1'
-                    else:
-                        assert False
-                    prev = eight2
-                ix = None
-                try:
-                    ix = bitpatterns.index(o)
-                except ValueError:
-                    bitpatterns.append(o)
-                    ix = len(bitpatterns)-1
-                assert ix < 16
-                bpis[j] = ix
-
-            vallist_abs.append(eight)
-            vallist_diffs.append(bpis[0] << 4 | bpis[1])
+        vallist_abs.append(eight)
+        vallist_diffs.append(bpis[0] << 4 | bpis[1])
 
 #    for v in xrange(0, 16):
 #        for t in xrange(0, 256, 16):
 #            sys.stderr.write(str(vallist_abs[t + v]) + " ")
 #        sys.stderr.write("\n")
 
-    sys.stdout.write('const uint8_t ' + level + '_LIGHT_TEMP_AND_VOLTAGE_TO_EV_BITPATTERNS[] PROGMEM = {\n')
+    sys.stdout.write('const uint8_t ' + level + '_LIGHT_VOLTAGE_TO_EV_BITPATTERNS[] PROGMEM = {\n')
     for p in bitpatterns:
         sys.stdout.write('0b%s,' % p)
     sys.stdout.write('\n};\n')
 
-    sys.stdout.write('const uint8_t ' + level + '_LIGHT_TEMP_AND_VOLTAGE_TO_EV_ABS[] PROGMEM = {')
+    sys.stdout.write('const uint8_t ' + level + '_LIGHT_VOLTAGE_TO_EV_ABS[] PROGMEM = {')
     for i in xrange(len(vallist_abs)):
         if i % 32 == 0:
             sys.stdout.write('\n    ');
         sys.stdout.write('%i,' % vallist_abs[i])
     sys.stdout.write('\n};\n')
-    sys.stdout.write('const uint8_t ' + level + '_LIGHT_TEMP_AND_VOLTAGE_TO_EV_DIFFS[] PROGMEM = {')
+    sys.stdout.write('const uint8_t ' + level + '_LIGHT_VOLTAGE_TO_EV_DIFFS[] PROGMEM = {')
     for i in xrange(len(vallist_diffs)):
         if i % 32 == 0:
             sys.stdout.write('\n    ');
@@ -198,28 +212,23 @@ def output_table(level): # level == 'NORMAL' or level == 'LOW'
 # over the two input pins.
 def output_sanity_graph():
     f = open("santitygraph.csv", "w")
-    temperature = (51.0 + 20.0)/0.4
     for v in xrange(0, 256):
-        voltage = v * (bv_to_voltage / op_amp_normal_gain)
-        ev = temp_and_voltage_to_ev(temperature, voltage)
-        f.write("%f,%f\n" % (voltage * op_amp_normal_gain, ev))
+        voltage = (v * bv_to_voltage) + voltage_offset
+        ev = voltage_and_oa_resistor_to_ev(voltage, op_amp_normal_resistor)
+        f.write("%f,%f\n" % (voltage, ev))
     f.close()
 
 # Straight up array that we use to test that the bitshifting logic is
 # working correctly. (Test will currently only be performed for normal light table.)
 def output_test_table():
     sys.stdout.write('    { ')
-    for t in xrange(0, 256, 16):
-        temperature = (t * 0.4) - 51.0
-        for v in xrange(0, 256):
-            voltage = v * (bv_to_voltage / op_amp_normal_gain)
+    for v in xrange(0, 256):
+        voltage = (v * bv_to_voltage) + voltage_offset
 #            sys.stderr.write('TAVY ' + str(temperature) + ',' + str(voltage) + '\n')
-            ev = temp_and_voltage_to_ev(temperature, voltage)
-            eight = int(round((ev+5.0) * 8.0))
-            if v == 0 and t != 0:
-                sys.stdout.write("     ")
-            sys.stdout.write("%i," % eight)
-        sys.stdout.write('\n')
+        ev = voltage_and_oa_resistor_to_ev(voltage, op_amp_normal_resistor)
+        eight = int(round((ev+5.0) * 8.0))
+        sys.stdout.write("%i," % eight)
+    sys.stdout.write('\n')
     sys.stdout.write('    }');
 
 
@@ -537,10 +546,12 @@ def output():
     sys.stdout.write('#ifndef TABLES_H\n#define TABLES_H\n\n')
     sys.stdout.write("#include <stdint.h>\n")
     sys.stdout.write("#include <readbyte.h>\n")
-    output_table('NORMAL')
-    output_table('LOW')
+    output_ev_table('NORMAL')
+    output_ev_table('LOW')
+    sys.stdout.write('const uint8_t VOLTAGE_TO_EV_ABS_OFFSET = ' + str(int(round((voltage_offset/reference_voltage)*256))) + ';\n')
+    output_temp_table()
     sys.stdout.write('\n#ifdef TEST\n')
-    sys.stdout.write('const uint8_t TEST_TEMP_AND_VOLTAGE_TO_EV[] PROGMEM =\n')
+    sys.stdout.write('const uint8_t TEST_VOLTAGE_TO_EV[] PROGMEM =\n')
     output_test_table()
     sys.stdout.write(';\n#endif\n')
     output_shutter_speeds()
