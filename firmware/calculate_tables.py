@@ -12,7 +12,8 @@ op_amp_low_light_resistor        = 220.0   #kOhm
 # This is because in the region just above v = 0, the changes
 # between different voltage values lead to large discontinuities
 # in EV values which the table compression mechanism can't handle.
-voltage_offset                   = 150     # mV
+voltage_offset                   = 150.0   # mV
+reference_temperature            = 40.0    # C
 
 # The graph in measurem.pdf is not for the BPW34.
 # The BPW34 has a 20mV higher OCV listed on its data sheet compared
@@ -73,6 +74,7 @@ def voltage_and_oa_resistor_to_ev(v, r):
     ev = lux_to_ev_at_100(lux)
     return ev
 
+#
 # Temperature, EV and voltage are all represented as unsigned 8-bit
 # values on the microcontroller.
 #
@@ -80,48 +82,32 @@ def voltage_and_oa_resistor_to_ev(v, r):
 # Voltage: from 0 up in 1/256ths of the reference voltage.
 # EV: from -5 to 26EV in 1/8 EV intervals.
 #
-# The table is a 2D array of bytes mapping (temperature, voltage) to
-# EV*8.  Temperature goes up in steps of 16 (in terms of the 8-bit
-# value).  Voltage goes up in steps of 1 (in terms of the 8-bit
-# value).
+# The table is an array mapping voltage to EV*8 at the reference
+# temperature.  The resulting table would take up 256 bytes.  To make
+# the table more compact, the series of voltages is stored with the
+# first 8-bit value followed by a series of 16 (compacted) 1-bit
+# values, where each 1-bit value indicates the (always positive)
+# difference with the previous value.  The table is therefore grouped
+# into triples of the form [ev diffs diffs].
 #
-# The resulting table would take up (256/1)*(256/16) = 4096 bytes =
-# 4K, which would just about fit in the attiny85's 8K of
-# flash. However, to make the table more compact, each row (series of
-# voltages) is stored with the first 8-bit value followed by a series
-# of (compacted) 1-bit values, where each 1-bit value indicates the
-# (always positive) difference with the previous value.
+# As it turns out, there are only a small number of distinct 8-bit
+# diffs patterns. We can therefore replace each [diffs diffs] sequence
+# with the sequence [ev i], where i is a single byte containing two
+# 4-bit indices (one for each 8-bit bit pattern) into an array of 14
+# bytes.
 #
-# The initial idea was to use the following layout for each row. 16
-# groups of three bytes, where the first byte in each group is an
-# absolute EV value and the next two bytes give 1-bit
-# differences. (For simplicity, the first bit is always 0, i.e., it
-# gives the difference of abs_ev with abs_ev+0).  The value of any
-# given cell can therefore be determined by doing at most 15
-# additions. Each addition takes 1 clock cycle. If we conservatively
-# assume 10 cycles for each iteration of the loop, that's 150 cycles,
-# which at 8MHz is about 1/150th of a second.
+# Finally, we split the array into two arrays (one for the absolute
+# value bytes and one for the diff bit pattern index bytes). (This was
+# previously necessary because the monolithic array was too large to
+# index with a single byte; may not be necessary now.)
 #
-# In this layout each row is 48 bytes, meaning that the table as a whole takes
-# up a more managable 768 bytes.
+# EV values for very low voltages are not stored. The
+# VOLTAGE_TO_EV_ABS_OFFSET constant indicates the voltage for the
+# first element of the table.
 #
-#             voltage
-#               (0)                 (16)
-#  temp  (0)    ev  diffs diffs     ev   diffs diffs ...
-#        (16)   ev  diffs diffs     ev   diffs diffs ...
-#        (32)   ev  diffs diffs     ev   diffs diffs ...
+# A separate table of int8_t values maps temperatures to compensation
+# in EV@100*8.
 #
-# There are only 14 distinct diffs 8-bit patterns. We can therefore
-# replace each [diffs diffs] sequence with the sequence [ev i], where
-# i is a single byte containing two 4-bit indices (one for each 8-bit
-# bit pattern) into an array of 14 bytes. This gives us a table where
-# each row is 32 bytes, so together with the 12-byte bit pattern
-# array, the entire thing takes up 524 bytes.
-#
-# Finally, since the array itself now takes up 512 bytes, we can split
-# it into two arrays (one for the absolute value bytes and one for the
-# diff bit pattern index bytes) so that each separate array can be
-# indexed by a single byte.
 
 def output_temp_table():
     sys.stdout.write("const int8_t TEMP_EV_ADJUST[] PROGMEM = {\n");
