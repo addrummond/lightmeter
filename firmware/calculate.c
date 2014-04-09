@@ -74,8 +74,8 @@ uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage, g
 
 #ifdef TEST
     printf("voltage = %i, count = %i, bitsper = %i, abs %i, absi = %i, r = %i\n",
-           voltage, c, bits_to_add, pgm_read_byte(&NORMAL_LIGHT_VOLTAGE_TO_EV_ABS[i]),
-           i, pgm_read_byte(ev_abs + i) + c);
+           voltage, c, bits_to_add, pgm_read_byte(&NORMAL_LIGHT_VOLTAGE_TO_EV_ABS[absi]),
+           absi, pgm_read_byte(ev_abs + absi) + c);
 #endif
 
     // Compensate for effect of ambient temperature.
@@ -103,7 +103,7 @@ int main()
     for (int t = 0; t < 256; ++t) {
         for (int v = 0; v < 246; ++v) {
           uint8_t uncompressed = pgm_read_byte(&TEST_VOLTAGE_TO_EV[(256 * ((unsigned)t/16)) + (unsigned)v]);
-            uint8_t compressed = get_ev100_at_temperature_voltage((uint8_t)t, (uint8_t)v);
+          uint8_t compressed = get_ev100_at_temperature_voltage((uint8_t)t, (uint8_t)v, NORMAL_GAIN);
             if (uncompressed != compressed) {
                 printf("Values not equal for t = %i, v = %i: compressed = %i, uncompressed = %i\n", (unsigned)t, (unsigned)v, (unsigned)compressed, (unsigned)uncompressed);
                 return 1;
