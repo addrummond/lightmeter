@@ -124,7 +124,7 @@ def voltage_and_oa_resistor_to_ev(v, r):
 # indexed by a single byte.
 
 def output_temp_table():
-    sys.stdout.write("const uint8_t TEMP_TO_RLC_EV_ADJUST[] PROGMEM = {\n");
+    sys.stdout.write("const int8_t TEMP_EV_ADJUST[] PROGMEM = {\n");
     # TODO: currently specify no adjustment for any temp
     for t in xrange(0,256):
         sys.stdout.write("0,")

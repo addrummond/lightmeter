@@ -17,6 +17,7 @@ extern const uint8_t NORMAL_LIGHT_MIN_VOLTAGE;
 extern const uint8_t LOW_LIGHT_MAX_VOLTAGE;
 extern const uint8_t LOW_LIGHT_MIN_VOLTAGE;
 extern const uint8_t VOLTAGE_TO_EV_ABS_OFFSET;
+extern const uint8_t TEMP_EV_ADJUST[];
 #ifdef TEST
 extern const uint8_t TEST_VOLTAGE_TO_EV[];
 #endif
@@ -31,8 +32,6 @@ extern const uint8_t TEST_VOLTAGE_TO_EV[];
 // 'voltage' is in 1/256ths of the reference voltage.
 uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage, gain_t gain)
 {
-    voltage >>= 4; // /16
-
     const uint8_t *ev_abs = NORMAL_LIGHT_VOLTAGE_TO_EV_ABS;
     const uint8_t *ev_diffs = NORMAL_LIGHT_VOLTAGE_TO_EV_DIFFS;
     const uint8_t *ev_bitpatterns = NORMAL_LIGHT_VOLTAGE_TO_EV_BITPATTERNS;
@@ -47,7 +46,9 @@ uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage, g
     else
         voltage -= VOLTAGE_TO_EV_ABS_OFFSET;
 
-    uint8_t absi = voltage >> 4;
+    uint8_t v16 = voltage >> 4;
+
+    uint8_t absi = v16;
     uint8_t bits_to_add = (voltage & 15) + 1; // (voltage % 16) + 1
 
     uint8_t bit_pattern_indices = pgm_read_byte(ev_diffs + absi);
@@ -76,6 +77,17 @@ uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage, g
            voltage, c, bits_to_add, pgm_read_byte(&NORMAL_LIGHT_VOLTAGE_TO_EV_ABS[i]),
            i, pgm_read_byte(ev_abs + i) + c);
 #endif
+
+    // Compensate for effect of ambient temperature.
+    uint8_t adj = TEMP_EV_ADJUST[temperature];
+    uint8_t withcomp = r + adj;
+    // Check for overflow
+    if (adj < 0 && withcomp > r)
+        r = 0;
+    else if (adj > 0 && withcomp < r)
+        r = 255;
+    else
+        r = withcomp;
 
     return r;
 
