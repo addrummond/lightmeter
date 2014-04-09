@@ -33,7 +33,9 @@ bv_to_voltage = ((1/256.0) * reference_voltage)
 # http://www.vishay.com/docs/81521/bpw34.pdf, p. 2 Fig 2
 # Temp in C.
 def temp_to_rrlc(temp): # Temperature to relative reverse light current
-    return 1.0 # TODO
+    slope = 0.002167
+    k = 0.97
+    return (temp*slope) + k
 
 # Log10 reverse light current microamps to log10 lux.
 # http://www.vishay.com/docs/81521/bpw34.pdf, p. 3 Fig 4
@@ -55,7 +57,7 @@ def lux_to_ev_at_100(lux):
 # Voltage (mV) and op amp resitor value (kOhm) to EV at the reference temp,
 # which we see from Fig 2 on p.2 of http://www.vishay.com/docs/81521/bpw34.pdf
 # is 40C.
-def voltage_and_oa_resistor_to_ev(v, r):
+def voltage_and_oa_resistor_to_ev(v, r, TADJ = 0.0):
     # v = ir => i = v/r
     v /= 1000.0 # v, mV -> V
     r *= 1000.0 # kOhm -> ohm
@@ -65,7 +67,7 @@ def voltage_and_oa_resistor_to_ev(v, r):
 
     v = math.log(v, 10)
     r = math.log(r, 10)
-    i = v - r
+    i = v - r + TADJ
 
     # Get i in microamps.
     i += math.log(1000000, 10)
@@ -73,6 +75,17 @@ def voltage_and_oa_resistor_to_ev(v, r):
     lux = rlc_to_lux(i)
     ev = lux_to_ev_at_100(lux)
     return ev
+
+# If rlc_to_lux(rlc) is linear (as we falsely assume), then each +1 C yields
+# a constant decrease in EV. The value of the op amp resistor makes no difference.
+# Rather than crunching through the equations, we just choose a couple of arbitrary values to calculate this.
+ev_change_for_every_1_6_c_rise = None
+for x in xrange(1): # Just here to get a new scope
+    tadj = math.log(temp_to_rrlc(reference_temperature-10), 10)
+    r1 = voltage_and_oa_resistor_to_ev(reference_voltage/2.0, op_amp_normal_resistor, tadj)
+    tadj = math.log(temp_to_rrlc(reference_temperature), 10)
+    r2 = voltage_and_oa_resistor_to_ev(reference_voltage/2.0, op_amp_normal_resistor, tadj)
+    ev_change_for_every_1_6_c_rise = r1 - r2
 
 #
 # Temperature, EV and voltage are all represented as unsigned 8-bit
@@ -111,9 +124,16 @@ def voltage_and_oa_resistor_to_ev(v, r):
 
 def output_temp_table():
     sys.stdout.write("const int8_t TEMP_EV_ADJUST[] PROGMEM = {\n");
-    # TODO: currently specify no adjustment for any temp
     for t in xrange(0,256,4):
-        sys.stdout.write("0,")
+        temperature = -51.0 + (t * 0.4)
+        dtemp = temperature - reference_temperature
+        comp = ev_change_for_every_1_6_c_rise * (dtemp / 1.6)
+        eight = int(round(comp * 8.0))
+        if eight < -127:
+            eight = -127
+        if eight > 127:
+            eight = 127
+        sys.stdout.write("%i," % eight)
     sys.stdout.write("};\n")
 
 def output_ev_table(level): # level == 'NORMAL' or level == 'LOW'
