@@ -100,14 +100,16 @@ int main()
 {
     // TODO: This will no longer work because we now have the sperate tables for low/high gain.
     // Test that compressed table is giving correct values by comparing to uncompressed table.
-    for (int t = 0; t < 256; ++t) {
-        for (int v = 0; v < 246; ++v) {
-          uint8_t uncompressed = pgm_read_byte(&TEST_VOLTAGE_TO_EV[(256 * ((unsigned)t/16)) + (unsigned)v]);
-          uint8_t compressed = get_ev100_at_temperature_voltage((uint8_t)t, (uint8_t)v, NORMAL_GAIN);
-            if (uncompressed != compressed) {
-                printf("Values not equal for t = %i, v = %i: compressed = %i, uncompressed = %i\n", (unsigned)t, (unsigned)v, (unsigned)compressed, (unsigned)uncompressed);
-                return 1;
-            }
+    uint8_t t = 227; // ~=40C; should track reference_temperature in calculate_tables.py
+    for (int v = 0; v < 246; ++v) {
+        v -= VOLTAGE_TO_EV_ABS_OFFSET;
+        if (v < 0)
+            v = 0;
+        uint8_t uncompressed = pgm_read_byte(&TEST_VOLTAGE_TO_EV[(unsigned)v]);
+        uint8_t compressed = get_ev100_at_temperature_voltage((uint8_t)t, (uint8_t)v, NORMAL_GAIN);
+        if (uncompressed != compressed) {
+            printf("Values not equal for t = %i, v = %i: compressed = %i, uncompressed = %i\n", (unsigned)t, (unsigned)v, (unsigned)compressed, (unsigned)uncompressed);
+            return 1;
         }
     }
 

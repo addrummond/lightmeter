@@ -229,7 +229,9 @@ def output_sanity_graph():
 def output_test_table():
     sys.stdout.write('    { ')
     for v in xrange(0, 256):
-        voltage = (v * bv_to_voltage) + voltage_offset
+        voltage = (v * bv_to_voltage)
+        if voltage < voltage_offset:
+            continue
 #            sys.stderr.write('TAVY ' + str(temperature) + ',' + str(voltage) + '\n')
         ev = voltage_and_oa_resistor_to_ev(voltage, op_amp_normal_resistor)
         eight = int(round((ev+5.0) * 8.0))
