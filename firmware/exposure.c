@@ -303,13 +303,11 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
                 prevdiff_digits_[j] = prev_digits[j];
             uint8_t *prevdiff_digits = bcd_sub(prevdiff_digits_, prev_length, digits, length);
             uint8_t prevdiff_length = bcd_length_after_op(prevdiff_digits_, prev_length, prevdiff_digits);
-            //            P("prevdiff ", prevdiff_digits, prevdiff_length);
             uint8_t nextdiff_digits_[nextup_length];
             for (j = 0; j < nextup_length; ++j)
                 nextdiff_digits_[j] = nextup_digits[j];
             uint8_t *nextdiff_digits = bcd_sub(nextdiff_digits_, nextup_length, digits, length);
             uint8_t nextdiff_length = bcd_length_after_op(nextdiff_digits_, nextup_length, nextdiff_digits);
-            //            P("nextdiff ", nextdiff_digits, nextdiff_length);
 
             if (bcd_lt(nextdiff_digits, nextdiff_length, prevdiff_digits, prevdiff_length)) {
                 ++divs;
