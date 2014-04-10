@@ -139,39 +139,40 @@ static const uint8_t BCD_6[] = { 6 };
 // two digits followed by number of trailing zeros.
 static const uint8_t FULL_STOP_ISOS[] PROGMEM = {
     6, 0,             // 6
-    1 | (2 << 4), 0,  // 12
-    2 | (5 << 4), 0,  // 25
+    (1 << 4) | 2, 0,  // 12
+    (2 << 4) | 5, 0,  // 25
     5, 1,             // 50
     1, 2,             // 100
     2, 2,             // 200
     4, 2,             // 400
     8, 2,             // 800
-    1 | (6 << 4), 2,  // 1600
-    3 | (2 << 4), 2,  // 3200
-    6 | (4 << 4), 2,  // 6400
-    2 | (5 << 4), 3,  // 25000 [skip 12500 next]
+    (1 << 4) | 6, 2,  // 1600
+    (3 << 4) | 2, 2,  // 3200
+    (6 << 4) | 4, 2,  // 6400
+    (2 << 4) | 5, 3,  // 25000 [skip 12500 next]
     5, 4,             // 50000
     1, 5,             // 100000
     2, 5,             // 200000
     4, 5,             // 400000
     8, 5,             // 800000
-    1 | (6 << 4), 5   // 1600000
+    (1 << 4) | 6, 5,  // 1600000
 };
 
 static uint8_t *full_stop_iso_into_bcd(uint8_t byte1, uint8_t zeroes, uint8_t *digits, uint8_t length)
 {
     uint8_t i, z;
-    for (i = length, z = 0; i > 0 && z < zeroes; --i, ++z)
-        digits[i-1] = 0;
-    --i;
+    for (i = length-1, z = 0; z < zeroes; --i, ++z) {
+        digits[i] = 0;
+    }
 
-    digits[i--] = byte1 >> 4;
-    if (byte1 & 0x0F) {
-        digits[i] = byte1 & 0x0F;
-        return digits + i;
+    digits[i] = byte1 & 0x0F;
+    if (byte1 & 0xF0) {
+        --i;
+        digits[i] = byte1 >> 4;
+        return digits + length - zeroes - 2;
     }
     else {
-        return digits + i + 1;
+        return digits + length - zeroes - 1;
     }
 }
 
@@ -196,7 +197,7 @@ bool iso_is_full_stop(const uint8_t *digits, uint8_t length)
                 uint8_t d2 = d >> 4;
                 checkzeroes_offset = 2;
                 --checkzeroes_length;
-                if (digits[0] != d1 || digits[1] != d2)
+                if (digits[0] != d2 || digits[1] != d1)
                     continue;
             }
             else if (digits[0] != d1) {
@@ -234,7 +235,10 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
 
     uint8_t *r = tdigits;
     uint8_t count;
-    for (count = 0; bcd_gteq(r, l, BCD_6, sizeof(BCD_6)); ++count) {
+    for (count = 0; bcd_gt(r, l, BCD_6, sizeof(BCD_6)); ++count) {
+        //        printf(" === ");
+        //        debug_print_bcd(r, l);
+        //        printf("\n");
         // ISO 26 -> 25
         if (l == 2 && r[0] == 2 && r[1] == 5)
             r[1] = 6;
@@ -246,6 +250,7 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
         l = bcd_length_after_op(tdigits, l, r);
         tdigits = r;
     }
+    //    printf("COUNT %i\n", count);
 
     uint8_t stops = (count-1)*8;
 
@@ -263,11 +268,15 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
     if (! iso_is_full_stop(digits, length)) {
         uint8_t nextup_digits_[ISO_DECIMAL_MAX_DIGITS];
         uint8_t dcount = count << 1;
+        //        printf("=====>>> COUNT %i b1 %i b2 %i\n", count, FULL_STOP_ISOS[dcount], FULL_STOP_ISOS[dcount+1]);
         uint8_t *nextup_digits = full_stop_iso_into_bcd(pgm_read_byte(&FULL_STOP_ISOS[dcount]),
                                                         pgm_read_byte(&FULL_STOP_ISOS[dcount + 1]),
                                                         nextup_digits_,
                                                         ISO_DECIMAL_MAX_DIGITS);
         uint8_t nextup_length = ISO_DECIMAL_MAX_DIGITS - (nextup_digits - nextup_digits_);
+        //                    printf("NEXTUP\n");
+        //                    debug_print_bcd(nextup_digits, nextup_length);
+        //                    printf("\n");
 
         uint8_t divs;
         uint8_t prev_digits_[nextup_length];
@@ -290,6 +299,11 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
             nextup_length = bcd_length_after_op(nextup_digits, nextup_length, r);
             nextup_digits = r;
 
+            //                                  printf("CMP\n");
+            //                                  debug_print_bcd(nextup_digits, nextup_length);
+            //                        printf(" > ");
+            //                        debug_print_bcd(digits, length);
+            //                        printf("\n");
             if (! bcd_gt(nextup_digits, nextup_length, digits, length))
                 break;
 
