@@ -182,7 +182,7 @@ static uint8_t *full_stop_iso_into_bcd(uint8_t byte1, uint8_t zeroes, uint8_t *d
 
 bool iso_is_full_stop(const uint8_t *digits, uint8_t length)
 {
-    // Special case: 12500 is not in table (because it has 3 non-zero digits).
+    // Special case: 12500 is listed as 12000 in table (because it has 3 non-zero digits).
     if (length == 5 && digits[0] == 1 && digits[1] == 2 && digits[2] == 5 && digits[3] == 0 && digits[4] == 0)
         return true;
 
