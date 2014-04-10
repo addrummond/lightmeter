@@ -11,6 +11,12 @@ uint16_t bitfiddle_uint16_approx_div_by_10(uint16_t n)
            - (n >> 5) + (n >> 7) + (n >> 10) - (n >> 9) - (n >> 11) - (n >> 13);
 }
 
+// Approx div by 4th root of 2, i.e. 1.1892. Max error 3.15.
+uint16_t bitfiddle_uint16_approx_div_by_4rt2(uint16_t n)
+{
+    return n - (n >> 3) - (n >> 5) - (n >> 7) + (n >> 8) + (n >> 9) - (n >> 10) + (n>>14);    
+}
+
 //
 // Not currently used; commenting out to reduce code size.
 //
@@ -46,6 +52,22 @@ int main()
 
         if (i % 256 == 0) {
             printf("Error at div/10 i = %i: %i (real result = %i, approx result = %i)\n", i, diff, x, y);
+        }
+    }
+
+    printf("Testing approx div by 4th root of 2\n");
+    for (unsigned i = 0; i < 65536; ++i) {
+        uint16_t x = (uint16_t)((float)i/1.1892);
+        uint16_t y = bitfiddle_uint16_approx_div_by_4rt2((uint16_t)i);
+
+        uint16_t diff;
+        if ((x >= y && (diff = (x - y)) > 4) || (y > x && (diff = (y - x)) > 4)) {
+            printf("Not approx equal div/4rt2 for i = %i: real value = %i, bithack value = %i\n", i, x, y);
+            return 1;
+        }
+
+        if (i % 256 == 0) {
+            printf("Error at div/4rt2 i = %i: %i (real result = %i, approx result = %i)\n", i, diff, x, y);
         }
     }
 
