@@ -102,7 +102,7 @@ void string_to_bcd(uint8_t *digits, uint8_t length)
         digits[i] -= 48;
 }
 
-#ifdef TEST
+#if !defined(__AVR__)
 void debug_print_bcd(uint8_t *digits, uint8_t length)
 {
     uint8_t digits2[length + 1];

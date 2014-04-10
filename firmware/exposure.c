@@ -8,6 +8,7 @@
 #include <readbyte.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <assert.h>
 #include <exposure.h>
 #include <bcd.h>
@@ -159,21 +160,19 @@ static const uint8_t FULL_STOP_ISOS[] PROGMEM = {
 
 static uint8_t *full_stop_iso_into_bcd(uint8_t byte1, uint8_t zeroes, uint8_t *digits, uint8_t length)
 {
-    uint8_t sigs = 1;
-    if (byte1 & 0xF0)
-        ++sigs;
-    uint8_t ilength = sigs + zeroes;
+    uint8_t i, z;
+    for (i = length, z = 0; i > 0 && z < zeroes; --i, ++z)
+        digits[i-1] = 0;
+    --i;
 
-    uint8_t i;
-    for (i = 0; i < zeroes; ++i) {
-        digits[length-zeroes-1+i] = 0;
+    digits[i--] = byte1 >> 4;
+    if (byte1 & 0x0F) {
+        digits[i] = byte1 & 0x0F;
+        return digits + i;
     }
-
-    digits[length-ilength] = byte1 & 0xF;
-    if (byte1 & 0xF0)
-        digits[length-ilength-1] = byte1 >> 4;
-
-    return digits + length - ilength;
+    else {
+        return digits + i + 1;
+    }
 }
 
 bool iso_is_full_stop(const uint8_t *digits, uint8_t length)
@@ -250,8 +249,15 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
 
     uint8_t stops = (count-1)*8;
 
-    // If it's not a full-stop ISO number then we've calculated the stop equivalent
-    // of the next full-stop ISO number ABOVE the given number.
+    // If it's not a full-stop ISO number then we've calculated the
+    // stop equivalent of the next full-stop ISO number ABOVE the
+    // given number. We now deal in 1/3 stops, which is how
+    // intermediate ISO numbers appear to be standardized.  To get to
+    // the next stop down we divide by the third root of 2.  With the
+    // exception of the very low ISO numbers, which we have to handle
+    // specially, we can get away with multiplying by 0.7937, which is
+    // close enough to subtracting 1/5.
+
     // Now we find out how many times we need to subtract one sixteenth to
     // get to the full stop ISO below the specified ISO.
     if (! iso_is_full_stop(digits, length)) {
@@ -263,28 +269,71 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
                                                         ISO_DECIMAL_MAX_DIGITS);
         uint8_t nextup_length = ISO_DECIMAL_MAX_DIGITS - (nextup_digits - nextup_digits_);
 
-        // Calculate 1/16. (Because half of x*(1/8)x is x*(1/16).)
-        // TODO: Currently we have to do two divisions (one by 8 then one by 2)
-        // because of limited BCD functionality -- gross.
-        uint8_t eighth_digits_[nextup_length];
+        uint8_t divs;
+        uint8_t prev_digits_[nextup_length];
+        uint8_t prev_length = nextup_length;
+        uint8_t *prev_digits = prev_digits_;
         uint8_t j;
-        for (j = 0; j < nextup_length; ++j)
-            eighth_digits_[j] = nextup_digits[j];
-        uint8_t *rr = bcd_div_by_lt10(eighth_digits_, nextup_length, 8);
-        uint8_t eighth_length = bcd_length_after_op(eighth_digits_, nextup_length, rr);
-        uint8_t *eighth_digits = bcd_div_by_lt10(rr, eighth_length, 2);
-        eighth_length = bcd_length_after_op(rr, eighth_length, eighth_digits);
+        for (j = 0; j < prev_length; ++j)
+            prev_digits_[j] = nextup_digits[j];
+        for (divs = 1;; ++divs) {
+            // We could do this by dividing by 10 (fast in BCD) then doubling, but there might
+            // be some cost in accuracy.
+            uint8_t fifth_digits_[nextup_length];
+            for (j = 0; j < nextup_length; ++j)
+                fifth_digits_[j] = nextup_digits[j];
+            uint8_t *fifth_digits = bcd_div_by_lt10(fifth_digits_, nextup_length, 5);
+            uint8_t fifth_length = bcd_length_after_op(fifth_digits_, nextup_length, fifth_digits);
 
-        uint8_t subs;
-        l = nextup_length;
-        uint8_t *r = nextup_digits;
-        for (subs = 0; bcd_gt(r, l, digits, length); ++subs) {
-            r = bcd_sub(r, l, eighth_digits, eighth_length);
-            l = bcd_length_after_op(nextup_digits, l, r);
+            // Subtract 1/5.
+            uint8_t *r = bcd_sub(nextup_digits, nextup_length, fifth_digits, fifth_length);
+            nextup_length = bcd_length_after_op(nextup_digits, nextup_length, r);
             nextup_digits = r;
-        }
 
-        stops += 8 - subs + 1;
+            if (! bcd_gt(nextup_digits, nextup_length, digits, length))
+                break;
+
+            // We haven't yet got to a number that's lower than the specified ISO number by
+            // dividing from the next one up. BUT: maybe we're really close. E.g., we're at
+            // 130 when the user specified 125. In this case we should let this count.
+
+            // Take the difference with the previous one and with the one we just calculated.
+            uint8_t prevdiff_digits_[prev_length];
+            for (j = 0; j < prev_length; ++j)
+                prevdiff_digits_[j] = prev_digits[j];
+            uint8_t *prevdiff_digits = bcd_sub(prevdiff_digits_, prev_length, digits, length);
+            uint8_t prevdiff_length = bcd_length_after_op(prevdiff_digits_, prev_length, prevdiff_digits);
+            //            P("prevdiff ", prevdiff_digits, prevdiff_length);
+            uint8_t nextdiff_digits_[nextup_length];
+            for (j = 0; j < nextup_length; ++j)
+                nextdiff_digits_[j] = nextup_digits[j];
+            uint8_t *nextdiff_digits = bcd_sub(nextdiff_digits_, nextup_length, digits, length);
+            uint8_t nextdiff_length = bcd_length_after_op(nextdiff_digits_, nextup_length, nextdiff_digits);
+            //            P("nextdiff ", nextdiff_digits, nextdiff_length);
+
+            if (bcd_lt(nextdiff_digits, nextdiff_length, prevdiff_digits, prevdiff_length)) {
+                ++divs;
+                break;
+            }
+
+            prev_length = nextup_length;
+            for (j = 0; j < prev_length; ++j)
+                prev_digits[j] = nextup_digits[j];
+        }
+        
+        // Translate 1/3 stops to 1/8 stops -- yuck!
+        assert(divs <= 3);
+        switch (divs) {
+        case 1: {
+            stops += 5;
+        } break;
+        case 2: {
+            stops += 3;
+        } break;
+        case 3: {
+            ;
+        }
+        }
     }
 
     return stops;
@@ -409,6 +458,7 @@ int main()
         }
         }*/
 
+    // Useful table for comparison is here: http://en.wikipedia.org/wiki/Film_speed
     static uint8_t isobcds[] = {
         7,   1, 6, 0, 0, 0, 0, 0,  0,
         6,   0, 8, 0, 0, 0, 0, 0,  0,
@@ -424,15 +474,19 @@ int main()
         3,   0, 0, 0, 0, 8, 0, 0,  0,
         3,   0, 0 ,0 ,0, 4, 0, 0,  0,
         3,   0, 0, 0, 0, 2, 0, 0,  0,
-        3,   0, 0, 0, 0, 1, 7, 4,  0,
-        3,   0, 0, 0, 0, 1, 6, 2,  0,
-        3,   0, 0, 0, 0, 1, 5, 0,  0,
+        3,   0, 0, 0, 0, 1, 6, 0,  0,
         3,   0, 0, 0, 0, 1, 2, 5,  0,
-        3,   0, 0, 0, 0, 1, 1, 2,  0,
         3,   0, 0, 0, 0, 1, 0, 0,  0,
+        2,   0, 0, 0, 0, 0, 8, 4,  0,
+        2,   0, 0, 0, 0, 0, 6, 4,  0,
         2,   0, 0, 0, 0, 0, 5, 0,  0,
         2,   0, 0, 0, 0, 0, 2, 5,  0,
         2,   0, 0, 0, 0, 0, 1, 2,  0,
+        2,   0, 0, 0, 0, 0, 1, 1,  0,
+        2,   0, 0, 0, 0, 0, 1, 0,  0,
+        1,   0, 0, 0, 0, 0, 0, 9,  0,
+        1,   0, 0, 0, 0, 0, 0, 8,  0, 
+        1,   0, 0, 0, 0, 0, 0, 7,  0,
         1,   0, 0, 0, 0, 0, 0, 6,  0 
     };
 
