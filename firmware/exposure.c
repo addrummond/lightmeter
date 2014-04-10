@@ -252,7 +252,7 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
     }
     //    printf("COUNT %i\n", count);
 
-    uint8_t stops = (count-1)*8;
+    uint8_t stops = count*8;
 
     // If it's not a full-stop ISO number then we've calculated the
     // stop equivalent of the next full-stop ISO number ABOVE the
@@ -337,10 +337,10 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
         assert(divs <= 3);
         switch (divs) {
         case 1: {
-            stops += 5;
+            stops -= 3;
         } break;
         case 2: {
-            stops += 3;
+            stops -= 5;
         } break;
         case 3: {
             ;
