@@ -149,7 +149,8 @@ static const uint8_t FULL_STOP_ISOS[] PROGMEM = {
     (1 << 4) | 6, 2,  // 1600
     (3 << 4) | 2, 2,  // 3200
     (6 << 4) | 4, 2,  // 6400
-    (2 << 4) | 5, 3,  // 25000 [skip 12500 next]
+    (1 << 4) | 2, 3,  // 12500 // must be special-cased to add 5.
+    (2 << 4) | 5, 3,  // 25000
     5, 4,             // 50000
     1, 5,             // 100000
     2, 5,             // 200000
@@ -169,6 +170,9 @@ static uint8_t *full_stop_iso_into_bcd(uint8_t byte1, uint8_t zeroes, uint8_t *d
     if (byte1 & 0xF0) {
         --i;
         digits[i] = byte1 >> 4;
+        // Special case for 12500.
+        if (byte1 == ((1 << 4) | 2) && zeroes == 3)
+            digits[length-3] = 5;
         return digits + length - zeroes - 2;
     }
     else {
@@ -250,7 +254,6 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
         l = bcd_length_after_op(tdigits, l, r);
         tdigits = r;
     }
-    //    printf("COUNT %i\n", count);
 
     uint8_t stops = count*8;
 
@@ -274,18 +277,24 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
                                                         nextup_digits_,
                                                         ISO_DECIMAL_MAX_DIGITS);
         uint8_t nextup_length = ISO_DECIMAL_MAX_DIGITS - (nextup_digits - nextup_digits_);
-        //                    printf("NEXTUP\n");
-        //                    debug_print_bcd(nextup_digits, nextup_length);
-        //                    printf("\n");
+
+        //printf("NEXTUP ");
+        //debug_print_bcd(nextup_digits, nextup_length);
+        //printf("\n");
+
+        // We could do this by dividing by 10 (fast in BCD) then doubling, but there might
+        // be some cost in accuracy.
+        uint8_t j;
+        uint8_t fifth_digits_[nextup_length];
+        for (j = 0; j < nextup_length; ++j)
+            fifth_digits_[j] = nextup_digits[j];
+        uint8_t *fifth_digits = bcd_div_by_lt10(fifth_digits_, nextup_length, 5);
+        uint8_t fifth_length = bcd_length_after_op(fifth_digits_, nextup_length, fifth_digits);
 
         uint8_t divs;
-        uint8_t prev_digits_[nextup_length];
-        uint8_t prev_length = nextup_length;
-        uint8_t *prev_digits = prev_digits_;
-        uint8_t j;
-        for (j = 0; j < prev_length; ++j)
-            prev_digits_[j] = nextup_digits[j];
         for (divs = 1;; ++divs) {
+            // printf("DIVS %i\n", divs);
+
             // We could do this by dividing by 10 (fast in BCD) then doubling, but there might
             // be some cost in accuracy.
             uint8_t fifth_digits_[nextup_length];
@@ -299,42 +308,28 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
             nextup_length = bcd_length_after_op(nextup_digits, nextup_length, r);
             nextup_digits = r;
 
-            //                                  printf("CMP\n");
-            //                                  debug_print_bcd(nextup_digits, nextup_length);
-            //                        printf(" > ");
-            //                        debug_print_bcd(digits, length);
-            //                        printf("\n");
-            if (! bcd_gt(nextup_digits, nextup_length, digits, length))
+            // Subtract 1/10.
+            // We subtract an additional 1/10 because sometimes standard ISO numbers are a
+            // little lower than they realy should be due to rounding.
+            uint8_t tenth_digits[nextup_length];
+            for (j = 0; j < nextup_length - 1; ++j)
+                tenth_digits[j] = nextup_digits[j];
+            r = bcd_sub(nextup_digits, nextup_length, tenth_digits, nextup_length-1);
+            nextup_length = bcd_length_after_op(nextup_digits, nextup_length, r);
+            nextup_digits = r;
+
+            //printf("CMP\n");
+            //debug_print_bcd(nextup_digits, nextup_length);
+            //printf(" > ");
+            //debug_print_bcd(digits, length);
+            //printf("\n");
+
+            if (bcd_lteq(nextup_digits, nextup_length, digits, length))
                 break;
-
-            // We haven't yet got to a number that's lower than the specified ISO number by
-            // dividing from the next one up. BUT: maybe we're really close. E.g., we're at
-            // 130 when the user specified 125. In this case we should let this count.
-
-            // Take the difference with the previous one and with the one we just calculated.
-            uint8_t prevdiff_digits_[prev_length];
-            for (j = 0; j < prev_length; ++j)
-                prevdiff_digits_[j] = prev_digits[j];
-            uint8_t *prevdiff_digits = bcd_sub(prevdiff_digits_, prev_length, digits, length);
-            uint8_t prevdiff_length = bcd_length_after_op(prevdiff_digits_, prev_length, prevdiff_digits);
-            uint8_t nextdiff_digits_[nextup_length];
-            for (j = 0; j < nextup_length; ++j)
-                nextdiff_digits_[j] = nextup_digits[j];
-            uint8_t *nextdiff_digits = bcd_sub(nextdiff_digits_, nextup_length, digits, length);
-            uint8_t nextdiff_length = bcd_length_after_op(nextdiff_digits_, nextup_length, nextdiff_digits);
-
-            if (bcd_lt(nextdiff_digits, nextdiff_length, prevdiff_digits, prevdiff_length)) {
-                ++divs;
-                break;
-            }
-
-            prev_length = nextup_length;
-            for (j = 0; j < prev_length; ++j)
-                prev_digits[j] = nextup_digits[j];
         }
         
         // Translate 1/3 stops to 1/8 stops -- yuck!
-        assert(divs <= 3);
+        assert(divs > 0 && divs <= 3);
         switch (divs) {
         case 1: {
             stops -= 3;
@@ -343,7 +338,7 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
             stops -= 5;
         } break;
         case 3: {
-            ;
+            stops -= 8;
         }
         }
     }
@@ -479,7 +474,11 @@ int main()
         6,   0, 1, 0, 0, 0, 0, 0,  0,
         5,   0, 0, 5, 0, 0, 0, 0,  0,
         5,   0, 0, 2, 5, 0, 0, 0,  0,
+        5,   0, 0, 2, 0, 0, 0, 0,  0,
+        5,   0, 0, 1, 6, 0, 0, 0,  0,
         5,   0, 0, 1, 2, 5, 0, 0,  0,
+        5,   0, 0, 1, 0, 0, 0, 0,  0,
+        4,   0, 0, 0, 8, 0, 0, 0,  0,
         4,   0, 0, 0, 6, 4, 0, 0,  0,
         4,   0, 0, 0, 3, 2, 0, 0,  0,
         4,   0, 0, 0, 2, 5, 0, 0,  0,
