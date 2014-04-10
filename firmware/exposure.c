@@ -282,15 +282,6 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
         //debug_print_bcd(nextup_digits, nextup_length);
         //printf("\n");
 
-        // We could do this by dividing by 10 (fast in BCD) then doubling, but there might
-        // be some cost in accuracy.
-        uint8_t j;
-        uint8_t fifth_digits_[nextup_length];
-        for (j = 0; j < nextup_length; ++j)
-            fifth_digits_[j] = nextup_digits[j];
-        uint8_t *fifth_digits = bcd_div_by_lt10(fifth_digits_, nextup_length, 5);
-        uint8_t fifth_length = bcd_length_after_op(fifth_digits_, nextup_length, fifth_digits);
-
         uint8_t divs;
         for (divs = 1;; ++divs) {
             // printf("DIVS %i\n", divs);
@@ -298,6 +289,7 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
             // We could do this by dividing by 10 (fast in BCD) then doubling, but there might
             // be some cost in accuracy.
             uint8_t fifth_digits_[nextup_length];
+            uint8_t j;
             for (j = 0; j < nextup_length; ++j)
                 fifth_digits_[j] = nextup_digits[j];
             uint8_t *fifth_digits = bcd_div_by_lt10(fifth_digits_, nextup_length, 5);
