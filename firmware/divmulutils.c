@@ -14,7 +14,7 @@ uint16_t bitfiddle_uint16_approx_div_by_10(uint16_t n)
 // Approx div by 4th root of 2, i.e. 1.1892. Max error 3.15.
 uint16_t bitfiddle_uint16_approx_div_by_4rt2(uint16_t n)
 {
-    return n - (n >> 3) - (n >> 5) - (n >> 7) + (n >> 8) + (n >> 9) - (n >> 10) + (n>>14);    
+    return n - (n >> 3) - (n >> 5) - (n >> 7) + (n >> 8) + (n >> 9) - (n >> 10) + (n >> 14);    
 }
 
 //
