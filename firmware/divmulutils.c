@@ -11,12 +11,6 @@ uint16_t bitfiddle_uint16_approx_div_by_10(uint16_t n)
            - (n >> 5) + (n >> 7) + (n >> 10) - (n >> 9) - (n >> 11) - (n >> 13);
 }
 
-// Approx div by 4th root of 2, i.e. 1.1892. Max error 3.15.
-uint16_t bitfiddle_uint16_approx_div_by_4rt2(uint16_t n)
-{
-    return n - (n >> 3) - (n >> 5) - (n >> 7) + (n >> 8) + (n >> 9) - (n >> 10) + (n >> 14);    
-}
-
 //
 // Not currently used; commenting out to reduce code size.
 //
@@ -33,7 +27,14 @@ uint16_t bitfiddle_uint16_approx_div_by_100(uint16_t n)
     // error but reduces average error.
     return (   (n >> 6) // div by 64
              - (n >> 8) - (n >> 12) - (n >> 9) + (n >> 11) ) & ~1;
-}*/
+}
+
+// Approx div by 4th root of 2, i.e. 1.1892. Max error 3.15.
+uint16_t bitfiddle_uint16_approx_div_by_4rt2(uint16_t n)
+{
+    return n - (n >> 3) - (n >> 5) - (n >> 7) + (n >> 8) + (n >> 9) - (n >> 10) + (n >> 14);
+}
+*/
 
 #ifdef TEST
 
@@ -55,7 +56,7 @@ int main()
         }
     }
 
-    printf("Testing approx div by 4th root of 2\n");
+    /*printf("Testing approx div by 4th root of 2\n");
     for (unsigned i = 0; i < 65536; ++i) {
         uint16_t x = (uint16_t)((float)i/1.1892);
         uint16_t y = bitfiddle_uint16_approx_div_by_4rt2((uint16_t)i);
@@ -71,7 +72,7 @@ int main()
         }
     }
 
-    /*printf("Testing approx div by 5\n");
+    printf("Testing approx div by 5\n");
     for (unsigned i = 0; i < 65536; ++i) {
         uint16_t x = (uint16_t)i / 5;
         uint16_t y = bitfiddle_uint16_approx_div_by_5((uint16_t)i);
