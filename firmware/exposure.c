@@ -132,10 +132,8 @@ void aperture_to_string(uint8_t aperture, aperture_string_output_t *aso)
     aso->length = last;
 }
 
-static const uint8_t BCD_50[] = { 5, 0 };
-static const uint8_t BCD_6[] = { 6 };
-// Table storing full-stop ISO numbers. Does not include 12500 which must be
-// checked for separately. First byte is big-endian 4-bit BCD rep of first
+// Table storing full-stop ISO numbers.
+// First byte is big-endian 4-bit BCD rep of first
 // two digits followed by number of trailing zeros.
 static const uint8_t FULL_STOP_ISOS[] PROGMEM = {
     6, 0,             // 6
@@ -225,6 +223,7 @@ continue_main:;
 
 // Convert a BCD ISO number into the closest equivalent 8-bit representation.
 // In the 8-bit representation, ISOs start from 6 and go up in steps of 1/8 stop.
+static const uint8_t BCD_6[] = { 6 };
 uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
 {
     assert(length <= ISO_DECIMAL_MAX_DIGITS);
@@ -261,13 +260,11 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
     // stop equivalent of the next full-stop ISO number ABOVE the
     // given number. We now deal in 1/3 stops, which is how
     // intermediate ISO numbers appear to be standardized.  To get to
-    // the next stop down we divide by the third root of 2.  With the
-    // exception of the very low ISO numbers, which we have to handle
-    // specially, we can get away with multiplying by 0.7937, which is
-    // close enough to subtracting 1/5.
-
-    // Now we find out how many times we need to subtract one sixteenth to
-    // get to the full stop ISO below the specified ISO.
+    // the next stop down we divide by the third root of 2 (~= 1/0.8).
+    // However, due to rounding of the standard ISO numbers, we actually
+    // have to divide by a bit more than that. The magic value appears
+    // to be 1/0.7. We implement this as subtraction of 1/5 + 1/10 of
+    // the original.
     if (! iso_is_full_stop(digits, length)) {
         uint8_t nextup_digits_[ISO_DECIMAL_MAX_DIGITS];
         uint8_t dcount = count << 1;
@@ -283,11 +280,9 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
         //printf("\n");
 
         uint8_t divs;
-        for (divs = 1;; ++divs) {
+        for (divs = 1; bcd_gt(nextup_digits, nextup_length, digits, length); ++divs) {
             // printf("DIVS %i\n", divs);
 
-            // We could do this by dividing by 10 (fast in BCD) then doubling, but there might
-            // be some cost in accuracy.
             uint8_t fifth_digits_[nextup_length];
             uint8_t j;
             for (j = 0; j < nextup_length; ++j)
@@ -315,9 +310,6 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
             //printf(" > ");
             //debug_print_bcd(digits, length);
             //printf("\n");
-
-            if (bcd_lteq(nextup_digits, nextup_length, digits, length))
-                break;
         }
         
         // Translate 1/3 stops to 1/8 stops -- yuck!
@@ -339,6 +331,10 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
 }
 
 // We represent ISO in 1/8 stops, with 0 as ISO 6.
+// This is called by the following macros defined in exposure.h:
+//
+//     aperture_given_shutter_speed_iso_ev(shutter_speed,iso,ev)
+//     shutter_speed_given_aperture_iso_ev(aperture,iso,ev)
 uint8_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, uint8_t ev_, uint8_t x) // x=0: aperture, x=1: shutter_speed
 {
     // We know that for EV=3, ISO = 100, speed = 1minute, aperture = 22.
@@ -373,7 +369,7 @@ uint8_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, uint8_t ev_, uint8_t x)
         min = SS_MIN, max = SS_MAX;
     }
     else { // x == 1
-        int16_t shutdiff = given_x - the_speed; // Will always be positive.
+        int16_t shutdiff = given_x - the_speed;
         the_ev += shutdiff;
 
         int16_t evdiff = given_ev - the_ev;
