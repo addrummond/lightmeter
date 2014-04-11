@@ -55,13 +55,13 @@
 
 // Device dependant defines - These for ATtiny2313.
 
-    #define DDR_USI             DDRE
-    #define PORT_USI            PORTE
-    #define PIN_USI             PINE
-    #define PORT_USI_SDA        PORTE5
-    #define PORT_USI_SCL        PORTE4
-    #define PIN_USI_SDA         PINE5
-    #define PIN_USI_SCL         PINE4
+    #define DDR_USI             DDRB
+    #define PORT_USI            PORTB
+    #define PIN_USI             PINB
+    #define PORT_USI_SDA        PORTB0
+    #define PORT_USI_SCL        PORTB2
+    #define PIN_USI_SDA         PINB0
+    #define PIN_USI_SCL         PINB2
 
 // General defines
 #define TRUE  1
