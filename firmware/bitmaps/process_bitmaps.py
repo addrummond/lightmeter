@@ -51,13 +51,12 @@ if __name__ == '__main__':
              pixels = map(lambda y: map(lambda x: x and 1 or 0, y), img[2])
              blocks = get_unique_3x3_blocks(pixels, 0, width, height, blocks)
 
-             blockcount = 0
-             for blk in blocks.values():
-                 blockcount += 1
-                 for row in blk:
-                     print "%s %s %s" % (row[0], row[1], row[2])
-                 print "\n============\n"
+     for blk in blocks.values():
+         for row in blk:
+             print "%s %s %s" % (row[0], row[1], row[2])
+         print "\n============\n"
 
+     blockcount = len(blocks)
      uncompressed = bitmap_count*12*12/8
      compressed = blockcount*3*3/8 + (bitmap_count*3*3/8)
      
