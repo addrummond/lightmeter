@@ -1,5 +1,6 @@
 import png
 import os
+import sys
 
 #
 # We compress 12x12 digits by splitting them into 3x3 blocks and
@@ -15,7 +16,6 @@ def get_unique_3x3_blocks(image, offset, width=12, height=12, blocks=None):
     if blocks is None:
         blocks = { }
 
-    coords = [ ]
     for y in xrange(0, height, 3):
         for x in xrange(0, width, 3):
             block = [ [0, 0, 0], [0, 0, 0], [0, 0, 0] ]
@@ -27,11 +27,12 @@ def get_unique_3x3_blocks(image, offset, width=12, height=12, blocks=None):
                 for xx in xrange(x, x+3):
                     if xx >= width:
                         xx -= width
+#                    print "BY %i, BX %i, yy %i, xx %i" % (by,bx, yy,xx)
                     block[by][bx] = image[yy][xx]
                     bx += 1
                 by += 1
+#            print "\n\n"
             blocks[str(block)] = block
-            coords.append([y, x, str(block)])
 
     bkeys = blocks.keys()
     bkeys.sort()
@@ -49,6 +50,12 @@ if __name__ == '__main__':
              width = img[0]
              height = img[1]
              pixels = map(lambda y: map(lambda x: x and 1 or 0, y), img[2])
+             pixels = [[row[i] for i in xrange(0, len(row), 3)] for row in pixels]
+#             for row in pixels:
+#                 for p in row:
+#                     sys.stdout.write("%i " % p)
+#                 print 
+#             print pixels
              blocks = get_unique_3x3_blocks(pixels, 0, width, height, blocks)
 
      for blk in blocks.values():
