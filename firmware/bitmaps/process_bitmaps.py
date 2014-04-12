@@ -16,7 +16,9 @@ def get_unique_3x3_blocks(image, offset, width=12, height=12, blocks=None):
     if blocks is None:
         blocks = { }
 
+    block_grid = [ ]
     for y in xrange(0, height, 3):
+        block_grid.append([ ])
         for x in xrange(0, width, 3):
             block = [ [0, 0, 0], [0, 0, 0], [0, 0, 0] ]
             by = 0
@@ -32,16 +34,16 @@ def get_unique_3x3_blocks(image, offset, width=12, height=12, blocks=None):
                     bx += 1
                 by += 1
 #            print "\n\n"
-            blocks[str(block)] = block
+            s = str(block)
+            blocks[s] = block
+            block_grid[-1].append(s)
 
-    bkeys = blocks.keys()
-    bkeys.sort()
-
-    return blocks
+    return blocks, block_grid
 
 def get_12px_blocks():
      blocks = { }
      bitmap_count = 0
+     name_to_block_grid = { }
      for name in os.listdir("./"):
          if name.startswith("12px_"):
              bitmap_count += 1
@@ -56,18 +58,29 @@ def get_12px_blocks():
 #                     sys.stdout.write("%i " % p)
 #                 print 
 #             print pixels
-             blocks = get_unique_3x3_blocks(pixels, 0, width, height, blocks)
-     return blocks, bitmap_count
+             blocks, block_grid = get_unique_3x3_blocks(pixels, 0, width, height, blocks)
+             name_to_block_grid[name] = block_grid
+
+     # Now that we have all the blocks, convert the elements of each block grid to
+     # indices into a blocks array.
+     blocks_array = blocks.values()
+     for n, g in name_to_block_grid.iteritems():
+         for i in xrange(0, len(g)):
+             for j in xrange(0, len(g[i])):
+                 g[i][j] = blocks_array.index(blocks[g[i][j]])
+                 
+     return blocks_array, bitmap_count, name_to_block_grid
 
 def get_stats():
-     blocks, bitmap_count = get_12px_blocks()
+     blocks_array, bitmap_count, name_to_block_grid = get_12px_blocks()
+     print name_to_block_grid
 
-     for blk in blocks.values():
+     for blk in blocks_array:
          for row in blk:
              print "%s %s %s" % (row[0], row[1], row[2])
          print "\n============\n"
 
-     blockcount = len(blocks)
+     blockcount = len(blocks_array)
      uncompressed = bitmap_count*12*12/8
      compressed = blockcount*3*3/8 + (bitmap_count*4*4/8)
      
@@ -77,8 +90,8 @@ def get_stats():
 
 def output_tables():
     sys.stdout.write("const uint8_t CHAR_BLOCKS_12PX[] PROGMEM = {\n")
-    blocks, bitmap_count = get_12px_blocks()
-    for b in blocks.values():
+    blocks_array, bitmap_count, name_to_block_grid = get_12px_blocks()
+    for b in blocks_array():
         for r in b:
             sys.stdout.write('    ' + ', '.join(map(str, r)) + '\n')
         sys.stdout.write("\n")
