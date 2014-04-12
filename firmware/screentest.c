@@ -3,93 +3,46 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
-// PB0: Data
-// PB1: CS
-// PB2: Clk
-// PB3: Rst
-// PB4: DC
-
-#define DISPLAY_LCDWIDTH                  128
-#define DISPLAY_LCDHEIGHT                 64
-
-#define DISPLAY_SETCONTRAST 0x81
-#define DISPLAY_DISPLAYALLON_RESUME 0xA4
-#define DISPLAY_DISPLAYALLON 0xA5
-#define DISPLAY_NORMALDISPLAY 0xA6
-#define DISPLAY_INVERTDISPLAY 0xA7
-#define DISPLAY_DISPLAYOFF 0xAE
-#define DISPLAY_DISPLAYON 0xAF
-
-#define DISPLAY_SETDISPLAYOFFSET 0xD3
-#define DISPLAY_SETCOMPINS 0xDA
-
-#define DISPLAY_SETVCOMDETECT 0xDB
-
-#define DISPLAY_SETDISPLAYCLOCKDIV 0xD5
-#define DISPLAY_SETPRECHARGE 0xD9
-
-#define DISPLAY_SETMULTIPLEX 0xA8
-
-#define DISPLAY_SETLOWCOLUMN 0x00
-#define DISPLAY_SETHIGHCOLUMN 0x10
-
-#define DISPLAY_SETSTARTLINE 0x40
-
-#define DISPLAY_MEMORYMODE 0x20
-#define DISPLAY_COLUMNADDR 0x21
-#define DISPLAY_PAGEADDR   0x22
-
-#define DISPLAY_COMSCANINC 0xC0
-#define DISPLAY_COMSCANDEC 0xC8
-
-#define DISPLAY_SEGREMAP 0xA0
-
-#define DISPLAY_CHARGEPUMP 0x8D
-
-#define DISPLAY_EXTERNALVCC 0x1
-#define DISPLAY_SWITCHCAPVCC 0x2
-
-#define DISPLAY_ACTIVATE_SCROLL 0x2F
-#define DISPLAY_DEACTIVATE_SCROLL 0x2E
-#define DISPLAY_SET_VERTICAL_SCROLL_AREA 0xA3
-#define DISPLAY_RIGHT_HORIZONTAL_SCROLL 0x26
-#define DISPLAY_LEFT_HORIZONTAL_SCROLL 0x27
-#define DISPLAY_VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL 0x29
-#define DISPLAY_VERTICAL_AND_LEFT_HORIZONTAL_SCROLL 0x2A
+#include <display_constants.h>
 
 static void fast_write(uint8_t d)
 {
     uint8_t bit;
     for (bit = 0x80; bit; bit >>= 1) {
-        PORTB &= ~0b100;
+        DISPLAY_CLK_PORT &= ~(1 << DISPLAY_CLK_BIT);
         if (d & bit)
-            PORTB |= 0b1;
+            DISPLAY_DATA_PORT |= (1 << DISPLAY_DATA_BIT);
         else
-            PORTB &= ~0b1;
-        PORTB |= 0b100;
+            DISPLAY_DATA_PORT &= ~(1 << DISPLAY_DATA_BIT);
+        DISPLAY_CLK_PORT |= (1 << DISPLAY_CLK_BIT);  
     }
 }
 
 static void display_command(uint8_t c)
 {
-    PORTB |= 0b10;
-    PORTB &= ~0b10000;
-    PORTB &= ~0b10;
+    DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
+    DISPLAY_DC_PORT &= ~(1 << DISPLAY_DC_BIT);
+    DISPLAY_CS_PORT &= ~(1 << DISPLAY_CS_BIT);
     fast_write(c);
-    PORTB |= 0b10;
+    DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
 }
 
 static void init_display()
 {
-    DDRB = 0b11111;
+DDRB = 0b11111;
+    // Setup output ports.
+    DISPLAY_DATA_DDR |= (1 << DISPLAY_DATA_BIT);
+    DISPLAY_CS_DDR |= (1 << DISPLAY_CS_BIT);
+    DISPLAY_CLK_DDR |= (1 << DISPLAY_CLK_BIT);
+    DISPLAY_DC_DDR |= (1 << DISPLAY_DC_BIT);
+    DISPLAY_RESET_DDR |= (1 << DISPLAY_RESET_BIT);
 
     // Trigger reset pin on screen.
-    DDRB |= 0b1000;
-    PORTB |= 0b1000;
+    DISPLAY_RESET_PORT |= (1 << DISPLAY_RESET_BIT);
     _delay_ms(1);
-    PORTB &= ~0b1000;
+    DISPLAY_RESET_PORT &= ~(1 << DISPLAY_RESET_BIT);
     _delay_ms(10);
-    PORTB |= 0b1000;
+    DISPLAY_RESET_PORT |= (1 << DISPLAY_RESET_BIT);
 
     display_command(DISPLAY_DISPLAYOFF);                    // 0xAE
     display_command(DISPLAY_SETDISPLAYCLOCKDIV);            // 0xD5
@@ -129,17 +82,15 @@ static void test_display()
     display_command(0); // Page start address (0 = reset)
     display_command((DISPLAY_LCDHEIGHT == 64) ? 7 : 3); // Page end address
 
-    // SPI
-    PORTB |= 0b10;
-    PORTB |= 0b10000;
-    PORTB &= ~0b10;
-
+    DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
+    DISPLAY_DC_PORT |= (1 << DISPLAY_DC_BIT);
+    DISPLAY_CS_PORT &= ~(1 << DISPLAY_CS_BIT);
+    
     uint16_t i;
     for (i = 0; i < (DISPLAY_LCDWIDTH*DISPLAY_LCDHEIGHT/8); ++i) {
-      fast_write(i & 1);
-      //ssd1306_data(buffer[i]);
+        fast_write(0xF0);
     }
-    PORTB |= 0b10;
+    DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
 }
 
 int main()
