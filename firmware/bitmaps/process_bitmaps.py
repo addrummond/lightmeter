@@ -65,7 +65,7 @@ if __name__ == '__main__':
 
      blockcount = len(blocks)
      uncompressed = bitmap_count*12*12/8
-     compressed = blockcount*3*3/8 + (bitmap_count*3*3/8)
+     compressed = blockcount*3*3/8 + (bitmap_count*4*4/8)
      
      print "There are %i blocks" % blockcount
      print "Size uncompressed %i" % uncompressed
