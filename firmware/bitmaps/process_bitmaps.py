@@ -97,19 +97,22 @@ def output_tables():
     blocks_array, bitmap_count, name_to_block_grid = get_12px_blocks()
     for b in blocks_array:
         for r in b:
-            dotc.write('    ' + ', '.join(map(str, r)) + '\n')
+            dotc.write('    ' + ', '.join(map(str, r)) + ',\n')
         dotc.write("\n")
     dotc.write("\n};\n")
 
+    dotc.write('const uint8_T CHAR_12PX_GRIDS[] PROGMEM = {\n')
+    i = 0
     for name, grid in name_to_block_grid.iteritems():
         m = re.match(r"^12px_([^.]+)\.png$", name)
         assert m
         cname = 'CHAR_12PX_' + m.group(1).upper()
-        doth.write('extern const uint8_t ' + cname + '[];\n')
-        dotc.write('const uint8_t ' + cname + '[] PROGMEM = {\n')
+        doth.write('#define ' + cname + ' (CHAR_12PX_GRIDS + ' + str(i) + ')\n')
         for row in grid:
-            dotc.write('    ' + ', '.join(map(str, row)) + '\n')
-        dotc.write('};\n')
+            dotc.write('    ' + ', '.join(map(str, row)) + ',\n')
+        dotc.write('\n')
+        i += 16
+    dotc.write('};\n')
 
     doth.write("\n#endif\n")
 
