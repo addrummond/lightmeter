@@ -11,10 +11,12 @@ import os
 # Following pypng, we treat images as lists of lists (lists of rows).
 #
 
-def get_unique_3x3_blocks(image, offset, width=12, height=12):
+def get_unique_3x3_blocks(image, offset, width=12, height=12, blocks=None):
     assert offset <= 2
 
-    blocks = { }
+    if blocks is None:
+        blocks = { }
+
     coords = [ ]
     for y in xrange(0, height, 3):
         for x in xrange(0, width, 3):
@@ -36,21 +38,31 @@ def get_unique_3x3_blocks(image, offset, width=12, height=12):
     bkeys = blocks.keys()
     bkeys.sort()
 
-    return [blocks[k] for k in bkeys]
+    return blocks
 
-bs = [ ]
-for name in os.listdir("./"):
-    if name.startswith("12px_"):
-        r = png.Reader(file=open(name))
-        img = r.read()
-        width = img[0]
-        height = img[1]
-        pixels = map(lambda y: map(lambda x: x and 1 or 0, y), img[2])
-        bs.append(get_unique_3x3_blocks(pixels, 0, width, height))
+if __name__ == '__main__':
+     blocks = { }
+     bitmap_count = 0
+     for name in os.listdir("./"):
+         if name.startswith("12px_"):
+             bitmap_count += 1
+             r = png.Reader(file=open(name))
+             img = r.read()
+             width = img[0]
+             height = img[1]
+             pixels = map(lambda y: map(lambda x: x and 1 or 0, y), img[2])
+             blocks = get_unique_3x3_blocks(pixels, 0, width, height, blocks)
 
-for b in bs:
-    for blk in b:
-        for row in blk:
-            print "%s %s %s" % (row[0], row[1], row[2])
-        print "\n============\n"
+             blockcount = 0
+             for blk in blocks.values():
+                 blockcount += 1
+                 for row in blk:
+                     print "%s %s %s" % (row[0], row[1], row[2])
+                 print "\n============\n"
 
+     uncompressed = bitmap_count*12*12/8
+     compressed = blockcount*3*3/8 + (bitmap_count*3*3/8)
+     
+     print "There are %i blocks" % blockcount
+     print "Size uncompressed %i" % uncompressed
+     print "Size compressed %i" % compressed
