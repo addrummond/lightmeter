@@ -1,6 +1,7 @@
 import png
 import os
 import sys
+import re
 
 #
 # We compress 12x12 digits by splitting them into 3x3 blocks and
@@ -73,7 +74,6 @@ def get_12px_blocks():
 
 def get_stats():
      blocks_array, bitmap_count, name_to_block_grid = get_12px_blocks()
-     print name_to_block_grid
 
      for blk in blocks_array:
          for row in blk:
@@ -89,13 +89,32 @@ def get_stats():
      print "Size compressed %i" % compressed
 
 def output_tables():
-    sys.stdout.write("const uint8_t CHAR_BLOCKS_12PX[] PROGMEM = {\n")
+    dotc = open("bitmaps.c", "w")
+    doth = open("bitmaps.h", "w")
+    doth.write("#ifndef BITMAPS_H\n#define BITMAPS_H\n\n")
+
+    dotc.write("const uint8_t CHAR_BLOCKS_12PX[] PROGMEM = {\n")
     blocks_array, bitmap_count, name_to_block_grid = get_12px_blocks()
-    for b in blocks_array():
+    for b in blocks_array:
         for r in b:
-            sys.stdout.write('    ' + ', '.join(map(str, r)) + '\n')
-        sys.stdout.write("\n")
-    sys.stdout.write("\n};\n")
+            dotc.write('    ' + ', '.join(map(str, r)) + '\n')
+        dotc.write("\n")
+    dotc.write("\n};\n")
+
+    for name, grid in name_to_block_grid.iteritems():
+        m = re.match(r"^12px_([^.]+)\.png$", name)
+        assert m
+        cname = 'CHAR_12PX_' + m.group(1).upper()
+        doth.write('extern const uint8_t ' + cname + '[];\n')
+        dotc.write('const uint8_t ' + cname + '[] PROGMEM = {\n')
+        for row in grid:
+            dotc.write('    ' + ', '.join(map(str, row)) + '\n')
+        dotc.write('};\n')
+
+    doth.write("\n#endif\n")
+
+    dotc.close()
+    doth.close()
 
 if __name__ == '__main__':
     assert len(sys.argv) > 1
