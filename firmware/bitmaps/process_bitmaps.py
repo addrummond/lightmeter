@@ -39,7 +39,7 @@ def get_unique_3x3_blocks(image, offset, width=12, height=12, blocks=None):
 
     return blocks
 
-if __name__ == '__main__':
+def get_12px_blocks():
      blocks = { }
      bitmap_count = 0
      for name in os.listdir("./"):
@@ -57,6 +57,10 @@ if __name__ == '__main__':
 #                 print 
 #             print pixels
              blocks = get_unique_3x3_blocks(pixels, 0, width, height, blocks)
+     return blocks, bitmap_count
+
+def get_stats():
+     blocks, bitmap_count = get_12px_blocks()
 
      for blk in blocks.values():
          for row in blk:
@@ -70,3 +74,20 @@ if __name__ == '__main__':
      print "There are %i blocks" % blockcount
      print "Size uncompressed %i" % uncompressed
      print "Size compressed %i" % compressed
+
+def output_tables():
+    sys.stdout.write("const uint8_t CHAR_BLOCKS_12PX[] PROGMEM = {\n")
+    blocks, bitmap_count = get_12px_blocks()
+    for b in blocks.values():
+        for r in b:
+            sys.stdout.write('    ' + ', '.join(map(str, r)) + '\n')
+        sys.stdout.write("\n")
+    sys.stdout.write("\n};\n")
+
+if __name__ == '__main__':
+    assert len(sys.argv) > 1
+
+    if sys.argv[1] == 'stats':
+        get_stats()
+    elif sys.argv[1] == 'output':
+        output_tables()
