@@ -74,23 +74,28 @@ DDRB = 0b11111;
 
 static void test_display()
 {
-    display_command(DISPLAY_COLUMNADDR);
-    display_command(0);   // Column start address (0 = reset)
-    display_command(127); // Column end address (127 = reset)
+    uint8_t out = 0xF0;
+    for (;; out ^= 0xFF) {
+        display_command(DISPLAY_COLUMNADDR);
+        display_command(0);   // Column start address (0 = reset)
+        display_command(127); // Column end address (127 = reset)
+        
+        display_command(DISPLAY_PAGEADDR);
+        display_command(0); // Page start address (0 = reset)
+        display_command((DISPLAY_LCDHEIGHT == 64) ? 7 : 3); // Page end address
 
-    display_command(DISPLAY_PAGEADDR);
-    display_command(0); // Page start address (0 = reset)
-    display_command((DISPLAY_LCDHEIGHT == 64) ? 7 : 3); // Page end address
-
-    DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
-    DISPLAY_DC_PORT |= (1 << DISPLAY_DC_BIT);
-    DISPLAY_CS_PORT &= ~(1 << DISPLAY_CS_BIT);
+        DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
+        DISPLAY_DC_PORT |= (1 << DISPLAY_DC_BIT);
+        DISPLAY_CS_PORT &= ~(1 << DISPLAY_CS_BIT);
     
-    uint16_t i;
-    for (i = 0; i < (DISPLAY_LCDWIDTH*DISPLAY_LCDHEIGHT/8); ++i) {
-        fast_write(0xF0);
+        uint16_t i;
+        for (i = 0; i < (DISPLAY_LCDWIDTH*DISPLAY_LCDHEIGHT/8); ++i) {
+            fast_write(out);
+        }
+        DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
+
+        _delay_ms(100);
     }
-    DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
 }
 
 int main()
