@@ -5,3 +5,7 @@ To run at 16.5MHz (required to use vusb without an external crystal), fuses on t
 See http://www.simpleavr.com/avr/vusbtiny (but ignoring value given for high byte).
 
 It's not clear to me from the datasheet how this setting actually derives a 16.5MHz clock...
+
+To run at 8MHz:
+
+   0xc2 (low) 0xdf (high)
