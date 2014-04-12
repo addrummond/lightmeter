@@ -29,7 +29,6 @@ static void display_command(uint8_t c)
 
 static void init_display()
 {
-DDRB = 0b11111;
     // Setup output ports.
     DISPLAY_DATA_DDR |= (1 << DISPLAY_DATA_BIT);
     DISPLAY_CS_DDR |= (1 << DISPLAY_CS_BIT);
