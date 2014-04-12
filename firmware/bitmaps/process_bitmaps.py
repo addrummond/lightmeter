@@ -11,7 +11,10 @@ import re
 # Following pypng, we treat images as lists of lists (lists of rows).
 #
 
-def get_unique_3x3_blocks(image, offset, width=12, height=12, blocks=None):
+BLOCK_WIDTH = 4
+BLOCK_HEIGHT = 4
+
+def get_unique_blocks(image, offset, width=12, height=12, blocks=None):
     assert offset <= 2
 
     if blocks is None:
@@ -19,16 +22,16 @@ def get_unique_3x3_blocks(image, offset, width=12, height=12, blocks=None):
 
     block_grid = [ ]
     num_blocks = 0
-    for y in xrange(0, height, 3):
+    for y in xrange(0, height, BLOCK_HEIGHT):
         block_grid.append([ ])
-        for x in xrange(0, width, 3):
-            block = [ [0, 0, 0], [0, 0, 0], [0, 0, 0] ]
+        for x in xrange(0, width, BLOCK_WIDTH):
+            block = [[0 for _ in xrange(0, BLOCK_HEIGHT)] for __ in xrange(0, BLOCK_WIDTH)]
             by = 0
-            for yy in xrange(y, y+3):
+            for yy in xrange(y, y+BLOCK_HEIGHT):
                 if yy >= height:
                     yy -= height
                 bx = 0
-                for xx in xrange(x, x+3):
+                for xx in xrange(x, x+BLOCK_WIDTH):
                     if xx >= width:
                         xx -= width
 #                    print "BY %i, BX %i, yy %i, xx %i" % (by,bx, yy,xx)
@@ -42,7 +45,7 @@ def get_unique_3x3_blocks(image, offset, width=12, height=12, blocks=None):
             except ValueError:
                 blocks.append(block)
                 index = len(blocks)-1
-            block_grid[-1].append(block)
+            block_grid[-1].append(index)
             num_blocks += 1
 
     return blocks, block_grid, num_blocks
@@ -66,7 +69,7 @@ def get_12px_blocks():
 #                     sys.stdout.write("%i " % p)
 #                 print 
 #             print pixels
-             blocks, block_grid, num_blocks = get_unique_3x3_blocks(pixels, 0, width, height, blocks)
+             blocks, block_grid, num_blocks = get_unique_blocks(pixels, 0, width, height, blocks)
              name_to_block_grid[name] = block_grid
              max_blocks_per_char = max(max_blocks_per_char, num_blocks)
 
@@ -77,12 +80,12 @@ def get_stats():
 
      for blk in blocks_array:
          for row in blk:
-             print "%s %s %s" % (row[0], row[1], row[2])
+             print ' '.join(map(str, row))
          print "\n============\n"
 
      blockcount = len(blocks_array)
      uncompressed = bitmap_count*12*12/8
-     compressed = blockcount*3*3 + (bitmap_count*4*4/8)
+     compressed = blockcount*BLOCK_WIDTH*BLOCK_HEIGHT/8 + bitmap_count*(12/BLOCK_WIDTH)*(12/BLOCK_HEIGHT)
      
      print "There are %i blocks" % blockcount
      print "Maximum blocks per char: %i" % max_blocks_per_char
@@ -101,7 +104,7 @@ def output_tables():
         dotc.write(str(b))
         c[0] += 1
     dotc.write("const uint8_t CHAR_BLOCKS_12PX[] PROGMEM = {\n    ")
-    blocks_array, bitmap_count, name_to_block_grid = get_12px_blocks()
+    blocks_array, bitmap_count, name_to_block_grid, max_blocks_per_char = get_12px_blocks()
     for b in blocks_array:
         for r in b:
             for bit in r:
