@@ -10,5 +10,5 @@ Display is 128x64 pixels (used in landscape format).
     .
     .
     ----------------------------------------
-    12 pizel bottom status line
+    12 pixel bottom status line
     ----------------------------------------
