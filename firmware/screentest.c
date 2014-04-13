@@ -113,7 +113,7 @@ static void write_page_array(const uint8_t *pages, uint8_t ncols, uint8_t pages_
     }
 }
 
-// Each byte of out is an 8px (i.e. one-page) column. 'npages' gives the number of (stacked) columns.
+// Each byte of out is an 8px (i.e. one-page) column. 'pages_per_col' gives the number of (stacked) columns.
 // 'voffeset' is the pixel offset of the top of each character from the top of the highest column.
 static void bwrite_12x12_char(const uint8_t *char_grid, uint8_t *out, uint8_t pages_per_col, uint8_t voffset)
 {
