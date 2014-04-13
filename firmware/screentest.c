@@ -151,64 +151,6 @@ static void bwrite_12x12_char(const uint8_t *char_grid, uint8_t *out, uint8_t pa
     }
 }
 
-static void write_12x12_character(const uint8_t *char_grid, uint8_t x, uint8_t y)
-{
-    // Doesn't handle non-page-aligned y values. (No point in fixing this because
-    // it's just for test purposes.)
-
-    assert(CHAR_12PX_BLOCK_SIZE == 4);
-
-    uint8_t low_col_start = x & 0xF;
-    uint8_t high_col_start = x >> 4;
-    display_command(DISPLAY_SET_PAGE_START + (y >> 3));
-    display_command(DISPLAY_SET_COL_START_LOW + low_col_start);
-    display_command(DISPLAY_SET_COL_START_HIGH + high_col_start);  
-
-    int8_t i, j;
-
-    DISPLAY_WRITE_DATA {
-        for (i = 0; i < 12/CHAR_12PX_BLOCK_SIZE; ++i) {
-            // Top block.
-            const uint8_t *top = CHAR_BLOCKS_12PX + pgm_read_byte(&char_grid[(24/CHAR_12PX_BLOCK_SIZE)+i]);
-            // Middle block.
-            const uint8_t *middle = CHAR_BLOCKS_12PX + pgm_read_byte(&char_grid[(12/CHAR_12PX_BLOCK_SIZE)+i]);
-
-            // One loop for each column.
-            uint8_t j;
-            for (j = 0; j < CHAR_12PX_BLOCK_SIZE; ++j) {
-                uint8_t bi = j >> 1;
-                uint8_t bm = (~(j & 1)) << 2;
-
-                uint8_t top_bits = (pgm_read_byte(&top[bi]) >> bm) & 0x0F;
-                uint8_t middle_bits = (pgm_read_byte(&middle[bi]) >> bm) & 0x0F;
-
-                fast_write(~(top_bits | (middle_bits << 4)));
-            }
-        }
-    }
-
-    display_command(DISPLAY_SET_PAGE_START + (y >> 3) + 1);
-    display_command(DISPLAY_SET_COL_START_LOW + low_col_start);
-    display_command(DISPLAY_SET_COL_START_HIGH + high_col_start);
-
-    DISPLAY_WRITE_DATA {
-        for (i = 0; i < 12/CHAR_12PX_BLOCK_SIZE; ++i) {
-            // Bottom block.
-            const uint8_t *bottom = CHAR_BLOCKS_12PX + pgm_read_byte(&char_grid[(0/CHAR_12PX_BLOCK_SIZE)+i]);
-
-            // One loop for each pair of columns.
-            for (j = 0; j < CHAR_12PX_BLOCK_SIZE; ++j) {
-                uint8_t bi = j >> 1;
-                uint8_t bm = (~(j & 1)) << 2;
-
-                uint8_t bottom_bits = (pgm_read_byte(&bottom[bi]) >> bm) & 0x0F;
-
-                fast_write((~bottom_bits) & 0x0F);
-            }
-        }
-    }
-}
-
 static void clear_display()
 {
     display_command(DISPLAY_HORIZONTALADDR);
@@ -225,44 +167,9 @@ static void clear_display()
 
 static void test_display()
 {
-    /*    uint8_t out = 0xF0;
-    for (;; out ^= 0xFF) {
-        clear_display();
-
-        write_12x12_character(CHAR_12PX_F, 50, 8);
-
-        _delay_ms(1000);
-
-        clear_display();
-
-        _delay_ms(500);
-        }*/
-
     clear_display();
-    /*    write_12x12_character(CHAR_12PX_I, 8, 0);
-    write_12x12_character(CHAR_12PX_S, 20, 0);
-    write_12x12_character(CHAR_12PX_0, 32, 0);*/
 
-    //    write_12x12_character(CHAR_12PX_F, 50, 8);
-    //write_12x12_character(CHAR_12PX_F, 62, 8);
-    //write_12x12_character(CHAR_12PX_9, 70, 26);
-
-    uint8_t out[40] = {
-        0b10111111, 0b11111101, 0b11111101,
-        0b00000000, 0b00000000, 0b11111101,
-        0b10111111, 0b11111101, 0b11111101,
-        0b00000000, 0b00000000, 0b11111101,
-        0b10111111, 0b11111101, 0b11111101,
-        0b00000000, 0b00000000, 0b11111101,
-        0b10111110, 0b01111101, 0b11111101,
-        0b00000000, 0b00000000, 0b11111101,
-        0b10111111, 0b11111101, 0b11111101,
-        0b00000000, 0b00000000, 0b11111101,
-        0b10111111, 0b11111101, 0b11111101,
-        0b00000000, 0b00000000, 0b11111101,
-    };
-    //    write_page_array(out, 12, 3, 50, 3);
-
+    uint8_t out[40];
     uint8_t x, y;
     for (x = 0, y = 0; x < 128-12; x += 12, ++y) {
         memset(out, 0, sizeof(out));
