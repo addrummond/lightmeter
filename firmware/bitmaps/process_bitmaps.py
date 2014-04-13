@@ -127,6 +127,14 @@ def output_tables():
     dotc.write("#include <stdint.h>\n")
     dotc.write("#include <readbyte.h>\n\n")
 
+    def output_block_comment(block, index, f):
+        f.write("// index: %i\n" % index)
+        for row in xrange(BLOCK_SIZE):
+            f.write("//    ")
+            for col in xrange(BLOCK_SIZE):
+                f.write("%s " % block[col][row])
+            f.write("\n")
+
     c = [0]
     def output_bit(b):
         if c[0] % 8 == 0:
@@ -138,12 +146,16 @@ def output_tables():
     doth.write("extern const uint8_t CHAR_BLOCKS_12PX[];\n")
     dotc.write("const uint8_t CHAR_BLOCKS_12PX[] PROGMEM = {\n    ")
     blocks_array, bitmap_count, name_to_block_grid, max_blocks_per_char = get_12px_blocks()
+    barray_index = 0
     for b in blocks_array:
+        assert BLOCK_SIZE == 4
+        output_block_comment(b, barray_index * 2, dotc)
         for r in b:
             for bit in r:
                 output_bit(bit)
 #            dotc.write('    ' + ', '.join(map(str, r)) + ',\n')
         dotc.write("\n    ")
+        barray_index += 1
     dotc.write("\n};\n")
 
     doth.write('extern const uint8_t CHAR_12PX_GRIDS[];\n')
