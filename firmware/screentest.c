@@ -45,6 +45,7 @@ static void init_display()
     _delay_ms(10);
     DISPLAY_RESET_PORT |= (1 << DISPLAY_RESET_BIT);
 
+    // Display initialization sequence. No idea what most of this does.
     display_command(DISPLAY_DISPLAYOFF);                    // 0xAE
     display_command(DISPLAY_SETDISPLAYCLOCKDIV);            // 0xD5
     display_command(0x80);                                  // the suggested ratio 0x80
