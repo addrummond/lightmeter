@@ -104,12 +104,12 @@ static void write_12x12_character(const uint8_t *char_grid, uint8_t x, uint8_t y
     display_command(DISPLAY_SET_COL_START_LOW + low_col_start);
     display_command(DISPLAY_SET_COL_START_HIGH + high_col_start);  
 
-    uint8_t i;
+    uint8_t i, j;
 
     DISPLAY_WRITE_DATA {
         for (i = 0; i < 12/CHAR_12PX_BLOCK_SIZE; ++i) {
             // Top block.
-            const uint8_t *top = CHAR_BLOCKS_12PX + pgm_read_byte(&char_grid[i]);
+            const uint8_t *top = CHAR_BLOCKS_12PX + pgm_read_byte(&char_grid[(24/CHAR_12PX_BLOCK_SIZE)+i]);
             // Middle block.
             const uint8_t *middle = CHAR_BLOCKS_12PX + pgm_read_byte(&char_grid[(12/CHAR_12PX_BLOCK_SIZE)+i]);
 
@@ -134,10 +134,9 @@ static void write_12x12_character(const uint8_t *char_grid, uint8_t x, uint8_t y
     DISPLAY_WRITE_DATA {
         for (i = 0; i < 12/CHAR_12PX_BLOCK_SIZE; ++i) {
             // Bottom block.
-            const uint8_t *bottom = CHAR_BLOCKS_12PX + pgm_read_byte(&char_grid[(24/CHAR_12PX_BLOCK_SIZE)+i]);
+            const uint8_t *bottom = CHAR_BLOCKS_12PX + pgm_read_byte(&char_grid[i]);
 
             // One loop for each pair of columns.
-            uint8_t j;
             for (j = 0; j < CHAR_12PX_BLOCK_SIZE; ++j) {
                 uint8_t bi = j >> 1;
                 uint8_t bm = (~(j & 1)) << 2;
@@ -185,6 +184,7 @@ static void test_display()
     write_12x12_character(CHAR_12PX_0, 32, 8);
 
     write_12x12_character(CHAR_12PX_F, 50, 8);
+    write_12x12_character(CHAR_12PX_F, 62, 8);
     write_12x12_character(CHAR_12PX_9, 70, 26);
     for (;;);
 }
