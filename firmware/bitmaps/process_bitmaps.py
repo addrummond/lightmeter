@@ -154,8 +154,10 @@ def output_tables():
         assert m
         cname = 'CHAR_12PX_' + m.group(1).upper()
         doth.write('#define ' + cname + ' (CHAR_12PX_GRIDS + ' + str(i) + ')\n')
+        dotc.write("// " + cname + "\n")
         for row in grid:
-            dotc.write('    ' + ', '.join(map(str, row)) + ',\n')
+            assert BLOCK_SIZE == 4
+            dotc.write('    ' + ', '.join(map(str, (map(lambda x: x*2, row)))) + ',\n')
         dotc.write('\n')
         i += (12/BLOCK_SIZE)*(12/BLOCK_SIZE)
     dotc.write('};\n')
