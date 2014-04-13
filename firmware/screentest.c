@@ -149,16 +149,17 @@ static void bwrite_12x12_char(const uint8_t *char_grid, uint8_t *out, uint8_t pa
 
             bout = top_bits >> (12 - bits_to_go);
             bout |= middle_bits << (12 - bits_to_go);
+            out[0] |= bout;
+            bits_to_go -= 4;
+
+            // btg = 4
+            bout = middle_bits >> (8 - bits_to_go);
+            bout |= bttm_bits << (4 - bits_to_go);
             out[1] |= bout;
             bits_to_go -= 4;
 
-            bout = middle_bits >> (8 - bits_to_go);
-            bout |= bttm_bits << (8 - bits_to_go);
-            out[2] |= bout;
-            bits_to_go -= 4;
-
             if (bits_to_go > 0)
-                out[3] = bttm_bits >> (4 - bits_to_go);
+                out[1] |= (bttm_bits >> (4 - bits_to_go)) << 4;
         }
     }
 }
@@ -260,20 +261,20 @@ static void test_display()
     //write_12x12_character(CHAR_12PX_9, 70, 26);
 
     uint8_t out[24] = {
-        0b11111111, 0b11111111,
+        0b10111111, 0b11111101,
         0b00000000, 0b00000000,
-        0b11111111, 0b11111111,
+        0b10111111, 0b11111101,
         0b00000000, 0b00000000,
-        0b11111111, 0b11111111,
+        0b10111111, 0b11111101,
         0b00000000, 0b00000000,
-        0b11111111, 0b11111111,
+        0b10111110, 0b01111101,
         0b00000000, 0b00000000,
-        0b11111111, 0b11111111,
+        0b10111111, 0b11111101,
         0b00000000, 0b00000000,
-        0b11111111, 0b11111111,
+        0b10111111, 0b11111101,
         0b00000000, 0b00000000,
     };
-    //    write_page_array(out, 12, 2, 50, 3);
+    write_page_array(out, 12, 2, 50, 3);
     memset(out, 0, sizeof(out));
     bwrite_12x12_char(CHAR_12PX_0, out, 2, 0);
     write_page_array(out, 12, 2, 25, 5);
