@@ -13,16 +13,6 @@ import re
 
 BLOCK_SIZE = 4
 
-# Each byte written to the screen represents a vertical column of 8 pixels,
-# so it's more convenient to have the individual blocks in column major format.
-def colmajor_block(block):
-    newblock = [ ]
-    for x in xrange(len(block[0])):
-        newblock.append([ ])
-        for y in xrange(len(block)):
-            newblock[-1].append(block[y][x])
-    return newblock
-
 def get_unique_blocks(image, offset, width=12, height=12, blocks=None):
     assert offset <= 2
 
@@ -44,11 +34,12 @@ def get_unique_blocks(image, offset, width=12, height=12, blocks=None):
                     if xx >= width:
                         xx -= width
 #                    print "BY %i, BX %i, yy %i, xx %i" % (by,bx, yy,xx)
-                    block[by][bx] = image[yy][xx]
+                    # Note: blocks are column major.
+                    block[bx][by] = image[yy][xx]
                     bx += 1
                 by += 1
 #            print "\n\n"
-            block = colmajor_block(block)
+#            block = colmajor_block(block)
             index = None
             try:
                 index = blocks.index(block)
@@ -108,11 +99,23 @@ def print_test_chars():
     for name, grid in name_to_block_grid.iteritems():
         print "Drawing %s:\n" % name
 
+#
+#        [prints individual blocks first]
+#
+#        for gg in grid:
+#            for b in gg:
+#                bl = blocks_array[b]
+#                for y in xrange(BLOCK_SIZE):
+#                    for x in xrange(BLOCK_SIZE):
+#                        v = bl[x][y]
+#                        sys.stdout.write("%i " % v)
+#                    sys.stdout.write("\n")
+#                sys.stdout.write("\n\n")
+
         for line in xrange(12):
-            for row in xrange(0,12):
-                block = blocks_array[grid[line % (12/BLOCK_SIZE)][row % (12/BLOCK_SIZE)]]
-                sys.stdout.write("%s " % block[row % BLOCK_SIZE][line % BLOCK_SIZE])
-#                sys.stdout.write("%s " % block[line % BLOCK_SIZE][row % BLOCK_SIZE])
+            for col in xrange(12):
+                block = blocks_array[grid[line/BLOCK_SIZE][col/BLOCK_SIZE]]
+                sys.stdout.write("%s " % block[col % BLOCK_SIZE][line % BLOCK_SIZE])
             sys.stdout.write("\n")
         sys.stdout.write("\n\n")
 
