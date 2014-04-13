@@ -8,6 +8,7 @@ cd ../
 
 avr-gcc $CFLAGS -c screentest.c -o screentest.out
 avr-gcc $CFLAGS -c bitmaps/bitmaps.c -o bitmaps.out
-avr-gcc $CFLAGS bitmaps.out screentest.out -o screentestmain.out
+avr-gcc $CFLAGS -c display.c -o display.out
+avr-gcc $CFLAGS bitmaps.out display.out screentest.out -o screentestmain.out
 avr-objcopy -O ihex -R .eeprom screentestmain.out screentest.hex
 cp screentest.hex /tmp
