@@ -11,8 +11,7 @@ import re
 # Following pypng, we treat images as lists of lists (lists of rows).
 #
 
-BLOCK_WIDTH = 4
-BLOCK_HEIGHT = 4
+BLOCK_SIZE = 4
 
 def get_unique_blocks(image, offset, width=12, height=12, blocks=None):
     assert offset <= 2
@@ -22,16 +21,16 @@ def get_unique_blocks(image, offset, width=12, height=12, blocks=None):
 
     block_grid = [ ]
     num_blocks = 0
-    for y in xrange(0, height, BLOCK_HEIGHT):
+    for y in xrange(0, height, BLOCK_SIZE):
         block_grid.append([ ])
-        for x in xrange(0, width, BLOCK_WIDTH):
-            block = [[0 for _ in xrange(0, BLOCK_HEIGHT)] for __ in xrange(0, BLOCK_WIDTH)]
+        for x in xrange(0, width, BLOCK_SIZE):
+            block = [[0 for _ in xrange(0, BLOCK_SIZE)] for __ in xrange(0, BLOCK_SIZE)]
             by = 0
-            for yy in xrange(y, y+BLOCK_HEIGHT):
+            for yy in xrange(y, y+BLOCK_SIZE):
                 if yy >= height:
                     yy -= height
                 bx = 0
-                for xx in xrange(x, x+BLOCK_WIDTH):
+                for xx in xrange(x, x+BLOCK_SIZE):
                     if xx >= width:
                         xx -= width
 #                    print "BY %i, BX %i, yy %i, xx %i" % (by,bx, yy,xx)
@@ -85,7 +84,7 @@ def get_stats():
 
      blockcount = len(blocks_array)
      uncompressed = bitmap_count*12*12/8
-     compressed = blockcount*BLOCK_WIDTH*BLOCK_HEIGHT/8 + bitmap_count*(12/BLOCK_WIDTH)*(12/BLOCK_HEIGHT)
+     compressed = blockcount*BLOCK_SIZE*BLOCK_SIZE/8 + bitmap_count*(12/BLOCK_SIZE)*(12/BLOCK_SIZE)
      
      print "There are %i blocks" % blockcount
      print "Maximum blocks per char: %i" % max_blocks_per_char
@@ -125,6 +124,8 @@ def output_tables():
         dotc.write('\n')
         i += 16
     dotc.write('};\n')
+
+    doth.write('#define CHAR_12PX_BLOCK_SIZE ' + str(BLOCK_SIZE))
 
     doth.write("\n#endif\n")
 

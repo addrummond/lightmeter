@@ -29,6 +29,20 @@ static void display_command(uint8_t c)
     DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
 }
 
+static void display_write_data_start()
+{
+    DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
+    DISPLAY_DC_PORT |= (1 << DISPLAY_DC_BIT);
+    DISPLAY_CS_PORT &= ~(1 << DISPLAY_CS_BIT);
+}
+
+static void display_write_data_end()
+{
+    DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
+}
+
+#define DISPLAY_WRITE_DATA uint8_t i___; for (i___ = 0, display_write_data_start(); i___ < 1; ++i___, display_write_data_end())
+
 static void init_display()
 {
     // Setup output ports.
@@ -74,17 +88,45 @@ static void init_display()
     display_command(DISPLAY_DISPLAYON);
 }
 
+static void write_12x12_character(const uint8_t *char_grid, uint8_t x, uint8_t y)
+{
+    uint8_t low_col_start = x & 0xF;
+    uint8_t high_col_start = x >> 4;
+
+    DISPLAY_WRITE_DATA {
+        // TODO: Currently doesn't handle non-page-aligned y values.
+        uint8_t i;
+        for (i = 0; i < 12; ++i)
+            fast_write(0xFF);
+    }
+}
+
+static void clear_display()
+{
+    display_command(DISPLAY_HORIZONTALADDR);
+    display_command(DISPLAY_SET_COL_START_LOW + 0);
+    display_command(DISPLAY_SET_COL_START_HIGH + 0);
+    display_command(DISPLAY_SET_PAGE_START + 0);
+
+    DISPLAY_WRITE_DATA {
+        uint16_t i;
+        for (i = 0; i < (DISPLAY_LCDWIDTH*DISPLAY_LCDHEIGHT/8); ++i) {
+            fast_write(0x00);
+        }
+    }
+}
+
 static void test_display()
 {
     uint8_t out = 0xF0;
     for (;; out ^= 0xFF) {
-        display_command(DISPLAY_COLUMNADDR);
-        display_command(0);   // Column start address (0 = reset)
-        display_command(127); // Column end address (127 = reset)
+        /*        display_command(DISPLAY_COLUMNADDR);
+        display_command(0);
+        display_command(127);
         
         display_command(DISPLAY_PAGEADDR);
-        display_command(0); // Page start address (0 = reset)
-        display_command((DISPLAY_LCDHEIGHT == 64) ? 7 : 3); // Page end address
+        display_command(0);
+        display_command((DISPLAY_LCDHEIGHT == 64) ? 7 : 3);
 
         DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
         DISPLAY_DC_PORT |= (1 << DISPLAY_DC_BIT);
@@ -96,7 +138,17 @@ static void test_display()
         }
         DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
 
-        _delay_ms(100);
+        _delay_ms(300);*/
+
+        clear_display();
+
+        write_12x12_character(0, 50, 8);
+
+        _delay_ms(1000);
+
+        clear_display();
+
+        _delay_ms(500);
     }
 }
 
