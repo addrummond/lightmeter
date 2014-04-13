@@ -2,6 +2,8 @@
 #include <avr/wdt.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
+#include <readbyte.h>
+#include <assert.h>
 
 #include <display_constants.h>
 
@@ -90,6 +92,11 @@ static void init_display()
 
 static void write_12x12_character(const uint8_t *char_grid, uint8_t x, uint8_t y)
 {
+    // Doesn't handle non-page-aligned y values. (No point in fixing this because
+    // it's just for test purposes.)
+
+    assert(CHAR_12PX_BLOCK_SIZE == 4);
+
     uint8_t low_col_start = x & 0xF;
     uint8_t high_col_start = x >> 4;
     display_command(DISPLAY_PAGEADDR);
@@ -97,10 +104,28 @@ static void write_12x12_character(const uint8_t *char_grid, uint8_t x, uint8_t y
     display_command(DISPLAY_SET_COL_START_HIGH + high_col_start);    
 
     DISPLAY_WRITE_DATA {
-        // TODO: Currently doesn't handle non-page-aligned y values.
         uint8_t i;
-        for (i = 0; i < 12; ++i)
-            fast_write(0xFF);
+        for (i = 0; i < 12/CHAR_12PX_BLOCK_SIZE; i += CHAR_12PX_BLOCK_SIZE) {
+            // Top block.
+            uint8_t *top = pgm_read_byte(&CHAR_BLOCKS_12PX[char_grid[i]]);
+            // Middle block.
+            uint8_t *middle = pgm_read_byte(&CHAR_BLOCKS_12PX[char_grid[(12/CHAR_12PX_BLOCK_SIZE)+i]]);
+            // Bottom block.
+            //            uint8_t *bottom = pgm_read_byte(&CHAR_BLOCKS_12PX[char_grid[(24/CHAR_12PX_BLOCK_SIZE)+i]]);
+
+            // One loop for each column.
+            uint8_t j;
+            for (j = 0; j < CHAR_12PX_BLOCK_SIZE; ++j) {
+                uint8_t bi = j >> 2;
+                uint8_t bm = j & 7;
+
+                uint8_t top_bits = (top[bi] >> (7 - bm)) & 0x0F;
+                uint8_t middle_bits = (middle[bi] >> (7 - bm)) & 0x0F;
+                //  uint8_t bottom_bits = (bottom[bi] >> (8 - bm)) & 0x0F;
+
+                fast_write(top_bits | (middle_bits << 4));
+            }
+        }
     }
 }
 
@@ -145,7 +170,7 @@ static void test_display()
 
         clear_display();
 
-        write_12x12_character(0, 50, 8);
+        write_12x12_character(CHAR_12PX_I, 50, 8);
 
         _delay_ms(1000);
 

@@ -13,6 +13,16 @@ import re
 
 BLOCK_SIZE = 4
 
+# Each byte written to the screen represents a vertical column of 8 pixels,
+# so it's more convenient to have the individual blocks in column major format.
+def colmajor_block(block):
+    newblock = [ ]
+    for x in xrange(len(block[0])):
+        newblock.append([ ])
+        for y in xrange(len(block)):
+            newblock[-1].append(block[y][x])
+    return newblock
+
 def get_unique_blocks(image, offset, width=12, height=12, blocks=None):
     assert offset <= 2
 
@@ -38,6 +48,7 @@ def get_unique_blocks(image, offset, width=12, height=12, blocks=None):
                     bx += 1
                 by += 1
 #            print "\n\n"
+            block = colmajor_block(block)
             index = None
             try:
                 index = blocks.index(block)
@@ -91,17 +102,37 @@ def get_stats():
      print "Size uncompressed %i" % uncompressed
      print "Size compressed %i" % compressed
 
+def print_test_chars():
+    blocks_array, bitmap_count, name_to_block_grid, max_blocks_per_char = get_12px_blocks()
+
+    for name, grid in name_to_block_grid.iteritems():
+        print "Drawing %s:\n" % name
+
+        for line in xrange(12):
+            for row in xrange(0,12):
+                block = blocks_array[grid[line % (12/BLOCK_SIZE)][row % (12/BLOCK_SIZE)]]
+                sys.stdout.write("%s " % block[row % BLOCK_SIZE][line % BLOCK_SIZE])
+#                sys.stdout.write("%s " % block[line % BLOCK_SIZE][row % BLOCK_SIZE])
+            sys.stdout.write("\n")
+        sys.stdout.write("\n\n")
+
 def output_tables():
     dotc = open("bitmaps.c", "w")
     doth = open("bitmaps.h", "w")
     doth.write("#ifndef BITMAPS_H\n#define BITMAPS_H\n\n")
+    doth.write("#include <stdint.h>\n\n")
+    dotc.write("#include <stdint.h>\n")
+    dotc.write("#include <readbyte.h>\n\n")
 
     c = [0]
     def output_bit(b):
-        if c[0] != 0 and c[0] % 8 == 0:
-            dotc.write(",0b")
+        if c[0] % 8 == 0:
+            if c[0] != 0:
+                dotc.write(',')
+            dotc.write("0b")
         dotc.write(str(b))
         c[0] += 1
+    doth.write("extern const uint8_t CHAR_BLOCKS_12PX[];\n")
     dotc.write("const uint8_t CHAR_BLOCKS_12PX[] PROGMEM = {\n    ")
     blocks_array, bitmap_count, name_to_block_grid, max_blocks_per_char = get_12px_blocks()
     for b in blocks_array:
@@ -112,7 +143,8 @@ def output_tables():
         dotc.write("\n    ")
     dotc.write("\n};\n")
 
-    dotc.write('const uint8_T CHAR_12PX_GRIDS[] PROGMEM = {\n')
+    doth.write('extern const uint8_t CHAR_12PX_GRIDS[];\n')
+    dotc.write('const uint8_t CHAR_12PX_GRIDS[] PROGMEM = {\n')
     i = 0
     for name, grid in name_to_block_grid.iteritems():
         m = re.match(r"^12px_([^.]+)\.png$", name)
@@ -122,7 +154,7 @@ def output_tables():
         for row in grid:
             dotc.write('    ' + ', '.join(map(str, row)) + ',\n')
         dotc.write('\n')
-        i += 16
+        i += (12/BLOCK_SIZE)*(12/BLOCK_SIZE)
     dotc.write('};\n')
 
     doth.write('#define CHAR_12PX_BLOCK_SIZE ' + str(BLOCK_SIZE))
@@ -139,3 +171,5 @@ if __name__ == '__main__':
         get_stats()
     elif sys.argv[1] == 'output':
         output_tables()
+    elif sys.argv[1] == 'testchars':
+        print_test_chars()
