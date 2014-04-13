@@ -92,6 +92,9 @@ static void write_12x12_character(const uint8_t *char_grid, uint8_t x, uint8_t y
 {
     uint8_t low_col_start = x & 0xF;
     uint8_t high_col_start = x >> 4;
+    display_command(DISPLAY_PAGEADDR);
+    display_command(DISPLAY_SET_COL_START_LOW + low_col_start);
+    display_command(DISPLAY_SET_COL_START_HIGH + high_col_start);    
 
     DISPLAY_WRITE_DATA {
         // TODO: Currently doesn't handle non-page-aligned y values.
@@ -104,9 +107,9 @@ static void write_12x12_character(const uint8_t *char_grid, uint8_t x, uint8_t y
 static void clear_display()
 {
     display_command(DISPLAY_HORIZONTALADDR);
+    display_command(DISPLAY_SET_PAGE_START + 0);
     display_command(DISPLAY_SET_COL_START_LOW + 0);
     display_command(DISPLAY_SET_COL_START_HIGH + 0);
-    display_command(DISPLAY_SET_PAGE_START + 0);
 
     DISPLAY_WRITE_DATA {
         uint16_t i;
