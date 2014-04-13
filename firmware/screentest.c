@@ -136,9 +136,9 @@ static void bwrite_12x12_char(const uint8_t *char_grid, uint8_t *out, uint8_t pa
             uint8_t bi = j >> 1;
             uint8_t bm = (~(j & 1)) << 2;
  
-            uint8_t top_bits = (pgm_read_byte(&top[bi]) >> bm) & 0x0F;
-            uint8_t middle_bits = (pgm_read_byte(&middle[bi]) >> bm) & 0x0F;
-            uint8_t bttm_bits = (pgm_read_byte(&bttm[bi]) >> bm) &0x0F;
+            uint8_t top_bits = (~(pgm_read_byte(&top[bi]) >> bm)) & 0x0F;
+            uint8_t middle_bits = (~(pgm_read_byte(&middle[bi]) >> bm)) & 0x0F;
+            uint8_t bttm_bits = (~(pgm_read_byte(&bttm[bi]) >> bm)) & 0x0F;
 
             uint8_t bits_to_go = 12;
             uint8_t bout = top_bits << pixel_voffset;
@@ -273,10 +273,10 @@ static void test_display()
         0b11111111, 0b11111111,
         0b00000000, 0b00000000,
     };
-    write_page_array(out, 12, 2, 50, 3);
-    /*    memset(out, 0, sizeof(out));
-    bwrite_12x12_char(CHAR_12PX_6, out, 2, 0);
-    write_page_array(out, 12, 2, 50, 5);*/
+    //    write_page_array(out, 12, 2, 50, 3);
+    memset(out, 0, sizeof(out));
+    bwrite_12x12_char(CHAR_12PX_0, out, 2, 0);
+    write_page_array(out, 12, 2, 25, 5);
 
     for (;;);
 }
