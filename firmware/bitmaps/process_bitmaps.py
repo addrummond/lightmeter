@@ -40,6 +40,9 @@ def get_unique_blocks(image, offset, width=12, height=12, blocks=None):
                 by += 1
 #            print "\n\n"
 #            block = colmajor_block(block)
+            # Invert block vertically.
+            for x in block:
+                x.reverse()
             index = None
             try:
                 index = blocks.index(block)
@@ -48,6 +51,8 @@ def get_unique_blocks(image, offset, width=12, height=12, blocks=None):
                 index = len(blocks)-1
             block_grid[-1].append(index)
             num_blocks += 1
+    # Invert block grid vertically.
+    block_grid.reverse()
 
     return blocks, block_grid, num_blocks
 
@@ -112,7 +117,7 @@ def print_test_chars():
 #                    sys.stdout.write("\n")
 #                sys.stdout.write("\n\n")
 
-        for line in xrange(12):
+        for line in xrange(11, -1, -1):
             for col in xrange(12):
                 block = blocks_array[grid[line/BLOCK_SIZE][col/BLOCK_SIZE]]
                 sys.stdout.write("%s " % block[col % BLOCK_SIZE][line % BLOCK_SIZE])
