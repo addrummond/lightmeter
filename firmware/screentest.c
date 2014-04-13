@@ -91,9 +91,27 @@ static void init_display()
     display_command(DISPLAY_DISPLAYON);
 }
 
-// Each byte of out is an 8px (i.e. one-page) column. 'npages' gives the number of columns.
+static void write_page_array(const uint8_t *pages, uint8_t ncols, uint8_t pages_per_col, uint8_t x, uint8_t page_y)
+{
+    display_command(DISPLAY_SET_PAGE_START + page_y);
+    display_command(DISPLAY_SET_COL_START_LOW + (x & 0x0F));
+    display_command(DISPLAY_SET_COL_START_HIGH + (x & 0xF0));
+
+    DISPLAY_WRITE_DATA {
+        uint8_t p;
+        for (p = 0; p < pages_per_col; ++p) {
+            uint8_t c;
+            uint8_t cc;
+            for (c = 0, cc = p; c < ncols; ++c, cc += pages_per_col) {
+                fast_write(pages[cc]);
+            }
+        }
+    }
+}
+
+// Each byte of out is an 8px (i.e. one-page) column. 'npages' gives the number of (stacked) columns.
 // 'voffeset' is the pixel offset of the top of each character from the top of the highest column.
-static void bwrite_12x12_char(const uint8_t *char_grid, uint8_t *out, uint8_t npages, uint8_t voffset)
+static void bwrite_12x12_char(const uint8_t *char_grid, uint8_t *out, uint8_t pages_per_col, uint8_t voffset)
 {
     uint8_t page_voffset = voffset >> 3;
     uint8_t pixel_voffset = voffset & 7;
@@ -110,7 +128,7 @@ static void bwrite_12x12_char(const uint8_t *char_grid, uint8_t *out, uint8_t np
         
         // One loop for each column.
         uint8_t j;
-        for (j = 0; j < CHAR_12PX_BLOCK_SIZE; ++j, out += npages) {
+        for (j = 0; j < CHAR_12PX_BLOCK_SIZE; ++j, out += pages_per_col) {
             uint8_t bi = j >> 1;
             uint8_t bm = (~(j & 1)) << 2;
  
@@ -125,18 +143,19 @@ static void bwrite_12x12_char(const uint8_t *char_grid, uint8_t *out, uint8_t np
             if (pixel_voffset > 4)
                 bits_to_go += 4 - pixel_voffset;
 
-            bout = top_bits >> (bits_to_go - 8);
-            bout |= middle_bits << (bits_to_go - 8);
+            btg - (btg - 4)
+            bout = top_bits >> (12 - bits_to_go);
+            bout |= middle_bits << (12 - bits_to_go);
             out[1] |= bout;
             bits_to_go -= 4;
 
-            bout = middle_bits >> (bits_to_go - 4);
-            bout |= bttm_bits << (bits_to_go - 4);
+            bout = middle_bits >> (8 - bits_to_go);
+            bout |= bttm_bits << (8 - bits_to_go);
             out[2] |= bout;
             bits_to_go -= 4;
 
             if (bits_to_go > 0)
-                out[3] = bttm_bits >> bits_to_go;
+                out[3] = bttm_bits >> (4 - bits_to_go);
         }
     }
 }
@@ -229,13 +248,18 @@ static void test_display()
         }*/
 
     clear_display();
-    write_12x12_character(CHAR_12PX_I, 8, 8);
-    write_12x12_character(CHAR_12PX_S, 20, 8);
-    write_12x12_character(CHAR_12PX_0, 32, 8);
+    write_12x12_character(CHAR_12PX_I, 8, 0);
+    write_12x12_character(CHAR_12PX_S, 20, 0);
+    write_12x12_character(CHAR_12PX_0, 32, 0);
 
-    write_12x12_character(CHAR_12PX_F, 50, 8);
-    write_12x12_character(CHAR_12PX_F, 62, 8);
-    write_12x12_character(CHAR_12PX_9, 70, 26);
+    //    write_12x12_character(CHAR_12PX_F, 50, 8);
+    //write_12x12_character(CHAR_12PX_F, 62, 8);
+    //write_12x12_character(CHAR_12PX_9, 70, 26);
+
+    uint8_t out[24];
+    bwrite_12x12_char(CHAR_12PX_6, out, 2, 0);
+    write_page_array(out, 12, 2, 50, 5);
+
     for (;;);
 }
 
