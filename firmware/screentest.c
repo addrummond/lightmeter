@@ -128,7 +128,7 @@ static void bwrite_12x12_char(const uint8_t *char_grid, uint8_t *out, uint8_t pa
         // Middle block.
         const uint8_t *middle = CHAR_BLOCKS_12PX + pgm_read_byte(&char_grid[(12/CHAR_12PX_BLOCK_SIZE)+i]);
         // Bottom block.
-        const uint8_t *bttm = CHAR_BLOCKS_12PX + pgm_read_byte(&char_grid[(12/CHAR_12PX_BLOCK_SIZE)+i]);
+        const uint8_t *bttm = CHAR_BLOCKS_12PX + pgm_read_byte(&char_grid[(0/CHAR_12PX_BLOCK_SIZE)+i]);
         
         // One loop for each column.
         uint8_t j;
