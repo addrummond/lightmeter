@@ -4,6 +4,7 @@
 #include <avr/interrupt.h>
 #include <readbyte.h>
 #include <assert.h>
+#include <string.h>
 
 #include <display_constants.h>
 
@@ -93,13 +94,16 @@ static void init_display()
 
 static void write_page_array(const uint8_t *pages, uint8_t ncols, uint8_t pages_per_col, uint8_t x, uint8_t page_y)
 {
-    display_command(DISPLAY_SET_PAGE_START + page_y);
-    display_command(DISPLAY_SET_COL_START_LOW + (x & 0x0F));
-    display_command(DISPLAY_SET_COL_START_HIGH + (x & 0xF0));
+    uint8_t col_start_low = x & 0x0F;
+    uint8_t col_start_high = x >> 4;
 
-    DISPLAY_WRITE_DATA {
-        uint8_t p;
-        for (p = 0; p < pages_per_col; ++p) {
+    uint8_t p;
+    for (p = 0; p < pages_per_col; ++p) {
+        display_command(DISPLAY_SET_COL_START_LOW + col_start_low);
+        display_command(DISPLAY_SET_COL_START_HIGH + col_start_high);
+        display_command(DISPLAY_SET_PAGE_START + page_y + p);
+        
+        DISPLAY_WRITE_DATA {
             uint8_t c;
             uint8_t cc;
             for (c = 0, cc = p; c < ncols; ++c, cc += pages_per_col) {
@@ -143,7 +147,6 @@ static void bwrite_12x12_char(const uint8_t *char_grid, uint8_t *out, uint8_t pa
             if (pixel_voffset > 4)
                 bits_to_go += 4 - pixel_voffset;
 
-            btg - (btg - 4)
             bout = top_bits >> (12 - bits_to_go);
             bout |= middle_bits << (12 - bits_to_go);
             out[1] |= bout;
@@ -248,17 +251,32 @@ static void test_display()
         }*/
 
     clear_display();
-    write_12x12_character(CHAR_12PX_I, 8, 0);
+    /*    write_12x12_character(CHAR_12PX_I, 8, 0);
     write_12x12_character(CHAR_12PX_S, 20, 0);
-    write_12x12_character(CHAR_12PX_0, 32, 0);
+    write_12x12_character(CHAR_12PX_0, 32, 0);*/
 
     //    write_12x12_character(CHAR_12PX_F, 50, 8);
     //write_12x12_character(CHAR_12PX_F, 62, 8);
     //write_12x12_character(CHAR_12PX_9, 70, 26);
 
-    uint8_t out[24];
+    uint8_t out[24] = {
+        0b11111111, 0b11111111,
+        0b00000000, 0b00000000,
+        0b11111111, 0b11111111,
+        0b00000000, 0b00000000,
+        0b11111111, 0b11111111,
+        0b00000000, 0b00000000,
+        0b11111111, 0b11111111,
+        0b00000000, 0b00000000,
+        0b11111111, 0b11111111,
+        0b00000000, 0b00000000,
+        0b11111111, 0b11111111,
+        0b00000000, 0b00000000,
+    };
+    write_page_array(out, 12, 2, 50, 3);
+    /*    memset(out, 0, sizeof(out));
     bwrite_12x12_char(CHAR_12PX_6, out, 2, 0);
-    write_page_array(out, 12, 2, 50, 5);
+    write_page_array(out, 12, 2, 50, 5);*/
 
     for (;;);
 }
