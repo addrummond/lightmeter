@@ -5,6 +5,8 @@
 
 #include <display_constants.h>
 
+#include <bitmaps/bitmaps.h>
+
 static void fast_write(uint8_t d)
 {
     uint8_t bit;

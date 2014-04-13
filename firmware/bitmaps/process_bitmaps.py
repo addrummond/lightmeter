@@ -4,8 +4,8 @@ import sys
 import re
 
 #
-# We compress 12x12 digits by splitting them into 3x3 blocks and
-# hoping that the number of unique 3x3 patterns will be small. (The
+# We compress 12x12 digits by splitting them into 4x4 blocks and
+# hoping that the number of unique 4x4 patterns will be small. (The
 # blocky design of the digits helps with this.)
 #
 # Following pypng, we treat images as lists of lists (lists of rows).

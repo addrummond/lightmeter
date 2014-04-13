@@ -2,6 +2,10 @@
 
 CFLAGS="-I ./ -I./vusb-20121206/usbdrv/ -Wall -Wpadded -O2 -fno-move-loop-invariants -fno-tree-scev-cprop -fno-inline-small-functions -DF_CPU=16500000L -mmcu=attiny85"
 
+cd bitmaps
+python process_bitmaps.py output
+cd ../
+
 avr-gcc $CFLAGS -c screentest.c -o screentest.out
 #avr-gcc $CFLAGS -c USI_TWI_Master.c -o twimaster.out
 #avr-gcc $CFLAGS -c i2cmaster.S -o i2cmaster.out
