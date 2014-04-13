@@ -43,7 +43,8 @@ static void display_write_data_end()
     DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
 }
 
-#define DISPLAY_WRITE_DATA uint8_t i___; for (i___ = 0, display_write_data_start(); i___ < 1; ++i___, display_write_data_end())
+static uint8_t i___;
+#define DISPLAY_WRITE_DATA for (i___ = 0, display_write_data_start(); i___ < 1; ++i___, display_write_data_end())
 
 static void init_display()
 {
@@ -99,21 +100,20 @@ static void write_12x12_character(const uint8_t *char_grid, uint8_t x, uint8_t y
 
     uint8_t low_col_start = x & 0xF;
     uint8_t high_col_start = x >> 4;
-    display_command(DISPLAY_PAGEADDR);
+    display_command(DISPLAY_SET_PAGE_START + (y >> 3));
     display_command(DISPLAY_SET_COL_START_LOW + low_col_start);
-    display_command(DISPLAY_SET_COL_START_HIGH + high_col_start);    
+    display_command(DISPLAY_SET_COL_START_HIGH + high_col_start);  
+
+    uint8_t i;
 
     DISPLAY_WRITE_DATA {
-        uint8_t i;
         for (i = 0; i < 12/CHAR_12PX_BLOCK_SIZE; ++i) {
             // Top block.
             const uint8_t *top = CHAR_BLOCKS_12PX + pgm_read_byte(&char_grid[i]);
             // Middle block.
             const uint8_t *middle = CHAR_BLOCKS_12PX + pgm_read_byte(&char_grid[(12/CHAR_12PX_BLOCK_SIZE)+i]);
-            // Bottom block.
-            //            uint8_t *bottom = pgm_read_byte(&CHAR_BLOCKS_12PX[char_grid[(24/CHAR_12PX_BLOCK_SIZE)+i]]);
 
-            // One loop for each column.
+            // One loop for each pair of columns.
             uint8_t j;
             for (j = 0; j < CHAR_12PX_BLOCK_SIZE; ++j) {
                 uint8_t bi = j >> 1;
@@ -126,14 +126,33 @@ static void write_12x12_character(const uint8_t *char_grid, uint8_t x, uint8_t y
             }
         }
     }
+
+    display_command(DISPLAY_SET_PAGE_START + (y >> 3) + 1);
+    display_command(DISPLAY_SET_COL_START_LOW + low_col_start);
+    display_command(DISPLAY_SET_COL_START_HIGH + high_col_start);
+
+    DISPLAY_WRITE_DATA {
+        for (i = 0; i < 12/CHAR_12PX_BLOCK_SIZE; ++i) {
+            // Bottom block.
+            const uint8_t *bottom = CHAR_BLOCKS_12PX + pgm_read_byte(&char_grid[(24/CHAR_12PX_BLOCK_SIZE)+i]);
+
+            // One loop for each pair of columns.
+            uint8_t j;
+            for (j = 0; j < CHAR_12PX_BLOCK_SIZE; ++j) {
+                uint8_t bi = j >> 1;
+                uint8_t bm = (~(j & 1)) << 2;
+
+                uint8_t bottom_bits = (pgm_read_byte(&bottom[bi]) >> bm) & 0x0F;
+
+                fast_write((~bottom_bits) & 0x0F);
+            }
+        }
+    }
 }
 
 static void clear_display()
 {
     display_command(DISPLAY_HORIZONTALADDR);
-    display_command(DISPLAY_SET_PAGE_START + 0);
-    display_command(DISPLAY_SET_COL_START_LOW + 0);
-    display_command(DISPLAY_SET_COL_START_HIGH + 0);
 
     DISPLAY_WRITE_DATA {
         uint16_t i;
@@ -141,42 +160,33 @@ static void clear_display()
             fast_write(0x00);
         }
     }
+
+    display_command(DISPLAY_PAGEADDR);
 }
 
 static void test_display()
 {
-    uint8_t out = 0xF0;
+    /*    uint8_t out = 0xF0;
     for (;; out ^= 0xFF) {
-        /*        display_command(DISPLAY_COLUMNADDR);
-        display_command(0);
-        display_command(127);
-        
-        display_command(DISPLAY_PAGEADDR);
-        display_command(0);
-        display_command((DISPLAY_LCDHEIGHT == 64) ? 7 : 3);
-
-        DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
-        DISPLAY_DC_PORT |= (1 << DISPLAY_DC_BIT);
-        DISPLAY_CS_PORT &= ~(1 << DISPLAY_CS_BIT);
-    
-        uint16_t i;
-        for (i = 0; i < (DISPLAY_LCDWIDTH*DISPLAY_LCDHEIGHT/8); ++i) {
-            fast_write(out);
-        }
-        DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
-
-        _delay_ms(300);*/
-
         clear_display();
 
-        write_12x12_character(CHAR_12PX_0, 50, 8);
+        write_12x12_character(CHAR_12PX_F, 50, 8);
 
         _delay_ms(1000);
 
         clear_display();
 
         _delay_ms(500);
-    }
+        }*/
+
+    clear_display();
+    write_12x12_character(CHAR_12PX_I, 8, 8);
+    write_12x12_character(CHAR_12PX_S, 20, 8);
+    write_12x12_character(CHAR_12PX_0, 32, 8);
+
+    write_12x12_character(CHAR_12PX_F, 50, 8);
+    write_12x12_character(CHAR_12PX_9, 70, 26);
+    for (;;);
 }
 
 int main()
