@@ -140,26 +140,13 @@ static void bwrite_12x12_char(const uint8_t *char_grid, uint8_t *out, uint8_t pa
             uint8_t middle_bits = (~(pgm_read_byte(&middle[bi]) >> bm)) & 0x0F;
             uint8_t bttm_bits = (~(pgm_read_byte(&bttm[bi]) >> bm)) & 0x0F;
 
-            uint8_t bits_to_go = 12;
-            uint8_t bout = top_bits << pixel_voffset;
-            out[0] |= top_bits;
-            bits_to_go -= 4;
-            if (pixel_voffset > 4)
-                bits_to_go += 4 - pixel_voffset;
+            uint8_t first_bits = top_bits | (middle_bits << 4);
 
-            bout = top_bits >> (12 - bits_to_go);
-            bout |= middle_bits << (12 - bits_to_go);
-            out[0] |= bout;
-            bits_to_go -= 4;
-
-            // btg = 4
-            bout = middle_bits >> (8 - bits_to_go);
-            bout |= bttm_bits << (4 - bits_to_go);
-            out[1] |= bout;
-            bits_to_go -= 4;
-
-            if (bits_to_go > 0)
-                out[1] |= (bttm_bits >> (4 - bits_to_go)) << 4;
+            out[0] |= first_bits << pixel_voffset;
+            out[1] |= (bttm_bits << pixel_voffset) | (first_bits >> (8 - pixel_voffset));
+            if (pixel_voffset > 4) {
+                out[2] |= bttm_bits >> (8 - pixel_voffset);
+            }
         }
     }
 }
