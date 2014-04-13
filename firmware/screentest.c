@@ -91,6 +91,54 @@ static void init_display()
     display_command(DISPLAY_DISPLAYON);
 }
 
+static void bwrite_12x12_char(const uint8_t *char_grid, uint8_t *out, uint8_t npages, uint8_t voffset)
+{
+    uint8_t page_voffset = voffset >> 3;
+    uint8_t pixel_voffset = voffset & 7;
+
+    out = out + page_voffset;
+    uint8_t i;
+    for (i = 0; i < 12/CHAR_12PX_BLOCK_SIZE; ++i) {
+        // Top block.
+        const uint8_t *top = CHAR_BLOCKS_12PX + pgm_read_byte(&char_grid[(24/CHAR_12PX_BLOCK_SIZE)+i]);
+        // Middle block.
+        const uint8_t *middle = CHAR_BLOCKS_12PX + pgm_read_byte(&char_grid[(12/CHAR_12PX_BLOCK_SIZE)+i]);
+        // Bottom block.
+        const uint8_t *bttm = CHAR_BLOCKS_12PX + pgm_read_byte(&char_grid[(12/CHAR_12PX_BLOCK_SIZE)+i]);
+        
+        // One loop for each column.
+        uint8_t j;
+        for (j = 0; j < CHAR_12PX_BLOCK_SIZE; ++j, out += npages) {
+            uint8_t bi = j >> 1;
+            uint8_t bm = (~(j & 1)) << 2;
+ 
+            uint8_t top_bits = (pgm_read_byte(&top[bi]) >> bm) & 0x0F;
+            uint8_t middle_bits = (pgm_read_byte(&middle[bi]) >> bm) & 0x0F;
+            uint8_t bttm_bits = (pgm_read_byte(&bttm[bi]) >> bm) &0x0F;
+
+            uint8_t bits_to_go = 12;
+            uint8_t bout = top_bits << pixel_voffset;
+            out[0] |= top_bits;
+            bits_to_go -= 4;
+            if (pixel_voffset > 4)
+                bits_to_go += 4 - pixel_voffset;
+
+            bout = top_bits >> (bits_to_go - 8);
+            bout |= middle_bits << (bits_to_go - 8);
+            out[1] |= bout;
+            bits_to_go -= 4;
+
+            bout = middle_bits >> (bits_to_go - 4);
+            bout |= bttm_bits << (bits_to_go - 4);
+            out[2] |= bout;
+            bits_to_go -= 4;
+
+            if (bits_to_go > 0)
+                out[3] = bttm_bits >> bits_to_go;
+        }
+    }
+}
+
 static void write_12x12_character(const uint8_t *char_grid, uint8_t x, uint8_t y)
 {
     // Doesn't handle non-page-aligned y values. (No point in fixing this because
@@ -113,7 +161,7 @@ static void write_12x12_character(const uint8_t *char_grid, uint8_t x, uint8_t y
             // Middle block.
             const uint8_t *middle = CHAR_BLOCKS_12PX + pgm_read_byte(&char_grid[(12/CHAR_12PX_BLOCK_SIZE)+i]);
 
-            // One loop for each pair of columns.
+            // One loop for each column.
             uint8_t j;
             for (j = 0; j < CHAR_12PX_BLOCK_SIZE; ++j) {
                 uint8_t bi = j >> 1;
