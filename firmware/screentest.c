@@ -19,6 +19,12 @@ static void test_display()
         memset(out, 0, sizeof(out));
         display_bwrite_12x12_char(CHAR_12PX_0, out, 3, y & 7);
         display_write_page_array(out, 12, 3, x, y >> 3);
+        memset(out, 0, sizeof(out));
+        display_bwrite_12x12_char(CHAR_12PX_1, out, 3, (y+21) & 7);
+        display_write_page_array(out, 12, 3, x, (y+21) >> 3);
+        memset(out, 0, sizeof(out));
+        display_bwrite_12x12_char(CHAR_12PX_2, out, 3, (y+41) & 7);
+        display_write_page_array(out, 12, 3, x, (y+41) >> 3);
     }
 
     for (;;);
