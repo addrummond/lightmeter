@@ -91,6 +91,8 @@ static void init_display()
     display_command(DISPLAY_DISPLAYON);
 }
 
+// Each byte of out is an 8px (i.e. one-page) column. 'npages' gives the number of columns.
+// 'voffeset' is the pixel offset of the top of each character from the top of the highest column.
 static void bwrite_12x12_char(const uint8_t *char_grid, uint8_t *out, uint8_t npages, uint8_t voffset)
 {
     uint8_t page_voffset = voffset >> 3;
