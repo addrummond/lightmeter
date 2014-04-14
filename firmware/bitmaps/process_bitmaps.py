@@ -67,7 +67,7 @@ def get_unique_blocks(image, offset, width=12, height=12, blocks=None):
 
     return blocks, block_grid, num_blocks
 
-def get_12px_blocks():
+def get_12px_chars():
      blocks = [ ]
      bitmap_count = 0
      name_to_block_grid = { }
@@ -93,7 +93,7 @@ def get_12px_blocks():
      return blocks, bitmap_count, name_to_block_grid, max_blocks_per_char
 
 def get_stats():
-     blocks_array, bitmap_count, name_to_block_grid, max_blocks_per_char = get_12px_blocks()
+     blocks_array, bitmap_count, name_to_block_grid, max_blocks_per_char = get_12px_chars()
 
      for blk in blocks_array:
          for row in blk:
@@ -110,7 +110,7 @@ def get_stats():
      print "Size compressed %i" % compressed
 
 def print_test_chars():
-    blocks_array, bitmap_count, name_to_block_grid, max_blocks_per_char = get_12px_blocks()
+    blocks_array, bitmap_count, name_to_block_grid, max_blocks_per_char = get_12px_chars()
 
     for name, grid in name_to_block_grid.iteritems():
         print "Drawing %s:\n" % name
@@ -161,7 +161,7 @@ def output_tables():
         c[0] += 1
     doth.write("extern const uint8_t CHAR_BLOCKS_12PX[];\n")
     dotc.write("const uint8_t CHAR_BLOCKS_12PX[] PROGMEM = {\n    ")
-    blocks_array, bitmap_count, name_to_block_grid, max_blocks_per_char = get_12px_blocks()
+    blocks_array, bitmap_count, name_to_block_grid, max_blocks_per_char = get_12px_chars()
     barray_index = 0
     for b in blocks_array:
         assert BLOCK_SIZE == 4
