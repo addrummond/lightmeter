@@ -8,6 +8,8 @@ import re
 # hoping that the number of unique 4x4 patterns will be small. (The
 # blocky design of the digits helps with this.)
 #
+# 8x8 digits are not currently compressed.
+#
 # Following pypng, we treat images as lists of lists (lists of rows).
 #
 
@@ -80,7 +82,7 @@ def get_12px_chars():
              width = img[0]
              height = img[1]
              pixels = map(lambda y: map(lambda x: x and 1 or 0, y), img[2])
-             pixels = [[row[i] for i in xrange(0, len(row), 3)] for row in pixels]
+             pixels = [[row[i] for i in xrange(0, len(row), 3)] for row in pixels] # RGB -> monochrome
 #             for row in pixels:
 #                 for p in row:
 #                     sys.stdout.write("%i " % p)
@@ -91,6 +93,21 @@ def get_12px_chars():
              max_blocks_per_char = max(max_blocks_per_char, num_blocks)
 
      return blocks, bitmap_count, name_to_block_grid, max_blocks_per_char
+
+def get_8px_chars():
+    char_px_grids = { }
+    for name in os.listdir("./"):
+        if name.startswith("8px_"):
+            r = png.Reader(file=open(name))
+            img = r.read()
+            width = img[0]
+            height = img[1]
+            pixels = map(lambda y: map(lambda x: x and 1 or 0, y), img[2])
+            pixels = [[row[i] for i in xrange(0, len(row), 3)] for row in pixels] # RGB -> monochrome
+            # Get in col major format.
+            pixels = [[pixels[j][i] for j in xrange(len(pixels))] for i in xrange(len(pixels[0]))]
+            char_px_grids[name] = pixels
+    return char_px_grids
 
 def get_stats():
      blocks_array, bitmap_count, name_to_block_grid, max_blocks_per_char = get_12px_chars()
@@ -135,13 +152,29 @@ def print_test_chars():
             sys.stdout.write("\n")
         sys.stdout.write("\n\n")
 
+def output_bit(counter, f, b):
+    if counter[0] % 8 == 0:
+        if counter[0] != 0:
+            f.write(',')
+        f.write("0b")
+    f.write(str(b))
+    counter[0] += 1
+
 def output_tables():
     dotc = open("bitmaps.c", "w")
     doth = open("bitmaps.h", "w")
+
+    #
+    # PREAMBLE
+    #
     doth.write("#ifndef BITMAPS_H\n#define BITMAPS_H\n\n")
     doth.write("#include <stdint.h>\n\n")
     dotc.write("#include <stdint.h>\n")
     dotc.write("#include <readbyte.h>\n\n")
+
+    #
+    # TABLES FOR 12PX CHARS
+    #
 
     def output_block_comment(block, index, f):
         f.write("// index: %i\n" % index)
@@ -151,24 +184,17 @@ def output_tables():
                 f.write("%s " % block[col][row])
             f.write("\n")
 
-    c = [0]
-    def output_bit(b):
-        if c[0] % 8 == 0:
-            if c[0] != 0:
-                dotc.write(',')
-            dotc.write("0b")
-        dotc.write(str(b))
-        c[0] += 1
     doth.write("extern const uint8_t CHAR_BLOCKS_12PX[];\n")
     dotc.write("const uint8_t CHAR_BLOCKS_12PX[] PROGMEM = {\n    ")
     blocks_array, bitmap_count, name_to_block_grid, max_blocks_per_char = get_12px_chars()
     barray_index = 0
+    bit_counter = [0]
     for b in blocks_array:
         assert BLOCK_SIZE == 4
         output_block_comment(b, barray_index * 2, dotc)
         for r in b:
             for bit in r:
-                output_bit(bit)
+                output_bit(bit_counter, dotc, bit)
 #            dotc.write('    ' + ', '.join(map(str, r)) + ',\n')
         dotc.write("\n    ")
         barray_index += 1
@@ -205,6 +231,37 @@ def output_tables():
     dotc.write('};\n')
 
     doth.write('#define CHAR_12PX_BLOCK_SIZE ' + str(BLOCK_SIZE))
+
+    #
+    # TABLES FOR 8PX CHARS.
+    #
+    doth.write("extern const uint8_t CHAR_PIXELS_8PX[];\n")
+    dotc.write("\n\nconst uint8_t CHAR_PIXELS_8PX[] PROGMEM = {\n")
+    pgrids = get_8px_chars()
+    ordered_keys = pgrids.keys()
+    ordered_keys.sort()
+    bit_counter = [0]
+    i = 0
+    for name in ordered_keys:
+        g = pgrids[name]
+        m = re.match(r"^8px_([^.]+)\.png", name)
+        assert m
+        cname = 'CHAR_8PX_' + m.group(1).upper()
+        doth.write("#define " + cname + ' (CHAR_PIXELS_8PX + ' + str(i*8) + ')\n')
+        doth.write("#define " + cname + '_O ' + str(i*8) + '\n')
+        dotc.write("    ")
+        for c in g:
+            for px in c:
+                output_bit(bit_counter, dotc, px)
+            dotc.write("\n    ")
+        dotc.write("\n\n")
+
+        i += 1
+    dotc.write("};\n")
+                
+    #
+    # POSTAMBLE
+    #
 
     doth.write("\n#endif\n")
 
