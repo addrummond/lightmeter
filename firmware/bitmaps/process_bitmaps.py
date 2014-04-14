@@ -166,11 +166,15 @@ def output_tables():
     doth.write('extern const uint8_t CHAR_12PX_GRIDS[];\n')
     dotc.write('const uint8_t CHAR_12PX_GRIDS[] PROGMEM = {\n')
     i = 0
-    for name, grid in name_to_block_grid.iteritems():
+    ordered_keys = name_to_block_grid.keys()
+    ordered_keys.sort()
+    for name in ordered_keys:
+        grid = name_to_block_grid[name]
         m = re.match(r"^12px_([^.]+)\.png$", name)
         assert m
         cname = 'CHAR_12PX_' + m.group(1).upper()
         doth.write('#define ' + cname + ' (CHAR_12PX_GRIDS + ' + str(i) + ')\n')
+        doth.write('#define ' + cname + '_O ' + str(i) + '\n')
         dotc.write("// " + cname + "\n")
         for row in grid:
             assert BLOCK_SIZE == 4
