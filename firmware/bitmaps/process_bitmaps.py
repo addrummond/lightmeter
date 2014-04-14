@@ -104,8 +104,8 @@ def get_8px_chars():
             height = img[1]
             pixels = map(lambda y: map(lambda x: x and 1 or 0, y), img[2])
             pixels = [[row[i] for i in xrange(0, len(row), 3)] for row in pixels] # RGB -> monochrome
-            # Get in col major format.
-            pixels = [[pixels[j][i] for j in xrange(len(pixels))] for i in xrange(len(pixels[0]))]
+            # Get in col major format vertically inverted.
+            pixels = [[pixels[j][i] for j in reversed(xrange(len(pixels)))] for i in xrange(len(pixels[0]))]
             char_px_grids[name] = pixels
     return char_px_grids
 
@@ -235,7 +235,7 @@ def output_tables():
     #
     # TABLES FOR 8PX CHARS.
     #
-    doth.write("extern const uint8_t CHAR_PIXELS_8PX[];\n")
+    doth.write("\n\nextern const uint8_t CHAR_PIXELS_8PX[];\n")
     dotc.write("\n\nconst uint8_t CHAR_PIXELS_8PX[] PROGMEM = {\n")
     pgrids = get_8px_chars()
     ordered_keys = pgrids.keys()

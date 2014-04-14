@@ -115,6 +115,21 @@ static uint8_t flip_nibble(uint8_t nibble)
     return ((nibble & 1) << 3) | ((nibble & 2) << 1) | ((nibble & 4) >> 1) | ((nibble & 8) >> 3);
 }
 
+void display_bwrite_8x8_char(const uint8_t *px_grid, uint8_t *out, uint8_t pages_per_col, uint8_t voffset)
+{
+    uint8_t page_voffset = voffset >> 3;
+    uint8_t pixel_voffset = voffset & 7;
+
+    uint8_t i;
+    out += page_voffset;
+    for (i = 0; i < 8; ++i, out += pages_per_col) {
+        uint8_t px = ~pgm_read_byte(&px_grid[i]);
+        out[0] |= px << pixel_voffset;
+        if (pixel_voffset > 0)
+            out[1] |= px >> (8 - pixel_voffset);
+    }
+}
+
 // Each byte of out is an 8px (i.e. one-page) column. 'pages_per_col' gives the number of (stacked) columns.
 // 'voffeset' is the pixel offset of the top of each character from the top of the highest column.
 // 'bwrite' is short for "buffered write".
@@ -123,7 +138,7 @@ void display_bwrite_12x12_char(const uint8_t *char_grid, uint8_t *out, uint8_t p
     uint8_t page_voffset = voffset >> 3;
     uint8_t pixel_voffset = voffset & 7;
 
-    out = out + page_voffset;
+    out += page_voffset;
     uint8_t i;
     for (i = 0; i < 12/CHAR_12PX_BLOCK_SIZE; ++i) {
         // Top block.
