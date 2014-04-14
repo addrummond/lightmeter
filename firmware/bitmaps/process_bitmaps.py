@@ -45,10 +45,21 @@ def get_unique_blocks(image, offset, width=12, height=12, blocks=None):
                 x.reverse()
             index = None
             try:
-                index = blocks.index(block)
+                index = ('original', blocks.index(block))
             except ValueError:
+                # Can we find the miror immage  of the block in the list of existing blocks?
+                for bli in xrange(len(blocks)):
+                    flipv = list(reversed(blocks[bli]))
+                    fliph = [list(reversed(aa)) for aa in blocks[bli]]
+                    if flipv == block:
+                        index = ('flipv', bli)
+                        break
+                    elif fliph == blocks:
+                        index = ('fliph', bli)
+                        break
+            if index is None:
                 blocks.append(block)
-                index = len(blocks)-1
+                index = ('original', len(blocks)-1)
             block_grid[-1].append(index)
             num_blocks += 1
     # Invert block grid vertically.
@@ -178,7 +189,17 @@ def output_tables():
         dotc.write("// " + cname + "\n")
         for row in grid:
             assert BLOCK_SIZE == 4
-            dotc.write('    ' + ', '.join(map(str, (map(lambda x: x*2, row)))) + ',\n')
+            def genindex(index):
+                base = (index[1]*2) << 2
+                assert base < 255 - 3
+                if index[0] == 'original':
+                    return base
+                elif index[0] == 'fliph':
+                    return base + 1
+                elif index[0] == 'flipv':
+                    return base + 2
+                assert False
+            dotc.write('    ' + ', '.join(map(str, (map(genindex, row)))) + ',\n')
         dotc.write('\n')
         i += (12/BLOCK_SIZE)*(12/BLOCK_SIZE)
     dotc.write('};\n')
