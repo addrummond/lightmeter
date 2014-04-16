@@ -75,7 +75,7 @@ def get_12px_chars():
      name_to_block_grid = { }
      max_blocks_per_char = 0
      for name in os.listdir("./"):
-         if name.startswith("12px_"):
+         if name.startswith("12px_") and name.endswith(".png"):
              bitmap_count += 1
              r = png.Reader(file=open(name))
              img = r.read()
@@ -97,7 +97,7 @@ def get_12px_chars():
 def get_8px_chars():
     char_px_grids = { }
     for name in os.listdir("./"):
-        if name.startswith("8px_"):
+        if name.startswith("8px_") and name.endswith(".png"):
             r = png.Reader(file=open(name))
             img = r.read()
             width = img[0]
@@ -282,3 +282,5 @@ if __name__ == '__main__':
         output_tables()
     elif sys.argv[1] == 'testchars':
         print_test_chars()
+    else:
+        assert False
