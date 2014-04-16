@@ -147,7 +147,12 @@ def print_test_chars():
 
         for line in xrange(11, -1, -1):
             for col in xrange(12):
-                block = blocks_array[grid[line/BLOCK_SIZE][col/BLOCK_SIZE]]
+                flp, index = grid[line/BLOCK_SIZE][col/BLOCK_SIZE]
+                block = blocks_array[index]
+                if flp == 'flipv':
+                    block = list(reversed(block))
+                elif flp == 'fliph':
+                    block = [list(reversed(aa)) for aa in block]
                 sys.stdout.write("%s " % block[col % BLOCK_SIZE][line % BLOCK_SIZE])
             sys.stdout.write("\n")
         sys.stdout.write("\n\n")
