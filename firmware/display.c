@@ -123,7 +123,7 @@ void display_bwrite_8x8_char(const uint8_t *px_grid, uint8_t *out, uint8_t pages
     uint8_t i;
     out += page_voffset;
     for (i = 0; i < 8; ++i, out += pages_per_col) {
-        uint8_t px = ~pgm_read_byte(&px_grid[i]);
+        uint8_t px = pgm_read_byte(&px_grid[i]);
         out[0] |= px << pixel_voffset;
         if (pixel_voffset > 0)
             out[1] |= px >> (8 - pixel_voffset);
@@ -163,13 +163,13 @@ void display_bwrite_12x12_char(const uint8_t *char_grid, uint8_t *out, uint8_t p
  
 #define BI(x) (raw ## x ## i & 2 ? flip_bi : bi)
 #define BM(x) (raw ## x ## i & 2 ? flip_bm : bm)
-            uint8_t top_bits = (~(pgm_read_byte(&top[BI(top)]) >> BM(top))) & 0x0F;
+            uint8_t top_bits = (pgm_read_byte(&top[BI(top)]) >> BM(top)) & 0x0F;
             if (rawtopi & 2)
                 top_bits = flip_nibble(top_bits);
-            uint8_t middle_bits = (~(pgm_read_byte(&middle[BI(middle)]) >> BM(middle))) & 0x0F;
+            uint8_t middle_bits = (pgm_read_byte(&middle[BI(middle)]) >> BM(middle)) & 0x0F;
             if (rawmiddlei & 2)
                 middle_bits = flip_nibble(middle_bits);
-            uint8_t bttm_bits = (~(pgm_read_byte(&bttm[BI(bttm)]) >> BM(bttm))) & 0x0F;
+            uint8_t bttm_bits = (pgm_read_byte(&bttm[BI(bttm)]) >> BM(bttm)) & 0x0F;
             if (rawbttmi & 2)
                 bttm_bits = flip_nibble(bttm_bits);
 

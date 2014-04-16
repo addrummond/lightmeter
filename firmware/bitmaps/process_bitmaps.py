@@ -81,7 +81,7 @@ def get_12px_chars():
              img = r.read()
              width = img[0]
              height = img[1]
-             pixels = map(lambda y: map(lambda x: x and 1 or 0, y), img[2])
+             pixels = map(lambda y: map(lambda x: 0 if x else 1, y), img[2])
              pixels = [[row[i] for i in xrange(0, len(row), 3)] for row in pixels] # RGB -> monochrome
 #             for row in pixels:
 #                 for p in row:
@@ -102,7 +102,7 @@ def get_8px_chars():
             img = r.read()
             width = img[0]
             height = img[1]
-            pixels = map(lambda y: map(lambda x: x and 1 or 0, y), img[2])
+            pixels = map(lambda y: map(lambda x: 0 if x else 1, y), img[2])
             pixels = [[row[i] for i in xrange(0, len(row), 3)] for row in pixels] # RGB -> monochrome
             # Get in col major format vertically inverted.
             pixels = [[pixels[j][i] for j in reversed(xrange(len(pixels)))] for i in xrange(len(pixels[0]))]
