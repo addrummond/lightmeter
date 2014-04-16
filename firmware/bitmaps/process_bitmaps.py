@@ -56,7 +56,7 @@ def get_unique_blocks(image, offset, width=12, height=12, blocks=None):
                     if flipv == block:
                         index = ('flipv', bli)
                         break
-                    elif fliph == blocks:
+                    elif fliph == block:
                         index = ('fliph', bli)
                         break
             if index is None:
