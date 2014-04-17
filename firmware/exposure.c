@@ -85,7 +85,6 @@ void shutter_speed_to_string(uint8_t speed, shutter_string_output_t *eso)
     // Add '\0' termination.
     eso->chars[j] = '\0';
 
-    ++j;
     eso->length = j;
 }
 
@@ -392,7 +391,7 @@ int main()
     uint8_t s;
     for (s = SS_MIN; s <= SS_MAX; ++s) {
         shutter_speed_to_string(s, &sso);
-        printf("SS: %s\n", SHUTTER_STRING_OUTPUT_STRING(sso));
+        printf("SS: %s (length = %i)\n", SHUTTER_STRING_OUTPUT_STRING(sso), sso.length);
     }
 
     printf("\n");
