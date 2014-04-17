@@ -23,6 +23,10 @@ eeprom = [
     1,                                                             # aperture_string_output.length
     ord('1'), ord('/'), ord('1'), ord('2'), ord('5'), 0, 0, 0, 0,  # shutter_string_ouput.chars
     5,                                                             # shutter_string_output.length
+
+    0,                                                             # UI_MODE_DEFAULT
+
+    0,                                                             # METER_MODE_REFLECTIVE
 ]
 
 ih = IntelHex()

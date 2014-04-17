@@ -1,9 +1,12 @@
 #ifndef UI_H
 #define UI_H
 
-typedef enum UI_MODE_ {
-    UI_MODE_DEFAULT=0,
-    UI_MODE_MAIN_MENU,
-} UI_MODE;
+#include <stdint.h>
+#include <state.h>
+
+void ui_top_status_line_at_8col(const meter_state_t *ms,
+                                uint8_t *out,
+                                uint8_t pages_per_col,
+                                uint8_t x);
 
 #endif

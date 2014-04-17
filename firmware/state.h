@@ -21,8 +21,20 @@ typedef enum gain {
     HIGH_GAIN=1
 } gain_t;
 
+typedef enum ui_mode {
+    UI_MODE_DEFAULT=0,
+    UI_MODE_MAIN_MENU,
+    
+    UI_MODE_CALIBRATE,
+} ui_mode_t;
+
+typedef enum meter_mode {
+    METER_MODE_REFLECTIVE=0,
+    METER_MODE_INCIDENT
+} meter_mode_t;
+
 typedef struct meter_state {
-    uint8_t bcd_iso[ISO_DECIMAL_MAX_DIGITS];
+    uint8_t bcd_iso_digits[ISO_DECIMAL_MAX_DIGITS];
     uint8_t bcd_iso_length;
     uint8_t stops_iso;
 
@@ -37,6 +49,10 @@ typedef struct meter_state {
 
     aperture_string_output_t aperture_string;
     shutter_string_output_t shutter_speed_string;
+
+    ui_mode_t ui_mode;
+
+    meter_mode_t meter_mode;
 } meter_state_t;
 
 // This is just to check that sizeof(meter_state) <= STATE_BLOCK_LENGTH,

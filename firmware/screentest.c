@@ -8,6 +8,7 @@
 #include <bitmaps/bitmaps.h>
 
 #include <display.h>
+#include <ui.h>
 
 static void test_display()
 {
@@ -27,7 +28,7 @@ static void test_display()
         display_write_page_array(out, 12, 3, x, (y+41) >> 3);
         }*/
 
-    uint8_t out2[16];
+    /*    uint8_t out2[16];
     memset(out2, 0, sizeof(out2));
     display_bwrite_8x8_char(CHAR_8PX_0, out2, 2, 0);
     display_write_page_array(out2, 8, 2, 20, 4);
@@ -39,7 +40,13 @@ static void test_display()
     display_write_page_array(out2, 8, 2, 36, 4);
     memset(out2, 0, sizeof(out2));
     display_bwrite_8x8_char(CHAR_8PX_3, out2, 2, 3);
-    display_write_page_array(out2, 8, 2, 44, 4);
+    display_write_page_array(out2, 8, 2, 44, 4);*/
+
+    uint8_t i;
+    uint8_t out[1];
+    for (i = 0; i < DISPLAY_LCDWIDTH; i += 8) {
+        ui_top_status_line_at_8col(&global_meter_state, out, 1, i);
+    }
 
     for (;;);
 }
