@@ -32,10 +32,13 @@ void ui_top_status_line_at_8col(const meter_state_t *ms,
     if (x == 0) {
         switch (ms->meter_mode) {
         case METER_MODE_REFLECTIVE: {
-            display_bwrite_8x8_char(CHAR_8PX_R, out, pages_per_col, 0);        
+            display_bwrite_8x8_char(CHAR_8PX_0, out, pages_per_col, 0);        
         } break;
         case METER_MODE_INCIDENT: {
-            display_bwrite_8x8_char(CHAR_8PX_I, out, pages_per_col, 0);
+            display_bwrite_8x8_char(CHAR_8PX_1, out, pages_per_col, 0);
+        } break;
+        default: { // FOR TEST PURPOSES
+            display_bwrite_8x8_char(CHAR_8PX_2, out, pages_per_col, 0);
         } break;
         }
     }
