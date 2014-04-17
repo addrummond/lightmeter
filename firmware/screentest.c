@@ -51,8 +51,8 @@ static void test_display()
         display_write_page_array(out, 8, 1, i, 0);
     }
 
-    global_transient_meter_state.shutter_speed = 67;
-    global_transient_meter_state.aperture = 44;
+    global_transient_meter_state.shutter_speed = 80;
+    global_transient_meter_state.aperture = 80;
 
     uint8_t out2[24];
     size_t sz = ui_main_reading_display_at_12col_state_size();
