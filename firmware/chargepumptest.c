@@ -14,8 +14,8 @@ int main()
     for (;;) {
         uint8_t i;
         for (i = 0; i < 100/4; ++i) {
-            uint8_t j;
-            for (j = 0; j < 64; ++j);
+             uint8_t j;
+             for (j = 0; j < 64; ++j);
         }
 
         PORTB ^= 0b11000;
