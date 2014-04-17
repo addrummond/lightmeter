@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <string.h>
 #include <stdint.h>
+#include <stddef.h>
 #include <bitmaps/bitmaps.h>
 
 #include <display.h>
@@ -48,6 +49,19 @@ static void test_display()
         memset(out, 0, sizeof(out));
         ui_top_status_line_at_8col(&global_meter_state, out, 1, i);
         display_write_page_array(out, 8, 1, i, 0);
+    }
+
+    global_transient_meter_state.shutter_speed = 67;
+    global_transient_meter_state.aperture = 44;
+
+    uint8_t out2[24];
+    size_t sz = ui_main_reading_display_at_12col_state_size();
+    uint8_t state[sz];
+    memset(state, 0, sz);
+    for (i = 0; i < DISPLAY_LCDWIDTH; i += 12) {
+        memset(out, 0, sizeof(out));
+        ui_main_reading_display_at_12col(state, &global_meter_state, &global_transient_meter_state, out2, 2, i);
+        display_write_page_array(out, 12, 2, i, 0);
     }
 
     for (;;);
