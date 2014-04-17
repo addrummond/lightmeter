@@ -164,13 +164,13 @@ void display_bwrite_12x12_char(const uint8_t *char_grid, uint8_t *out, uint8_t p
 #define BI(x) (raw ## x ## i & 2 ? flip_bi : bi)
 #define BM(x) (raw ## x ## i & 2 ? flip_bm : bm)
             uint8_t top_bits = (pgm_read_byte(&top[BI(top)]) >> BM(top)) & 0x0F;
-            if (rawtopi & 2)
+            if (rawtopi & 1)
                 top_bits = flip_nibble(top_bits);
             uint8_t middle_bits = (pgm_read_byte(&middle[BI(middle)]) >> BM(middle)) & 0x0F;
-            if (rawmiddlei & 2)
+            if (rawmiddlei & 1)
                 middle_bits = flip_nibble(middle_bits);
             uint8_t bttm_bits = (pgm_read_byte(&bttm[BI(bttm)]) >> BM(bttm)) & 0x0F;
-            if (rawbttmi & 2)
+            if (rawbttmi & 1)
                 bttm_bits = flip_nibble(bttm_bits);
 
             uint8_t topmiddle_bits = top_bits | (middle_bits << 4);
