@@ -126,7 +126,6 @@ void aperture_to_string(uint8_t aperture, aperture_string_output_t *aso)
 
     aso->chars[last] = '\0';
 
-    ++last;
     aso->length = last;
 }
 
