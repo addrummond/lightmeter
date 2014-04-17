@@ -6,7 +6,7 @@ eeprom = [
     # Initial unused 4 bytes.
     0, 0, 0, 0,
 
-    1, 0, 0, 0, 0, 0, 0,                                           # bcd_iso
+    0, 0, 0, 0, 1, 0, 0,                                           # bcd_iso
     3,                                                             # bcd_iso_length
     38,                                                            # iso 100
 
