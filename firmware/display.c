@@ -110,11 +110,6 @@ void display_write_page_array(const uint8_t *pages, uint8_t ncols, uint8_t pages
     }
 }
 
-static uint8_t flip_nibble(uint8_t nibble)
-{
-    return ((nibble & 1) << 3) | ((nibble & 2) << 1) | ((nibble & 4) >> 1) | ((nibble & 8) >> 3);
-}
-
 void display_bwrite_8x8_char(const uint8_t *px_grid, uint8_t *out, uint8_t pages_per_col, uint8_t voffset)
 {
     uint8_t page_voffset = voffset >> 3;
@@ -128,6 +123,11 @@ void display_bwrite_8x8_char(const uint8_t *px_grid, uint8_t *out, uint8_t pages
         if (pixel_voffset > 0)
             out[1] |= px >> (8 - pixel_voffset);
     }
+}
+
+static uint8_t flip_nibble(uint8_t nibble)
+{
+    return ((nibble & 1) << 3) | ((nibble & 2) << 1) | ((nibble & 4) >> 1) | ((nibble & 8) >> 3);
 }
 
 // Each byte of out is an 8px (i.e. one-page) column. 'pages_per_col' gives the number of (stacked) columns.
@@ -203,4 +203,3 @@ void display_clear()
 
 // See DISPLAY_WRITE_DATA macro in display.h
 uint8_t i___;
-
