@@ -137,7 +137,7 @@ void ui_main_reading_display_at_12col(void *func_state_,
         // Total number of chars is the sum of the two plus one for a space plus one for
         // the 'f' we insert before the aperture.
         func_state->len = func_state->sso.length + func_state->aso.length + 2;
-        func_state->start_x = (DISPLAY_LCDWIDTH >> 1) - (((func_state->len << 3) + (func_state->len << 2)) >> 1);
+        func_state->start_x = 0;//(DISPLAY_LCDWIDTH >> 1) - (((func_state->len << 3) + (func_state->len << 2)) >> 1);
         func_state->i = 0;
     }
 
