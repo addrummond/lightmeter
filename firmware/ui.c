@@ -32,13 +32,13 @@ void ui_top_status_line_at_8col(const meter_state_t *ms,
     if (x == 0) {
         switch (ms->meter_mode) {
         case METER_MODE_REFLECTIVE: {
-            display_bwrite_8x8_char(CHAR_8PX_0, out, pages_per_col, 0);        
+            display_bwrite_8x8_char(CHAR_8PX_R, out, pages_per_col, 0);        
         } break;
         case METER_MODE_INCIDENT: {
-            display_bwrite_8x8_char(CHAR_8PX_1, out, pages_per_col, 0);
+            display_bwrite_8x8_char(CHAR_8PX_I, out, pages_per_col, 0);
         } break;
         default: { // FOR TEST PURPOSES
-            display_bwrite_8x8_char(CHAR_8PX_2, out, pages_per_col, 0);
+            display_bwrite_8x8_char(CHAR_8PX_0, out, pages_per_col, 0);
         } break;
         }
 
@@ -49,14 +49,35 @@ void ui_top_status_line_at_8col(const meter_state_t *ms,
     // ISO
     //
 
-    uint8_t iso_start_x = DISPLAY_LCDWIDTH - (ms->bcd_iso_length << 3); //(ms->bcd_iso_length << 3/* *8 */);
+    uint8_t iso_start_x = DISPLAY_LCDWIDTH - (ms->bcd_iso_length << 3) - (4*8); //(ms->bcd_iso_length << 3/* *8 */);
 
     if (x >= iso_start_x) {
-        uint8_t digit = ms->bcd_iso_digits[((x - iso_start_x) >> 3)];
-        const uint8_t *digit_px_grid = CHAR_PIXELS_8PX + CHAR_8PX_0_O + (digit << 3);
+        const uint8_t *px_grid;
 
-        display_bwrite_8x8_char(digit_px_grid, out, pages_per_col, 0);
+        uint8_t index = ((x - iso_start_x) >> 3);
+        if (index <= 3) {
+            switch (index) {
+            case 0: {
+                px_grid = CHAR_8PX_I;
+            } break;
+            case 1: {
+                px_grid = CHAR_8PX_S;
+            } break;
+            case 2: {
+                px_grid = CHAR_8PX_O;
+            } break;
+            default: return;
+            }
 
-        return;
+            display_bwrite_8x8_char(px_grid, out, pages_per_col, 0);
+        }
+        else {
+            uint8_t digit = ms->bcd_iso_digits[index-4];
+            px_grid = CHAR_PIXELS_8PX + CHAR_8PX_0_O + (digit << 3);
+            
+            display_bwrite_8x8_char(px_grid, out, pages_per_col, 0);
+            
+            return;
+        }
     }
 }
