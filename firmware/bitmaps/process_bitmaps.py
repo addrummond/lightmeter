@@ -69,6 +69,13 @@ def get_unique_blocks(image, offset, width=12, height=12, blocks=None):
 
     return blocks, block_grid, num_blocks
 
+def rgba_to_mono(pixels, width):
+    pixels2 = [[0 if y else 1 for y in x] for x in pixels]
+    if len(pixels[0]) == width*3:
+        return [[row[i] for i in xrange(0, len(row), 3)] for row in pixels2] # RGB -> monochrome
+    if len(pixels[0]) == width*4:
+        return [[row[i] for i in xrange(0, len(row), 4)] for row in pixels2] # RGBA -> monochrome
+
 def get_12px_chars():
      blocks = [ ]
      bitmap_count = 0
@@ -81,8 +88,7 @@ def get_12px_chars():
              img = r.read()
              width = img[0]
              height = img[1]
-             pixels = map(lambda y: map(lambda x: 0 if x else 1, y), img[2])
-             pixels = [[row[i] for i in xrange(0, len(row), 3)] for row in pixels] # RGB -> monochrome
+             pixels = rgba_to_mono(list(img[2]), 12)
 #             for row in pixels:
 #                 for p in row:
 #                     sys.stdout.write("%i " % p)
@@ -102,8 +108,7 @@ def get_8px_chars():
             img = r.read()
             width = img[0]
             height = img[1]
-            pixels = map(lambda y: map(lambda x: 0 if x else 1, y), img[2])
-            pixels = [[row[i] for i in xrange(0, len(row), 3)] for row in pixels] # RGB -> monochrome
+            pixels = rgba_to_mono(list(img[2]), 8)
             # Get in col major format vertically inverted.
             pixels = [[pixels[j][i] for j in reversed(xrange(len(pixels)))] for i in xrange(len(pixels[0]))]
             char_px_grids[name] = pixels
