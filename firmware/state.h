@@ -68,4 +68,10 @@ void write_meter_state(const meter_state_t *ms);
 void read_meter_state(meter_state_t *ms);
 void initialize_global_meter_state();
 
+// Check that enums are one byte (choosing an enum type at random).
+// Emums should be one byte if gcc's -fshort-enums is enabled.
+struct dummy {
+    priority_t foo[1-sizeof(priority_t)];
+};
+
 #endif
