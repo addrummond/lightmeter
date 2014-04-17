@@ -68,6 +68,13 @@ void write_meter_state(const meter_state_t *ms);
 void read_meter_state(meter_state_t *ms);
 void initialize_global_meter_state();
 
+typedef struct transient_meter_state {
+    uint8_t aperture;
+    uint8_t shutter_speed;
+} transient_meter_state_t;
+
+extern transient_meter_state_t global_transient_meter_state;
+
 // Check that enums are one byte (choosing an enum type at random).
 // Emums should be one byte if gcc's -fshort-enums is enabled.
 struct dummy {

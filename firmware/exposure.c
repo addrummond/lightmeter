@@ -8,7 +8,6 @@
 #include <readbyte.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include <stdlib.h>
 #include <assert.h>
 #include <exposure.h>
 #include <bcd.h>
