@@ -89,12 +89,14 @@ def get_12px_chars():
              width = img[0]
              height = img[1]
              pixels = rgba_to_mono(list(img[2]), 12)
+             # Drop first and last two columns for 12x8.
+             pixels = [x[2:-2] for x in pixels]
 #             for row in pixels:
 #                 for p in row:
 #                     sys.stdout.write("%i " % p)
 #                 print 
 #             print pixels
-             blocks, block_grid, num_blocks = get_unique_blocks(pixels, 0, width, height, blocks)
+             blocks, block_grid, num_blocks = get_unique_blocks(pixels, 0, width-4, height, blocks)
              name_to_block_grid[name] = block_grid
              max_blocks_per_char = max(max_blocks_per_char, num_blocks)
 
@@ -125,8 +127,8 @@ def get_stats():
          print "\n============\n"
 
      blockcount = len(blocks_array)
-     uncompressed = bitmap_count*12*12/8
-     compressed = blockcount*BLOCK_SIZE*BLOCK_SIZE/8 + bitmap_count*(12/BLOCK_SIZE)*(12/BLOCK_SIZE)
+     uncompressed = bitmap_count*12*8/8
+     compressed = blockcount*BLOCK_SIZE*BLOCK_SIZE/8 + bitmap_count*(12/BLOCK_SIZE)*(8/BLOCK_SIZE)
      
      print "There are %i blocks" % blockcount
      print "Maximum blocks per char: %i" % max_blocks_per_char
@@ -153,7 +155,7 @@ def print_test_chars():
 #                sys.stdout.write("\n\n")
 
         for line in xrange(11, -1, -1):
-            for col in xrange(12):
+            for col in xrange(8):
                 flp, index = grid[line/BLOCK_SIZE][col/BLOCK_SIZE]
                 block = blocks_array[index]
                 if flp == 'flipv':
@@ -185,7 +187,8 @@ def output_tables():
     dotc.write("#include <readbyte.h>\n\n")
 
     doth.write("#define CHAR_WIDTH_8PX 6\n\n")
-    doth.write("#define CHAR_OFFSET_8PX(n) ((n << 2) + (n << 1)) // I.e. n*6\n\n")
+    doth.write("#define CHAR_OFFSET_8PX(n) (((n) << 2) + ((n) << 1)) // I.e. n*6\n\n")
+    doth.write("#define CHAR_OFFSET_12PX(n) (((n) << 2) + ((n) << 1)) // I.e. n*6\n\n")
 
     #
     # TABLES FOR 12PX CHARS
@@ -231,7 +234,7 @@ def output_tables():
         for row in grid:
             assert BLOCK_SIZE == 4
             def genindex(index):
-                base = (index[1]*2) << 2
+                base = index[1] << 2
                 assert base < 255 - 3
                 if index[0] == 'original':
                     return base
@@ -242,7 +245,7 @@ def output_tables():
                 assert False
             dotc.write('    ' + ', '.join(map(str, (map(genindex, row)))) + ',\n')
         dotc.write('\n')
-        i += (12/BLOCK_SIZE)*(12/BLOCK_SIZE)
+        i += (12/BLOCK_SIZE)*(8/BLOCK_SIZE)
     dotc.write('};\n')
 
     doth.write('#define CHAR_12PX_BLOCK_SIZE ' + str(BLOCK_SIZE))

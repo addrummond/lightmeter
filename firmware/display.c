@@ -133,23 +133,23 @@ static uint8_t flip_nibble(uint8_t nibble)
 // Each byte of out is an 8px (i.e. one-page) column. 'pages_per_col' gives the number of (stacked) columns.
 // 'voffeset' is the pixel offset of the top of each character from the top of the highest column.
 // 'bwrite' is short for "buffered write".
-void display_bwrite_12x12_char(const uint8_t *char_grid, uint8_t *out, uint8_t pages_per_col, uint8_t voffset)
+void display_bwrite_12px_char(const uint8_t *char_grid, uint8_t *out, uint8_t pages_per_col, uint8_t voffset)
 {
     uint8_t page_voffset = voffset >> 3;
     uint8_t pixel_voffset = voffset & 7;
 
     out += page_voffset;
     uint8_t i;
-    for (i = 0; i < 12/CHAR_12PX_BLOCK_SIZE; ++i) {
+    for (i = 0; i < 8/CHAR_12PX_BLOCK_SIZE; ++i) {
         // Top block.
-        uint8_t rawtopi = pgm_read_byte(&char_grid[(24/CHAR_12PX_BLOCK_SIZE)+i]);
-        const uint8_t *top = CHAR_BLOCKS_12PX + (rawtopi >> 2);
+        uint8_t rawtopi = pgm_read_byte(&char_grid[(16/CHAR_12PX_BLOCK_SIZE)+i]);
+        const uint8_t *top = CHAR_BLOCKS_12PX + ((rawtopi >> 2) << 1);
         // Middle block.
-        uint8_t rawmiddlei = pgm_read_byte(&char_grid[(12/CHAR_12PX_BLOCK_SIZE)+i]);
-        const uint8_t *middle = CHAR_BLOCKS_12PX + (rawmiddlei >> 2);
+        uint8_t rawmiddlei = pgm_read_byte(&char_grid[(8/CHAR_12PX_BLOCK_SIZE)+i]);
+        const uint8_t *middle = CHAR_BLOCKS_12PX + ((rawmiddlei >> 2) << 1);
         // Bottom block.
         uint8_t rawbttmi = pgm_read_byte(&char_grid[(0/CHAR_12PX_BLOCK_SIZE)+i]);
-        const uint8_t *bttm = CHAR_BLOCKS_12PX + (rawbttmi >> 2);
+        const uint8_t *bttm = CHAR_BLOCKS_12PX + ((rawbttmi >> 2) << 1);
         
         // One loop for each column.
         uint8_t j;

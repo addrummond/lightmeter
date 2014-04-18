@@ -55,14 +55,14 @@ static void test_display()
     global_transient_meter_state.shutter_speed = 80;
     global_transient_meter_state.aperture = 80;
 
-    uint8_t out2[24];
-    size_t sz = ui_main_reading_display_at_12col_state_size();
+    uint8_t out2[16];
+    size_t sz = ui_main_reading_display_at_8col_state_size();
     uint8_t state[sz];
     memset(state, 0, sz);
-    for (i = 0; i < DISPLAY_LCDWIDTH; i += 12) {
+    for (i = 0; i < DISPLAY_LCDWIDTH; i += 8) {
         memset(out2, 0, sizeof(out2));
-        ui_main_reading_display_at_12col(state, &global_meter_state, &global_transient_meter_state, out2, 2, i);
-        display_write_page_array(out2, 12, 2, i, 3);
+        ui_main_reading_display_at_8col(state, &global_meter_state, &global_transient_meter_state, out2, 2, i);
+        display_write_page_array(out2, 8, 2, i, 3);
     }
 
     for (;;);

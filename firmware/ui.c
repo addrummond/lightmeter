@@ -119,7 +119,7 @@ static const uint8_t *ssa_get_12px_grid(uint8_t ascii)
     }
 
 diff:
-    return CHAR_12PX_GRIDS + CHAR_12PX_0_O + ((ascii - m) << 3) + (ascii - m);
+    return CHAR_12PX_GRIDS + CHAR_12PX_0_O + CHAR_OFFSET_12PX(ascii - m);
 }
 
 typedef struct main_reading_state {
@@ -129,8 +129,8 @@ typedef struct main_reading_state {
     uint8_t start_x;
     uint8_t i;
 } main_reading_state_t;
-size_t ui_main_reading_display_at_12col_state_size() { return sizeof(main_reading_state_t); }
-void ui_main_reading_display_at_12col(void *func_state_,
+size_t ui_main_reading_display_at_8col_state_size() { return sizeof(main_reading_state_t); }
+void ui_main_reading_display_at_8col(void *func_state_,
                                       const meter_state_t *ms,
                                       const transient_meter_state_t *tms,
                                       uint8_t *out,
@@ -145,21 +145,21 @@ void ui_main_reading_display_at_12col(void *func_state_,
         // Total number of chars is the sum of the two plus one for a space plus one for
         // the 'f' we insert before the aperture.
         func_state->len = func_state->sso.length + func_state->aso.length + 2;
-        func_state->start_x = (DISPLAY_LCDWIDTH >> 1) - (((func_state->len << 3) + (func_state->len << 2)) >> 1);
+        func_state->start_x = (DISPLAY_LCDWIDTH >> 1) - ((func_state->len << 3) >> 1);
         func_state->i = 0;
     }
 
     if (x >= func_state->start_x && func_state->i < func_state->len) {
         if (func_state->i < func_state->sso.length) {
             uint8_t ascii = SHUTTER_STRING_OUTPUT_STRING(func_state->sso)[func_state->i];
-            display_bwrite_12x12_char(ssa_get_12px_grid(ascii), out, pages_per_col, 0);
+            display_bwrite_12px_char(ssa_get_12px_grid(ascii), out, pages_per_col, 0);
         }
         else if (func_state->i == func_state->sso.length + 1) {
-            display_bwrite_12x12_char(CHAR_12PX_F, out, pages_per_col, 0);
+            display_bwrite_12px_char(CHAR_12PX_F, out, pages_per_col, 0);
         }
         else if (func_state->i >= func_state->sso.length + 2) {
             uint8_t ascii = APERTURE_STRING_OUTPUT_STRING(func_state->aso)[func_state->i - func_state->sso.length - 2];
-            display_bwrite_12x12_char(ssa_get_12px_grid(ascii), out, pages_per_col, 0);
+            display_bwrite_12px_char(ssa_get_12px_grid(ascii), out, pages_per_col, 0);
        }
 
         ++(func_state->i);
