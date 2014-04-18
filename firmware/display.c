@@ -110,14 +110,14 @@ void display_write_page_array(const uint8_t *pages, uint8_t ncols, uint8_t pages
     }
 }
 
-void display_bwrite_8x8_char(const uint8_t *px_grid, uint8_t *out, uint8_t pages_per_col, uint8_t voffset)
+void display_bwrite_8px_char(const uint8_t *px_grid, uint8_t *out, uint8_t pages_per_col, uint8_t voffset)
 {
     uint8_t page_voffset = voffset >> 3;
     uint8_t pixel_voffset = voffset & 7;
 
     uint8_t i;
     out += page_voffset;
-    for (i = 0; i < 8; ++i, out += pages_per_col) {
+    for (i = 0; i < CHAR_WIDTH_8PX; ++i, out += pages_per_col) {
         uint8_t px = pgm_read_byte(&px_grid[i]);
         out[0] |= px << pixel_voffset;
         if (pixel_voffset > 0)

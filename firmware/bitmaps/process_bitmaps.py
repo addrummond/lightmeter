@@ -111,6 +111,8 @@ def get_8px_chars():
             pixels = rgba_to_mono(list(img[2]), 8)
             # Get in col major format vertically inverted.
             pixels = [[pixels[j][i] for j in reversed(xrange(len(pixels)))] for i in xrange(len(pixels[0]))]
+            # Drop first and last columns for 8x6.
+            pixels = pixels[1:-1]
             char_px_grids[name] = pixels
     return char_px_grids
 
@@ -181,6 +183,9 @@ def output_tables():
     doth.write("#include <stdint.h>\n\n")
     dotc.write("#include <stdint.h>\n")
     dotc.write("#include <readbyte.h>\n\n")
+
+    doth.write("#define CHAR_WIDTH_8PX 6\n\n")
+    doth.write("#define CHAR_OFFSET_8PX(n) ((n << 2) + (n << 1)) // I.e. n*6\n\n")
 
     #
     # TABLES FOR 12PX CHARS
@@ -257,8 +262,8 @@ def output_tables():
         m = re.match(r"^8px_([^.]+)\.png", name)
         assert m
         cname = 'CHAR_8PX_' + m.group(1).upper()
-        doth.write("#define " + cname + ' (CHAR_PIXELS_8PX + ' + str(i*8) + ')\n')
-        doth.write("#define " + cname + '_O ' + str(i*8) + '\n')
+        doth.write("#define " + cname + ' (CHAR_PIXELS_8PX + ' + str(i*6) + ')\n')
+        doth.write("#define " + cname + '_O ' + str(i*6) + '\n')
         dotc.write("    ")
         for c in g:
             for px in c:

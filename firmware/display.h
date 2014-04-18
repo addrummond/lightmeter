@@ -9,7 +9,7 @@ void display_write_data_start();
 void display_write_data_end();
 void display_init();
 void display_write_page_array(const uint8_t *pages, uint8_t ncols, uint8_t pages_per_col, uint8_t x, uint8_t page_y);
-void display_bwrite_8x8_char(const uint8_t *char_grid, uint8_t *out, uint8_t pages_per_col, uint8_t voffset);
+void display_bwrite_8px_char(const uint8_t *char_grid, uint8_t *out, uint8_t pages_per_col, uint8_t voffset);
 void display_bwrite_12x12_char(const uint8_t *char_grid, uint8_t *out, uint8_t pages_per_col, uint8_t voffset);
 void display_clear();
 
@@ -31,7 +31,7 @@ extern uint8_t i___;
 
 #define DISPLAY_RESET_PORT PORTB
 #define DISPLAY_RESET_DDR  DDRB
-#define DISPLAY_RESET_BIT  PB3
+#define DISPLAY_RESET_BIT  PB3 // See comments in display.c
 
 #define DISPLAY_LCDWIDTH                  128
 #define DISPLAY_LCDHEIGHT                 64

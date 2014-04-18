@@ -17,16 +17,15 @@
 // each iteration of a loop.
 //
 
-void ui_top_status_line_at_8col(const meter_state_t *ms,
-                                uint8_t *out,
-                                uint8_t pages_per_col,
-                                uint8_t x)
+uint8_t ui_top_status_line_at_6col(const meter_state_t *ms,
+                                  uint8_t *out,
+                                  uint8_t pages_per_col,
+                                  uint8_t x)
 {
     //
     // * Incident/reflective symbol (top left).
     // * ISO (top right).
     //
-
 
     //
     // Incident/reflective symbol.
@@ -34,54 +33,63 @@ void ui_top_status_line_at_8col(const meter_state_t *ms,
     if (x == 0) {
         switch (ms->meter_mode) {
         case METER_MODE_REFLECTIVE: {
-            display_bwrite_8x8_char(CHAR_8PX_R, out, pages_per_col, 0);        
+            display_bwrite_8px_char(CHAR_8PX_R, out, pages_per_col, 0);        
         } break;
         case METER_MODE_INCIDENT: {
-            display_bwrite_8x8_char(CHAR_8PX_I, out, pages_per_col, 0);
+            display_bwrite_8px_char(CHAR_8PX_I, out, pages_per_col, 0);
         } break;
         default: { // FOR TEST PURPOSES
-            display_bwrite_8x8_char(CHAR_8PX_0, out, pages_per_col, 0);
+            display_bwrite_8px_char(CHAR_8PX_0, out, pages_per_col, 0);
         } break;
         }
 
-        return;
+        // Now we can skip two pixels so that we're 6-aligned with the end of the display.
+        return 2;
     }
 
     //
     // ISO
     //
 
-    uint8_t iso_start_x = DISPLAY_LCDWIDTH - (ms->bcd_iso_length << 3) - (4*8); //(ms->bcd_iso_length << 3/* *8 */);
+    uint8_t iso_start_x = DISPLAY_LCDWIDTH - (ms->bcd_iso_length << 2) - (ms->bcd_iso_length << 1) - (4*CHAR_WIDTH_8PX);
 
-    if (x >= iso_start_x) {
+    if (x >= iso_start_x && DISPLAY_LCDWIDTH - x >= 6) {
         const uint8_t *px_grid;
 
-        uint8_t index = ((x - iso_start_x) >> 3);
-        if (index <= 3) {
-            switch (index) {
-            case 0: {
-                px_grid = CHAR_8PX_I;
-            } break;
-            case 1: {
-                px_grid = CHAR_8PX_S;
-            } break;
-            case 2: {
-                px_grid = CHAR_8PX_O;
-            } break;
-            default: return;
-            }
+        bool dont_write = false;
+        if (x == iso_start_x) {
+            px_grid = CHAR_8PX_I;
+        }
+        else if (x == iso_start_x + 6) {
+            px_grid = CHAR_8PX_S;
+        }
+        else if (x == iso_start_x + 12) {
+            px_grid = CHAR_8PX_O;
+        }
+        else if (x >= iso_start_x + 24) {
+            uint8_t di;
+            for (di = 0; x > iso_start_x + 24; x -= 6, ++di);
 
-            display_bwrite_8x8_char(px_grid, out, pages_per_col, 0);
+            if (di < ms->bcd_iso_length) {
+                uint8_t digit = ms->bcd_iso_digits[di];
+                px_grid = CHAR_PIXELS_8PX + CHAR_8PX_0_O + CHAR_OFFSET_8PX(digit);
+            }
+            else {
+                px_grid = NULL;
+                dont_write = true;
+            }
         }
         else {
-            uint8_t digit = ms->bcd_iso_digits[index-4];
-            px_grid = CHAR_PIXELS_8PX + CHAR_8PX_0_O + (digit << 3);
-            
-            display_bwrite_8x8_char(px_grid, out, pages_per_col, 0);
-            
-            return;
+            dont_write = true;
         }
+
+        if (! dont_write)
+            display_bwrite_8px_char(px_grid, out, pages_per_col, 0);
+
+        return 0;
     }
+
+    return 0;
 }
 
 // For shutter speeds and apertures (hence 'ssa').

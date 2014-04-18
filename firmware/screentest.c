@@ -44,11 +44,12 @@ static void test_display()
     display_write_page_array(out2, 8, 2, 44, 4);*/
 
     uint8_t i;
-    uint8_t out[8];
-    for (i = 0; i < DISPLAY_LCDWIDTH; i += 8) {
+    uint8_t out[6];
+    for (i = 0; DISPLAY_LCDWIDTH - i >= 6; i += 6) {
         memset(out, 0, sizeof(out));
-        ui_top_status_line_at_8col(&global_meter_state, out, 1, i);
-        display_write_page_array(out, 8, 1, i, 0);
+        uint8_t offset = ui_top_status_line_at_6col(&global_meter_state, out, 1, i);
+        display_write_page_array(out, 6, 1, i, 0);
+        i += offset;
     }
 
     global_transient_meter_state.shutter_speed = 80;
