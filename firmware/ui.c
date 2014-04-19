@@ -240,30 +240,19 @@ uint8_t ui_bttm_status_line_at_6col(void *func_state_,
         }
 
         func_state->expcomp_chars_length = i;
-        func_state->start_x = DISPLAY_LCDWIDTH - (i << 2) - (i << 1) - 12; // Leaving space for 'ec '
+        func_state->start_x = DISPLAY_LCDWIDTH - (i << 2) - (i << 1);
 
         // Skip two pixels so that we're 6-aligned with the right edge of the display.
         return 2;
     }
 
     if (x >= func_state->start_x) {
-        if (x == func_state->start_x) {
-            display_bwrite_8px_char(CHAR_8PX_E, out, pages_per_col, 0);
-        }
-        else if (x == func_state->start_x + 6) {
-            display_bwrite_8px_char(CHAR_8PX_C, out, pages_per_col, 0);
-        }
-        else if (x == func_state->start_x + 12) {
-            ; // Do nothing (i.e. leave a space).
-        }
-        else {
-            uint8_t index;
-            for (index = 0; x > func_state->start_x + 12; x -= 6, ++index);
+        uint8_t index;
+        for (index = 0; x > func_state->start_x; x -= 6, ++index);
 
-            uint8_t char_offset = func_state->expcomp_chars[index];
-            if (char_offset != 255 /*space*/) {
-                display_bwrite_8px_char(CHAR_PIXELS_8PX + char_offset, out, pages_per_col, 0);
-            }
+        uint8_t char_offset = func_state->expcomp_chars[index];
+        if (char_offset != 255 /*space*/) {
+            display_bwrite_8px_char(CHAR_PIXELS_8PX + char_offset, out, pages_per_col, 0);
         }
     }
 
