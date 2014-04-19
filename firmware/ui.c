@@ -240,7 +240,7 @@ uint8_t ui_bttm_status_line_at_6col(void *func_state_,
         }
 
         func_state->expcomp_chars_length = i;
-        func_state->start_x = DISPLAY_LCDWIDTH - (i << 2) - (i << 1) - 18; // Leaving space for 'ec '
+        func_state->start_x = DISPLAY_LCDWIDTH - (i << 2) - (i << 1) - 12; // Leaving space for 'ec '
 
         // Skip two pixels so that we're 6-aligned with the right edge of the display.
         return 2;
