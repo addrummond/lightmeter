@@ -137,6 +137,7 @@ void ui_main_reading_display_at_8col(void *func_state_,
                                       uint8_t pages_per_col,
                                       uint8_t x)
 {
+    const uint8_t VOFFSET = 5;
     main_reading_state_t *func_state = func_state_;
 
     if (func_state->sso.length == 0) { // State is unitialized; initialize it.
@@ -152,14 +153,14 @@ void ui_main_reading_display_at_8col(void *func_state_,
     if (x >= func_state->start_x && func_state->i < func_state->len) {
         if (func_state->i < func_state->sso.length) {
             uint8_t ascii = SHUTTER_STRING_OUTPUT_STRING(func_state->sso)[func_state->i];
-            display_bwrite_12px_char(ssa_get_12px_grid(ascii), out, pages_per_col, 0);
+            display_bwrite_12px_char(ssa_get_12px_grid(ascii), out, pages_per_col, VOFFSET);
         }
         else if (func_state->i == func_state->sso.length + 1) {
-            display_bwrite_12px_char(CHAR_12PX_F, out, pages_per_col, 0);
+            display_bwrite_12px_char(CHAR_12PX_F, out, pages_per_col, VOFFSET);
         }
         else if (func_state->i >= func_state->sso.length + 2) {
             uint8_t ascii = APERTURE_STRING_OUTPUT_STRING(func_state->aso)[func_state->i - func_state->sso.length - 2];
-            display_bwrite_12px_char(ssa_get_12px_grid(ascii), out, pages_per_col, 0);
+            display_bwrite_12px_char(ssa_get_12px_grid(ascii), out, pages_per_col, VOFFSET);
        }
 
         ++(func_state->i);
