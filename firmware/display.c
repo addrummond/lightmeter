@@ -155,11 +155,11 @@ void display_bwrite_12px_char(const uint8_t *char_grid, uint8_t *out, uint8_t pa
         uint8_t j;
         for (j = 0; j < CHAR_12PX_BLOCK_SIZE; ++j, out += pages_per_col) {
             uint8_t bi = j >> 1;
-            uint8_t bm = (~(j & 1)) << 2;
+            uint8_t bm = ((j & 1) ^ 1) << 2;
 
             uint8_t flip_j = CHAR_12PX_BLOCK_SIZE-1-j;
             uint8_t flip_bi = flip_j >> 1;
-            uint8_t flip_bm = (~(flip_j & 1)) << 2;
+            uint8_t flip_bm = ((flip_j & 1) ^ 1) << 2;
  
 #define BI(x) (raw ## x ## i & 2 ? flip_bi : bi)
 #define BM(x) (raw ## x ## i & 2 ? flip_bm : bm)
