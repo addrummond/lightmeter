@@ -165,3 +165,107 @@ void ui_main_reading_display_at_8col(void *func_state_,
         ++(func_state->i);
     }
 }
+
+typedef struct bttm_status_line_state {
+    // Max length: "+14 1/8"
+    uint8_t expcomp_chars[7];
+    uint8_t expcomp_chars_length;
+    uint8_t start_x;
+} bttm_status_line_state_t;
+size_t ui_bttm_status_line_at_6col_state_size() { return sizeof(bttm_status_line_state); }
+uint8_t ui_bttm_status_line_at_6col(void *func_state_,
+                                    const meter_state_t *ms,
+                                    uint8_t *out,
+                                    uint8_t pages_per_col,
+                                    uint8_t x)
+{
+    bttm_status_line_state_t *func_state = func_state_;
+
+    if (func_state->expcomp_chars_length == 0) { // State is not initialized; initialize it.
+        // Exposure compensation is stored in 1/8 stops in an int8_t.
+        // This means that if we ignore the eighths, it can only be up to +/- 16 stops.
+        // We can therefore avoid doing a proper conversion to BCD,
+        // since it's easy to convert binary values from 0-16 to a two-digit decimal.
+
+        uint8_t i = 0;
+
+        bool is_negative = false;
+        int8_t exp_comp = global_meter_state.exp_comp;
+        if (exp_comp & 128) {
+            is_negative = true;
+            exp_comp = ~exp_comp + 1;
+            func_state->expcomp_chars[i++] = CHAR_8PX_MINUS_O;
+        }
+        else {
+            func_state->expcomp_chars[i++] = CHAR_8PX_PLUS_O;
+        }
+
+        uint8_t full_comp = global_meter_state.exp_comp >> 3;
+        uint8_t full_d1 = 0, full_d2 = 0;
+        if (full_comp > 9) {
+            full_d1 = 1;
+            full_comp -= 10;
+        }
+        full_d2 = full_comp;
+
+        if (full_d1)
+            func_state->expcomp_chars[i++] = CHAR_8PX_0_O + CHAR_OFFSET_8PX(full_d1);
+        func_state->expcomp_chars[i++] = CHAR_8PX_0_O + CHAR_OFFSET_8PX(full_d2);
+
+        uint8_t eighths = global_meter_state.exp_comp & 0b111;
+        if (eighths) {
+            func_state->expcomp_chars[i++] = 255; // We use this special value to represent a space.
+
+            switch (eighths) {
+            case 1: case 2: case 4: {
+                func_state->expcomp_chars[i++] = CHAR_8PX_1;
+            } break;
+            case 3: case 6: {
+                func_state->expcomp_chars[i++] = CHAR_8PX_3;
+            } break;
+            case 5: {
+                func_state->expcomp_chars[i++] = CHAR_8PX_5;
+            } break;
+            case 7: {
+                func_state->expcomp_chars[i++] = CHAR_8PX_7;                                                    
+            } break;
+            }
+
+            func_state->expcomp_chars[i++] = CHAR_8PX_SLASH;
+
+            if (eighths & 1)
+                func_state->expcomp_chars[i++] = CHAR_8PX_8;
+            else if (eighths == 4)
+                func_state->expcomp_chars[i++] = CHAR_8PX_2;
+            else
+                func_state->expcomp_chars[i++] = CHAR_8PX_4;
+        }
+
+        func_state->expcomp_chars_length = i;
+        func_state->start_x = DISPLAY_LCDWIDTH - (i << 2) - (i << 1) - 18; // Leaving space for 'ec '
+
+        // Skip two pixels so that we're 6-aligned with the right edge of the display.
+        return 2;
+    }
+
+    if (x >= func_state->start_x) {
+        if (x == func_state->start_x) {
+            display_bwrite_8px_char(CHAR_8PX_E, out, pages_per_col, 0);
+        }
+        else if (x == func_state->start_x + 6) {
+            display_bwrite_8px_char(CHAR_8PX_E, out, pages_per_col, 0);
+        }
+        else if (x == func_state->start_x + 12) {
+            ; // Do nothing (i.e. leave a space).
+        }
+        else {
+            uint8_t index;
+            for (index = 0; x > func_state->start_x + 12; x -= 6, ++index);
+
+            uint8_t char_offset = func_state->expcomp_chars[index];
+            if (char_offset != 255 /*space*/) {
+                display_bwrite_8px_char(CHAR_PIXELS_8PX[char_offset], out, pages_per_col, 0);
+            }
+        }
+    }
+}
