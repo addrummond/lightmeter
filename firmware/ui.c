@@ -172,7 +172,7 @@ typedef struct bttm_status_line_state {
     uint8_t expcomp_chars_length;
     uint8_t start_x;
 } bttm_status_line_state_t;
-size_t ui_bttm_status_line_at_6col_state_size() { return sizeof(bttm_status_line_state); }
+size_t ui_bttm_status_line_at_6col_state_size() { return sizeof(bttm_status_line_state_t); }
 uint8_t ui_bttm_status_line_at_6col(void *func_state_,
                                     const meter_state_t *ms,
                                     uint8_t *out,
@@ -189,10 +189,8 @@ uint8_t ui_bttm_status_line_at_6col(void *func_state_,
 
         uint8_t i = 0;
 
-        bool is_negative = false;
         int8_t exp_comp = global_meter_state.exp_comp;
-        if (exp_comp & 128) {
-            is_negative = true;
+        if (exp_comp & 128) { // It's negative.
             exp_comp = ~exp_comp + 1;
             func_state->expcomp_chars[i++] = CHAR_8PX_MINUS_O;
         }
@@ -218,27 +216,27 @@ uint8_t ui_bttm_status_line_at_6col(void *func_state_,
 
             switch (eighths) {
             case 1: case 2: case 4: {
-                func_state->expcomp_chars[i++] = CHAR_8PX_1;
+                func_state->expcomp_chars[i++] = CHAR_8PX_1_O;
             } break;
             case 3: case 6: {
-                func_state->expcomp_chars[i++] = CHAR_8PX_3;
+                func_state->expcomp_chars[i++] = CHAR_8PX_3_O;
             } break;
             case 5: {
-                func_state->expcomp_chars[i++] = CHAR_8PX_5;
+                func_state->expcomp_chars[i++] = CHAR_8PX_5_O;
             } break;
             case 7: {
-                func_state->expcomp_chars[i++] = CHAR_8PX_7;                                                    
+                func_state->expcomp_chars[i++] = CHAR_8PX_7_O;                                                    
             } break;
             }
 
-            func_state->expcomp_chars[i++] = CHAR_8PX_SLASH;
+            func_state->expcomp_chars[i++] = CHAR_8PX_SLASH_O;
 
             if (eighths & 1)
-                func_state->expcomp_chars[i++] = CHAR_8PX_8;
+                func_state->expcomp_chars[i++] = CHAR_8PX_8_O;
             else if (eighths == 4)
-                func_state->expcomp_chars[i++] = CHAR_8PX_2;
+                func_state->expcomp_chars[i++] = CHAR_8PX_2_O;
             else
-                func_state->expcomp_chars[i++] = CHAR_8PX_4;
+                func_state->expcomp_chars[i++] = CHAR_8PX_4_O;
         }
 
         func_state->expcomp_chars_length = i;
@@ -253,7 +251,7 @@ uint8_t ui_bttm_status_line_at_6col(void *func_state_,
             display_bwrite_8px_char(CHAR_8PX_E, out, pages_per_col, 0);
         }
         else if (x == func_state->start_x + 6) {
-            display_bwrite_8px_char(CHAR_8PX_E, out, pages_per_col, 0);
+            display_bwrite_8px_char(CHAR_8PX_C, out, pages_per_col, 0);
         }
         else if (x == func_state->start_x + 12) {
             ; // Do nothing (i.e. leave a space).
@@ -264,8 +262,10 @@ uint8_t ui_bttm_status_line_at_6col(void *func_state_,
 
             uint8_t char_offset = func_state->expcomp_chars[index];
             if (char_offset != 255 /*space*/) {
-                display_bwrite_8px_char(CHAR_PIXELS_8PX[char_offset], out, pages_per_col, 0);
+                display_bwrite_8px_char(CHAR_PIXELS_8PX + char_offset, out, pages_per_col, 0);
             }
         }
     }
+
+    return 0;
 }

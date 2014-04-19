@@ -43,6 +43,10 @@ static void test_display()
     display_bwrite_8x8_char(CHAR_8PX_3, out2, 2, 3);
     display_write_page_array(out2, 8, 2, 44, 4);*/
 
+    global_transient_meter_state.shutter_speed = 80;
+    global_transient_meter_state.aperture = 80;
+    global_meter_state.exp_comp = 17;
+
     uint8_t i;
     uint8_t out[6];
     for (i = 0; DISPLAY_LCDWIDTH - i >= 6; i += 6) {
@@ -52,9 +56,6 @@ static void test_display()
         i += offset;
     }
 
-    global_transient_meter_state.shutter_speed = 80;
-    global_transient_meter_state.aperture = 80;
-
     uint8_t out2[16];
     size_t sz = ui_main_reading_display_at_8col_state_size();
     uint8_t state[sz];
@@ -63,6 +64,16 @@ static void test_display()
         memset(out2, 0, sizeof(out2));
         ui_main_reading_display_at_8col(state, &global_meter_state, &global_transient_meter_state, out2, 2, i);
         display_write_page_array(out2, 8, 2, i, 3);
+    }
+
+    sz = ui_bttm_status_line_at_6col_state_size();
+    uint8_t state2[sz];
+    memset(state2, 0, sz);
+    for (i = 0; DISPLAY_LCDWIDTH - i >= 6; i += 6) {
+        memset(out, 0, sizeof(out));
+        uint8_t offset = ui_bttm_status_line_at_6col(state2, &global_meter_state, out, 1, i);
+        display_write_page_array(out, 6, 1, i, 0);
+        i += offset;
     }
 
     for (;;);
