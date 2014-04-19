@@ -56,14 +56,14 @@ static void test_display()
         i += offset;
     }
 
-    uint8_t out2[16];
+    uint8_t out2[24];
     size_t sz = ui_main_reading_display_at_8col_state_size();
     uint8_t state[sz];
     memset(state, 0, sz);
     for (i = 0; i < DISPLAY_LCDWIDTH; i += 8) {
         memset(out2, 0, sizeof(out2));
-        ui_main_reading_display_at_8col(state, &global_meter_state, &global_transient_meter_state, out2, 2, i);
-        display_write_page_array(out2, 8, 2, i, 3);
+        ui_main_reading_display_at_8col(state, &global_meter_state, &global_transient_meter_state, out2, 3, i);
+        display_write_page_array(out2, 8, 3, i, 3);
     }
 
     sz = ui_bttm_status_line_at_6col_state_size();
