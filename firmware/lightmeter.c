@@ -262,11 +262,11 @@ USB_PUBLIC uchar usbFunctionWrite(uchar *data, uchar len)
     case USB_BREQUEST_SET_ISO: {
         global_meter_state.bcd_iso_length = usb_input_buffer_current_position;
         for (i = 0; i < usb_input_buffer_current_position; ++i) {
-            global_meter_state.bcd_iso[i] = usb_input_buffer[i];
+            global_meter_state.bcd_iso_digits[i] = usb_input_buffer[i];
         }
-        string_to_bcd(global_meter_state.bcd_iso, usb_input_buffer_current_position);
+        string_to_bcd(global_meter_state.bcd_iso_digits, usb_input_buffer_current_position);
 
-        global_meter_state.stops_iso = iso_bcd_to_stops(global_meter_state.bcd_iso, global_meter_state.bcd_iso_length);
+        global_meter_state.stops_iso = iso_bcd_to_stops(global_meter_state.bcd_iso_digits, global_meter_state.bcd_iso_length);
     } break;
     }
 
