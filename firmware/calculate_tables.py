@@ -6,8 +6,13 @@ import sys
 ##########
 
 reference_voltage                = 5000.0  # mV
-op_amp_normal_resistor           = 3.0     #kOhm
-op_amp_low_light_resistor        = 500.0   #kOhm
+op_amp_resistor_stages = [ # In kOhm
+    320.0, # Very low light
+    12.0,  # Fairly low light (brightish rooms, that kind of thing)
+    0.20,  # Bright light (goes up to a bright sunny day)
+    0.05,  # Extremely bright light
+]
+op_amp_normal_resistor = op_amp_resistor_stages[1]
 # Table cells not calculated for voltages lower than this.
 # This is because in the region just above v = 0, the changes
 # between different voltage values lead to large discontinuities
@@ -150,13 +155,11 @@ def output_temp_table():
         sys.stdout.write("%i," % eight)
     sys.stdout.write("};\n")
 
-def output_ev_table(level): # level == 'NORMAL' or level == 'LOW'
+def output_ev_table(name_prefix, op_amp_resistor):
     bitpatterns = [ ]
     vallist_abs = [ ]
     vallist_diffs = [ ]
-    oar = op_amp_normal_resistor
-    if level == 'LOW':
-        oar = op_amp_low_light_resistor
+    oar = op_amp_resistor
     for sv in xrange(0, 256, 16):
         # Write the absolute 8-bit EV value.
         voltage = (sv * bv_to_voltage) + voltage_offset
@@ -207,18 +210,18 @@ def output_ev_table(level): # level == 'NORMAL' or level == 'LOW'
 #            sys.stderr.write(str(vallist_abs[t + v]) + " ")
 #        sys.stderr.write("\n")
 
-    sys.stdout.write('const uint8_t ' + level + '_LIGHT_VOLTAGE_TO_EV_BITPATTERNS[] PROGMEM = {\n')
+    sys.stdout.write('const uint8_t ' + name_prefix + '_LIGHT_VOLTAGE_TO_EV_BITPATTERNS[] PROGMEM = {\n')
     for p in bitpatterns:
         sys.stdout.write('0b%s,' % p)
     sys.stdout.write('\n};\n')
 
-    sys.stdout.write('const uint8_t ' + level + '_LIGHT_VOLTAGE_TO_EV_ABS[] PROGMEM = {')
+    sys.stdout.write('const uint8_t ' + name_prefix + '_LIGHT_VOLTAGE_TO_EV_ABS[] PROGMEM = {')
     for i in xrange(len(vallist_abs)):
         if i % 32 == 0:
             sys.stdout.write('\n    ');
         sys.stdout.write('%i,' % vallist_abs[i])
     sys.stdout.write('\n};\n')
-    sys.stdout.write('const uint8_t ' + level + '_LIGHT_VOLTAGE_TO_EV_DIFFS[] PROGMEM = {')
+    sys.stdout.write('const uint8_t ' + name_prefix + '_LIGHT_VOLTAGE_TO_EV_DIFFS[] PROGMEM = {')
     for i in xrange(len(vallist_diffs)):
         if i % 32 == 0:
             sys.stdout.write('\n    ');
@@ -229,18 +232,13 @@ def output_ev_table(level): # level == 'NORMAL' or level == 'LOW'
 # amplified voltage against EV which can be compared with voltage readings
 # over the two input pins.
 def output_sanity_graphs():
-    f = open("sanitygraph_normal.csv", "w")
-    for v in xrange(0, 256):
-        voltage = (v * bv_to_voltage) + voltage_offset
-        ev = voltage_and_oa_resistor_to_ev(voltage, op_amp_normal_resistor)
-        f.write("%f,%f\n" % (v, ev))
-    f.close()
-    f = open("sanitygraph_lowlight.csv", "w")
-    for v in xrange(0, 256):
-        voltage = (v * bv_to_voltage) + voltage_offset
-        ev = voltage_and_oa_resistor_to_ev(voltage, op_amp_low_light_resistor)
-        f.write("%f,%f\n" % (v, ev))
-    f.close()
+    for stage in xrange(len(op_amp_resistor_stages)):
+        f = open("sanitygraph_stage" + str(stage+1) + ".csv", "w")
+        for v in xrange(0, 256):
+            voltage = (v * bv_to_voltage) + voltage_offset
+            ev = voltage_and_oa_resistor_to_ev(voltage, op_amp_resistor_stages[stage])
+            f.write("%f,%f\n" % (v, ev))
+        f.close()
 
 # Straight up array that we use to test that the bitshifting logic is
 # working correctly. (Test will currently only be performed for normal light table.)
@@ -569,8 +567,10 @@ def output():
 
     sys.stdout.write("#include <stdint.h>\n")
     sys.stdout.write("#include <readbyte.h>\n")
-    output_ev_table('NORMAL')
-    output_ev_table('LOW')
+    output_ev_table('STAGE1', op_amp_resistor_stages[0])
+    output_ev_table('STAGE2', op_amp_resistor_stages[1])
+    output_ev_table('STAGE3', op_amp_resistor_stages[2])
+    output_ev_table('STAGE4', op_amp_resistor_stages[3])
     sys.stdout.write('const uint8_t VOLTAGE_TO_EV_ABS_OFFSET = ' + str(int(round((voltage_offset/reference_voltage)*256))) + ';\n')
     output_temp_table()
     sys.stdout.write('\n#ifdef TEST\n')
