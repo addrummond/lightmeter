@@ -6,8 +6,8 @@ import sys
 ##########
 
 reference_voltage                = 5000.0  # mV
-op_amp_normal_resistor           = 220.0   #kOhm
-op_amp_low_light_resistor        = 220.0   #kOhm
+op_amp_normal_resistor           = 3.0     #kOhm
+op_amp_low_light_resistor        = 500.0   #kOhm
 # Table cells not calculated for voltages lower than this.
 # This is because in the region just above v = 0, the changes
 # between different voltage values lead to large discontinuities
@@ -228,12 +228,18 @@ def output_ev_table(level): # level == 'NORMAL' or level == 'LOW'
 # This is useful for santiy checking calculations. It outputs a graph of
 # amplified voltage against EV which can be compared with voltage readings
 # over the two input pins.
-def output_sanity_graph():
-    f = open("santitygraph.csv", "w")
+def output_sanity_graphs():
+    f = open("sanitygraph_normal.csv", "w")
     for v in xrange(0, 256):
         voltage = (v * bv_to_voltage) + voltage_offset
         ev = voltage_and_oa_resistor_to_ev(voltage, op_amp_normal_resistor)
-        f.write("%f,%f\n" % (voltage, ev))
+        f.write("%f,%f\n" % (v, ev))
+    f.close()
+    f = open("sanitygraph_lowlight.csv", "w")
+    for v in xrange(0, 256):
+        voltage = (v * bv_to_voltage) + voltage_offset
+        ev = voltage_and_oa_resistor_to_ev(voltage, op_amp_low_light_resistor)
+        f.write("%f,%f\n" % (v, ev))
     f.close()
 
 # Straight up array that we use to test that the bitshifting logic is
@@ -559,7 +565,7 @@ def output_apertures():
 #
 
 def output():
-    output_sanity_graph()
+    output_sanity_graphs()
 
     sys.stdout.write("#include <stdint.h>\n")
     sys.stdout.write("#include <readbyte.h>\n")
