@@ -9,7 +9,7 @@ reference_voltage                = 5000.0  # mV
 op_amp_resistor_stages = [ # In kOhm
     320.0, # Very low light
     12.0,  # Fairly low light (brightish rooms, that kind of thing)
-    0.20,  # Bright light (goes up to a bright sunny day)
+    0.50,  # Bright light (goes up to a bright sunny day)
     0.05,  # Extremely bright light
 ]
 op_amp_normal_resistor = op_amp_resistor_stages[1]
@@ -231,14 +231,17 @@ def output_ev_table(name_prefix, op_amp_resistor):
 # This is useful for santiy checking calculations. It outputs a graph of
 # amplified voltage against EV which can be compared with voltage readings
 # over the two input pins.
-def output_sanity_graphs():
-    for stage in xrange(len(op_amp_resistor_stages)):
-        f = open("sanitygraph_stage" + str(stage+1) + ".csv", "w")
-        for v in xrange(0, 256):
-            voltage = (v * bv_to_voltage) + voltage_offset
+def output_sanity_graph():
+    f = open("sanitygraph.csv", "w")
+    f.write("v," + ','.join(["s" + str(n+1) for n in xrange(len(op_amp_resistor_stages))]) + '\n')
+    for v in xrange(0, 256):
+        f.write("%i" % v)
+        voltage = (v * bv_to_voltage) + voltage_offset
+        for stage in xrange(len(op_amp_resistor_stages)):
             ev = voltage_and_oa_resistor_to_ev(voltage, op_amp_resistor_stages[stage])
-            f.write("%f,%f\n" % (v, ev))
-        f.close()
+            f.write(",%f" % ev)
+        f.write("\n")
+    f.close()
 
 # Straight up array that we use to test that the bitshifting logic is
 # working correctly. (Test will currently only be performed for normal light table.)
@@ -563,7 +566,7 @@ def output_apertures():
 #
 
 def output():
-    output_sanity_graphs()
+    output_sanity_graph()
 
     sys.stdout.write("#include <stdint.h>\n")
     sys.stdout.write("#include <readbyte.h>\n")
