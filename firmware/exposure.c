@@ -294,7 +294,7 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
 
             // Subtract 1/10.
             // We subtract an additional 1/10 because sometimes standard ISO numbers are a
-            // little lower than they realy should be due to rounding.
+            // little lower than they really should be due to rounding.
             uint8_t tenth_digits[nextup_length];
             for (j = 0; j < nextup_length - 1; ++j)
                 tenth_digits[j] = nextup_digits[j];
