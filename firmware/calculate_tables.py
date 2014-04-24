@@ -5,6 +5,7 @@ import sys
 # Configuration values.
 ##########
 
+xv = 20
 reference_voltage                = 5000.0  # mV
 op_amp_resistor_stages = [ # In kOhm
     # For BPW 34
@@ -14,10 +15,13 @@ op_amp_resistor_stages = [ # In kOhm
     #0.05,  # Extremely bright light
 
     # For VTB8440,8441
-    258,
-    42,
-    1.7,
-    0.075
+    #258,
+    #42,
+    #1.7,
+    #0.075
+
+    # For BPW21R
+    xv,xv,xv,xv
 ]
 op_amp_normal_resistor = op_amp_resistor_stages[1]
 # Table cells not calculated for voltages lower than this.
@@ -61,8 +65,12 @@ def temp_to_rrlc(temp): # Temperature to relative reverse light current
 #
 # For VTB8440, 8441
 # See table on p. 22 of PDF datasheet included in git repo.
+#def rlc_to_lux(rlc):
+#    return math.log(10.763910417,10) + rlc
+#
+# For BPW21R. See Fig 3 of PDF datasheet included in git repo.
 def rlc_to_lux(rlc):
-    return math.log(10.763910417,10) + rlc
+    return (rlc + 1.756) / 0.806
 
 # Convert log10 lux to EV at ISO 100.
 # See http://stackoverflow.com/questions/5401738/how-to-convert-between-lux-and-exposure-value
@@ -198,9 +206,10 @@ def output_ev_table(name_prefix, op_amp_resistor):
                 if eight2 < 0:
                     eight2 = 0
                 print ">>>", eight2, prev
-                assert eight2 - prev == 0 or not (j == 0 and k == 0)
-                assert eight2 - prev <= 1
-                assert eight2 - prev >= 0
+                if not (eight2 - prev == 0 or not (j == 0 and k == 0)) or \
+                   not (eight2 - prev <= 1) or \
+                   not (eight2 - prev >= 0):
+                    return False, (prev, eight2)
                 if eight2 - prev == 0:
                     o += '0'
                 elif eight2 - prev == 1:
@@ -217,6 +226,8 @@ def output_ev_table(name_prefix, op_amp_resistor):
 
         vallist_abs.append(eight)
         vallist_diffs.append(bpis[0] << 4 | bpis[1])
+
+    return True, ()
 
 #    for v in xrange(0, 16):
 #        for t in xrange(0, 256, 16):
@@ -583,10 +594,28 @@ def output():
 
     sys.stdout.write("#include <stdint.h>\n")
     sys.stdout.write("#include <readbyte.h>\n")
-    output_ev_table('STAGE1', op_amp_resistor_stages[0])
-    output_ev_table('STAGE2', op_amp_resistor_stages[1])
-    output_ev_table('STAGE3', op_amp_resistor_stages[2])
-    output_ev_table('STAGE4', op_amp_resistor_stages[3])
+    failed = False
+    e, pr = output_ev_table('STAGE1', op_amp_resistor_stages[0])
+    if not e:
+        failed = True
+        sys.stderr.write("R ERROR %.3f: (%.3f, %.3f)\n" % (op_amp_resistor_stages[0], pr[0], pr[1]))
+    e, pr = output_ev_table('STAGE2', op_amp_resistor_stages[1])
+    if not e:
+        failed = True
+        sys.stderr.write("R ERROR %.3f: (%.3f, %.3f)\n" % (op_amp_resistor_stages[0], pr[0], pr[1]))
+    e, pr = output_ev_table('STAGE3', op_amp_resistor_stages[2])
+    if not e:
+        failed = True
+        sys.stderr.write("R ERROR %.3f: (%.3f, %.3f)\n" % (op_amp_resistor_stages[0], pr[0], pr[1]))
+    e, pr = output_ev_table('STAGE4', op_amp_resistor_stages[3])
+    if not e:
+        failed = True
+        sys.stderr.write("R ERROR %.3f: (%.3f, %.3f)\n" % (op_amp_resistor_stages[0], pr[0], pr[1]))
+
+    if failed:
+        sys.stderr.write("Could not output tables\n")
+        sys.exit(1)
+
     sys.stdout.write('const uint8_t VOLTAGE_TO_EV_ABS_OFFSET = ' + str(int(round((voltage_offset/reference_voltage)*256))) + ';\n')
     output_temp_table()
     sys.stdout.write('\n#ifdef TEST\n')
@@ -597,8 +626,18 @@ def output():
     output_apertures()
     sys.stdout.write('\nconst uint8_t LUMINANCE_COMPENSATION = ' + str(int(round(LUMINANCE_COMPENSATION*8.0))) + ';\n')
 
+def try_resistor_values():
+    working = [ ]
+    for i in xrange(1, 20000):
+        r = i/100.0
+#        sys.stderr.write("Trying %.3f\n" % r)
+        e, pr = output_ev_table('STAGE', r)
+        if e:
+            working.append(r)
+    sys.stderr.write('\n'.join(("%.2f" % x for x in working)))
+
 if __name__ == '__main__':
-    output()
-
-
-
+    if len(sys.argv) > 1 and sys.argv[1] == 'try':
+        try_resistor_values()
+    else:
+        output()
