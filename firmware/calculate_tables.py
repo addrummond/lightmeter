@@ -7,10 +7,17 @@ import sys
 
 reference_voltage                = 5000.0  # mV
 op_amp_resistor_stages = [ # In kOhm
-    320.0, # Very low light
-    12.0,  # Fairly low light (brightish rooms, that kind of thing)
-    0.50,  # Bright light (goes up to a bright sunny day)
-    0.05,  # Extremely bright light
+    # For BPW 34
+    #320.0, # Very low light
+    #12.0,  # Fairly low light (brightish rooms, that kind of thing)
+    #0.50,  # Bright light (goes up to a bright sunny day)
+    #0.05,  # Extremely bright light
+
+    # For VTB8440,8441
+    258,
+    42,
+    1.7,
+    0.075
 ]
 op_amp_normal_resistor = op_amp_resistor_stages[1]
 # Table cells not calculated for voltages lower than this.
@@ -46,10 +53,16 @@ def temp_to_rrlc(temp): # Temperature to relative reverse light current
 # http://www.vishay.com/docs/81521/bpw34.pdf, p. 3 Fig 4
 # Useful link for calculating equations from lines (I *always* mess this up doing it by hand):
 # http://www.mathportal.org/calculators/analytic-geometry/two-point-form-calculator.php
+# For BPW34
+#def rlc_to_lux(rlc):
+#    k = -1.254
+#    slope = 1.054
+#    return (rlc - k) / slope
+#
+# For VTB8440, 8441
+# See table on p. 22 of PDF datasheet included in git repo.
 def rlc_to_lux(rlc):
-    k = -1.254
-    slope = 1.054
-    return (rlc - k) / slope
+    return math.log(10.763910417,10) + rlc
 
 # Convert log10 lux to EV at ISO 100.
 # See http://stackoverflow.com/questions/5401738/how-to-convert-between-lux-and-exposure-value
@@ -184,7 +197,7 @@ def output_ev_table(name_prefix, op_amp_resistor):
                 eight2 = int(round((ev2+5.0) * 8.0))
                 if eight2 < 0:
                     eight2 = 0
-#                print ">>>", eight2, prev
+                print ">>>", eight2, prev
                 assert eight2 - prev == 0 or not (j == 0 and k == 0)
                 assert eight2 - prev <= 1
                 assert eight2 - prev >= 0
