@@ -5,23 +5,10 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
-#include <usbdrv.h>
-
 #include <state.h>
-#include <usbconstants.h>
 #include <calculate.h>
 #include <exposure.h>
 #include <divmulutils.h>
-
-/*
-                       1 ---- 8         VCC
-     ADC in      (PB3) 2 ---- 7 (PB2)   USB D+
-     Gain switch (PB4) 3 ---- 6 (PB1)   LED
-     GND               4 ---- 5 (PB0)   USB D-
-
-     Setting PB4 high allows one of the resistors to be skipped, reducing
-     op amp gain.
- */
 
 const uint8_t ADMUX_CLEAR_SOURCE = ~((1 << MUX3) | (1 << MUX2) | (1 << MUX1) | (1 << MUX0));
 
@@ -171,108 +158,6 @@ void set_gain(gain_t gain)
     global_meter_state.gain = gain;
 }
 
-const uchar testbuffer[] = "Hello world test message consisting of 64 bytes................."; // length 64
-
-static uint8_t last_brequest;
-static uint8_t usb_input_buffer[64];
-static uint8_t usb_input_buffer_current_position;
-static uint8_t usb_input_buffer_bytes_remaining;
-
-USB_PUBLIC uchar usbFunctionSetup(uchar setupData[8]) {
-    usbRequest_t *rq = (void *)setupData;
-
-    switch (rq->bRequest) {
-    case USB_BREQUEST_GET_TEST_MSG: {
-        usbMsgLen_t len = 64;
-        if (len > rq->wLength.word)
-            len = rq->wLength.word;
-        usbMsgPtr = (usbMsgPtr_t)testbuffer;
-        return len;
-    } break;
-    case USB_BREQUEST_GET_EV: {
-        usbMsgPtr = (usbMsgPtr_t)(&last_ev_reading); // This is volatile, but I think it's ok.
-        return 1;
-    } break;
-    case USB_BREQUEST_SET_GAIN: {
-        set_gain(rq->wValue.bytes[0] ? HIGH_GAIN : NORMAL_GAIN);
-    } break;
-    case USB_BREQUEST_GET_GAIN: {
-        usbMsgPtr = (usbMsgPtr_t)(&(global_meter_state.gain));
-        return 1;
-    } break;
-    case USB_BREQUEST_GET_SHUTTER_PRIORITY_EXPOSURE: {
-        if (! global_meter_state.aperture_string.length) // No exposure calculated yet.
-            return 0;
-        usbMsgPtr = (usbMsgPtr_t)(APERTURE_STRING_OUTPUT_STRING(global_meter_state.aperture_string));
-        return global_meter_state.aperture_string.length + 1; // Include '\0' terminator.
-    } break;
-    case USB_BREQUEST_SET_ISO: {
-        last_brequest = rq->bRequest;
-        usb_input_buffer_current_position = 0;
-        usb_input_buffer_bytes_remaining = rq->wLength.word;
-        if (usb_input_buffer_bytes_remaining > sizeof(usb_input_buffer))
-            usb_input_buffer_bytes_remaining = sizeof(usb_input_buffer);
-        return USB_NO_MSG; // Go to usbFunctionWrite
-    } break;
-    case USB_BREQUEST_GET_STOPS_ISO: {
-        usbMsgPtr = (usbMsgPtr_t)(&(global_meter_state.stops_iso));
-        return 1;
-    } break;
-    case USB_BREQUEST_SET_SHUTTER_SPEED: {
-        global_meter_state.shutter_speed = rq->wValue.bytes[0];
-        global_meter_state.priority = SHUTTER_PRIORITY;
-        return 0;
-    } break;
-    case USB_BREQUEST_SET_APERTURE: {
-        global_meter_state.aperture = rq->wValue.bytes[0];
-        global_meter_state.priority = APERTURE_PRIORITY;
-        return 0;
-    } break;
-    case USB_BREQUEST_GET_RAW_TEMPERATURE: {
-        usbMsgPtr = (usbMsgPtr_t)(&adc_temperature_value);
-        return 2;
-    } break;
-    case USB_BREQUEST_GET_TEMPERATURE: {
-        usbMsgPtr = (usbMsgPtr_t)(&current_temp);
-        return 1;
-    } break;
-    case USB_BREQUEST_GET_RAW_LIGHT: {
-        usbMsgPtr = (usbMsgPtr_t)(&adc_light_value);
-        return 2;
-    } break;
-    }
-
-    return 0;
-}
-
-USB_PUBLIC uchar usbFunctionWrite(uchar *data, uchar len)
-{
-    if (len > usb_input_buffer_bytes_remaining)
-        len = usb_input_buffer_bytes_remaining;
-
-    usb_input_buffer_bytes_remaining -= len;
-    uint8_t i;
-    for (i = 0; i < len; ++i)
-        usb_input_buffer[usb_input_buffer_current_position++] = data[i];
-
-    if (usb_input_buffer_bytes_remaining != 0)
-        return 0;
-
-    switch (last_brequest) {
-    case USB_BREQUEST_SET_ISO: {
-        global_meter_state.bcd_iso_length = usb_input_buffer_current_position;
-        for (i = 0; i < usb_input_buffer_current_position; ++i) {
-            global_meter_state.bcd_iso_digits[i] = usb_input_buffer[i];
-        }
-        string_to_bcd(global_meter_state.bcd_iso_digits, usb_input_buffer_current_position);
-
-        global_meter_state.stops_iso = iso_bcd_to_stops(global_meter_state.bcd_iso_digits, global_meter_state.bcd_iso_length);
-    } break;
-    }
-
-    return 1;
-}
-
 int main()
 {
     initialize_global_meter_state();
@@ -282,28 +167,19 @@ int main()
 
     led_test();
 
-    wdt_enable(WDTO_1S);
-
-    usbInit();
-
-    usbDeviceDisconnect();
     uint8_t i;
     for (i = 0; i < 250; ++i) {
         wdt_reset();
         _delay_ms(2);
     }
-    usbDeviceConnect();
 
     sei();
 
-    // The main loop. This handles USB polling and looks at the latest exposure
+    // The main loop. This looks at the latest exposure
     // reading every so often.
     uint8_t cnt;
     for (cnt = 0;; ++cnt) {
-        wdt_reset();
-        usbPoll();
-
-        if ((cnt & 0b11111) == 0) { // Every 160ms, give or take.
+        if ((cnt & 0b111) == 0) { // Every 700ms, give or take.
             // Do lightmetery stuff.
             if (cnt == 0) {
                 // Make the next ADC reading a temperature reading.
@@ -333,10 +209,7 @@ int main()
             }
         }
         else {
-            // usbPoll needs to be called at least every 50ms. Tried using higher
-            // values < 50 than the one here but they seemed to make reading data
-            // from the device noticeably slow.
-            _delay_ms(10);
+            _delay_ms(100);
         }
     }
 
