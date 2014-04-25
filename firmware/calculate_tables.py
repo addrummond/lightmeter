@@ -5,14 +5,13 @@ import sys
 # Configuration values.
 ##########
 
-xv = 20
 reference_voltage                = 5000.0  # mV
 op_amp_resistor_stages = [ # In kOhm
     # For BPW 34
-    #320.0, # Very low light
-    #12.0,  # Fairly low light (brightish rooms, that kind of thing)
-    #0.50,  # Bright light (goes up to a bright sunny day)
-    #0.05,  # Extremely bright light
+    320.0, # Very low light
+    12.0,  # Fairly low light (brightish rooms, that kind of thing)
+    0.50,  # Bright light (goes up to a bright sunny day)
+    0.05,  # Extremely bright light
 
     # For VTB8440,8441
     #258,
@@ -21,7 +20,7 @@ op_amp_resistor_stages = [ # In kOhm
     #0.075
 
     # For BPW21R
-    xv,xv,xv,xv
+    #0.5,0.5,0.5,0.5
 ]
 op_amp_normal_resistor = op_amp_resistor_stages[1]
 # Table cells not calculated for voltages lower than this.
@@ -58,10 +57,10 @@ def temp_to_rrlc(temp): # Temperature to relative reverse light current
 # Useful link for calculating equations from lines (I *always* mess this up doing it by hand):
 # http://www.mathportal.org/calculators/analytic-geometry/two-point-form-calculator.php
 # For BPW34
-#def rlc_to_lux(rlc):
-#    k = -1.254
-#    slope = 1.054
-#    return (rlc - k) / slope
+def rlc_to_lux(rlc):
+    k = -1.254
+    slope = 1.054
+    return (rlc - k) / slope
 #
 # For VTB8440, 8441
 # See table on p. 22 of PDF datasheet included in git repo.
@@ -69,8 +68,8 @@ def temp_to_rrlc(temp): # Temperature to relative reverse light current
 #    return math.log(10.763910417,10) + rlc
 #
 # For BPW21R. See Fig 3 of PDF datasheet included in git repo.
-def rlc_to_lux(rlc):
-    return (rlc + 1.756) / 0.806
+#def rlc_to_lux(rlc):
+#    return (rlc + 1.756) / 0.806
 
 # Convert log10 lux to EV at ISO 100.
 # See http://stackoverflow.com/questions/5401738/how-to-convert-between-lux-and-exposure-value
@@ -205,7 +204,7 @@ def output_ev_table(name_prefix, op_amp_resistor):
                 eight2 = int(round((ev2+5.0) * 8.0))
                 if eight2 < 0:
                     eight2 = 0
-                print ">>>", eight2, prev
+#               sys.stderr.write(">>> %i %i\n" % (eight2, prev))
                 if not (eight2 - prev == 0 or not (j == 0 and k == 0)) or \
                    not (eight2 - prev <= 1) or \
                    not (eight2 - prev >= 0):
@@ -254,7 +253,8 @@ def output_ev_table(name_prefix, op_amp_resistor):
 
 # This is useful for santiy checking calculations. It outputs a graph of
 # amplified voltage against EV which can be compared with voltage readings
-# over the two input pins.
+# over the two input pins (or between the input pin and ground if we're
+# using single input mode).
 def output_sanity_graph():
     f = open("sanitygraph.csv", "w")
     f.write("v," + ','.join(["s" + str(n+1) for n in xrange(len(op_amp_resistor_stages))]) + '\n')
@@ -628,8 +628,8 @@ def output():
 
 def try_resistor_values():
     working = [ ]
-    for i in xrange(1, 20000):
-        r = i/100.0
+    for i in xrange(1, 2000):
+        r = i/10.0
 #        sys.stderr.write("Trying %.3f\n" % r)
         e, pr = output_ev_table('STAGE', r)
         if e:

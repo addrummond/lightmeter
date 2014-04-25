@@ -16,19 +16,6 @@ void display_clear();
 extern uint8_t i___;
 #define DISPLAY_WRITE_DATA for (i___ = 0, display_write_data_start(); i___ < 1; ++i___, display_write_data_end())
 
-#define DISPLAY_DATA_PORT PORTB
-#define DISPLAY_DATA_DDR  DDRB
-#define DISPLAY_DATA_BIT  PB0
-#define DISPLAY_CS_PORT   PORTB
-#define DISPLAY_CS_DDR    DDRB
-#define DISPLAY_CS_BIT    PB1
-#define DISPLAY_CLK_PORT  PORTB
-#define DISPLAY_CLK_DDR   DDRB
-#define DISPLAY_CLK_BIT   PB2
-#define DISPLAY_DC_PORT   PORTB
-#define DISPLAY_DC_DDR    DDRB
-#define DISPLAY_DC_BIT    PB4
-
 #define DISPLAY_RESET_PORT PORTB
 #define DISPLAY_RESET_DDR  DDRB
 #define DISPLAY_RESET_BIT  PB3 // See comments in display.c

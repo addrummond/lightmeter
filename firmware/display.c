@@ -5,6 +5,7 @@
 #include <readbyte.h>
 #include <assert.h>
 #include <bitmaps/bitmaps.h>
+#include <deviceconfig.h>
 
 void display_write_byte(uint8_t d)
 {
