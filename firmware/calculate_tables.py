@@ -21,22 +21,19 @@ op_amp_resistor_stages = [ # In kOhm
 
     # For BPW21R
     4000, # Can get this by using 40kOhm resistor and 100x gain.
-    160,
+    130,
     6
 ]
+
 op_amp_normal_resistor = op_amp_resistor_stages[1]
+
 # Table cells not calculated for voltages lower than this.
 # This is because in the region just above v = 0, the changes
 # between different voltage values lead to large discontinuities
 # in EV values which the table compression mechanism can't handle.
-voltage_offset                   = 150.0   # mV
-reference_temperature            = 40.0    # C
+voltage_offset                   = 220.0   # mV
 
-# The graph in measurem.pdf is not for the BPW34.
-# The BPW34 has a 20mV higher OCV listed on its data sheet compared
-# to the diode graphed in measurem.pdf. However, adding a 20mV
-# offset here appears to decrease rather than increase accuracy.
-irradience_constant_adjustment = 0.0
+reference_temperature            = 40.0    # C
 
 ##########
 
@@ -267,7 +264,7 @@ def output_sanity_graph():
         bins = [ ]
         for stage in xrange(len(op_amp_resistor_stages)):
             ev = voltage_and_oa_resistor_to_ev(voltage, op_amp_resistor_stages[stage])
-            bins.append(int(round(ev + 5.0)*8.0))
+            bins.append(int(round((ev + 5.0) *8.0)))
             f.write(",%f" % ev)
         f.write("," + ",".join(map(str,bins)))
         f.write("\n")
@@ -611,10 +608,10 @@ def output():
     if not e:
         failed = True
         sys.stderr.write("R ERROR %.3f: (%.3f, %.3f)\n" % (op_amp_resistor_stages[0], pr[0], pr[1]))
-    e, pr = output_ev_table('STAGE4', op_amp_resistor_stages[3])
-    if not e:
-        failed = True
-        sys.stderr.write("R ERROR %.3f: (%.3f, %.3f)\n" % (op_amp_resistor_stages[0], pr[0], pr[1]))
+#    e, pr = output_ev_table('STAGE4', op_amp_resistor_stages[3])
+#    if not e:
+#        failed = True
+#        sys.stderr.write("R ERROR %.3f: (%.3f, %.3f)\n" % (op_amp_resistor_stages[0], pr[0], pr[1]))
 
     if failed:
         sys.stderr.write("Could not output tables\n")
