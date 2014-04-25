@@ -225,8 +225,6 @@ def output_ev_table(name_prefix, op_amp_resistor):
         vallist_abs.append(eight)
         vallist_diffs.append(bpis[0] << 4 | bpis[1])
 
-    return True, ()
-
 #    for v in xrange(0, 16):
 #        for t in xrange(0, 256, 16):
 #            sys.stderr.write(str(vallist_abs[t + v]) + " ")
@@ -249,6 +247,8 @@ def output_ev_table(name_prefix, op_amp_resistor):
             sys.stdout.write('\n    ');
         sys.stdout.write('%i,' % vallist_diffs[i])
     sys.stdout.write('\n};\n')
+
+    return True, ()
 
 # This is useful for santiy checking calculations. It outputs a graph of
 # amplified voltage against EV which can be compared with voltage readings
