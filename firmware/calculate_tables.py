@@ -8,10 +8,10 @@ import sys
 reference_voltage                = 5000.0  # mV
 op_amp_resistor_stages = [ # In kOhm
     # For BPW 34
-    320.0, # Very low light
-    12.0,  # Fairly low light (brightish rooms, that kind of thing)
-    0.50,  # Bright light (goes up to a bright sunny day)
-    0.05,  # Extremely bright light
+    #320.0, # Very low light
+    #12.0,  # Fairly low light (brightish rooms, that kind of thing)
+    #0.50,  # Bright light (goes up to a bright sunny day)
+    #0.05,  # Extremely bright light
 
     # For VTB8440,8441
     #258,
@@ -20,7 +20,9 @@ op_amp_resistor_stages = [ # In kOhm
     #0.075
 
     # For BPW21R
-    #0.5,0.5,0.5,0.5
+    4000, # Can get this by using 40kOhm resistor and 100x gain.
+    160,
+    6
 ]
 op_amp_normal_resistor = op_amp_resistor_stages[1]
 # Table cells not calculated for voltages lower than this.
@@ -57,10 +59,10 @@ def temp_to_rrlc(temp): # Temperature to relative reverse light current
 # Useful link for calculating equations from lines (I *always* mess this up doing it by hand):
 # http://www.mathportal.org/calculators/analytic-geometry/two-point-form-calculator.php
 # For BPW34
-def rlc_to_lux(rlc):
-    k = -1.254
-    slope = 1.054
-    return (rlc - k) / slope
+#def rlc_to_lux(rlc):
+#    k = -1.254
+#    slope = 1.054
+#    return (rlc - k) / slope
 #
 # For VTB8440, 8441
 # See table on p. 22 of PDF datasheet included in git repo.
@@ -68,8 +70,8 @@ def rlc_to_lux(rlc):
 #    return math.log(10.763910417,10) + rlc
 #
 # For BPW21R. See Fig 3 of PDF datasheet included in git repo.
-#def rlc_to_lux(rlc):
-#    return (rlc + 1.756) / 0.806
+def rlc_to_lux(rlc):
+    return (rlc + 1.756) / 0.806
 
 # Convert log10 lux to EV at ISO 100.
 # See http://stackoverflow.com/questions/5401738/how-to-convert-between-lux-and-exposure-value
@@ -258,12 +260,16 @@ def output_ev_table(name_prefix, op_amp_resistor):
 def output_sanity_graph():
     f = open("sanitygraph.csv", "w")
     f.write("v," + ','.join(["s" + str(n+1) for n in xrange(len(op_amp_resistor_stages))]) + '\n')
+    f.write(','.join(["b" + str(n+1) for n in xrange(len(op_amp_resistor_stages))]) + '\n')
     for v in xrange(0, 256):
         f.write("%i" % v)
         voltage = (v * bv_to_voltage) + voltage_offset
+        bins = [ ]
         for stage in xrange(len(op_amp_resistor_stages)):
             ev = voltage_and_oa_resistor_to_ev(voltage, op_amp_resistor_stages[stage])
+            bins.append(int(round(ev + 5.0)*8.0))
             f.write(",%f" % ev)
+        f.write("," + ",".join(map(str,bins)))
         f.write("\n")
     f.close()
 
@@ -590,8 +596,6 @@ def output_apertures():
 #
 
 def output():
-    output_sanity_graph()
-
     sys.stdout.write("#include <stdint.h>\n")
     sys.stdout.write("#include <readbyte.h>\n")
     failed = False
@@ -639,5 +643,7 @@ def try_resistor_values():
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == 'try':
         try_resistor_values()
+    elif len(sys.argv) > 1 and sys.argv[1] == 'graph':
+        output_sanity_graph()
     else:
         output()
