@@ -37,7 +37,7 @@
 //                       |  RESET 4--11  PA/ADC2  |
 //         Display Clk   |    PB2 5--10  PA/ADC3  |
 //         Display DC    |    PA7 6---9  PA/ADC4  |
-//                       |    PA6 7---8  PA/ADC5  |
+//         Display reset |    PA6 7---8  PA/ADC5  |
 
 #define DISPLAY_DATA_PORT   PORTB
 #define DISPLAY_DATA_DDR    DDRB

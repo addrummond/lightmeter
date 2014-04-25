@@ -1,1 +1,1 @@
--I ./ -I./vusb-20121206/usbdrv/ -Wall -Wpadded -Os -fshort-enums -fno-move-loop-invariants -fno-tree-scev-cprop -fno-inline-small-functions -DF_CPU=16500000L -mmcu=attiny84
+-I ./ -I./vusb-20121206/usbdrv/ -Wall -Wpadded -Os -fshort-enums -fno-move-loop-invariants -fno-tree-scev-cprop -fno-inline-small-functions -DF_CPU=8000000L -mmcu=attiny84    

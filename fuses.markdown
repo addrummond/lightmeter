@@ -1,3 +1,14 @@
+Attiny84
+--------
+
+To run at 8MHz:
+
+   0xc2 (low) 0xdf (high)
+
+
+Attiny 85
+---------
+
 To run at 16.5MHz (required to use vusb without an external crystal), fuses on the attiny85 need to be set to:
 
    0xe1 (low) 0xdf (high)
