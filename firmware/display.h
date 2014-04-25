@@ -16,10 +16,6 @@ void display_clear();
 extern uint8_t i___;
 #define DISPLAY_WRITE_DATA for (i___ = 0, display_write_data_start(); i___ < 1; ++i___, display_write_data_end())
 
-#define DISPLAY_RESET_PORT PORTB
-#define DISPLAY_RESET_DDR  DDRB
-#define DISPLAY_RESET_BIT  PB3 // See comments in display.c
-
 #define DISPLAY_LCDWIDTH                  128
 #define DISPLAY_LCDHEIGHT                 64
 
