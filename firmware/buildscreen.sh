@@ -2,7 +2,7 @@
 
 CFLAGS=`cat CFLAGS`
 
-python calculate_tables.py > tables.c
+python calculate_tables.py output
 cd bitmaps
 python process_bitmaps.py output
 cd ../
