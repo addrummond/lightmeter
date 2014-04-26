@@ -12,6 +12,8 @@
 #include <exposure.h>
 #include <divmulutils.h>
 #include <tables.h>
+#include <display.h>
+#include <ui.h>
 
 const uint8_t ADMUX_CLEAR_SOURCE = ~((1 << MUX5) | (1 << MUX4) | (1 << MUX2) | (1 << MUX2) | (1 << MUX1) | (0 << MUX0));
 const uint8_t ADMUX_CLEAR_REF_VOLTAGE = 0b11000000; // Couldn't do this with macros without getting overflow warning for some reason.

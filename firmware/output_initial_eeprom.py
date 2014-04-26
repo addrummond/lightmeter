@@ -13,7 +13,7 @@ eeprom = [
     1,                                                             # shutter_priority
 
     48,                                                            # aperture (f8)
-    96,                                                            # shutter_speed (1/125)
+    72,                                                            # shutter_speed (1/15)
     
     0,                                                             # exp comp
 
