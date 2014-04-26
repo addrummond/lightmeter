@@ -114,7 +114,8 @@ static void set_op_amp_resistor_stage(uint8_t op_amp_resistor_stage)
 {
     // TODO: Code that actually switches the MOFSETs.
     
-    global_meter_state.op_amp_resistor_stage = op_amp_resistor_stage;
+    //global_meter_state.op_amp_resistor_stage = op_amp_resistor_stage;
+    global_meter_state.op_amp_resistor_stage = 2;
 }
 
 void led_test(void);
