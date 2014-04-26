@@ -3,21 +3,11 @@
 #include <assert.h>
 #include <divmulutils.h>
 #include <calculate.h>
+#include <tables.h>
 #ifdef TEST
 #    include <stdio.h>
 #endif
 
-extern const uint8_t NORMAL_LIGHT_VOLTAGE_TO_EV_ABS[];
-extern const uint8_t NORMAL_LIGHT_VOLTAGE_TO_EV_DIFFS[];
-extern const uint8_t NORMAL_LIGHT_VOLTAGE_TO_EV_BITPATTERNS[];
-extern const uint8_t LOW_LIGHT_VOLTAGE_TO_EV_ABS[];
-extern const uint8_t LOW_LIGHT_VOLTAGE_TO_EV_DIFFS[];
-extern const uint8_t LOW_LIGHT_VOLTAGE_TO_EV_BITPATTERNS[];
-extern const uint8_t NORMAL_LIGHT_MIN_VOLTAGE;
-extern const uint8_t LOW_LIGHT_MAX_VOLTAGE;
-extern const uint8_t LOW_LIGHT_MIN_VOLTAGE;
-extern const uint8_t VOLTAGE_TO_EV_ABS_OFFSET;
-extern const uint8_t TEMP_EV_ADJUST[];
 #ifdef TEST
 extern const uint8_t TEST_VOLTAGE_TO_EV[];
 #endif

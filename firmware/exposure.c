@@ -13,14 +13,10 @@
 #include <bcd.h>
 #include <divmulutils.h>
 #include <readbyte.h>
+#include <tables.h>
 #ifdef TEST
 #include <stdio.h>
 #endif
-
-extern uint8_t SHUTTER_SPEEDS[];
-extern uint8_t SHUTTER_SPEEDS_BITMAP[];
-extern uint8_t APERTURES[];
-extern uint8_t APERTURES_BITMAP[];
 
 void shutter_speed_to_string(uint8_t speed, shutter_string_output_t *eso)
 {

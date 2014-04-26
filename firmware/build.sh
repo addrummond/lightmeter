@@ -2,7 +2,7 @@
 
 CFLAGS=`cat CFLAGS`
 
-python calculate_tables.py > tables.c
+python calculate_tables.py output
 
 avr-gcc $CFLAGS -o tables.out -c tables.c
 avr-gcc $CFLAGS -o divmulutils.out -c divmulutils.c

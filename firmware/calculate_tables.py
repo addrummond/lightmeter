@@ -160,8 +160,8 @@ for x in xrange(1): # Just here to get a new scope
 # in EV@100*8.
 #
 
-def output_temp_table():
-    sys.stdout.write("const int8_t TEMP_EV_ADJUST[] PROGMEM = {\n");
+def output_temp_table(of):
+    of.write("const int8_t TEMP_EV_ADJUST[] PROGMEM = {\n");
     for t in xrange(0,256,4):
         temperature = -51.0 + (t * 0.4)
         dtemp = temperature - reference_temperature
@@ -171,10 +171,10 @@ def output_temp_table():
             eight = -127
         if eight > 127:
             eight = 127
-        sys.stdout.write("%i," % eight)
-    sys.stdout.write("};\n")
+        of.write("%i," % eight)
+    of.write("};\n")
 
-def output_ev_table(name_prefix, op_amp_resistor):
+def output_ev_table(of, name_prefix, op_amp_resistor):
     bitpatterns = [ ]
     vallist_abs = [ ]
     vallist_diffs = [ ]
@@ -230,23 +230,23 @@ def output_ev_table(name_prefix, op_amp_resistor):
 #            sys.stderr.write(str(vallist_abs[t + v]) + " ")
 #        sys.stderr.write("\n")
 
-    sys.stdout.write('const uint8_t ' + name_prefix + '_LIGHT_VOLTAGE_TO_EV_BITPATTERNS[] PROGMEM = {\n')
+    of.write('const uint8_t ' + name_prefix + '_LIGHT_VOLTAGE_TO_EV_BITPATTERNS[] PROGMEM = {\n')
     for p in bitpatterns:
-        sys.stdout.write('0b%s,' % p)
-    sys.stdout.write('\n};\n')
+        of.write('0b%s,' % p)
+    of.write('\n};\n')
 
-    sys.stdout.write('const uint8_t ' + name_prefix + '_LIGHT_VOLTAGE_TO_EV_ABS[] PROGMEM = {')
+    of.write('const uint8_t ' + name_prefix + '_LIGHT_VOLTAGE_TO_EV_ABS[] PROGMEM = {')
     for i in xrange(len(vallist_abs)):
         if i % 32 == 0:
-            sys.stdout.write('\n    ');
-        sys.stdout.write('%i,' % vallist_abs[i])
-    sys.stdout.write('\n};\n')
-    sys.stdout.write('const uint8_t ' + name_prefix + '_LIGHT_VOLTAGE_TO_EV_DIFFS[] PROGMEM = {')
+            of.write('\n    ');
+        of.write('%i,' % vallist_abs[i])
+    of.write('\n};\n')
+    of.write('const uint8_t ' + name_prefix + '_LIGHT_VOLTAGE_TO_EV_DIFFS[] PROGMEM = {')
     for i in xrange(len(vallist_diffs)):
         if i % 32 == 0:
-            sys.stdout.write('\n    ');
-        sys.stdout.write('%i,' % vallist_diffs[i])
-    sys.stdout.write('\n};\n')
+            of.write('\n    ');
+        of.write('%i,' % vallist_diffs[i])
+    of.write('\n};\n')
 
     return True, ()
 
@@ -272,16 +272,16 @@ def output_sanity_graph():
 
 # Straight up array that we use to test that the bitshifting logic is
 # working correctly. (Test will currently only be performed for normal light table.)
-def output_test_table():
-    sys.stdout.write('    { ')
+def output_test_table(of):
+    of.write('    { ')
     for v in xrange(0, 256):
         voltage = (v * bv_to_voltage) + voltage_offset
 #            sys.stderr.write('TAVY ' + str(temperature) + ',' + str(voltage) + '\n')
         ev = voltage_and_oa_resistor_to_ev(voltage, op_amp_normal_resistor)
         eight = int(round((ev+5.0) * 8.0))
-        sys.stdout.write("%i," % eight)
-    sys.stdout.write('\n')
-    sys.stdout.write('    }');
+        of.write("%i," % eight)
+    of.write('\n')
+    of.write('    }');
 
 
 #
@@ -544,8 +544,8 @@ apertures = [
     '32'
 ]
 
-def output_shutter_speeds():
-    sys.stdout.write('const uint8_t SHUTTER_SPEEDS[] PROGMEM = {\n')
+def output_shutter_speeds(of):
+    of.write('const uint8_t SHUTTER_SPEEDS[] PROGMEM = {\n')
     bits = []
     for speed in shutter_speeds:
         x = 0
@@ -557,75 +557,87 @@ def output_shutter_speeds():
             bits.append('0000')
     for i in xrange(0, len(bits)-1, 2):
         if i < len(bits) - 1:
-            sys.stdout.write('0b' + bits[i+1] + bits[i] + ',')
+            of.write('0b' + bits[i+1] + bits[i] + ',')
         else:
-            sys.stdout.write('0b' + bits[i] + ',')
-    sys.stdout.write('};\n')
+            of.write('0b' + bits[i] + ',')
+    of.write('};\n')
 #    sys.stdout.write('// ' + ' '.join(bits));
-    sys.stdout.write('const uint8_t SHUTTER_SPEEDS_BITMAP[] PROGMEM = { ')
+    of.write('const uint8_t SHUTTER_SPEEDS_BITMAP[] PROGMEM = { ')
     for c in shutter_speeds_bitmap:
         if c is None:
-            sys.stdout.write("'\\0',")
+            of.write("'\\0',")
         else:
-            sys.stdout.write("'%s'," % c) # None of the chars need escaping.
-    sys.stdout.write('};\n')
+            of.write("'%s'," % c) # None of the chars need escaping.
+    of.write('};\n')
 
-def output_apertures():
-    sys.stdout.write('const uint8_t APERTURES[] PROGMEM = {\n')
+def output_apertures(of):
+    of.write('const uint8_t APERTURES[] PROGMEM = {\n')
     for a in apertures:
         n1 = apertures_bitmap.index(a[0])
         n2 = apertures_bitmap.index(a[1]) if len(a) > 1 else 0
-        sys.stdout.write('0b' +
-                         (n2 & 8 and '1' or '0') + (n2 & 4 and '1' or '0') + (n2 & 2 and '1' or '0') + (n2 & 1 and '1' or '0') +
-                         (n1 & 8 and '1' or '0') + (n1 & 4 and '1' or '0') + (n1 & 2 and '1' or '0') + (n1 & 1 and '1' or '0') +
-                         ',')
-    sys.stdout.write('};\n')
-    sys.stdout.write('const uint8_t APERTURES_BITMAP[] PROGMEM = { ')
+        of.write('0b' +
+                 (n2 & 8 and '1' or '0') + (n2 & 4 and '1' or '0') + (n2 & 2 and '1' or '0') + (n2 & 1 and '1' or '0') +
+                 (n1 & 8 and '1' or '0') + (n1 & 4 and '1' or '0') + (n1 & 2 and '1' or '0') + (n1 & 1 and '1' or '0') +
+                 ',')
+    of.write('};\n')
+    of.write('const uint8_t APERTURES_BITMAP[] PROGMEM = { ')
     for a in apertures_bitmap:
         if a is None:
-            sys.stdout.write("'\\0',")
+            of.write("'\\0',")
         else:
-            sys.stdout.write("'%s'," % a)
-    sys.stdout.write('};\n')
+            of.write("'%s'," % a)
+    of.write('};\n')
 
 #
 # Final output generation.
 #
 
 def output():
-    sys.stdout.write("#include <stdint.h>\n")
-    sys.stdout.write("#include <readbyte.h>\n")
-    failed = False
-    e, pr = output_ev_table('STAGE1', op_amp_resistor_stages[0])
-    if not e:
-        failed = True
-        sys.stderr.write("R ERROR %.3f: (%.3f, %.3f)\n" % (op_amp_resistor_stages[0], pr[0], pr[1]))
-    e, pr = output_ev_table('STAGE2', op_amp_resistor_stages[1])
-    if not e:
-        failed = True
-        sys.stderr.write("R ERROR %.3f: (%.3f, %.3f)\n" % (op_amp_resistor_stages[0], pr[0], pr[1]))
-    e, pr = output_ev_table('STAGE3', op_amp_resistor_stages[2])
-    if not e:
-        failed = True
-        sys.stderr.write("R ERROR %.3f: (%.3f, %.3f)\n" % (op_amp_resistor_stages[0], pr[0], pr[1]))
-#    e, pr = output_ev_table('STAGE4', op_amp_resistor_stages[3])
-#    if not e:
-#        failed = True
-#        sys.stderr.write("R ERROR %.3f: (%.3f, %.3f)\n" % (op_amp_resistor_stages[0], pr[0], pr[1]))
+    ofc = open("tables.c", "w")
+    ofh = open("tables.h", "w")
 
-    if failed:
-        sys.stderr.write("Could not output tables\n")
-        sys.exit(1)
+    ofh.write("#ifndef TABLES_H\n")
+    ofh.write("#define TABLES_H\n\n")
+    ofh.write("#include <stdint.h>\n\n")
 
-    sys.stdout.write('const uint8_t VOLTAGE_TO_EV_ABS_OFFSET = ' + str(int(round((voltage_offset/reference_voltage)*256))) + ';\n')
-    output_temp_table()
-    sys.stdout.write('\n#ifdef TEST\n')
-    sys.stdout.write('const uint8_t TEST_VOLTAGE_TO_EV[] PROGMEM =\n')
-    output_test_table()
-    sys.stdout.write(';\n#endif\n')
-    output_shutter_speeds()
-    output_apertures()
-    sys.stdout.write('\nconst uint8_t LUMINANCE_COMPENSATION = ' + str(int(round(LUMINANCE_COMPENSATION*8.0))) + ';\n')
+    ofh.write("#define NUM_OP_AMP_RESISTOR_STAGES %i\n" % len(op_amp_resistor_stages))
+
+    ofc.write("#include <stdint.h>\n")
+    ofc.write("#include <readbyte.h>\n")
+
+    e, pr = None, None
+    for i in xrange(len(op_amp_resistor_stages)):
+        e, pr = output_ev_table(ofc, 'STAGE' + str(i+1), op_amp_resistor_stages[0])
+        ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_BITPATTERNS[];\n" % (i+1))
+        ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_ABS[];\n" % (i+1))
+        ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_DIFFS[];\n" % (i+1))
+        if not e:
+            break
+
+    if not e:
+        sys.sderr.write("R ERROR %.3f: (%.3f, %.3f)\n" % (op_amp_resistor_stages[0], pr[0], pr[1]))
+
+    ofh.write("#define VOLTAGE_TO_EV_ABS_OFFSET " + str(int(round((voltage_offset/reference_voltage)*256))) + '\n')
+    ofh.write("#define LUMINANCE_COMPENSATION " + str(int(round(LUMINANCE_COMPENSATION*8.0))) + '\n')
+    
+    output_temp_table(ofc)
+    ofc.write('\n#ifdef TEST\n')
+    ofc.write('const uint8_t TEST_VOLTAGE_TO_EV[] PROGMEM =\n')
+    ofh.write('extern const uint8_t TEST_VOLTGE_TO_EV[];\n')
+    output_test_table(ofc)
+    ofc.write(';\n#endif\n')
+    output_shutter_speeds(ofc)
+    output_apertures(ofc)
+
+    ofh.write("extern uint8_t SHUTTER_SPEEDS[];\n")
+    ofh.write("extern uint8_t SHUTTER_SPEEDS_BITMAP[];\n")
+    ofh.write("extern uint8_t APERTURES[];\n")
+    ofh.write("extern uint8_t APERTURES_BITMAP[];\n")
+
+    ofh.write("\n#endif\n")
+
+    ofh.close()
+    ofc.close()
 
 def try_resistor_values():
     working = [ ]
@@ -638,9 +650,11 @@ def try_resistor_values():
     sys.stderr.write('\n'.join(("%.2f" % x for x in working)))
 
 if __name__ == '__main__':
-    if len(sys.argv) > 1 and sys.argv[1] == 'try':
+    assert len(sys.argv) >= 2
+
+    if sys.argv[1] == 'try':
         try_resistor_values()
-    elif len(sys.argv) > 1 and sys.argv[1] == 'graph':
+    elif sys.argv[1] == 'graph':
         output_sanity_graph()
-    else:
+    elif sys.argv[1] == 'output':
         output()
