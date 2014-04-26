@@ -20,4 +20,9 @@ void initialize_global_meter_state()
     read_meter_state(&global_meter_state);
 }
 
-transient_meter_state_t global_transient_meter_state;
+transient_meter_state_t global_transient_meter_state = {
+    80,80,
+    { { 0,0,0,0,0,0,0,0,0,0,0 }, 0 },
+    { { 0,0,0,0,0,0,0,0,0}, 0 },
+    false
+};

@@ -19,17 +19,18 @@
 const uint8_t ADMUX_CLEAR_SOURCE = ~((1 << MUX5) | (1 << MUX4) | (1 << MUX2) | (1 << MUX2) | (1 << MUX1) | (0 << MUX0));
 const uint8_t ADMUX_CLEAR_REF_VOLTAGE = 0b11000000; // Couldn't do this with macros without getting overflow warning for some reason.
 
-volatile static uint8_t last_ev_reading = 0;
-
 // Save result of ADC on interrupt.
 volatile static uint16_t adc_light_value = 0;
 volatile static uint16_t adc_temperature_value = 300; // About 25C
 volatile static bool next_is_temperature = true;
 ISR(ADC_vect) {
-    if (next_is_temperature)
+    if (next_is_temperature) {
         adc_temperature_value = ADCW;
-    else
+    }
+    else {
         adc_light_value = ADCW;
+        global_transient_meter_state.exposure_ready = true;
+    }
 
     TIFR0 |= (1<<OCF0A); // Clear timer compare match flag.
     ADCSRA |= (1 << ADSC);
@@ -109,7 +110,6 @@ void setup_ADC()
 void setup_output_ports()
 {
     // Output DDR for display handled in display_init.
-
 #ifdef TEST_LED_PORT
     TEST_LED_DDR      |= (1 << TEST_LED_BIT);
 #endif
@@ -136,8 +136,6 @@ void handle_measurement()
         adc_light_nonvol_value,
         global_meter_state.op_amp_resistor_stage
     );
-
-    last_ev_reading = ev;
 
     uint8_t ap, shut;
     if (global_meter_state.priority == SHUTTER_PRIORITY) {
@@ -171,10 +169,6 @@ void led_test()
 
 static void show_interface()
 {
-    //    global_transient_meter_state.shutter_speed = 80;
-    //    global_transient_meter_state.aperture = 80;
-    //    global_meter_state.exp_comp = 17;
-
     uint8_t i;
     uint8_t out[6];
     for (i = 0; DISPLAY_LCDWIDTH - i >= 6; i += 6) {
@@ -207,10 +201,13 @@ static void show_interface()
 
 int main()
 {
+    global_transient_meter_state.shutter_speed = 88;
+    global_transient_meter_state.aperture = 88;
+    //    global_transient_meter_state.exposure_ready = true;
+
     led_test();
     setup_output_ports();
     led_test();
-    
 
     initialize_global_meter_state();
     display_init();
@@ -222,38 +219,31 @@ int main()
     // The main loop. This looks at the latest exposure
     // reading every so often.
     uint8_t cnt;
-    for (cnt = 0; _delay_ms(100), 1; ++cnt) {
-        if (cnt == 0 || (cnt & 0b110) == 0) { // Every 700ms, give or take.
-            // Do lightmetery stuff.
-            if (cnt == 0) {
-                // Make the next ADC reading a temperature reading.
-                ADMUX &= ADMUX_CLEAR_REF_VOLTAGE;
-                ADMUX |= ADMUX_TEMP_REF_VOLTAGE;
-                ADMUX |= ADMUX_TEMPERATURE_SOURCE; // 1111, so no need to clear bits first.
-                next_is_temperature = true;
-            }
-            else if (cnt == 0b100000) {
-                calculate_current_temp();
-
-                // Make the next ADC reading a light reading.
-                ADMUX &= ADMUX_CLEAR_REF_VOLTAGE;
-                ADMUX |= ADMUX_LIGHT_SOURCE_REF_VOLTAGE;
-                ADMUX &= ADMUX_CLEAR_SOURCE;
-                ADMUX |= ADMUX_LIGHT_SOURCE;
-                next_is_temperature = false;
-            }
-
-            handle_measurement();
-
-            // A bit less often still, save settings to EEPROM.
-            // TODO: Not sure about the power consumption implications of writing to EEPROM
-            // this frequently. Will it use a lot of power? Or wear out the EEPROM quickly?
-            if (cnt == 255) {
-                write_meter_state(&global_meter_state);
-            }
+    for (cnt = 0;; ++cnt) {
+        // Do lightmetery stuff.
+        if (cnt == 0) {
+            // Make the next ADC reading a temperature reading.
+            ADMUX &= ADMUX_CLEAR_REF_VOLTAGE;
+            ADMUX |= ADMUX_TEMP_REF_VOLTAGE;
+            ADMUX |= ADMUX_TEMPERATURE_SOURCE; // 1111, so no need to clear bits first.
+            next_is_temperature = true;
         }
-        
+        else if (cnt == 0b100000) {
+            // TODO: Calling this seems to give rise to some kind of memory corruption bug.
+            //calculate_current_temp();
+            
+            // Make the next ADC reading a light reading.
+            ADMUX &= ADMUX_CLEAR_REF_VOLTAGE;
+            ADMUX |= ADMUX_LIGHT_SOURCE_REF_VOLTAGE;
+            ADMUX &= ADMUX_CLEAR_SOURCE;
+            ADMUX |= ADMUX_LIGHT_SOURCE;
+            next_is_temperature = false;
+        }
+
+        handle_measurement();
         show_interface();
+
+        _delay_ms(50);
     }
 
     return 0;

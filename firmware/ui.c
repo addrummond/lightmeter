@@ -139,6 +139,9 @@ void ui_main_reading_display_at_8col(void *func_state_,
                                       uint8_t pages_per_col,
                                       uint8_t x)
 {
+    if (! tms->exposure_ready)
+        return;
+    
     const uint8_t VOFFSET = 5;
     main_reading_state_t *func_state = func_state_;
 

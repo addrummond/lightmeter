@@ -3,6 +3,7 @@
 
 // State which is to be preserved between on/off cycles.
 
+#include <stdbool.h>
 #include <bcd.h>
 #include <exposure.h>
 
@@ -62,6 +63,7 @@ typedef struct transient_meter_state {
     uint8_t shutter_speed;
     aperture_string_output_t aperture_string;
     shutter_string_output_t shutter_speed_string;
+    bool exposure_ready;
 } transient_meter_state_t;
 
 extern transient_meter_state_t global_transient_meter_state;
