@@ -12,7 +12,7 @@
 //                       |  RESET 4--11  PA/ADC2  |
 //         Display Clk   |    PB2 5--10  PA/ADC3  |
 //         Display DC    |    PA7 6---9  PA/ADC4  |
-//         Display reset |    PA6 7---8  PA/ADC5  |
+//         Display reset |    PA6 7---8  PA/ADC5  | Test LED.
 
 
 //
@@ -42,9 +42,9 @@
 //
 // ADC
 //
-// Set differential ADC with PA5 input.
+// Set differential ADC with PA0 input.
 #define ADMUX_LIGHT_SOURCE             ((0 << MUX5) | (0 << MUX4) | (0 << MUX3) | \
-                                        (1 << MUX2) | (0 << MUX1) | (1 << MUX0))
+                                        (0 << MUX2) | (0 << MUX1) | (0 << MUX0))
 
 #define ADMUX_TEMPERATURE_SOURCE       ((1 << MUX5) | (0 << MUX4) | (0 << MUX3) | \
                                         (0 << MUX2) | (1 << MUX1) | (0 << MUX0))
@@ -54,5 +54,14 @@
 
 // Use Vcc as reference voltage.
 #define ADMUX_LIGHT_SOURCE_REF_VOLTAGE ((0 << REFS1) | (0 << REFS0))
+
+
+//
+// Test LED
+//
+
+#define TEST_LED_PORT    PORTA
+#define TEST_LED_DDR     DDRA
+#define TEST_LED_BIT     PA5
 
 #endif

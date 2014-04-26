@@ -14,6 +14,7 @@
 #include <tables.h>
 #include <display.h>
 #include <ui.h>
+#include <string.h> // For memset
 
 const uint8_t ADMUX_CLEAR_SOURCE = ~((1 << MUX5) | (1 << MUX4) | (1 << MUX2) | (1 << MUX2) | (1 << MUX1) | (0 << MUX0));
 const uint8_t ADMUX_CLEAR_REF_VOLTAGE = 0b11000000; // Couldn't do this with macros without getting overflow warning for some reason.
@@ -107,7 +108,11 @@ void setup_ADC()
 
 void setup_output_ports()
 {
-    DDRB = 0b00010010; // Set PB1 and PB4 as output ports.
+    // Output DDR for display handled in display_init.
+
+#ifdef TEST_LED_PORT
+    TEST_LED_DDR      |= (1 << TEST_LED_BIT);
+#endif
 }
 
 static void set_op_amp_resistor_stage(uint8_t op_amp_resistor_stage)
@@ -122,13 +127,13 @@ void led_test(void);
 void handle_measurement()
 {
     // Copy the volatile value, which could change in the middle of this function.
-    uint16_t adc_light_nonvol_value = adc_light_value;
-
     // Div by 4 because we're going from units of 1/1024 to units of 1/256.
     // (Could left adjust everything, but we might want the full 10 bits for temps.)
+    uint8_t adc_light_nonvol_value = (uint8_t)(adc_light_value >> 2);
+    
     uint8_t ev = get_ev100_at_temperature_voltage(
         current_temp,
-        (uint8_t)(adc_light_nonvol_value >> 2),
+        adc_light_nonvol_value,
         global_meter_state.op_amp_resistor_stage
     );
 
@@ -144,35 +149,75 @@ void handle_measurement()
     }
 
     // If we're too near the top or bottom of the range, change the gain next time.
-    if (ev > 250 && global_meter_state.op_amp_resistor_stage < NUM_OP_AMP_RESISTOR_STAGES) {
+    if (adc_light_nonvol_value > 250 && global_meter_state.op_amp_resistor_stage < NUM_OP_AMP_RESISTOR_STAGES) {
         set_op_amp_resistor_stage(global_meter_state.op_amp_resistor_stage + 1);
     }
-    else if (ev <= VOLTAGE_TO_EV_ABS_OFFSET + 5 && global_meter_state.op_amp_resistor_stage > 1) {
+    else if (adc_light_nonvol_value <= VOLTAGE_TO_EV_ABS_OFFSET + 5 && global_meter_state.op_amp_resistor_stage > 1) {
         set_op_amp_resistor_stage(global_meter_state.op_amp_resistor_stage - 1);
     }
 }
 
 void led_test()
 {
-    PORTB |= (0b10);
+#ifdef TEST_LED_PORT
+    TEST_LED_PORT |= (1 << TEST_LED_BIT);
     _delay_ms(500);
-    PORTB &= ~(0b10);
+    TEST_LED_PORT &= ~(1 << TEST_LED_BIT);
+    _delay_ms(500);    
+#endif
+}
+
+static void show_interface()
+{
+    global_transient_meter_state.shutter_speed = 80;
+    global_transient_meter_state.aperture = 80;
+    global_meter_state.exp_comp = 17;
+
+    uint8_t i;
+    uint8_t out[6];
+    for (i = 0; DISPLAY_LCDWIDTH - i >= 6; i += 6) {
+        memset(out, 0, sizeof(out));
+        uint8_t offset = ui_top_status_line_at_6col(&global_meter_state, out, 1, i);
+        display_write_page_array(out, 6, 1, i, 0);
+        i += offset;
+    }
+
+    uint8_t out2[24];
+    size_t sz = ui_main_reading_display_at_8col_state_size();
+    uint8_t state[sz];
+    memset(state, 0, sz);
+    for (i = 0; i < DISPLAY_LCDWIDTH; i += 8) {
+        memset(out2, 0, sizeof(out2));
+        ui_main_reading_display_at_8col(state, &global_meter_state, &global_transient_meter_state, out2, 3, i);
+        display_write_page_array(out2, 8, 3, i, 3);
+    }
+
+    sz = ui_bttm_status_line_at_6col_state_size();
+    uint8_t state2[sz];
+    memset(state2, 0, sz);
+    for (i = 0; DISPLAY_LCDWIDTH - i >= 6; i += 6) {
+        memset(out, 0, sizeof(out));
+        uint8_t offset = ui_bttm_status_line_at_6col(state2, &global_meter_state, out, 1, i);
+        display_write_page_array(out, 6, 1, i, 7);
+        i += offset;
+    }
 }
 
 int main()
 {
-    initialize_global_meter_state();
-    setup_output_ports();
-    set_op_amp_resistor_stage(global_meter_state.op_amp_resistor_stage);
-    setup_ADC();
-
     led_test();
+    setup_output_ports();
+    led_test();
+    
 
-    uint8_t i;
-    for (i = 0; i < 250; ++i) {
-        wdt_reset();
-        _delay_ms(2);
-    }
+    initialize_global_meter_state();
+        led_test();
+    display_init();
+        led_test();
+    display_clear();
+        led_test();
+    setup_ADC();
+        led_test();
 
     sei();
 
@@ -180,7 +225,7 @@ int main()
     // reading every so often.
     uint8_t cnt;
     for (cnt = 0;; ++cnt) {
-        if ((cnt & 0b111) == 0) { // Every 700ms, give or take.
+        if ((cnt & 0b110) == 0) { // Every 700ms, give or take.
             // Do lightmetery stuff.
             if (cnt == 0) {
                 // Make the next ADC reading a temperature reading.
@@ -208,6 +253,9 @@ int main()
             if (cnt == 255) {
                 write_meter_state(&global_meter_state);
             }
+        }
+        else if ((cnt & 0b111) == 0) {
+            show_interface();
         }
         else {
             _delay_ms(100);
