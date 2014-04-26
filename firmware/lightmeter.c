@@ -152,12 +152,12 @@ void handle_measurement()
     aperture_to_string(ap, &(global_transient_meter_state.aperture_string));
 
     // If we're too near the top or bottom of the range, change the gain next time.
-    if (adc_light_nonvol_value > 250 && global_meter_state.op_amp_resistor_stage < NUM_OP_AMP_RESISTOR_STAGES) {
-        set_op_amp_resistor_stage(global_meter_state.op_amp_resistor_stage + 1);
-    }
-    else if (adc_light_nonvol_value <= VOLTAGE_TO_EV_ABS_OFFSET + 5 && global_meter_state.op_amp_resistor_stage > 1) {
-        set_op_amp_resistor_stage(global_meter_state.op_amp_resistor_stage - 1);
-    }
+    //    if (adc_light_nonvol_value > 250 && global_meter_state.op_amp_resistor_stage < NUM_OP_AMP_RESISTOR_STAGES) {
+    //        set_op_amp_resistor_stage(global_meter_state.op_amp_resistor_stage + 1);
+    //    }
+    //    else if (adc_light_nonvol_value <= VOLTAGE_TO_EV_ABS_OFFSET + 5 && global_meter_state.op_amp_resistor_stage > 1) {
+    //        set_op_amp_resistor_stage(global_meter_state.op_amp_resistor_stage - 1);
+    //    }
 }
 
 void led_test()
