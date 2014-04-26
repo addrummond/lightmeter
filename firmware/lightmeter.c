@@ -31,7 +31,7 @@ ISR(ADC_vect) {
     ADCSRA |= (1 << ADSC);
 }
 
-// TODO: These constant will be replaced with members of global_meter_state once
+// TODO: These constants will be replaced with members of global_meter_state once
 // this is working correctly. The various _TENTHS could be packed into two bytes.
 //
 // For current test chip, slope = 1.12 and k = 290
