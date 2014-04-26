@@ -146,7 +146,7 @@ void handle_measurement()
     }
     else { //if (global_meter_state.priority == APERTURE_PRIORITY) {
         ap = global_transient_meter_state.aperture;
-        shut = shutter_speed_given_aperture_iso_ev(global_transient_meter_state.aperture, global_meter_state.stops_iso, ev);
+        shut = shutter_speed_given_aperture_iso_ev(ap, global_meter_state.stops_iso, ev);
     }
     shutter_speed_to_string(shut, &(global_transient_meter_state.shutter_speed_string));
     aperture_to_string(ap, &(global_transient_meter_state.aperture_string));
