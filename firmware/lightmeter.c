@@ -161,9 +161,8 @@ void led_test()
 {
 #ifdef TEST_LED_PORT
     TEST_LED_PORT |= (1 << TEST_LED_BIT);
-    _delay_ms(500);
+    _delay_ms(250);
     TEST_LED_PORT &= ~(1 << TEST_LED_BIT);
-    _delay_ms(500);    
 #endif
 }
 
@@ -211,20 +210,16 @@ int main()
     
 
     initialize_global_meter_state();
-        led_test();
     display_init();
-        led_test();
     display_clear();
-        led_test();
     setup_ADC();
-        led_test();
 
     sei();
 
     // The main loop. This looks at the latest exposure
     // reading every so often.
     uint8_t cnt;
-    for (cnt = 0;; ++cnt) {
+    for (cnt = 0; _delay_ms(100), 1; ++cnt) {
         if ((cnt & 0b110) == 0) { // Every 700ms, give or take.
             // Do lightmetery stuff.
             if (cnt == 0) {
@@ -254,12 +249,8 @@ int main()
                 write_meter_state(&global_meter_state);
             }
         }
-        else if ((cnt & 0b111) == 0) {
-            show_interface();
-        }
-        else {
-            _delay_ms(100);
-        }
+        
+        show_interface();
     }
 
     return 0;
