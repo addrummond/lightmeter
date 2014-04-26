@@ -42,8 +42,8 @@
 //
 // ADC
 //
-// Set differential ADC with PA0 input.
-#define ADMUX_LIGHT_SOURCE             ((0 << MUX5) | (0 << MUX4) | (0 << MUX3) | \
+// Set differential ADC with PA0 +input and PA1 -input gain 1x.
+#define ADMUX_LIGHT_SOURCE             ((0 << MUX5) | (0 << MUX4) | (1 << MUX3) | \
                                         (0 << MUX2) | (0 << MUX1) | (0 << MUX0))
 
 #define ADMUX_TEMPERATURE_SOURCE       ((1 << MUX5) | (0 << MUX4) | (0 << MUX3) | \

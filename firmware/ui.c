@@ -123,8 +123,6 @@ diff:
 }
 
 typedef struct main_reading_state {
-    shutter_string_output_t sso;
-    aperture_string_output_t aso;
     uint8_t len;
     uint8_t start_x;
     uint8_t i;
@@ -140,26 +138,24 @@ void ui_main_reading_display_at_8col(void *func_state_,
     const uint8_t VOFFSET = 5;
     main_reading_state_t *func_state = func_state_;
 
-    if (func_state->sso.length == 0) { // State is unitialized; initialize it.
-        shutter_speed_to_string(tms->shutter_speed, &(func_state->sso));
-        aperture_to_string(tms->aperture, &(func_state->aso));
+    if (func_state->len == 0) { // State is unitialized; initialize it.
         // Total number of chars is the sum of the two plus one for a space plus one for
         // the 'f' we insert before the aperture.
-        func_state->len = func_state->sso.length + func_state->aso.length + 2;
+        func_state->len = tms->shutter_speed_string.length + tms->aperture_string.length + 2;
         func_state->start_x = (DISPLAY_LCDWIDTH >> 1) - ((func_state->len << 3) >> 1);
         func_state->i = 0;
     }
 
     if (x >= func_state->start_x && func_state->i < func_state->len) {
-        if (func_state->i < func_state->sso.length) {
-            uint8_t ascii = SHUTTER_STRING_OUTPUT_STRING(func_state->sso)[func_state->i];
+        if (func_state->i < tms->shutter_speed_string.length) {
+            uint8_t ascii = SHUTTER_STRING_OUTPUT_STRING(tms->shutter_speed_string)[func_state->i];
             display_bwrite_12px_char(ssa_get_12px_grid(ascii), out, pages_per_col, VOFFSET);
         }
-        else if (func_state->i == func_state->sso.length + 1) {
+        else if (func_state->i == tms->shutter_speed_string.length + 1) {
             display_bwrite_12px_char(CHAR_12PX_F, out, pages_per_col, VOFFSET);
         }
-        else if (func_state->i >= func_state->sso.length + 2) {
-            uint8_t ascii = APERTURE_STRING_OUTPUT_STRING(func_state->aso)[func_state->i - func_state->sso.length - 2];
+        else if (func_state->i >= tms->shutter_speed_string.length + 2) {
+            uint8_t ascii = APERTURE_STRING_OUTPUT_STRING(tms->aperture_string)[func_state->i - tms->aperture_string.length - 2];
             display_bwrite_12px_char(ssa_get_12px_grid(ascii), out, pages_per_col, VOFFSET);
        }
 

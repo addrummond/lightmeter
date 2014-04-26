@@ -139,14 +139,17 @@ void handle_measurement()
 
     last_ev_reading = ev;
 
+    uint8_t ap, shut;
     if (global_meter_state.priority == SHUTTER_PRIORITY) {
-        uint8_t ap = aperture_given_shutter_speed_iso_ev(global_meter_state.shutter_speed, global_meter_state.stops_iso, ev);
-        aperture_to_string(ap, &(global_meter_state.aperture_string));
+        shut = global_transient_meter_state.shutter_speed;
+        ap = aperture_given_shutter_speed_iso_ev(shut, global_meter_state.stops_iso, ev);
     }
-    else if (global_meter_state.priority == APERTURE_PRIORITY) {
-        uint8_t shut = shutter_speed_given_aperture_iso_ev(global_meter_state.aperture, global_meter_state.stops_iso, ev);
-        shutter_speed_to_string(shut, &(global_meter_state.shutter_speed_string));
+    else { //if (global_meter_state.priority == APERTURE_PRIORITY) {
+        ap = global_transient_meter_state.aperture;
+        shut = shutter_speed_given_aperture_iso_ev(global_transient_meter_state.aperture, global_meter_state.stops_iso, ev);
     }
+    shutter_speed_to_string(shut, &(global_transient_meter_state.shutter_speed_string));
+    aperture_to_string(ap, &(global_transient_meter_state.aperture_string));
 
     // If we're too near the top or bottom of the range, change the gain next time.
     if (adc_light_nonvol_value > 250 && global_meter_state.op_amp_resistor_stage < NUM_OP_AMP_RESISTOR_STAGES) {
@@ -168,9 +171,9 @@ void led_test()
 
 static void show_interface()
 {
-    global_transient_meter_state.shutter_speed = 80;
-    global_transient_meter_state.aperture = 80;
-    global_meter_state.exp_comp = 17;
+    //    global_transient_meter_state.shutter_speed = 80;
+    //    global_transient_meter_state.aperture = 80;
+    //    global_meter_state.exp_comp = 17;
 
     uint8_t i;
     uint8_t out[6];

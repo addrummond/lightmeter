@@ -35,15 +35,9 @@ typedef struct meter_state {
 
     priority_t priority;
 
-    uint8_t aperture;
-    uint8_t shutter_speed;
-
     int8_t exp_comp;
 
     uint8_t op_amp_resistor_stage;
-
-    aperture_string_output_t aperture_string;
-    shutter_string_output_t shutter_speed_string;
 
     ui_mode_t ui_mode;
 
@@ -66,6 +60,8 @@ void initialize_global_meter_state();
 typedef struct transient_meter_state {
     uint8_t aperture;
     uint8_t shutter_speed;
+    aperture_string_output_t aperture_string;
+    shutter_string_output_t shutter_speed_string;
 } transient_meter_state_t;
 
 extern transient_meter_state_t global_transient_meter_state;
