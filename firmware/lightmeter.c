@@ -11,6 +11,7 @@
 #include <calculate.h>
 #include <exposure.h>
 #include <divmulutils.h>
+#include <tables.h>
 
 const uint8_t ADMUX_CLEAR_SOURCE = ~((1 << MUX5) | (1 << MUX4) | (1 << MUX2) | (1 << MUX2) | (1 << MUX1) | (0 << MUX0));
 const uint8_t ADMUX_CLEAR_REF_VOLTAGE = 0b11000000; // Couldn't do this with macros without getting overflow warning for some reason.
@@ -107,6 +108,13 @@ void setup_output_ports()
     DDRB = 0b00010010; // Set PB1 and PB4 as output ports.
 }
 
+static void set_op_amp_resistor_stage(uint8_t op_amp_resistor_stage)
+{
+    // TODO: Code that actually switches the MOFSETs.
+    
+    global_meter_state.op_amp_resistor_stage = op_amp_resistor_stage;
+}
+
 void led_test(void);
 void handle_measurement()
 {
@@ -131,6 +139,14 @@ void handle_measurement()
         uint8_t shut = shutter_speed_given_aperture_iso_ev(global_meter_state.aperture, global_meter_state.stops_iso, ev);
         shutter_speed_to_string(shut, &(global_meter_state.shutter_speed_string));
     }
+
+    // If we're too near the top or bottom of the range, change the gain next time.
+    if (ev > 250 && global_meter_state.op_amp_resistor_stage < NUM_OP_AMP_RESISTOR_STAGES) {
+        set_op_amp_resistor_stage(global_meter_state.op_amp_resistor_stage + 1);
+    }
+    else if (ev <= VOLTAGE_TO_EV_ABS_OFFSET + 5 && global_meter_state.op_amp_resistor_stage > 1) {
+        set_op_amp_resistor_stage(global_meter_state.op_amp_resistor_stage - 1);
+    }
 }
 
 void led_test()
@@ -138,13 +154,6 @@ void led_test()
     PORTB |= (0b10);
     _delay_ms(500);
     PORTB &= ~(0b10);
-}
-
-void set_op_amp_resistor_stage(uint8_t op_amp_resistor_stage)
-{
-    // TODO: Code that actually switches the MOFSETs.
-    
-    global_meter_state.op_amp_resistor_stage = op_amp_resistor_stage;
 }
 
 int main()
