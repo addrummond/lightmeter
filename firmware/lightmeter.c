@@ -1,3 +1,5 @@
+#include <deviceconfig.h>
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <avr/io.h>
@@ -10,19 +12,8 @@
 #include <exposure.h>
 #include <divmulutils.h>
 
-const uint8_t ADMUX_CLEAR_SOURCE = ~((1 << MUX3) | (1 << MUX2) | (1 << MUX1) | (1 << MUX0));
-
-// Set differential ADC with PB4 pos, PB3 neg, and 1x gain (see atiny85 datasheet p. 135).
-//const uint8_t ADMUX_LIGHT_SOURCE = (0 << MUX3) | (1 << MUX2) | (1 << MUX1) | (0 << MUX0); // 0110
-
-// Set single-ended ADC with PB3 as input.
-const uint8_t ADMUX_LIGHT_SOURCE = (0 << MUX3) | (0 << MUX2) | (1 << MUX1) | (1 << MUX0);
-
-const uint8_t ADMUX_TEMPERATURE_SOURCE = (1 << MUX3) | (1 << MUX2) | (1 << MUX1) | (1 << MUX0);
-
-const uint8_t ADMUX_CLEAR_REF_VOLTAGE = 0b00101111; // Couldn't do this with macros without getting overflow warning for some reason.
-const uint8_t ADMUX_TEMP_REF_VOLTAGE = (0 << REFS2) | (1 << REFS1) | (0 << REFS0); // 1.1V internal reference
-const uint8_t ADMUX_LIGHT_SOURCE_REF_VOLTAGE = (0 << REFS2) | (0 << REFS1) | (0 << REFS0); // VCC
+const uint8_t ADMUX_CLEAR_SOURCE = ~((1 << MUX5) | (1 << MUX4) | (1 << MUX2) | (1 << MUX2) | (1 << MUX1) | (0 << MUX0));
+const uint8_t ADMUX_CLEAR_REF_VOLTAGE = 0b11000000; // Couldn't do this with macros without getting overflow warning for some reason.
 
 volatile static uint8_t last_ev_reading = 0;
 
@@ -36,7 +27,7 @@ ISR(ADC_vect) {
     else
         adc_light_value = ADCW;
 
-    TIFR |= (1<<OCF0A); // Clear timer compare match flag.
+    TIFR0 |= (1<<OCF0A); // Clear timer compare match flag.
     ADCSRA |= (1 << ADSC);
 }
 
