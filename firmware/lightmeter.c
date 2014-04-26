@@ -223,7 +223,7 @@ int main()
     // reading every so often.
     uint8_t cnt;
     for (cnt = 0; _delay_ms(100), 1; ++cnt) {
-        if ((cnt & 0b110) == 0) { // Every 700ms, give or take.
+        if (cnt == 0 || (cnt & 0b110) == 0) { // Every 700ms, give or take.
             // Do lightmetery stuff.
             if (cnt == 0) {
                 // Make the next ADC reading a temperature reading.

@@ -12,17 +12,9 @@ eeprom = [
 
     1,                                                             # shutter_priority
 
-    48,                                                            # aperture (f8)
-    72,                                                            # shutter_speed (1/15)
-    
     0,                                                             # exp comp
 
     1,                                                             # first op amp resistor stage.
-
-    ord('8'), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                        # aperture_string_output.chars
-    1,                                                             # aperture_string_output.length
-    ord('1'), ord('/'), ord('1'), ord('2'), ord('5'), 0, 0, 0, 0,  # shutter_string_ouput.chars
-    5,                                                             # shutter_string_output.length
 
     0,                                                             # UI_MODE_DEFAULT
 
