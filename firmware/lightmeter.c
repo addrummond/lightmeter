@@ -118,7 +118,7 @@ void handle_measurement()
     uint8_t ev = get_ev100_at_temperature_voltage(
         current_temp,
         (uint8_t)(adc_light_nonvol_value >> 2),
-        global_meter_state.gain
+        global_meter_state.op_amp_resistor_stage
     );
 
     last_ev_reading = ev;
@@ -140,20 +140,18 @@ void led_test()
     PORTB &= ~(0b10);
 }
 
-void set_gain(gain_t gain)
+void set_op_amp_resistor_stage(uint8_t op_amp_resistor_stage)
 {
-    PORTB &= ~(0b1000);
-    if (gain == HIGH_GAIN)
-        PORTB |= 0b1000;
-
-    global_meter_state.gain = gain;
+    // TODO: Code that actually switches the MOFSETs.
+    
+    global_meter_state.op_amp_resistor_stage = op_amp_resistor_stage;
 }
 
 int main()
 {
     initialize_global_meter_state();
     setup_output_ports();
-    set_gain(global_meter_state.gain);
+    set_op_amp_resistor_stage(global_meter_state.op_amp_resistor_stage);
     setup_ADC();
 
     led_test();

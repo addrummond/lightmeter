@@ -16,11 +16,6 @@ typedef enum priority {
     NO_PRIORITY=0, SHUTTER_PRIORITY=1, APERTURE_PRIORITY=2
 } priority_t;
 
-typedef enum gain {
-    NORMAL_GAIN=0,
-    HIGH_GAIN=1
-} gain_t;
-
 typedef enum ui_mode {
     UI_MODE_DEFAULT=0,
     UI_MODE_MAIN_MENU,
@@ -45,7 +40,7 @@ typedef struct meter_state {
 
     int8_t exp_comp;
 
-    gain_t gain;
+    uint8_t op_amp_resistor_stage;
 
     aperture_string_output_t aperture_string;
     shutter_string_output_t shutter_speed_string;

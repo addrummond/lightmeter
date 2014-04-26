@@ -633,6 +633,7 @@ def output():
     ofh.write("extern uint8_t SHUTTER_SPEEDS_BITMAP[];\n")
     ofh.write("extern uint8_t APERTURES[];\n")
     ofh.write("extern uint8_t APERTURES_BITMAP[];\n")
+    ofh.write("extern uint8_t TEMP_EV_ADJUST[];\n")
 
     ofh.write("\n#endif\n")
 

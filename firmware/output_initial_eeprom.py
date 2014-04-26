@@ -17,7 +17,7 @@ eeprom = [
     
     0,                                                             # exp comp
 
-    0,                                                             # gain (normal gain)
+    1,                                                             # first op amp resistor stage.
 
     ord('8'), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                        # aperture_string_output.chars
     1,                                                             # aperture_string_output.length

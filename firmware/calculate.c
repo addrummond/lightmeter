@@ -20,16 +20,31 @@ extern const uint8_t TEST_VOLTAGE_TO_EV[];
 // this code really definitely needs to run quickly, I'm doing it explicitly here.
 //
 // 'voltage' is in 1/256ths of the reference voltage.
-uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage, gain_t gain)
+uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage, uint8_t op_amp_resistor_stage)
 {
-    const uint8_t *ev_abs = NORMAL_LIGHT_VOLTAGE_TO_EV_ABS;
-    const uint8_t *ev_diffs = NORMAL_LIGHT_VOLTAGE_TO_EV_DIFFS;
-    const uint8_t *ev_bitpatterns = NORMAL_LIGHT_VOLTAGE_TO_EV_BITPATTERNS;
-    if (gain == HIGH_GAIN) {
-        ev_abs = LOW_LIGHT_VOLTAGE_TO_EV_ABS;
-        ev_diffs = LOW_LIGHT_VOLTAGE_TO_EV_DIFFS;
-        ev_bitpatterns = LOW_LIGHT_VOLTAGE_TO_EV_BITPATTERNS;
+    const uint8_t *ev_abs = NULL, *ev_diffs = NULL, *ev_bitpatterns = NULL;
+#define ASSIGN(n) (ev_abs = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_ABS,                 \
+                   ev_diffs = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_DIFFS,             \
+                   ev_bitpatterns = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_BITPATTERNS)
+    switch (op_amp_resistor_stage) {
+    case 1: ASSIGN(1); break;
+#if NUM_OP_AMP_RESISTOR_STAGES > 1
+    case 2: ASSIGN(2); break;
+#if NUM_OP_AMP_RESISTOR_STAGES > 2
+    case 3: ASSIGN(3); break;
+#if NUM_OP_AMP_RESISTOR_STAGES > 3
+    case 4: ASSIGN(4); break;
+#if NUM_OP_AMP_RESISTOR_STAGES > 4
+    case 5: ASSIGN(5); break;
+#if NUM_OP_AMP_RESISTOR_STAGES > 5
+#error "Too many op amp stages"
+#endif
+#endif
+#endif
+#endif
+#endif
     }
+#undef ASSIGN
 
     if (voltage < VOLTAGE_TO_EV_ABS_OFFSET)
         voltage = 0;
