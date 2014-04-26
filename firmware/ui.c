@@ -176,9 +176,12 @@ uint8_t ui_bttm_status_line_at_6col(void *func_state_,
                                     uint8_t pages_per_col,
                                     uint8_t x)
 {
+    if (global_meter_state.exp_comp == 0)
+        return 0;
+
     bttm_status_line_state_t *func_state = func_state_;
 
-    if (func_state->expcomp_chars_length == 0) { // State is not initialized; initialize it.
+    if (func_state->expcomp_chars[0] == 0) { // State is not initialized; initialize it.
         // Exposure compensation is stored in 1/8 stops in an int8_t.
         // This means that if we ignore the eighths, it can only be up to +/- 16 stops.
         // We can therefore avoid doing a proper conversion to BCD,
