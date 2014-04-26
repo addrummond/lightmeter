@@ -100,16 +100,20 @@ static const uint8_t *ssa_get_12px_grid(uint8_t ascii)
         m = '0';
         goto diff;
     }
-    else if (ascii >= 'A' && ascii <= 'Z') {
-        m = 'A';
-        goto diff;
-    }
-    else if (ascii >= 'a' && ascii <= 'z') {
-        m = 'a';
-        goto diff;
-    }
     else if (ascii == '/') {
         return CHAR_12PX_SLASH;
+    }
+    else if (ascii == 'F') {
+        return CHAR_12PX_F;
+    }
+    else if (ascii == '.') {
+        return CHAR_12PX_PERIOD;
+    }
+    else if (ascii == '+') {
+        return CHAR_12PX_PLUS;
+    }
+    else if (ascii == '-') {
+        return CHAR_12PX_MINUS;
     }
     else {
         // Should never get here. Useful for running test code before full
@@ -155,7 +159,7 @@ void ui_main_reading_display_at_8col(void *func_state_,
             display_bwrite_12px_char(CHAR_12PX_F, out, pages_per_col, VOFFSET);
         }
         else if (func_state->i >= tms->shutter_speed_string.length + 2) {
-            uint8_t ascii = APERTURE_STRING_OUTPUT_STRING(tms->aperture_string)[func_state->i - tms->aperture_string.length - 2];
+            uint8_t ascii = APERTURE_STRING_OUTPUT_STRING(tms->aperture_string)[func_state->i - tms->shutter_speed_string.length - 2];
             display_bwrite_12px_char(ssa_get_12px_grid(ascii), out, pages_per_col, VOFFSET);
        }
 
