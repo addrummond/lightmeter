@@ -85,16 +85,13 @@ uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage, u
 
     // Compensate for effect of ambient temperature.
     int8_t adj = TEMP_EV_ADJUST[temperature >> 2];
-    uint8_t withcomp = r + adj;
-    // Check for overflow
-    if (adj < 0 && withcomp > r)
-        r = 0;
-    else if (adj > 0 && withcomp < r)
-        r = 255;
+    int16_t withcomp = ((int16_t)r) + adj;
+    if (withcomp < 0)
+        return 0;
+    else if (withcomp > 255)
+        return 255;
     else
-        r = withcomp;
-
-    return r;
+        return (uint8_t)withcomp;
 
 #undef INCC
 }
