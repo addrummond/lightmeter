@@ -4,6 +4,7 @@
 #include <exposure.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h> // for memset
 
 //
 // Modularizing the display code takes a little bit of care when
@@ -61,7 +62,7 @@ void ui_top_status_line_at_6col(void *func_state_,
 
     uint8_t iso_start_x = DISPLAY_LCDWIDTH - (ms->bcd_iso_length << 2) - (ms->bcd_iso_length << 1) - (4*CHAR_WIDTH_8PX);
 
-    if (x == iso_start_x - 2 && DISPLAY_LCDWIDTH - x >= 6) {
+    if (x >= iso_start_x - 2 && x < DISPLAY_LCDWIDTH) {
         const uint8_t *px_grid;
 
         bool dont_write = false;
@@ -95,10 +96,11 @@ void ui_top_status_line_at_6col(void *func_state_,
         if (func_state->charbuffer_has_contents) {
             uint8_t j;
             uint8_t *o;
-            for (j = 5, o = out; j >= 4; --j, o += pages_per_col)
+            for (j = 5, o = out + pages_per_col; j >= 4; --j, o -= pages_per_col)
                 *o = func_state->charbuffer[j];
         }
 
+        memset(func_state->charbuffer, 0, sizeof(func_state->charbuffer));
         if (! dont_write) {
             display_bwrite_8px_char(px_grid, func_state->charbuffer, 1, 0);
             func_state->charbuffer_has_contents = true;
