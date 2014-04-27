@@ -1,6 +1,7 @@
 #!/bin/sh
 
 CFLAGS=`cat CFLAGS`
+LINKFLAGS=`cat LINKFLAGS`
 
 python calculate_tables.py output
 cd bitmaps
@@ -17,6 +18,6 @@ avr-gcc $CFLAGS -o display.out -c display.c
 avr-gcc $CFLAGS -o ui.out -c ui.c
 avr-gcc $CFLAGS -o bitmaps.out -c bitmaps/bitmaps.c
 avr-gcc $CFLAGS -o lightmeter.out -c lightmeter.c
-avr-gcc $CFLAGS calculate.out tables.out divmulutils.out state.out bcd.out exposure.out display.out ui.out bitmaps.out lightmeter.out -o main.out
+avr-gcc $CFLAGS $LINKFLAGS calculate.out tables.out divmulutils.out state.out bcd.out exposure.out display.out ui.out bitmaps.out lightmeter.out -o main.out
 avr-objcopy -O ihex -R .eeprom main.out lightmeter.hex
 cp lightmeter.hex /tmp
