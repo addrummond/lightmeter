@@ -195,9 +195,8 @@ static void show_interface()
     memset(state2, 0, sz);
     for (i = 0; DISPLAY_LCDWIDTH - i >= 6; i += 6) {
         memset(out, 0, sizeof(out));
-        uint8_t offset = ui_bttm_status_line_at_6col(state2, &global_meter_state, out, 1, i);
+        ui_bttm_status_line_at_6col(state2, &global_meter_state, out, 1, i);
         display_write_page_array(out, 6, 1, i, 7);
-        i += offset;
     }
 }
 

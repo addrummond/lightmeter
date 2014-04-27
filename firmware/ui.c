@@ -197,16 +197,19 @@ typedef struct bttm_status_line_state {
     uint8_t expcomp_chars[7];
     uint8_t expcomp_chars_length;
     uint8_t start_x;
+
+    uint8_t charbuffer[6];
+    bool charbuffer_has_contents;
 } bttm_status_line_state_t;
 size_t ui_bttm_status_line_at_6col_state_size() { return sizeof(bttm_status_line_state_t); }
-uint8_t ui_bttm_status_line_at_6col(void *func_state_,
-                                    const meter_state_t *ms,
-                                    uint8_t *out,
-                                    uint8_t pages_per_col,
-                                    uint8_t x)
+void ui_bttm_status_line_at_6col(void *func_state_,
+                                 const meter_state_t *ms,
+                                 uint8_t *out,
+                                 uint8_t pages_per_col,
+                                 uint8_t x)
 {
     if (global_meter_state.exp_comp == 0)
-        return 0;
+        return;
 
     bttm_status_line_state_t *func_state = func_state_;
 
@@ -270,20 +273,33 @@ uint8_t ui_bttm_status_line_at_6col(void *func_state_,
 
         func_state->expcomp_chars_length = i;
         func_state->start_x = DISPLAY_LCDWIDTH - (i << 2) - (i << 1);
-
-        // Skip two pixels so that we're 6-aligned with the right edge of the display.
-        return 2;
     }
 
-    if (x >= func_state->start_x) {
+    // We're now two pixels behind alignment with the right edge of the display.
+    
+    if (x >= func_state->start_x - 2) {
+        // Write tail end of previous char if there was one.
+        if (func_state->charbuffer_has_contents) {
+            uint8_t j;
+            uint8_t *o;
+            for (j = 5, o = out + pages_per_col; j >= 4; --j, o -= pages_per_col)
+                *o = func_state->charbuffer[j];
+        }
+
+        memset(func_state->charbuffer, 0, sizeof(func_state->charbuffer));
+    
         uint8_t index;
-        for (index = 0; x > func_state->start_x; x -= 6, ++index);
+        for (index = 0; x > func_state->start_x - 2; x -= 6, ++index);
 
         uint8_t char_offset = func_state->expcomp_chars[index];
         if (char_offset != 255 /*space*/) {
-            display_bwrite_8px_char(CHAR_PIXELS_8PX + char_offset, out, pages_per_col, 0);
+            display_bwrite_8px_char(CHAR_PIXELS_8PX + char_offset, func_state->charbuffer, pages_per_col, 0);
+
+            // Write beginning of that char.
+            uint8_t j;
+            uint8_t *o;
+            for (j = 0, o = out + (pages_per_col << 1); j < 4; ++j, o += pages_per_col)
+                *o = func_state->charbuffer[j];
         }
     }
-
-    return 0;
 }
