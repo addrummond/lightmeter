@@ -331,16 +331,6 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
 uint8_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, uint8_t ev_, uint8_t x) // x=0: aperture, x=1: shutter_speed
 {
     // We know that for EV=3, ISO = 100, speed = 1minute, aperture = 22.
-
-    if (x == 0 && given_x_ > SS_MAX)
-        given_x_ = SS_MAX;
-    if (x == 1 && given_x_ > AP_MAX)
-        given_x_ = AP_MAX;
-    if (iso_ > ISO_MAX)
-        iso_ = ISO_MAX;
-    if (ev_ > EV_MAX)
-        ev_ = EV_MAX;
-
     int16_t the_aperture = 9*8; // F22
     int16_t the_speed = SS_1M;
     int16_t the_ev = ((3+5)*8); // 3 EV
