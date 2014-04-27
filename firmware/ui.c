@@ -152,6 +152,8 @@ typedef struct main_reading_state {
     uint8_t len;
     uint8_t start_x;
     uint8_t i;
+
+    bool exposure_ready;
 } main_reading_state_t;
 size_t ui_main_reading_display_at_8col_state_size() { return sizeof(main_reading_state_t); }
 void ui_main_reading_display_at_8col(void *func_state_,
@@ -168,12 +170,19 @@ void ui_main_reading_display_at_8col(void *func_state_,
     main_reading_state_t *func_state = func_state_;
 
     if (func_state->len == 0) { // State is unitialized; initialize it.
+        func_state->exposure_ready = tms->exposure_ready; // Copy because volatile.
+        if (! func_state->exposure_ready)
+            return;
+
         // Total number of chars is the sum of the two plus one for a space plus one for
         // the 'f' we insert before the aperture.
         func_state->len = tms->shutter_speed_string.length + tms->aperture_string.length + 2;
         func_state->start_x = (DISPLAY_LCDWIDTH >> 1) - ((func_state->len << 3) >> 1);
         func_state->i = 0;
     }
+
+    if (! func_state->exposure_ready)
+        return;
 
     if (x >= func_state->start_x && func_state->i < func_state->len) {
         if (func_state->i < tms->shutter_speed_string.length) {
