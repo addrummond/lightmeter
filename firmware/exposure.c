@@ -1,5 +1,5 @@
 // Apertures are represented as unsigned 8-bit quantities
-// from 1.4 to 32 in 1/8-stop steps.
+// from 1.0 to 32 in 1/8-stop steps.
 //
 // Shutter speeds are represented as unsigned 8-bit quantities
 // from 1 minute to 1/16000 in 1/8-stop steps. Some key points
