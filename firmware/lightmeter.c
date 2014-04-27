@@ -119,8 +119,7 @@ static void set_op_amp_resistor_stage(uint8_t op_amp_resistor_stage)
 {
     // TODO: Code that actually switches the MOFSETs.
     
-    //global_meter_state.op_amp_resistor_stage = op_amp_resistor_stage;
-    global_meter_state.op_amp_resistor_stage = 2;
+    global_meter_state.op_amp_resistor_stage = op_amp_resistor_stage;
 }
 
 void led_test(void);
@@ -207,7 +206,7 @@ int main()
     global_transient_meter_state.shutter_speed = 88;
     global_transient_meter_state.aperture = 88;
     //    global_transient_meter_state.exposure_ready = true;
-    set_op_amp_resistor_stage(2);
+    set_op_amp_resistor_stage(3);
 
     led_test();
     setup_output_ports();

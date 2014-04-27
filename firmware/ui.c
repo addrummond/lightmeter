@@ -207,6 +207,8 @@ typedef struct bttm_status_line_state {
 
     uint8_t charbuffer[6];
     bool charbuffer_has_contents;
+
+    bool exposure_ready;
 } bttm_status_line_state_t;
 size_t ui_bttm_status_line_at_6col_state_size() { return sizeof(bttm_status_line_state_t); }
 void ui_bttm_status_line_at_6col(void *func_state_,
@@ -216,12 +218,11 @@ void ui_bttm_status_line_at_6col(void *func_state_,
                                  uint8_t pages_per_col,
                                  uint8_t x)
 {
-    if (global_meter_state.exp_comp == 0)
-        return;
-
     bttm_status_line_state_t *func_state = func_state_;
 
     if (func_state->expcomp_chars[0] == 0) { // State is not initialized; initialize it.
+        func_state->exposure_ready = tms->exposure_ready; // Copy because volatile.
+
         // Output EV (TODO: Currently ignores eighths)
         if (tms->exposure_ready) {
             if (tms->last_ev < 5*8) {
@@ -297,6 +298,9 @@ void ui_bttm_status_line_at_6col(void *func_state_,
         func_state->start_x = DISPLAY_LCDWIDTH - (i << 2) - (i << 1);
     }
 
+    if (! func_state->exposure_ready)
+        return;
+
     if (x == 0) {
         display_bwrite_8px_char(CHAR_8PX_E, out, pages_per_col, 0);
     }
@@ -314,6 +318,9 @@ void ui_bttm_status_line_at_6col(void *func_state_,
                 display_bwrite_8px_char(CHAR_8PX_0 + CHAR_OFFSET_8PX(func_state->ev_chars_[off]), out, pages_per_col, 0);
         }
     }
+
+    if (global_meter_state.exp_comp == 0)
+        return;
 
     // We're now two pixels behind alignment with the right edge of the display.
     

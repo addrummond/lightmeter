@@ -12,7 +12,7 @@ eeprom = [
 
     1,                                                             # shutter_priority
 
-    9,                                                             # exp comp
+    0,                                                             # exp comp
 
     1,                                                             # first op amp resistor stage.
 
