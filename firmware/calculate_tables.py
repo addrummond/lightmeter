@@ -77,29 +77,29 @@ def temp_to_rrlc(temp):
 #    return math.log(10.763910417,10) + rlc
 #
 # For BPW21R. See Fig 3 of PDF datasheet included in git repo.
-def rlc_to_lux(rlc):
+def log_rlc_to_log_lux(rlc):
     return (rlc + 1.756) / 0.806
 
 # Convert log10 lux to EV at ISO 100.
 # See http://stackoverflow.com/questions/5401738/how-to-convert-between-lux-and-exposure-value
 # http://en.wikipedia.org/wiki/Exposure_value#EV_as_a_measure_of_luminance_and_illuminance
 # This is (implicitly) using C=250.
-def illuminance_to_ev_at_100(lux):
+def log_illuminance_to_ev_at_100(log_lux):
     # TODO: Could probably do this all in log space for greater accuracy.
-    lux = math.pow(10, lux)
+    lux = math.pow(10, log_lux)
     ev = math.log(lux/2.5, 2)
     return ev
 
 # Implicitly using the Sekonic calibration constant of 12.5.
-def luminance_to_ev_at_100(lux):
-    lux = math.pow(10, lux)
+def log_luminance_to_ev_at_100(log_lux):
+    lux = math.pow(10, log_lux)
     ev_minus_3 = math.log(lux, 2)
     return ev_minus_3 + 3.0
 
 # Difference between illuminance and irradience will be a constant in log space.
 # We store illuminance values in the table then add extra if we're measuring
 # irradience. This calculates how much extra.
-LUMINANCE_COMPENSATION = luminance_to_ev_at_100(10) - illuminance_to_ev_at_100(10)
+LUMINANCE_COMPENSATION = log_luminance_to_ev_at_100(10) - log_illuminance_to_ev_at_100(10)
 assert LUMINANCE_COMPENSATION >= 4.0 and LUMINANCE_COMPENSATION <= 5.0
 
 # Voltage (mV) and op amp resitor value (kOhm) to EV at the reference temp,
@@ -120,8 +120,8 @@ def voltage_and_oa_resistor_to_ev(v, r, TADJ = 0.0):
     # Get i in microamps.
     i += math.log(1000000, 10)
 
-    lux = rlc_to_lux(i)
-    ev = illuminance_to_ev_at_100(lux)
+    log_lux = log_rlc_to_log_lux(i)
+    ev = log_illuminance_to_ev_at_100(log_lux)
     return ev
 
 # If rlc_to_lux(rlc) is linear (as we falsely assume), then each +1 C yields
@@ -266,7 +266,7 @@ def output_ev_table(of, name_prefix, op_amp_resistor):
 # using single input mode).
 def output_sanity_graph():
     f = open("sanitygraph.csv", "w")
-    f.write("v," + ','.join(["s" + str(n+1) for n in xrange(len(op_amp_resistor_stages))]) + '\n')
+    f.write("v," + ','.join(["s" + str(n+1) for n in xrange(len(op_amp_resistor_stages))]) + ',')
     f.write(','.join(["b" + str(n+1) for n in xrange(len(op_amp_resistor_stages))]) + '\n')
     for v in xrange(0, 256):
         f.write("%i" % v)
@@ -278,6 +278,14 @@ def output_sanity_graph():
             f.write(",%f" % ev)
         f.write("," + ",".join(map(str,bins)))
         f.write("\n")
+    f.close()
+
+    f = open("luxtoev.csv", "w")
+    f.write("lux,loglux,logillum,loglum\n")
+    lux = 5
+    while lux <= 656000:
+        f.write("%i,%f,%f,%f\n" % (lux, math.log(lux,10), log_illuminance_to_ev_at_100(math.log(lux, 10)), log_luminance_to_ev_at_100(math.log(lux,10))))
+        lux += lux
     f.close()
 
 # Straight up array that we use to test that the bitshifting logic is
