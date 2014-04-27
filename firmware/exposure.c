@@ -350,8 +350,8 @@ uint8_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, uint8_t ev_, uint8_t x)
     int16_t given_iso = (int16_t)iso_;
     int16_t given_ev = (int16_t)ev_;
 
-    uint8_t r;
-    uint16_t min, max;
+    int16_t r;
+    int16_t min, max;
     if (x == 0) {
         int16_t apdiff = given_x - the_aperture;
         the_ev += apdiff;
@@ -371,11 +371,13 @@ uint8_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, uint8_t ev_, uint8_t x)
         min = AP_MIN, max = AP_MAX;
     }
 
+    r += given_iso - the_iso;
+    
     if (r < min)
         return AP_MIN;
     else if (r > max)
         return AP_MAX;
-    return r + (given_iso - the_iso);
+    return (uint8_t)r;
 }
 
 #ifdef TEST
@@ -402,7 +404,7 @@ int main()
     uint8_t is, ss, ev, ap;
     for (is = ISO_MIN; is <= ISO_MAX; ++is) {
         ss = 12*8; // 1/60
-        ev = 15*8;
+        ev = 15*8; // 10 EV
         ap = aperture_given_shutter_speed_iso_ev(ss, is, ev);
         shutter_speed_to_string(ss, &sso);
         aperture_to_string(ap, &aso);
@@ -416,7 +418,7 @@ int main()
     printf("\nTesting shutter_speed_given_aperture_iso_ev\n");
     for (is = ISO_MIN; is <= ISO_MAX; ++is) {
         ap = 6*8; // f8
-        ev = 15*8;
+        ev = 15*8; // 10 EV
         ss = shutter_speed_given_aperture_iso_ev(ap, is, ev);
         shutter_speed_to_string(ss, &sso);
         aperture_to_string(ap, &aso);
