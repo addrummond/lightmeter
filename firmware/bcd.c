@@ -213,7 +213,6 @@ static uint8_t bitfiddle_uint8_div_by_10(uint8_t n) {
     q = (n >> 1) + (n >> 2);
     q = q + (q >> 4);
     q = q + (q >> 8);
-    q = q + (q >> 16);
     q = q >> 3;
     r = n - q*10;
     return q + ((r + 6) >> 4);
