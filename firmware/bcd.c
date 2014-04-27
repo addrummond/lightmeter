@@ -151,22 +151,20 @@ bool bcd_cmp(const uint8_t *digits1, uint8_t length1, const uint8_t *digits2, ui
 
         int8_t diff = a - b;
         if (diff != 0) {
-            switch (which) {
-            case 0: {
+            if (which == 0) {
                 return false;
-            } break;
-            case 1: {
+            }
+            else if (which == 1) {
                 return diff < 0;
-            } break;
-            case 2: {
+            }
+            else if (which == 2) {
                 return diff > 0;
-            } break;
-            case 3: {
+            }
+            else if (which == 3) {
                 return diff < 0;
-            } break;
-            case 4: {
+            }
+            else if (which == 4) {
                 return diff > 0;
-            } break;
             }
         }
     }
