@@ -206,7 +206,7 @@ int main()
     global_transient_meter_state.shutter_speed = 88;
     global_transient_meter_state.aperture = 88;
     //    global_transient_meter_state.exposure_ready = true;
-    set_op_amp_resistor_stage(3);
+    set_op_amp_resistor_stage(2);
 
     led_test();
     setup_output_ports();
