@@ -66,22 +66,11 @@ uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage, u
 
     // See http://stackoverflow.com/questions/109023/how-to-count-the-number-of-set-bits-in-a-32-bit-integer
     uint8_t r = pgm_read_byte(ev_abs + absi);
-#ifdef TEST
-    uint8_t c = 0;
-#define INCC ,++c
-#else
-#define INCC
-#endif
-    for (; bits1; ++r INCC)
-        bits1 &= bits1 - 1;
-    for (; bits2; ++r INCC)
-        bits2 &= bits2 - 1;
 
-#ifdef TEST
-    printf("voltage = %i, count = %i, bitsper = %i, abs %i, absi = %i, r = %i\n",
-           voltage, c, bits_to_add, pgm_read_byte(&NORMAL_LIGHT_VOLTAGE_TO_EV_ABS[absi]),
-           absi, pgm_read_byte(ev_abs + absi) + c);
-#endif
+    for (; bits1; ++r)
+        bits1 &= bits1 - 1;
+    for (; bits2; ++r)
+        bits2 &= bits2 - 1;
 
     // Compensate for effect of ambient temperature.
     int8_t adj = TEMP_EV_ADJUST[temperature >> 2];
