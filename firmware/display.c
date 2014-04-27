@@ -95,6 +95,10 @@ void display_write_page_array(const uint8_t *pages, uint8_t ncols, uint8_t pages
     uint8_t col_start_low = x & 0x0F;
     uint8_t col_start_high = x >> 4;
 
+    // Don't go off the right edge.
+    if (ncols + x > DISPLAY_LCDWIDTH)
+        ncols = DISPLAY_LCDWIDTH - x;
+
     uint8_t p;
     for (p = 0; p < pages_per_col; ++p) {
         display_command(DISPLAY_SET_COL_START_LOW + col_start_low);
