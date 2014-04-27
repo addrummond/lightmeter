@@ -1,1 +1,1 @@
--I ./ -I./vusb-20121206/usbdrv/ -Wall -Wpadded -Os -mtiny-stack -fno-inline-small-functions -finline-limit=3 -mcall-prologues -fshort-enums -fno-move-loop-invariants -fno-tree-scev-cprop -DF_CPU=8000000L -mmcu=attiny84 
+-I ./ -I./vusb-20121206/usbdrv/ -Wall -Wpadded -Os -ffunction-sections -mtiny-stack -fno-inline-small-functions -finline-limit=3 -mcall-prologues -fshort-enums -fno-move-loop-invariants -fno-tree-scev-cprop -DF_CPU=8000000L -mmcu=attiny84 
