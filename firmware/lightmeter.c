@@ -49,7 +49,7 @@ ISR(ADC_vect) {
 #define ADC_TEMP_SLOPE_TENTHS          0
 #define ADC_TEMP_SLOPE_MINUS_TENTHS    0
 
-static volatile uint8_t current_temp = 190; // 25 C
+static volatile uint8_t current_temp = 193; // 22 C
 
 static void calculate_current_temp()
 {
@@ -201,9 +201,11 @@ static void show_interface()
 
 int main()
 {
+    // TEST INITIALIZATION; TODO REMOVE EVENTUALLY.
     global_transient_meter_state.shutter_speed = 88;
     global_transient_meter_state.aperture = 88;
     //    global_transient_meter_state.exposure_ready = true;
+    set_op_amp_resistor_stage(2);
 
     led_test();
     setup_output_ports();

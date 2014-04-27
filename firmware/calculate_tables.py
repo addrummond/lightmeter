@@ -6,26 +6,26 @@ import sys
 ##########
 
 reference_voltage                = 5000.0  # mV
-op_amp_resistor_stages = [ # In kOhm
+op_amp_resistor_stages = [ # In (kOhm,gain) pairs
     # For BPW 34
-    #320.0, # Very low light
-    #12.0,  # Fairly low light (brightish rooms, that kind of thing)
-    #0.50,  # Bright light (goes up to a bright sunny day)
-    #0.05,  # Extremely bright light
+    #(320.0,1), # Very low light
+    #(12.0,1)  # Fairly low light (brightish rooms, that kind of thing)
+    #(0.50,1)  # Bright light (goes up to a bright sunny day)
+    #(0.05,1),  # Extremely bright light
 
     # For VTB8440,8441
-    #258,
-    #42,
-    #1.7,
-    #0.075
+    #(258,1),
+    #(42,1),
+    #(1.7,1)
+    #(1,0.075)
 
     # For BPW21R
-    4000, # Can get this by using 40kOhm resistor and 100x gain.
-    130,
-    6
+    (200,20),
+    (124,1),  #(130,1)
+    (6,1)
 ]
 
-op_amp_normal_resistor = op_amp_resistor_stages[1]
+op_amp_normal_resistor = op_amp_resistor_stages[1][0] * op_amp_resistor_stages[1][1] 
 
 # Table cells not calculated for voltages lower than this.
 # This is because in the region just above v = 0, the changes
@@ -33,10 +33,14 @@ op_amp_normal_resistor = op_amp_resistor_stages[1]
 # in EV values which the table compression mechanism can't handle.
 voltage_offset                   = 220.0   # mV
 
-reference_temperature            = 40.0    # C
+# For BPW34                      = 40.0    # C
+reference_temperature            = 30.0    # C
 
 ##########
 
+
+for s in op_amp_resistor_stages:
+    assert s[1] == 1 or s[1] == 20
 
 #
 # EV table.
@@ -46,10 +50,16 @@ bv_to_voltage = ((1/256.0) * reference_voltage)
 
 # http://www.vishay.com/docs/81521/bpw34.pdf, p. 2 Fig 2
 # Temp in C.
-def temp_to_rrlc(temp): # Temperature to relative reverse light current
-    slope = 0.002167
-    k = 0.97
-    return (temp*slope) + k
+# For BPW34
+#def temp_to_rrlc(temp): # Temperature to relative reverse light current
+#    slope = 0.002167
+#    k = 0.97
+#    return (temp*slope) + k
+#
+# For BPW21
+def temp_to_rrlc(temp):
+    return ((19.0/22500.0)*temp) + (97.0/100.0)
+    
 
 # Log10 reverse light current microamps to log10 lux.
 # http://www.vishay.com/docs/81521/bpw34.pdf, p. 3 Fig 4
@@ -263,7 +273,7 @@ def output_sanity_graph():
         voltage = (v * bv_to_voltage) + voltage_offset
         bins = [ ]
         for stage in xrange(len(op_amp_resistor_stages)):
-            ev = voltage_and_oa_resistor_to_ev(voltage, op_amp_resistor_stages[stage])
+            ev = voltage_and_oa_resistor_to_ev(voltage, op_amp_resistor_stages[stage][0] * op_amp_resistor_stages[stage][1])
             bins.append(int(round((ev + 5.0) *8.0)))
             f.write(",%f" % ev)
         f.write("," + ",".join(map(str,bins)))
@@ -607,15 +617,13 @@ def output():
 
     e, pr = None, None
     for i in xrange(len(op_amp_resistor_stages)):
-        e, pr = output_ev_table(ofc, 'STAGE' + str(i+1), op_amp_resistor_stages[0])
+        e, pr = output_ev_table(ofc, 'STAGE' + str(i+1), op_amp_resistor_stages[i][0] * op_amp_resistor_stages[i][1])
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_BITPATTERNS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_ABS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_DIFFS[];\n" % (i+1))
         if not e:
+            sys.sderr.write("R ERROR %.3f: (%.3f, %.3f)\n" % (op_amp_resistor_stages[i][0] * op_amp_resistor_stages[i][1], pr[0], pr[1]))
             break
-
-    if not e:
-        sys.sderr.write("R ERROR %.3f: (%.3f, %.3f)\n" % (op_amp_resistor_stages[0], pr[0], pr[1]))
 
     ofh.write("#define VOLTAGE_TO_EV_ABS_OFFSET " + str(int(round((voltage_offset/reference_voltage)*256))) + '\n')
     ofh.write("#define LUMINANCE_COMPENSATION " + str(int(round(LUMINANCE_COMPENSATION*8.0))) + '\n')
