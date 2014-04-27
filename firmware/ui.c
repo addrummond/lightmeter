@@ -19,12 +19,7 @@
 // each iteration of a loop.
 //
 
-typedef struct ui_top_status_line_state {
-    uint8_t charbuffer[6];
-    bool charbuffer_has_contents;
-} ui_top_status_line_state_t;
-size_t ui_top_status_line_at_6col_state_size() { return sizeof(ui_top_status_line_state_t); }
-void ui_top_status_line_at_6col(void *func_state_,
+void ui_top_status_line_at_6col(ui_top_status_line_state_t *func_state,
                                 const meter_state_t *ms,
                                 uint8_t *out,
                                 uint8_t pages_per_col,
@@ -34,8 +29,6 @@ void ui_top_status_line_at_6col(void *func_state_,
     // * Incident/reflective symbol (top left).
     // * ISO (top right).
     //
-
-    ui_top_status_line_state_t *func_state = func_state_;
 
     //
     // Incident/reflective symbol.
@@ -148,26 +141,18 @@ diff:
     return CHAR_12PX_GRIDS + CHAR_12PX_0_O + CHAR_OFFSET_12PX(ascii - m);
 }
 
-typedef struct main_reading_state {
-    uint8_t len;
-    uint8_t start_x;
-    uint8_t i;
 
-    bool exposure_ready;
-} main_reading_state_t;
-size_t ui_main_reading_display_at_8col_state_size() { return sizeof(main_reading_state_t); }
-void ui_main_reading_display_at_8col(void *func_state_,
-                                      const meter_state_t *ms,
-                                      const transient_meter_state_t *tms,
-                                      uint8_t *out,
-                                      uint8_t pages_per_col,
-                                      uint8_t x)
+void ui_main_reading_display_at_8col(ui_main_reading_display_state_t *func_state,
+                                     const meter_state_t *ms,
+                                     const transient_meter_state_t *tms,
+                                     uint8_t *out,
+                                     uint8_t pages_per_col,
+                                     uint8_t x)
 {
     if (! tms->exposure_ready)
         return;
     
     const uint8_t VOFFSET = 5;
-    main_reading_state_t *func_state = func_state_;
 
     if (func_state->len == 0) { // State is unitialized; initialize it.
         func_state->exposure_ready = tms->exposure_ready; // Copy because volatile.
@@ -201,34 +186,13 @@ void ui_main_reading_display_at_8col(void *func_state_,
     }
 }
 
-typedef struct bttm_status_line_state {
-    // EV chars. TODO: Currently we're just displaying EV at ISO 100. If we
-    // keep this for the final product, it should display the EV at the current
-    // ISO.
-    uint8_t ev_chars[3]; // With room for 10 == '-'
-    uint8_t ev_length;
-    uint8_t *ev_chars_;
-
-    // Max length: "+14 1/8"
-    uint8_t expcomp_chars[7];
-    uint8_t expcomp_chars_length;
-    uint8_t start_x;
-
-    uint8_t charbuffer[6];
-    bool charbuffer_has_contents;
-
-    bool exposure_ready;
-} bttm_status_line_state_t;
-size_t ui_bttm_status_line_at_6col_state_size() { return sizeof(bttm_status_line_state_t); }
-void ui_bttm_status_line_at_6col(void *func_state_,
+void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
                                  const meter_state_t *ms,
                                  const transient_meter_state_t *tms,
                                  uint8_t *out,
                                  uint8_t pages_per_col,
                                  uint8_t x)
 {
-    bttm_status_line_state_t *func_state = func_state_;
-
     if (func_state->expcomp_chars[0] == 0) { // State is not initialized; initialize it.
         func_state->exposure_ready = tms->exposure_ready; // Copy because volatile.
 
