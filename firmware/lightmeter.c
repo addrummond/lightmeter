@@ -171,15 +171,17 @@ static void show_interface()
 {
     uint8_t i;
     uint8_t out[6];
-    for (i = 0; DISPLAY_LCDWIDTH - i >= 6; i += 6) {
+    size_t sz = ui_top_status_line_at_6col_state_size();
+    uint8_t state0[sz];
+    memset(state0, 0, sz);
+    for (i = 0; i < DISPLAY_LCDWIDTH; i += 6) {
         memset(out, 0, sizeof(out));
-        uint8_t offset = ui_top_status_line_at_6col(&global_meter_state, out, 1, i);
+        ui_top_status_line_at_6col(state0, &global_meter_state, out, 1, i);
         display_write_page_array(out, 6, 1, i, 0);
-        i += offset;
     }
 
     uint8_t out2[24];
-    size_t sz = ui_main_reading_display_at_8col_state_size();
+    sz = ui_main_reading_display_at_8col_state_size();
     uint8_t state[sz];
     memset(state, 0, sz);
     for (i = 0; i < DISPLAY_LCDWIDTH; i += 8) {

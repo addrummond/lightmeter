@@ -3,6 +3,7 @@
 #include <bitmaps/bitmaps.h>
 #include <exposure.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 //
 // Modularizing the display code takes a little bit of care when
@@ -17,15 +18,23 @@
 // each iteration of a loop.
 //
 
-uint8_t ui_top_status_line_at_6col(const meter_state_t *ms,
-                                  uint8_t *out,
-                                  uint8_t pages_per_col,
-                                  uint8_t x)
+typedef struct ui_top_status_line_state {
+    uint8_t charbuffer[6];
+    bool charbuffer_has_contents;
+} ui_top_status_line_state_t;
+size_t ui_top_status_line_at_6col_state_size() { return sizeof(ui_top_status_line_state_t); }
+void ui_top_status_line_at_6col(void *func_state_,
+                                const meter_state_t *ms,
+                                uint8_t *out,
+                                uint8_t pages_per_col,
+                                uint8_t x)
 {
     //
     // * Incident/reflective symbol (top left).
     // * ISO (top right).
     //
+
+    ui_top_status_line_state_t *func_state = func_state_;
 
     //
     // Incident/reflective symbol.
@@ -42,10 +51,9 @@ uint8_t ui_top_status_line_at_6col(const meter_state_t *ms,
             display_bwrite_8px_char(CHAR_8PX_0, out, pages_per_col, 0);
         } break;
         }
-
-        // Now we can skip two pixels so that we're 6-aligned with the end of the display.
-        return 2;
     }
+
+    // We're now behind by two pixels from the right edge of the display.
 
     //
     // ISO
@@ -53,22 +61,22 @@ uint8_t ui_top_status_line_at_6col(const meter_state_t *ms,
 
     uint8_t iso_start_x = DISPLAY_LCDWIDTH - (ms->bcd_iso_length << 2) - (ms->bcd_iso_length << 1) - (4*CHAR_WIDTH_8PX);
 
-    if (x >= iso_start_x && DISPLAY_LCDWIDTH - x >= 6) {
+    if (x == iso_start_x - 2 && DISPLAY_LCDWIDTH - x >= 6) {
         const uint8_t *px_grid;
 
         bool dont_write = false;
-        if (x == iso_start_x) {
+        if (x == iso_start_x - 2) {
             px_grid = CHAR_8PX_I;
         }
-        else if (x == iso_start_x + 6) {
+        else if (x == iso_start_x - 2 + 6) {
             px_grid = CHAR_8PX_S;
         }
-        else if (x == iso_start_x + 12) {
+        else if (x == iso_start_x - 2 + 12) {
             px_grid = CHAR_8PX_O;
         }
-        else if (x >= iso_start_x + 24) {
+        else if (x >= iso_start_x - 2 + 24) {
             uint8_t di;
-            for (di = 0; x > iso_start_x + 24; x -= 6, ++di);
+            for (di = 0; x > iso_start_x - 2 + 24; x -= 6, ++di);
 
             if (di < ms->bcd_iso_length) {
                 uint8_t digit = ms->bcd_iso_digits[di];
@@ -83,13 +91,25 @@ uint8_t ui_top_status_line_at_6col(const meter_state_t *ms,
             dont_write = true;
         }
 
-        if (! dont_write)
-            display_bwrite_8px_char(px_grid, out, pages_per_col, 0);
+        // Write tail end of last char if there was one.
+        if (func_state->charbuffer_has_contents) {
+            uint8_t j;
+            uint8_t *o;
+            for (j = 5, o = out; j >= 4; --j, o += pages_per_col)
+                *o = func_state->charbuffer[j];
+        }
 
-        return 0;
+        if (! dont_write) {
+            display_bwrite_8px_char(px_grid, func_state->charbuffer, 1, 0);
+            func_state->charbuffer_has_contents = true;
+
+            // Write beginning of that char.
+            uint8_t j;
+            uint8_t *o;
+            for (j = 0, o = out + (pages_per_col << 1); j < 4; ++j, o += pages_per_col)
+                *o = func_state->charbuffer[j];
+        }
     }
-
-    return 0;
 }
 
 // For shutter speeds and apertures (hence 'ssa').
