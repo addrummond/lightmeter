@@ -18,6 +18,9 @@
 // Assumes that there is an available byte at digits1[-1].
 // Stores result in digits1.
 // Returns either digits1 or (digits1-1).
+//
+// Currently not used, so compiling this only in TEST code to reduce flash usage.
+#ifdef TEST
 uint8_t *bcd_add(uint8_t *digits1, uint8_t digits1_length,
                  uint8_t *digits2, uint8_t digits2_length)
 {
@@ -53,6 +56,7 @@ uint8_t *bcd_add(uint8_t *digits1, uint8_t digits1_length,
 
     return digits1;
 }
+#endif
 
 uint8_t *bcd_sub(uint8_t *digits1, uint8_t digits1_length, uint8_t *digits2, uint8_t digits2_length)
 {
