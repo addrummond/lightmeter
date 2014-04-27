@@ -3,6 +3,19 @@
 #include <stdio.h>
 #endif
 
+// Exact division by 10.
+// See http://www.hackersdelight.org/divcMore.pdf
+uint8_t bitfiddle_uint8_div_by_10(uint8_t n)
+{
+    uint8_t q, r;
+    q = (n >> 1) + (n >> 2);
+    q = q + (q >> 4);
+    q = q + (q >> 8);
+    q = q >> 3;
+    r = n - q*10;
+    return q + ((r + 6) >> 4);
+}
+
 uint16_t bitfiddle_uint16_approx_div_by_10(uint16_t n)
 {
     // We divide by 8 then add/subtract another series of numbers to get the final result.
@@ -14,7 +27,8 @@ uint16_t bitfiddle_uint16_approx_div_by_10(uint16_t n)
 //
 // Not currently used; commenting out to reduce code size.
 //
-/*uint16_t bitfiddle_uint16_approx_div_by_5(uint16_t n)
+/*
+uint16_t bitfiddle_uint16_approx_div_by_5(uint16_t n)
 {
     // Similar to above. Max error is 3.
     return   (n >> 2) // div by 4

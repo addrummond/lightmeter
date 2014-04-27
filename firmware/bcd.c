@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include <bcd.h>
 #include <readbyte.h>
+#include <divmulutils.h>
 #ifdef TEST
 #include <stdio.h>
 #include <string.h>
@@ -202,18 +203,6 @@ uint8_t *bcd_div_by_lt10(uint8_t *digits, uint8_t length, uint8_t by)
     for (; digits < (digits + length) && *digits == 0; ++digits);
 
     return digits;
-}
-
-// Exact division by 10.
-// See http://www.hackersdelight.org/divcMore.pdf
-static uint8_t bitfiddle_uint8_div_by_10(uint8_t n) {
-    uint8_t q, r;
-    q = (n >> 1) + (n >> 2);
-    q = q + (q >> 4);
-    q = q + (q >> 8);
-    q = q >> 3;
-    r = n - q*10;
-    return q + ((r + 6) >> 4);
 }
 
 uint8_t *uint8_to_bcd(uint8_t n, uint8_t *digits, uint8_t length)
