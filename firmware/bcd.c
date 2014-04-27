@@ -88,10 +88,10 @@ uint8_t *bcd_sub(uint8_t *digits1, uint8_t digits1_length, uint8_t *digits2, uin
     return digits1;
 }
 
-uint8_t bcd_length_after_op(const uint8_t *oldptr, uint8_t oldlength, const uint8_t *newptr)
+/*uint8_t bcd_length_after_op(const uint8_t *oldptr, uint8_t oldlength, const uint8_t *newptr)
 {
-    return oldlength + (oldptr - newptr);
-}
+    return 
+    }*/
 
 void bcd_to_string(uint8_t *digits, uint8_t length)
 {
