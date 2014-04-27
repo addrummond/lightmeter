@@ -34,16 +34,11 @@ void ui_top_status_line_at_6col(ui_top_status_line_state_t *func_state,
     // Incident/reflective symbol.
     //
     if (x == 0) {
-        switch (ms->meter_mode) {
-        case METER_MODE_REFLECTIVE: {
-            display_bwrite_8px_char(CHAR_8PX_R, out, pages_per_col, 0);        
-        } break;
-        case METER_MODE_INCIDENT: {
+        if (ms->meter_mode == METER_MODE_REFLECTIVE) {
+            display_bwrite_8px_char(CHAR_8PX_R, out, pages_per_col, 0);
+        }
+        else { // METER_MODE_INCIDENT
             display_bwrite_8px_char(CHAR_8PX_I, out, pages_per_col, 0);
-        } break;
-        default: { // FOR TEST PURPOSES
-            display_bwrite_8px_char(CHAR_8PX_0, out, pages_per_col, 0);
-        } break;
         }
     }
 
