@@ -294,6 +294,7 @@ void ui_bttm_status_line_at_6col(void *func_state_,
         uint8_t char_offset = func_state->expcomp_chars[index];
         if (char_offset != 255 /*space*/) {
             display_bwrite_8px_char(CHAR_PIXELS_8PX + char_offset, func_state->charbuffer, pages_per_col, 0);
+            func_state->charbuffer_has_contents = true;
 
             // Write beginning of that char.
             uint8_t j;
