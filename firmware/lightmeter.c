@@ -14,7 +14,7 @@
 #include <tables.h>
 #include <display.h>
 #include <ui.h>
-#include <string.h> // For memset
+#include <mymemset.h>
 
 const uint8_t ADMUX_CLEAR_SOURCE = ~((1 << MUX5) | (1 << MUX4) | (1 << MUX2) | (1 << MUX2) | (1 << MUX1) | (0 << MUX0));
 const uint8_t ADMUX_CLEAR_REF_VOLTAGE = 0b11000000; // Couldn't do this with macros without getting overflow warning for some reason.
@@ -172,26 +172,26 @@ static void show_interface()
     uint8_t i;
     uint8_t out[6];
     ui_top_status_line_state_t state0;
-    memset(&state0, 0, sizeof(state0));
+    memset8_zero(&state0, sizeof(state0));
     for (i = 0; i < DISPLAY_LCDWIDTH; i += 6) {
-        memset(out, 0, sizeof(out));
+        memset8_zero(out, sizeof(out));
         ui_top_status_line_at_6col(&state0, &global_meter_state, out, 1, i);
         display_write_page_array(out, 6, 1, i, 0);
     }
 
     uint8_t out2[24];
     ui_main_reading_display_state_t state;
-    memset(&state, 0, sizeof(state));
+    memset8_zero(&state, sizeof(state));
     for (i = 0; i < DISPLAY_LCDWIDTH; i += 8) {
-        memset(out2, 0, sizeof(out2));
+        memset8_zero(out2, sizeof(out2));
         ui_main_reading_display_at_8col(&state, &global_meter_state, &global_transient_meter_state, out2, 3, i);
         display_write_page_array(out2, 8, 3, i, 3);
     }
 
     ui_bttm_status_line_state_t state2;
-    memset(&state2, 0, sizeof(state2));
+    memset8_zero(&state2, sizeof(state2));
     for (i = 0; DISPLAY_LCDWIDTH - i >= 6; i += 6) {
-        memset(out, 0, sizeof(out));
+        memset8_zero(out, sizeof(out));
         ui_bttm_status_line_at_6col(&state2, &global_meter_state, &global_transient_meter_state, out, 1, i);
         display_write_page_array(out, 6, 1, i, 7);
     }

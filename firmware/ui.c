@@ -4,7 +4,7 @@
 #include <exposure.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <string.h> // for memset
+#include <mymemset.h>
 
 //
 // Modularizing the display code takes a little bit of care when
@@ -88,7 +88,7 @@ void ui_top_status_line_at_6col(ui_top_status_line_state_t *func_state,
                 *o = func_state->charbuffer[j];
         }
 
-        memset(func_state->charbuffer, 0, sizeof(func_state->charbuffer));
+        memset8_zero(func_state->charbuffer, sizeof(func_state->charbuffer));
         if (! dont_write) {
             display_bwrite_8px_char(px_grid, func_state->charbuffer, 1, 0);
             func_state->charbuffer_has_contents = true;
@@ -301,7 +301,7 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
                 *o = func_state->charbuffer[j];
         }
 
-        memset(func_state->charbuffer, 0, sizeof(func_state->charbuffer));
+        memset8_zero(func_state->charbuffer, sizeof(func_state->charbuffer));
     
         uint8_t index;
         for (index = 0; x > func_state->start_x - 2; x -= 6, ++index);
