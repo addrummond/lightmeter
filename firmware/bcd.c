@@ -206,7 +206,66 @@ uint8_t *bcd_div_by_lt10(uint8_t *digits, uint8_t length, uint8_t by)
     return digits;
 }
 
+// Exact division by 10.
+// See http://www.hackersdelight.org/divcMore.pdf
+static uint8_t bitfiddle_uint8_div_by_10(uint8_t n) {
+    uint8_t q, r;
+    q = (n >> 1) + (n >> 2);
+    q = q + (q >> 4);
+    q = q + (q >> 8);
+    q = q + (q >> 16);
+    q = q >> 3;
+    r = n - q*10;
+    return q + ((r + 6) >> 4);
+}
+
+uint8_t *uint8_to_bcd(uint8_t n, uint8_t *digits, uint8_t length)
+{
+    uint8_t i = length-1;
+    while (n >= 10) {
+        uint8_t v = bitfiddle_uint8_div_by_10(n);
+        //printf("  %i/%i = %i\n", n, 10, v);
+        uint8_t rem = n - (v << 3) - (v << 1);
+        //printf("  %i%%%i = %i\n", n, 10, rem);
+        n = v;
+
+        digits[i] = rem;
+
+        if (i == 0)
+            break;
+        --i;
+    }
+    digits[i] = n;
+
+    return digits + i;
+}
+
 #ifdef TEST
+
+static void uint8_to_bcd_test_(uint8_t val)
+{
+    uint8_t digits[4];
+    digits[3] = '\0';
+    uint8_t *digits_ = uint8_to_bcd(val, digits, 3);
+    uint8_t i;
+    for (i = 0; i < 3 - (digits_ - digits); ++i)
+        digits_[i] += '0';
+    printf("%i -> '%s'\n", val, digits_);
+}
+
+static void uint8_to_bcd_test()
+{
+    uint8_to_bcd_test_(1);
+    uint8_to_bcd_test_(10);
+    uint8_to_bcd_test_(100);
+    uint8_to_bcd_test_(0);
+    uint8_to_bcd_test_(124);
+    uint8_to_bcd_test_(12);
+    uint8_to_bcd_test_(255);
+    uint8_to_bcd_test_(26);
+    uint8_to_bcd_test_(27);
+    printf("\n");
+}
 
 static void add_test1()
 {
@@ -363,6 +422,8 @@ static void div_by_test4()
 
 int main()
 {
+    uint8_to_bcd_test();
+
     add_test1();
     add_test2();
     add_test3();
