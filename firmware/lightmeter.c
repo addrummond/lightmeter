@@ -119,7 +119,7 @@ static void set_op_amp_resistor_stage(uint8_t op_amp_resistor_stage)
 {
     // TODO: Code that actually switches the MOFSETs.
     
-    global_meter_state.op_amp_resistor_stage = op_amp_resistor_stage;
+    global_transient_meter_state.op_amp_resistor_stage = op_amp_resistor_stage;
 }
 
 void led_test(void);
@@ -133,7 +133,7 @@ void handle_measurement()
     uint8_t ev = get_ev100_at_temperature_voltage(
         current_temp,
         adc_light_nonvol_value,
-        global_meter_state.op_amp_resistor_stage
+        global_transient_meter_state.op_amp_resistor_stage
     );
     global_transient_meter_state.last_ev = ev;
 

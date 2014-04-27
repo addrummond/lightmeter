@@ -25,5 +25,6 @@ transient_meter_state_t global_transient_meter_state = {
     { { 0,0,0,0,0,0,0,0,0,0,0 }, 0 },
     { { 0,0,0,0,0,0,0,0,0}, 0 },
     0,
-    false
+    false,
+    1
 };

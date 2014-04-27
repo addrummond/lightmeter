@@ -37,9 +37,7 @@ typedef struct meter_state {
     priority_t priority;
 
     int8_t exp_comp;
-
-    uint8_t op_amp_resistor_stage;
-
+  
     ui_mode_t ui_mode;
 
     meter_mode_t meter_mode;
@@ -65,6 +63,7 @@ typedef struct transient_meter_state {
     shutter_string_output_t shutter_speed_string;
     uint8_t last_ev;
     bool exposure_ready;
+    uint8_t op_amp_resistor_stage;
 } transient_meter_state_t;
 
 extern transient_meter_state_t global_transient_meter_state;

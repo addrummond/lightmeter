@@ -14,8 +14,6 @@ eeprom = [
 
     0,                                                             # exp comp
 
-    1,                                                             # first op amp resistor stage.
-
     0,                                                             # UI_MODE_DEFAULT
 
     0,                                                             # METER_MODE_REFLECTIVE
