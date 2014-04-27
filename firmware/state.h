@@ -63,6 +63,7 @@ typedef struct transient_meter_state {
     uint8_t shutter_speed;
     aperture_string_output_t aperture_string;
     shutter_string_output_t shutter_speed_string;
+    uint8_t last_ev;
     bool exposure_ready;
 } transient_meter_state_t;
 

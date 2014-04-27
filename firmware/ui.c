@@ -193,6 +193,13 @@ void ui_main_reading_display_at_8col(void *func_state_,
 }
 
 typedef struct bttm_status_line_state {
+    // EV chars. TODO: Currently we're just displaying EV at ISO 100. If we
+    // keep this for the final product, it should display the EV at the current
+    // ISO.
+    uint8_t ev_chars[3]; // With room for 10 == '-'
+    uint8_t ev_length;
+    uint8_t *ev_chars_;
+
     // Max length: "+14 1/8"
     uint8_t expcomp_chars[7];
     uint8_t expcomp_chars_length;
@@ -204,6 +211,7 @@ typedef struct bttm_status_line_state {
 size_t ui_bttm_status_line_at_6col_state_size() { return sizeof(bttm_status_line_state_t); }
 void ui_bttm_status_line_at_6col(void *func_state_,
                                  const meter_state_t *ms,
+                                 const transient_meter_state_t *tms,
                                  uint8_t *out,
                                  uint8_t pages_per_col,
                                  uint8_t x)
@@ -214,6 +222,20 @@ void ui_bttm_status_line_at_6col(void *func_state_,
     bttm_status_line_state_t *func_state = func_state_;
 
     if (func_state->expcomp_chars[0] == 0) { // State is not initialized; initialize it.
+        // Output EV (TODO: Currently ignores eighths)
+        if (tms->exposure_ready) {
+            if (tms->last_ev < 5*8) {
+                func_state->ev_length = 2;
+                func_state->ev_chars[0] = 10; // Means '-'.
+                func_state->ev_chars[1] = CHAR_8PX_0_O + CHAR_OFFSET_8PX(5 - (tms->last_ev >> 3));
+                func_state->ev_chars_ = func_state->ev_chars;
+            }
+            else {
+                func_state->ev_chars_ = uint8_to_bcd((tms->last_ev >> 3) - 5, func_state->ev_chars, sizeof(func_state->ev_chars));
+                func_state->ev_length = func_state->ev_length - (func_state->ev_chars_ - func_state->ev_chars);
+            }
+        }
+
         // Exposure compensation is stored in 1/8 stops in an int8_t.
         // This means that if we ignore the eighths, it can only be up to +/- 16 stops.
         // We can therefore avoid doing a proper conversion to BCD,
@@ -275,6 +297,24 @@ void ui_bttm_status_line_at_6col(void *func_state_,
         func_state->start_x = DISPLAY_LCDWIDTH - (i << 2) - (i << 1);
     }
 
+    if (x == 0) {
+        display_bwrite_8px_char(CHAR_8PX_E, out, pages_per_col, 0);
+    }
+    else if (x == 6) {
+        display_bwrite_8px_char(CHAR_8PX_V, out, pages_per_col, 0);
+    }
+    else if (x >= 18 && x < 18 + (3*6)) {
+        uint8_t off, j;
+        for (off = 0, j = x; j > 18; j -= 6, ++off);
+
+        if (off < func_state->ev_length) {
+            if (func_state->ev_chars_[off] == 10) // Means '-'.
+                display_bwrite_8px_char(CHAR_8PX_MINUS, out, pages_per_col, 0);
+            else
+                display_bwrite_8px_char(CHAR_8PX_0 + CHAR_OFFSET_8PX(func_state->ev_chars_[off]), out, pages_per_col, 0);
+        }
+    }
+
     // We're now two pixels behind alignment with the right edge of the display.
     
     if (x >= func_state->start_x - 2) {
@@ -293,7 +333,7 @@ void ui_bttm_status_line_at_6col(void *func_state_,
 
         uint8_t char_offset = func_state->expcomp_chars[index];
         if (char_offset != 255 /*space*/) {
-            display_bwrite_8px_char(CHAR_PIXELS_8PX + char_offset, func_state->charbuffer, pages_per_col, 0);
+            display_bwrite_8px_char(CHAR_PIXELS_8PX + char_offset, func_state->charbuffer, 1, 0);
             func_state->charbuffer_has_contents = true;
 
             // Write beginning of that char.

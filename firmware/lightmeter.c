@@ -136,6 +136,7 @@ void handle_measurement()
         adc_light_nonvol_value,
         global_meter_state.op_amp_resistor_stage
     );
+    global_transient_meter_state.last_ev = ev;
 
     uint8_t ap, shut;
     if (global_meter_state.priority == SHUTTER_PRIORITY) {
@@ -195,7 +196,7 @@ static void show_interface()
     memset(state2, 0, sz);
     for (i = 0; DISPLAY_LCDWIDTH - i >= 6; i += 6) {
         memset(out, 0, sizeof(out));
-        ui_bttm_status_line_at_6col(state2, &global_meter_state, out, 1, i);
+        ui_bttm_status_line_at_6col(state2, &global_meter_state, &global_transient_meter_state, out, 1, i);
         display_write_page_array(out, 6, 1, i, 7);
     }
 }
