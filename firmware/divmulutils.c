@@ -14,6 +14,7 @@ uint8_t bitfiddle_uint16_to_uint8_div_by_10(uint16_t n)
     //q = q + (q >> 16); // Original code was for 32-bit ints.
     q >>= 3;
     r = n - q*10;
+    // Casting here, rather than letting the caller do it, reduces code size.
     return (uint8_t)(q + ((r + 6) >> 4));
 }
 
