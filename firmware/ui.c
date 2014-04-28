@@ -236,19 +236,17 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
         if (eighths) {
             func_state->expcomp_chars[i++] = 255; // We use this special value to represent a space.
 
-            switch (eighths) {
-            case 1: case 2: case 4: {
+            if (eighths == 1 || eighths == 2 || eighths == 4) {
                 func_state->expcomp_chars[i++] = CHAR_8PX_1_O;
-            } break;
-            case 3: case 6: {
+            }
+            else if (eighths == 3 || eighths == 6) {
                 func_state->expcomp_chars[i++] = CHAR_8PX_3_O;
-            } break;
-            case 5: {
+            }
+            else if (eighths == 5) {
                 func_state->expcomp_chars[i++] = CHAR_8PX_5_O;
-            } break;
-            case 7: {
-                func_state->expcomp_chars[i++] = CHAR_8PX_7_O;                                                    
-            } break;
+            }
+            else { //if (eighths == 7) {
+                func_state->expcomp_chars[i++] = CHAR_8PX_7_O;
             }
 
             func_state->expcomp_chars[i++] = CHAR_8PX_SLASH_O;
