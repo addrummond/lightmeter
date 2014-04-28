@@ -58,7 +58,7 @@ static void calculate_current_temp()
     uint16_t newt = t - ADC_TEMP_CONSTANT;
     for (i = 0; i < ADC_TEMP_SLOPE_WHOLES; ++i)
         newt += t;
-    uint16_t tenth = bitfiddle_uint16_approx_div_by_10(newt);
+    uint16_t tenth = (uint16_t)bitfiddle_uint16_to_uint8_div_by_10(newt);
     for (i = 0; i < ADC_TEMP_SLOPE_TENTHS; ++i)
         newt += tenth;
     for (i = 0; i < ADC_TEMP_SLOPE_MINUS_TENTHS; ++i)
