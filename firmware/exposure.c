@@ -32,7 +32,7 @@ void shutter_speed_to_string(uint8_t speed, shutter_string_output_t *eso)
     uint8_t previous = 0;
     bool already_got_slash = false;
     for (i = 0, j = 0; i < 5; ++j, ++i, shift ^= 4) {
-      nibble = (pgm_read_byte(&SHUTTER_SPEEDS[bytei]) >> shift) & 0xF;
+        nibble = (pgm_read_byte(&SHUTTER_SPEEDS[bytei]) >> shift) & 0xF;
         if (nibble == 0)
             break;
 
