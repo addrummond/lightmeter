@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <mymemset.h>
+#include <assert.h>
 
 //
 // Modularizing the display code takes a little bit of care when
@@ -182,6 +183,28 @@ void ui_main_reading_display_at_8col(ui_main_reading_display_state_t *func_state
     }
 }
 
+static void write_eighths_8px_chars(uint8_t *digits, uint8_t eighths)
+{
+    //    assert(eighths < 8 && eighths > 0);
+    if (eighths == 1 || eighths == 2 || eighths == 4)
+        digits[0] = CHAR_8PX_1_O;
+    else if (eighths == 3 || eighths == 6)
+        digits[0] = CHAR_8PX_3_O;
+    else if (eighths == 5)
+        digits[0] = CHAR_8PX_5_O;
+    else // if (eighths == 7)
+        digits[0] = CHAR_8PX_7_O;
+
+    digits[1] = CHAR_8PX_SLASH_O;
+
+    if (eighths & 1)
+        digits[2] = CHAR_8PX_8_O;
+    else if (eighths == 4)
+        digits[2] = CHAR_8PX_2_O;
+    else
+        digits[2] = CHAR_8PX_4_O;
+}
+
 void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
                                  uint8_t *out,
                                  uint8_t pages_per_col,
@@ -192,15 +215,32 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
 
         // Output EV (TODO: Currently ignores eighths)
         if (tms.exposure_ready) {
+            uint8_t eighths = tms.last_ev & 0b111;
             if (tms.last_ev < 5*8) {
+                eighths = 8-eighths;
+
                 func_state->ev_length = 2;
-                func_state->ev_chars[0] = 10; // Means '-'.
+                func_state->ev_chars[0] = CHAR_8PX_MINUS_O;
                 func_state->ev_chars[1] = CHAR_8PX_0_O + CHAR_OFFSET_8PX(5 - (tms.last_ev >> 3));
                 func_state->ev_chars_ = func_state->ev_chars;
             }
             else {
-                func_state->ev_chars_ = uint8_to_bcd((tms.last_ev >> 3) - 5, func_state->ev_chars, sizeof(func_state->ev_chars));
-                func_state->ev_length = bcd_length_after_op(func_state->ev_chars, sizeof(func_state->ev_chars), func_state->ev_chars_);
+                //func_state->ev_length = 2;
+                //func_state->ev_chars[0] = CHAR_8PX_7_O;
+                //func_state->ev_chars[1] = CHAR_8PX_8_O;
+                //func_state->ev_chars_ = func_state->ev_chars;
+                func_state->ev_chars_ = uint8_to_bcd((tms.last_ev >> 3) - 5, func_state->ev_chars, 3);
+                func_state->ev_length = bcd_length_after_op(func_state->ev_chars, 3, func_state->ev_chars_);
+                uint8_t i;
+                for (i = 0; i < func_state->ev_length; ++i)
+                    func_state->ev_chars_[i] = CHAR_OFFSET_8PX(func_state->ev_chars_[i]) + CHAR_8PX_0_O;
+            }
+
+            if (eighths != 0 && eighths != 8) {
+                uint8_t l = func_state->ev_length;
+                func_state->ev_chars_[l++] = CHAR_8PX_PLUS_O;
+                write_eighths_8px_chars(func_state->ev_chars_ + l, eighths);
+                func_state->ev_length = l + 3;
             }
         }
 
@@ -234,29 +274,9 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
 
         uint8_t eighths = global_meter_state.exp_comp & 0b111;
         if (eighths) {
-            func_state->expcomp_chars[i++] = 255; // We use this special value to represent a space.
-
-            if (eighths == 1 || eighths == 2 || eighths == 4) {
-                func_state->expcomp_chars[i++] = CHAR_8PX_1_O;
-            }
-            else if (eighths == 3 || eighths == 6) {
-                func_state->expcomp_chars[i++] = CHAR_8PX_3_O;
-            }
-            else if (eighths == 5) {
-                func_state->expcomp_chars[i++] = CHAR_8PX_5_O;
-            }
-            else { //if (eighths == 7) {
-                func_state->expcomp_chars[i++] = CHAR_8PX_7_O;
-            }
-
-            func_state->expcomp_chars[i++] = CHAR_8PX_SLASH_O;
-
-            if (eighths & 1)
-                func_state->expcomp_chars[i++] = CHAR_8PX_8_O;
-            else if (eighths == 4)
-                func_state->expcomp_chars[i++] = CHAR_8PX_2_O;
-            else
-                func_state->expcomp_chars[i++] = CHAR_8PX_4_O;
+            func_state->expcomp_chars[i++] = CHAR_8PX_PLUS_O;
+            write_eighths_8px_chars(func_state->expcomp_chars + i, eighths);
+            i += 3;
         }
 
         func_state->expcomp_chars_length = i;
@@ -272,15 +292,13 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
     else if (x == 6) {
         display_bwrite_8px_char(CHAR_8PX_V, out, pages_per_col, 0);
     }
-    else if (x >= 18 && x < 18 + (3*6)) {
+    else if (x >= 18 && x < 18 + (8*6)) {
         uint8_t off, j;
         for (off = 0, j = x; j > 18; j -= 6, ++off);
 
         if (off < func_state->ev_length) {
-            if (func_state->ev_chars_[off] == 10) // Means '-'.
-                display_bwrite_8px_char(CHAR_8PX_MINUS, out, pages_per_col, 0);
-            else
-                display_bwrite_8px_char(CHAR_8PX_0 + CHAR_OFFSET_8PX(func_state->ev_chars_[off]), out, pages_per_col, 0);
+            uint8_t co = func_state->ev_chars_[off];
+            display_bwrite_8px_char(CHAR_PIXELS_8PX + co, out, pages_per_col, 0);
         }
     }
 
@@ -304,15 +322,13 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
         for (index = 0; x > func_state->start_x - 2; x -= 6, ++index);
 
         uint8_t char_offset = func_state->expcomp_chars[index];
-        if (char_offset != 255 /*space*/) {
-            display_bwrite_8px_char(CHAR_PIXELS_8PX + char_offset, func_state->charbuffer, 1, 0);
-            func_state->charbuffer_has_contents = true;
+        display_bwrite_8px_char(CHAR_PIXELS_8PX + char_offset, func_state->charbuffer, 1, 0);
+        func_state->charbuffer_has_contents = true;
 
-            // Write beginning of that char.
-            uint8_t j;
-            uint8_t *o;
-            for (j = 0, o = out + (pages_per_col << 1); j < 4; ++j, o += pages_per_col)
-                *o = func_state->charbuffer[j];
-        }
+        // Write beginning of that char.
+        uint8_t j;
+        uint8_t *o;
+        for (j = 0, o = out + (pages_per_col << 1); j < 4; ++j, o += pages_per_col)
+            *o = func_state->charbuffer[j];
     }
 }
