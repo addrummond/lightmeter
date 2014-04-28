@@ -240,7 +240,7 @@ static void uint8_to_bcd_test_(uint8_t val)
     uint8_t i;
     for (i = 0; i < 3 - (digits_ - digits); ++i)
         digits_[i] += '0';
-    printf("%i -> '%s'\n", val, digits_);
+    printf("%i -> '%s' (%i)\n", val, digits_, (int)bcd_length_after_op(digits, 3, digits_));
 }
 
 static void uint8_to_bcd_test()

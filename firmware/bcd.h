@@ -12,7 +12,7 @@ bool bcd_cmp(const uint8_t *digits1, uint8_t length1, const uint8_t *digits2, ui
 uint8_t *bcd_div_by_lt10(uint8_t *digits, uint8_t length, uint8_t by);
 uint8_t *uint8_to_bcd(uint8_t n, uint8_t *digits, uint8_t length);
 
-#define bcd_length_after_op(oldptr, oldlength, newptr) ((oldlength) + ((oldptr) - (newptr)))
+#define bcd_length_after_op(oldptr, oldlength, newptr) (((oldlength) + (oldptr)) - (newptr))
 
 #ifdef TEST
 void debug_print_bcd(uint8_t *digits, uint8_t length);
