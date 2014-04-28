@@ -175,7 +175,7 @@ static void show_interface()
     memset8_zero(&state0, sizeof(state0));
     for (i = 0; i < DISPLAY_LCDWIDTH; i += 6) {
         memset8_zero(out, sizeof(out));
-        ui_top_status_line_at_6col(&state0, &global_meter_state, out, 1, i);
+        ui_top_status_line_at_6col(&state0, out, 1, i);
         display_write_page_array(out, 6, 1, i, 0);
     }
 
@@ -184,7 +184,7 @@ static void show_interface()
     memset8_zero(&state, sizeof(state));
     for (i = 0; i < DISPLAY_LCDWIDTH; i += 8) {
         memset8_zero(out2, sizeof(out2));
-        ui_main_reading_display_at_8col(&state, &global_meter_state, &global_transient_meter_state, out2, 3, i);
+        ui_main_reading_display_at_8col(&state, out2, 3, i);
         display_write_page_array(out2, 8, 3, i, 3);
     }
 
@@ -192,7 +192,7 @@ static void show_interface()
     memset8_zero(&state2, sizeof(state2));
     for (i = 0; DISPLAY_LCDWIDTH - i >= 6; i += 6) {
         memset8_zero(out, sizeof(out));
-        ui_bttm_status_line_at_6col(&state2, &global_meter_state, &global_transient_meter_state, out, 1, i);
+        ui_bttm_status_line_at_6col(&state2, out, 1, i);
         display_write_page_array(out, 6, 1, i, 7);
     }
 }

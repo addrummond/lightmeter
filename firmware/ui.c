@@ -19,12 +19,15 @@
 // each iteration of a loop.
 //
 
+#define ms global_meter_state
+#define tms global_transient_meter_state
+
 void ui_top_status_line_at_6col(ui_top_status_line_state_t *func_state,
-                                const meter_state_t *ms,
                                 uint8_t *out,
                                 uint8_t pages_per_col,
                                 uint8_t x)
 {
+
     //
     // * Incident/reflective symbol (top left).
     // * ISO (top right).
@@ -34,7 +37,7 @@ void ui_top_status_line_at_6col(ui_top_status_line_state_t *func_state,
     // Incident/reflective symbol.
     //
     if (x == 0) {
-        if (ms->meter_mode == METER_MODE_REFLECTIVE) {
+        if (ms.meter_mode == METER_MODE_REFLECTIVE) {
             display_bwrite_8px_char(CHAR_8PX_R, out, pages_per_col, 0);
         }
         else { // METER_MODE_INCIDENT
@@ -48,7 +51,7 @@ void ui_top_status_line_at_6col(ui_top_status_line_state_t *func_state,
     // ISO
     //
 
-    uint8_t iso_start_x = DISPLAY_LCDWIDTH - (ms->bcd_iso_length << 2) - (ms->bcd_iso_length << 1) - (4*CHAR_WIDTH_8PX);
+    uint8_t iso_start_x = DISPLAY_LCDWIDTH - (ms.bcd_iso_length << 2) - (ms.bcd_iso_length << 1) - (4*CHAR_WIDTH_8PX);
 
     if (x >= iso_start_x - 2 && x < DISPLAY_LCDWIDTH) {
         const uint8_t *px_grid;
@@ -67,8 +70,8 @@ void ui_top_status_line_at_6col(ui_top_status_line_state_t *func_state,
             uint8_t di;
             for (di = 0; x > iso_start_x - 2 + 24; x -= 6, ++di);
 
-            if (di < ms->bcd_iso_length) {
-                uint8_t digit = ms->bcd_iso_digits[di];
+            if (di < ms.bcd_iso_length) {
+                uint8_t digit = ms.bcd_iso_digits[di];
                 px_grid = CHAR_PIXELS_8PX + CHAR_8PX_0_O + CHAR_OFFSET_8PX(digit);
             }
             else {
@@ -138,25 +141,23 @@ diff:
 
 
 void ui_main_reading_display_at_8col(ui_main_reading_display_state_t *func_state,
-                                     const meter_state_t *ms,
-                                     const transient_meter_state_t *tms,
                                      uint8_t *out,
                                      uint8_t pages_per_col,
                                      uint8_t x)
 {
-    if (! tms->exposure_ready)
+    if (! tms.exposure_ready)
         return;
     
     const uint8_t VOFFSET = 5;
 
     if (func_state->len == 0) { // State is unitialized; initialize it.
-        func_state->exposure_ready = tms->exposure_ready; // Copy because volatile.
+        func_state->exposure_ready = tms.exposure_ready; // Copy because volatile.
         if (! func_state->exposure_ready)
             return;
 
         // Total number of chars is the sum of the two plus one for a space plus one for
         // the 'f' we insert before the aperture.
-        func_state->len = tms->shutter_speed_string.length + tms->aperture_string.length + 2;
+        func_state->len = tms.shutter_speed_string.length + tms.aperture_string.length + 2;
         func_state->start_x = (DISPLAY_LCDWIDTH >> 1) - ((func_state->len << 3) >> 1);
         func_state->i = 0;
     }
@@ -165,15 +166,15 @@ void ui_main_reading_display_at_8col(ui_main_reading_display_state_t *func_state
         return;
 
     if (x >= func_state->start_x && func_state->i < func_state->len) {
-        if (func_state->i < tms->shutter_speed_string.length) {
-            uint8_t ascii = SHUTTER_STRING_OUTPUT_STRING(tms->shutter_speed_string)[func_state->i];
+        if (func_state->i < tms.shutter_speed_string.length) {
+            uint8_t ascii = SHUTTER_STRING_OUTPUT_STRING(tms.shutter_speed_string)[func_state->i];
             display_bwrite_12px_char(ssa_get_12px_grid(ascii), out, pages_per_col, VOFFSET);
         }
-        else if (func_state->i == tms->shutter_speed_string.length + 1) {
+        else if (func_state->i == tms.shutter_speed_string.length + 1) {
             display_bwrite_12px_char(CHAR_12PX_F, out, pages_per_col, VOFFSET);
         }
-        else if (func_state->i >= tms->shutter_speed_string.length + 2) {
-            uint8_t ascii = APERTURE_STRING_OUTPUT_STRING(tms->aperture_string)[func_state->i - tms->shutter_speed_string.length - 2];
+        else if (func_state->i >= tms.shutter_speed_string.length + 2) {
+            uint8_t ascii = APERTURE_STRING_OUTPUT_STRING(tms.aperture_string)[func_state->i - tms.shutter_speed_string.length - 2];
             display_bwrite_12px_char(ssa_get_12px_grid(ascii), out, pages_per_col, VOFFSET);
        }
 
@@ -182,25 +183,23 @@ void ui_main_reading_display_at_8col(ui_main_reading_display_state_t *func_state
 }
 
 void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
-                                 const meter_state_t *ms,
-                                 const transient_meter_state_t *tms,
                                  uint8_t *out,
                                  uint8_t pages_per_col,
                                  uint8_t x)
 {
     if (func_state->expcomp_chars[0] == 0) { // State is not initialized; initialize it.
-        func_state->exposure_ready = tms->exposure_ready; // Copy because volatile.
+        func_state->exposure_ready = tms.exposure_ready; // Copy because volatile.
 
         // Output EV (TODO: Currently ignores eighths)
-        if (tms->exposure_ready) {
-            if (tms->last_ev < 5*8) {
+        if (tms.exposure_ready) {
+            if (tms.last_ev < 5*8) {
                 func_state->ev_length = 2;
                 func_state->ev_chars[0] = 10; // Means '-'.
-                func_state->ev_chars[1] = CHAR_8PX_0_O + CHAR_OFFSET_8PX(5 - (tms->last_ev >> 3));
+                func_state->ev_chars[1] = CHAR_8PX_0_O + CHAR_OFFSET_8PX(5 - (tms.last_ev >> 3));
                 func_state->ev_chars_ = func_state->ev_chars;
             }
             else {
-                func_state->ev_chars_ = uint8_to_bcd((tms->last_ev >> 3) - 5, func_state->ev_chars, sizeof(func_state->ev_chars));
+                func_state->ev_chars_ = uint8_to_bcd((tms.last_ev >> 3) - 5, func_state->ev_chars, sizeof(func_state->ev_chars));
                 func_state->ev_length = func_state->ev_length - (func_state->ev_chars_ - func_state->ev_chars);
             }
         }

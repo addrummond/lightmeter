@@ -10,7 +10,6 @@ typedef struct ui_top_status_line_state {
     bool charbuffer_has_contents;
 } ui_top_status_line_state_t;
 void ui_top_status_line_at_6col(ui_top_status_line_state_t *func_state,
-                                const meter_state_t *ms,
                                 uint8_t *out,
                                 uint8_t pages_per_col,
                                 uint8_t x);
@@ -23,8 +22,6 @@ typedef struct ui_main_reading_display_state {
     bool exposure_ready;
 } ui_main_reading_display_state_t;
 void ui_main_reading_display_at_8col(ui_main_reading_display_state_t *func_state,
-                                     const meter_state_t *ms,
-                                     const transient_meter_state_t *tms,
                                      uint8_t *out,
                                      uint8_t pages_per_col,
                                      uint8_t x);
@@ -48,8 +45,6 @@ typedef struct ui_bttm_status_line_state {
     bool exposure_ready;
 } ui_bttm_status_line_state_t;
 void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
-                                 const meter_state_t *ms,
-                                 const transient_meter_state_t *tms,
                                  uint8_t *out,
                                  uint8_t pages_per_col,
                                  uint8_t x);
