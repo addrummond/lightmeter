@@ -35,7 +35,7 @@ typedef struct shutter_string_output {
 #define SHUTTER_STRING_OUTPUT_STRING(eso) ((eso).chars)
 
 typedef struct aperture_string_output {
-    uint8_t chars[11];
+    uint8_t chars[8];
     uint8_t length; // Does not include null terminator.
 } aperture_string_output_t;
 #define APERTURE_STRING_OUTPUT_STRING(aso) ((aso).chars)
