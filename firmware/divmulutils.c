@@ -19,7 +19,7 @@ uint8_t bitfiddle_uint16_to_uint8_div_by_10(uint16_t n)
 }
 
 //
-// Not currently used; commenting out except in test code.
+// Not currently used; not compiling this except for test code.
 //
 #ifdef TEST
 uint16_t bitfiddle_uint16_approx_div_by_5(uint16_t n)
