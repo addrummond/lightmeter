@@ -200,7 +200,7 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
             }
             else {
                 func_state->ev_chars_ = uint8_to_bcd((tms.last_ev >> 3) - 5, func_state->ev_chars, sizeof(func_state->ev_chars));
-                func_state->ev_length = func_state->ev_length - (func_state->ev_chars_ - func_state->ev_chars);
+                func_state->ev_length = bcd_length_after_op(func_state->ev_chars, sizeof(func_state->ev_chars), func_state->ev_chars_);
             }
         }
 
