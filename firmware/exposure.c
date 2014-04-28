@@ -128,7 +128,7 @@ void aperture_to_string(uint8_t aperture, aperture_string_output_t *aso)
 // Table storing full-stop ISO numbers.
 // Each pair of bytes is:
 //     (i)  big-endian 4-bit BCD rep of first two digits,
-//     (ii) 4-bit number of trailing zeroes.
+//     (ii) number of trailing zeroes.
 static const uint8_t FULL_STOP_ISOS[] PROGMEM = {
     6, 0,             // 6
     (1 << 4) | 2, 0,  // 12
