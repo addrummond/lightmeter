@@ -8,9 +8,9 @@
 
 //                       |    VCC 1--14  GND      |
 //         Display data  |    PB0 2--13  PA/ADC0  | Op amp output.
-//         Display CS    |    PB1 3--12  PA/ADC1  |
-//                       |  RESET 4--11  PA/ADC2  |
-//         Display Clk   |    PB2 5--10  PA/ADC3  |
+//         Display CS    |    PB1 3--12  PA/ADC1  | Op amp comparison pin (ground).
+//                       |  RESET 4--11  PA/ADC2  | Charge pump clock 1.
+//         Display Clk   |    PB2 5--10  PA/ADC3  | Charge pump clock 2.
 //         Display DC    |    PA7 6---9  PA/ADC4  |
 //         Display reset |    PA6 7---8  PA/ADC5  | Test LED.
 
