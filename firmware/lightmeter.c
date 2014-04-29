@@ -200,7 +200,6 @@ static void show_interface()
 static void setup_charge_pump()
 {
     // Set initial charge pump clocks in inverse phase.
-    DDRA = 0b1100;
     DDRA |= ((1 << CHARGE_PUMP_CLOCK1_BIT) | (1 << CHARGE_PUMP_CLOCK2_BIT));
     CHARGE_PUMP_CLOCKS_PORT |= (1 << CHARGE_PUMP_CLOCK1_BIT);
     CHARGE_PUMP_CLOCKS_PORT &= ~(1 << CHARGE_PUMP_CLOCK2_BIT);
