@@ -1,6 +1,8 @@
 #ifndef DEVICE_CONFIG_H
 #define DEVICE_CONFIG_H
 
+#include <stdint.h>
+
 //
 // Attiny84 final(ish) configuration.
 //
@@ -69,9 +71,35 @@
 
 
 //
+// Pushbutton input port.
+//
+#define PUSHBUTTON_PORT          PORTA
+#define PUSHBUTTON_DDR           DDRA
+#define PUSHBUTTON_BIT           PA7
+
+#define PUSHBUTTON_CAPVAL_TENTHS_MU_F   1L
+#define PUSHBUTTON1_RVAL_KO             20L
+#define PUSHBUTTON2_RVAL_KO             30L
+#define PUSHBUTTON3_RVAL_KO             40L
+#define PUSHBUTTON4_RVAL_KO             50L
+
+#define PUSHBUTTON_CALC_RC(n)    ((uint8_t)((PUSHBUTTON ## n ## _RVAL_KO * 1000L * PUSHBUTTON_CAPVAL_TENTHS_MU_F * 1000L) / 10000000L))
+#define PUSHBUTTON1_RC_MS        PUSHBUTTON_CALC_RC(1)
+#define PUSHBUTTON2_RC_MS        PUSHBUTTON_CALC_RC(2)
+#define PUSHBUTTON3_RC_MS        PUSHBUTTON_CALC_RC(3)
+#define PUSHBUTTON4_RC_MS        PUSHBUTTON_CALC_RC(4)
+
+struct dummy_deviceconfig_pushbutton_test_struct {
+    int dummy1[PUSHBUTTON1_RC_MS - 1];
+    int dummy2[PUSHBUTTON2_RC_MS - 1];
+    int dummy3[PUSHBUTTON3_RC_MS - 1];
+    int dummy4[PUSHBUTTON4_RC_MS - 1];
+};
+
+
+//
 // Test LED
 //
-
 #define TEST_LED_PORT    PORTA
 #define TEST_LED_DDR     DDRA
 #define TEST_LED_BIT     PA5
