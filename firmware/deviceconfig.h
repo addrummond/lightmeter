@@ -83,17 +83,13 @@
 #define PUSHBUTTON3_RVAL_KO             40L
 #define PUSHBUTTON4_RVAL_KO             50L
 
-#define PUSHBUTTON_CALC_RC(n)    ((uint8_t)((PUSHBUTTON ## n ## _RVAL_KO * 1000L * PUSHBUTTON_CAPVAL_TENTHS_MU_F * 1000L) / 10000000L))
-#define PUSHBUTTON1_RC_MS        PUSHBUTTON_CALC_RC(1)
-#define PUSHBUTTON2_RC_MS        PUSHBUTTON_CALC_RC(2)
-#define PUSHBUTTON3_RC_MS        PUSHBUTTON_CALC_RC(3)
-#define PUSHBUTTON4_RC_MS        PUSHBUTTON_CALC_RC(4)
+#define PUSHBUTTON_RC_MS(n)    ((uint8_t)((PUSHBUTTON ## n ## _RVAL_KO * 1000L * PUSHBUTTON_CAPVAL_TENTHS_MU_F * 1000L) / 10000000L))
 
 struct dummy_deviceconfig_pushbutton_test_struct {
-    int dummy1[PUSHBUTTON1_RC_MS - 1];
-    int dummy2[PUSHBUTTON2_RC_MS - 1];
-    int dummy3[PUSHBUTTON3_RC_MS - 1];
-    int dummy4[PUSHBUTTON4_RC_MS - 1];
+    int dummy1[PUSHBUTTON_RC_MS(1) - 1];
+    int dummy2[PUSHBUTTON_RC_MS(2) - 1];
+    int dummy3[PUSHBUTTON_RC_MS(3) - 1];
+    int dummy4[PUSHBUTTON_RC_MS(4) - 1];
 };
 
 
