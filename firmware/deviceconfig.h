@@ -57,6 +57,18 @@
 
 
 //
+// Charge pump clock output ports.
+//
+#define CHARGE_PUMP_CLOCKS_PORT  PORTA
+
+#define CHARGE_PUMP_CLOCK1_DDR   DDRA
+#define CHARGE_PUMP_CLOCK1_BIT   PA2
+
+#define CHARGE_PUMP_CLOCK2_DDR   DDRA
+#define CHARGE_PUMP_CLOCK2_BIT   PA3
+
+
+//
 // Test LED
 //
 

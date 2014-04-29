@@ -197,17 +197,13 @@ static void show_interface()
     }
 }
 
-ISR(TIM1_COMPA_vect)
-{
-    PORTA ^= ((1 << PA2) | (1 << PA3));
-}
-
-int main()
+static void setup_charge_pump()
 {
     // Set initial charge pump clocks in inverse phase.
     DDRA = 0b1100;
-    PORTA |= (1 << PA2);
-    PORTA &= ~(1 << PA3);
+    DDRA |= ((1 << CHARGE_PUMP_CLOCK1_BIT) | (1 << CHARGE_PUMP_CLOCK2_BIT));
+    CHARGE_PUMP_CLOCKS_PORT |= (1 << CHARGE_PUMP_CLOCK1_BIT);
+    CHARGE_PUMP_CLOCKS_PORT &= ~(1 << CHARGE_PUMP_CLOCK2_BIT);
 
     // Prescale clock by /1024. This gives us a 7.812KHz counter.
     TCCR1B |= ((1 << CS12) | (0 << CS11) | (1 << CS10));
@@ -216,14 +212,17 @@ int main()
     OCR1A = 2; // Count to two.
     // Enable CTC interrupt.
     TIMSK1 |= (1 << OCIE1A);
+}
 
-    /*DDRA = 0b1100;
-    PORTA |= (1 << PA2);
-    PORTA &= ~(1 << PA3);
-    for (;;) {
-        PORTA ^= ((1 << PA2) | (1 << PA3));
-        _delay_us(250);
-    }*/
+// Interrupt for driving charge pump clocks.
+ISR(TIM1_COMPA_vect)
+{
+    CHARGE_PUMP_CLOCKS_PORT ^= ((1 << CHARGE_PUMP_CLOCK1_BIT) | (1 << CHARGE_PUMP_CLOCK2_BIT));
+}
+
+int main()
+{
+    setup_charge_pump();
 
     // TEST INITIALIZATION; TODO REMOVE EVENTUALLY.
     global_transient_meter_state.shutter_speed = 88;
