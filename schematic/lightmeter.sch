@@ -9485,7 +9485,7 @@ Source: http://www3.alps.co.jp/WebObjects/catalog.woa/PDF/E/Switch/Tact/SKHM/SKH
 <part name="R5" library="resistor" deviceset="R-EU_" device="0204/7" value="1k7"/>
 <part name="R6" library="resistor" deviceset="R-EU_" device="0204/7" value="1k7"/>
 <part name="R7" library="resistor" deviceset="R-EU_" device="0204/7" value="1k7"/>
-<part name="R8" library="resistor" deviceset="R-EU_" device="0204/7" value="1k7"/>
+<part name="C9" library="rcl" deviceset="C-EU" device="C1206" value="µ1"/>
 </parts>
 <sheets>
 <sheet>
@@ -9540,7 +9540,7 @@ Source: http://www3.alps.co.jp/WebObjects/catalog.woa/PDF/E/Switch/Tact/SKHM/SKH
 <instance part="R5" gate="G$1" x="71.12" y="-27.94" rot="R90"/>
 <instance part="R6" gate="G$1" x="53.34" y="-27.94" rot="R90"/>
 <instance part="R7" gate="G$1" x="33.02" y="-27.94" rot="R90"/>
-<instance part="R8" gate="G$1" x="17.78" y="-30.48" rot="R180"/>
+<instance part="C9" gate="G$1" x="93.98" y="5.08"/>
 </instances>
 <busses>
 </busses>
@@ -9631,9 +9631,24 @@ Source: http://www3.alps.co.jp/WebObjects/catalog.woa/PDF/E/Switch/Tact/SKHM/SKH
 <wire x1="152.4" y1="101.6" x2="147.32" y2="101.6" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="R8" gate="G$1" pin="2"/>
 <pinref part="P+5" gate="VCC" pin="VCC"/>
-<wire x1="12.7" y1="-30.48" x2="7.62" y2="-30.48" width="0.1524" layer="91"/>
+<pinref part="R2" gate="G$1" pin="1"/>
+<wire x1="91.44" y1="-33.02" x2="91.44" y2="-35.56" width="0.1524" layer="91"/>
+<wire x1="91.44" y1="-35.56" x2="71.12" y2="-35.56" width="0.1524" layer="91"/>
+<wire x1="71.12" y1="-35.56" x2="53.34" y2="-35.56" width="0.1524" layer="91"/>
+<wire x1="53.34" y1="-35.56" x2="33.02" y2="-35.56" width="0.1524" layer="91"/>
+<pinref part="R7" gate="G$1" pin="1"/>
+<wire x1="33.02" y1="-33.02" x2="33.02" y2="-35.56" width="0.1524" layer="91"/>
+<pinref part="R6" gate="G$1" pin="1"/>
+<wire x1="53.34" y1="-33.02" x2="53.34" y2="-35.56" width="0.1524" layer="91"/>
+<junction x="53.34" y="-35.56"/>
+<pinref part="R5" gate="G$1" pin="1"/>
+<wire x1="71.12" y1="-33.02" x2="71.12" y2="-35.56" width="0.1524" layer="91"/>
+<junction x="71.12" y="-35.56"/>
+<wire x1="27.94" y1="-30.48" x2="27.94" y2="-35.56" width="0.1524" layer="91"/>
+<wire x1="27.94" y1="-35.56" x2="33.02" y2="-35.56" width="0.1524" layer="91"/>
+<junction x="33.02" y="-35.56"/>
+<wire x1="7.62" y1="-30.48" x2="27.94" y2="-30.48" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$5" class="0">
@@ -9864,9 +9879,6 @@ Source: http://www3.alps.co.jp/WebObjects/catalog.woa/PDF/E/Switch/Tact/SKHM/SKH
 </net>
 <net name="N$10" class="0">
 <segment>
-<pinref part="U$1" gate="G$1" pin="(PCINT5/OC1B/MISO/DO/ADC5)PA5"/>
-<wire x1="91.44" y1="22.86" x2="93.98" y2="22.86" width="0.1524" layer="91"/>
-<wire x1="93.98" y1="22.86" x2="93.98" y2="-2.54" width="0.1524" layer="91"/>
 <wire x1="93.98" y1="-2.54" x2="91.44" y2="-2.54" width="0.1524" layer="91"/>
 <pinref part="S4" gate="G$1" pin="1.1"/>
 <wire x1="91.44" y1="-2.54" x2="91.44" y2="-7.62" width="0.1524" layer="91"/>
@@ -9884,6 +9896,8 @@ Source: http://www3.alps.co.jp/WebObjects/catalog.woa/PDF/E/Switch/Tact/SKHM/SKH
 <wire x1="35.56" y1="-5.08" x2="33.02" y2="-5.08" width="0.1524" layer="91"/>
 <pinref part="S1" gate="G$1" pin="1.1"/>
 <wire x1="33.02" y1="-5.08" x2="33.02" y2="-7.62" width="0.1524" layer="91"/>
+<pinref part="C9" gate="G$1" pin="2"/>
+<wire x1="93.98" y1="-2.54" x2="93.98" y2="0" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$11" class="0">
@@ -9913,26 +9927,12 @@ Source: http://www3.alps.co.jp/WebObjects/catalog.woa/PDF/E/Switch/Tact/SKHM/SKH
 <wire x1="33.02" y1="-22.86" x2="33.02" y2="-20.32" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$25" class="0">
+<net name="N$24" class="0">
 <segment>
-<pinref part="R2" gate="G$1" pin="1"/>
-<wire x1="91.44" y1="-33.02" x2="91.44" y2="-35.56" width="0.1524" layer="91"/>
-<wire x1="91.44" y1="-35.56" x2="71.12" y2="-35.56" width="0.1524" layer="91"/>
-<wire x1="71.12" y1="-35.56" x2="53.34" y2="-35.56" width="0.1524" layer="91"/>
-<wire x1="53.34" y1="-35.56" x2="33.02" y2="-35.56" width="0.1524" layer="91"/>
-<pinref part="R7" gate="G$1" pin="1"/>
-<wire x1="33.02" y1="-33.02" x2="33.02" y2="-35.56" width="0.1524" layer="91"/>
-<pinref part="R6" gate="G$1" pin="1"/>
-<wire x1="53.34" y1="-33.02" x2="53.34" y2="-35.56" width="0.1524" layer="91"/>
-<junction x="53.34" y="-35.56"/>
-<pinref part="R5" gate="G$1" pin="1"/>
-<wire x1="71.12" y1="-33.02" x2="71.12" y2="-35.56" width="0.1524" layer="91"/>
-<junction x="71.12" y="-35.56"/>
-<pinref part="R8" gate="G$1" pin="1"/>
-<wire x1="22.86" y1="-30.48" x2="27.94" y2="-30.48" width="0.1524" layer="91"/>
-<wire x1="27.94" y1="-30.48" x2="27.94" y2="-35.56" width="0.1524" layer="91"/>
-<wire x1="27.94" y1="-35.56" x2="33.02" y2="-35.56" width="0.1524" layer="91"/>
-<junction x="33.02" y="-35.56"/>
+<pinref part="U$1" gate="G$1" pin="(PCINT5/OC1B/MISO/DO/ADC5)PA5"/>
+<wire x1="91.44" y1="22.86" x2="93.98" y2="22.86" width="0.1524" layer="91"/>
+<pinref part="C9" gate="G$1" pin="1"/>
+<wire x1="93.98" y1="7.62" x2="93.98" y2="22.86" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
