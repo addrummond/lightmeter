@@ -87,10 +87,10 @@
 #define PUSHBUTTON_RC_MS(n)    ((uint8_t)((PUSHBUTTON ## n ## _RVAL_KO * 1000L * PUSHBUTTON_CAPVAL_TENTHS_MU_F * 1000L) / 10000000L))
 
 struct dummy_deviceconfig_pushbutton_test_struct {
-    int dummy1[PUSHBUTTON_RC_MS(1) - 1];
-    int dummy2[PUSHBUTTON_RC_MS(2) - 1];
-    int dummy3[PUSHBUTTON_RC_MS(3) - 1];
-    int dummy4[PUSHBUTTON_RC_MS(4) - 1];
+    int dummy1[PUSHBUTTON_RC_MS(1)/2 - 1];
+    int dummy2[PUSHBUTTON_RC_MS(2)/2 - 1];
+    int dummy3[PUSHBUTTON_RC_MS(3)/2 - 1];
+    int dummy4[PUSHBUTTON_RC_MS(4)/2 - 1];
 
     // Check that resistor values go up in sequence.
     int dummy5[(PUSHBUTTON1_RVAL_KO < PUSHBUTTON2_RVAL_KO &&

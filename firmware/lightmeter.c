@@ -221,24 +221,24 @@ ISR(TIM0_COMPA_vect)
         // Charge capacitor (if one of the buttons is pressed).
         PUSHBUTTON_PORT |= (1 << PUSHBUTTON_BIT);
     }
-    else if (mode_counter >= PUSHBUTTON_RC_MS(4)) {
+    else if (mode_counter >= PUSHBUTTON_RC_MS(4)/2) {
         // Capacitor has now had enough time to charge through any of the resistors.
         // Switch pin to input mode so we can time discharge (if any).
         PUSHBUTTON_DDR &= ~(1 << PUSHBUTTON_BIT);
     }
-    else if (mode_counter <= PUSHBUTTON_RC_MS(4) + PUSHBUTTON_RC_MS(4)) {
+    else if (mode_counter <= PUSHBUTTON_RC_MS(4)/2 + PUSHBUTTON_RC_MS(4)/2) {
         // See if the pin has gone low yet.
         if (PUSHBUTTON_PIN ^ (1 << PUSHBUTTON_BIT)) {
-            if (mode_counter == PUSHBUTTON_RC_MS(4) + PUSHBUTTON_RC_MS(1)) {
+            if (mode_counter == PUSHBUTTON_RC_MS(4)/2 + PUSHBUTTON_RC_MS(1)/2) {
                 last_button_press = 1;
             }
-            else if (mode_counter == PUSHBUTTON_RC_MS(4) + PUSHBUTTON_RC_MS(2)) {
+            else if (mode_counter == PUSHBUTTON_RC_MS(4)/2 + PUSHBUTTON_RC_MS(2)/2) {
                 last_button_press = 2;
             }
-            else if (mode_counter == PUSHBUTTON_RC_MS(4) + PUSHBUTTON_RC_MS(3)) {
+            else if (mode_counter == PUSHBUTTON_RC_MS(4)/2 + PUSHBUTTON_RC_MS(3)/2) {
                 last_button_press = 3;
             }
-            else if (mode_counter == PUSHBUTTON_RC_MS(4) + PUSHBUTTON_RC_MS(4)) {
+            else if (mode_counter == PUSHBUTTON_RC_MS(4)/2 + PUSHBUTTON_RC_MS(4)/2) {
                 last_button_press = 4;
             }
 
