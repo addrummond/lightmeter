@@ -73,10 +73,10 @@
 //
 // Pushbutton input port.
 //
-#define PUSHBUTTON_PORT          PORTA
-#define PUSHBUTTON_PIN           PINA
-#define PUSHBUTTON_DDR           DDRA
-#define PUSHBUTTON_BIT           PA7
+#define PUSHBUTTON_PORT PORTA
+#define PUSHBUTTON_PIN  PINA
+#define PUSHBUTTON_DDR  DDRA
+#define PUSHBUTTON_BIT  PA7
 
 #define PUSHBUTTON_CAPVAL_TENTHS_MU_F   1L
 #define PUSHBUTTON1_RVAL_KO             33L
