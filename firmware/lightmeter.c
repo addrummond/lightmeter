@@ -213,6 +213,18 @@ static void setup_charge_pump()
     TIMSK1 |= (1 << OCIE1A);
 }
 
+struct dummy_deviceconfig_pushbutton_test_struct {
+    int dummy1[PUSHBUTTON_RC_MS(1)/2 - 1];
+    int dummy2[PUSHBUTTON_RC_MS(2)/2 - 1];
+    int dummy3[PUSHBUTTON_RC_MS(3)/2 - 1];
+    int dummy4[PUSHBUTTON_RC_MS(4)/2 - 1];
+
+    // Check that resistor values go up in sequence.
+    int dummy5[(PUSHBUTTON1_RVAL_KO < PUSHBUTTON2_RVAL_KO &&
+                PUSHBUTTON2_RVAL_KO < PUSHBUTTON3_RVAL_KO &&
+                PUSHBUTTON3_RVAL_KO < PUSHBUTTON4_RVAL_KO) - 1];
+};
+
 static volatile uint8_t mode_counter = 0;
 static volatile uint8_t last_button_press = 0;
 ISR(TIM0_COMPA_vect)
