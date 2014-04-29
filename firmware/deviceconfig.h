@@ -79,10 +79,10 @@
 #define PUSHBUTTON_BIT           PA7
 
 #define PUSHBUTTON_CAPVAL_TENTHS_MU_F   1L
-#define PUSHBUTTON1_RVAL_KO             20L
-#define PUSHBUTTON2_RVAL_KO             30L
-#define PUSHBUTTON3_RVAL_KO             40L
-#define PUSHBUTTON4_RVAL_KO             50L
+#define PUSHBUTTON1_RVAL_KO             33L
+#define PUSHBUTTON2_RVAL_KO             55L
+#define PUSHBUTTON3_RVAL_KO             82L
+#define PUSHBUTTON4_RVAL_KO             180L
 
 #define PUSHBUTTON_RC_MS(n)    ((uint8_t)((PUSHBUTTON ## n ## _RVAL_KO * 1000L * PUSHBUTTON_CAPVAL_TENTHS_MU_F * 1000L) / 10000000L))
 
