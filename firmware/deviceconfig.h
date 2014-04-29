@@ -74,6 +74,7 @@
 // Pushbutton input port.
 //
 #define PUSHBUTTON_PORT          PORTA
+#define PUSHBUTTON_PIN           PINA
 #define PUSHBUTTON_DDR           DDRA
 #define PUSHBUTTON_BIT           PA7
 
@@ -90,6 +91,11 @@ struct dummy_deviceconfig_pushbutton_test_struct {
     int dummy2[PUSHBUTTON_RC_MS(2) - 1];
     int dummy3[PUSHBUTTON_RC_MS(3) - 1];
     int dummy4[PUSHBUTTON_RC_MS(4) - 1];
+
+    // Check that resistor values go up in sequence.
+    int dummy5[(PUSHBUTTON1_RVAL_KO < PUSHBUTTON2_RVAL_KO &&
+                PUSHBUTTON2_RVAL_KO < PUSHBUTTON3_RVAL_KO &&
+                PUSHBUTTON3_RVAL_KO < PUSHBUTTON4_RVAL_KO) - 1];
 };
 
 

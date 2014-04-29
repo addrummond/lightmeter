@@ -213,6 +213,57 @@ static void setup_charge_pump()
     TIMSK1 |= (1 << OCIE1A);
 }
 
+static volatile uint8_t mode_counter = 0;
+static volatile uint8_t last_button_press = 0;
+ISR(TIM0_COMPA_vect)
+{
+    if (mode_counter == 0) {
+        // Charge capacitor (if one of the buttons is pressed).
+        PUSHBUTTON_PORT |= (1 << PUSHBUTTON_BIT);
+    }
+    else if (mode_counter >= PUSHBUTTON_RC_MS(4)) {
+        // Capacitor has now had enough time to charge through any of the resistors.
+        // Switch pin to input mode so we can time discharge (if any).
+        PUSHBUTTON_DDR &= ~(1 << PUSHBUTTON_BIT);
+    }
+    else if (mode_counter <= PUSHBUTTON_RC_MS(4) + PUSHBUTTON_RC_MS(4)) {
+        // See if the pin has gone low yet.
+        if (PUSHBUTTON_PIN ^ (1 << PUSHBUTTON_BIT)) {
+            if (mode_counter == PUSHBUTTON_RC_MS(4) + PUSHBUTTON_RC_MS(1)) {
+                last_button_press = 1;
+            }
+            else if (mode_counter == PUSHBUTTON_RC_MS(4) + PUSHBUTTON_RC_MS(2)) {
+                last_button_press = 2;
+            }
+            else if (mode_counter == PUSHBUTTON_RC_MS(4) + PUSHBUTTON_RC_MS(3)) {
+                last_button_press = 3;
+            }
+            else if (mode_counter == PUSHBUTTON_RC_MS(4) + PUSHBUTTON_RC_MS(4)) {
+                last_button_press = 4;
+            }
+
+            mode_counter = 0;
+            return;
+        }
+    }
+
+    ++mode_counter;
+}
+
+static void setup_button_handler()
+{
+    // Set up for output initially.
+    PUSHBUTTON_DDR |= (1 << PUSHBUTTON_BIT);
+    // We want to call the interrupt every two milliseconds.
+    // Prescale the clock by /1024.
+    TCCR0B |= ((1 << CS12) | (0 << CS11) | (1 << CS10));
+    // Count to 15 to get roughly every two milliseconds.
+    TCCR0B |= ((0 << WGM12) | (1 << WGM12) | (0 << WGM11) | (0 << WGM10));
+    OCR0A = 15;
+    // Enable CTC interrupt.
+    TIMSK0 |= (1 << OCIE0A);
+}
+
 // Interrupt for driving charge pump clocks.
 ISR(TIM1_COMPA_vect)
 {
@@ -222,6 +273,7 @@ ISR(TIM1_COMPA_vect)
 int main()
 {
     setup_charge_pump();
+    setup_button_handler();
 
     // TEST INITIALIZATION; TODO REMOVE EVENTUALLY.
     global_transient_meter_state.shutter_speed = 88;
