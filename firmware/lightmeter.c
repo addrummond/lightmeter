@@ -222,10 +222,10 @@ static void setup_charge_pump()
 // Some compile-time sanity checks on the values of the resistors
 // for the buttons.
 struct dummy_deviceconfig_pushbutton_test_struct {
-    int dummy1[PUSHBUTTON_RC_MS(1)/2 - 1];
-    int dummy2[PUSHBUTTON_RC_MS(2)/2 - 1];
-    int dummy3[PUSHBUTTON_RC_MS(3)/2 - 1];
-    int dummy4[PUSHBUTTON_RC_MS(4)/2 - 1];
+    int dummy1[PUSHBUTTON_RC_MS(1) - 1];
+    int dummy2[PUSHBUTTON_RC_MS(2) - 1];
+    int dummy3[PUSHBUTTON_RC_MS(3) - 1];
+    int dummy4[PUSHBUTTON_RC_MS(4) - 1];
 
     // Check that resistor values go up in sequence.
     int dummy5[(PUSHBUTTON1_RVAL_KO < PUSHBUTTON2_RVAL_KO &&
