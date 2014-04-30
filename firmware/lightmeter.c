@@ -237,35 +237,56 @@ static volatile uint8_t mode_counter = 0;
 static volatile uint8_t last_button_press = 0;
 ISR(TIM0_COMPA_vect)
 {
+    // See http://forums.parallax.com/showthread.php/110209-Multiple-buttons-to-one-IO-pin, post by
+    // virtuPIC for description of method used here.
+
+    // TODO TEST CODE REMOVE.
+    TEST_LED_PORT ^= (1 << TEST_LED_BIT);
+
     if (mode_counter == 0) {
-        // Charge capacitor (if one of the buttons is pressed).
-        PUSHBUTTON_DDR |= (1 << PUSHBUTTON_BIT);
-        PUSHBUTTON_PORT |= (1 << PUSHBUTTON_BIT);
-    }
-    else if (mode_counter >= PUSHBUTTON_RC_MS(4)/2) {
-        // Capacitor has now had enough time to charge through any of the resistors.
-        // Switch pin to input mode (with no pullup resistors) so we can time discharge (if any).
+        // Switch pin to input mode (with no pullup resistors).
         PUSHBUTTON_DDR &= ~(1 << PUSHBUTTON_BIT);
         PUSHBUTTON_PORT &= ~(1 << PUSHBUTTON_BIT);
-    }
-    else if (mode_counter <= PUSHBUTTON_RC_MS(4)/2 + PUSHBUTTON_RC_MS(4)/2) {
-        // See if the pin has gone low yet.
+        // Check if the pin has gone high.
         if (PUSHBUTTON_PIN & (1 << PUSHBUTTON_BIT)) {
-            if (mode_counter == PUSHBUTTON_RC_MS(4)/2 + PUSHBUTTON_RC_MS(1)/2) {
-                last_button_press = 1;
-            }
-            else if (mode_counter == PUSHBUTTON_RC_MS(4)/2 + PUSHBUTTON_RC_MS(2)/2) {
-                last_button_press = 2;
-            }
-            else if (mode_counter == PUSHBUTTON_RC_MS(4)/2 + PUSHBUTTON_RC_MS(3)/2) {
-                last_button_press = 3;
-            }
-            else if (mode_counter == PUSHBUTTON_RC_MS(4)/2 + PUSHBUTTON_RC_MS(4)/2) {
-                last_button_press = 4;
-            }
-
-            mode_counter = 0;
+            // Switch to output mode to discharge cap.
+            PUSHBUTTON_DDR |= (1 << PUSHBUTTON_BIT);
+            PUSHBUTTON_PORT &= ~(1 << PUSHBUTTON_BIT);
+        }
+        else {
             return;
+        }
+    }
+    else if (mode_counter == PUSHBUTTON_RC_MS(4)) {
+        // All capacitors have now had enough time to discharge.
+        // Switch back to input mode and see how long capacitor
+        // takes to charge.
+        PUSHBUTTON_DDR |= (1 << PUSHBUTTON_BIT);
+    }
+    else if (mode_counter == PUSHBUTTON_RC_MS(4)*2 + 1) {
+        // Looks like the cap wasn't charged; no button was pressed.
+        // Back to square one.
+        mode_counter = 0;
+        return;
+    }
+    else if (mode_counter > PUSHBUTTON_RC_MS(4)) {
+        // Has it charged yet?
+        if (PUSHBUTTON_PIN & (1 << PUSHBUTTON_BIT)) {
+            uint8_t but = 0;
+            if (mode_counter <= PUSHBUTTON_RC_MS(4) + PUSHBUTTON_RC_MS(1))
+                but = 1;
+            else if (mode_counter <= PUSHBUTTON_RC_MS(4) + PUSHBUTTON_RC_MS(2))
+                but = 2;
+            else if (mode_counter <= PUSHBUTTON_RC_MS(4) + PUSHBUTTON_RC_MS(3))
+                but = 3;
+            else if (mode_counter <= PUSHBUTTON_RC_MS(4) + PUSHBUTTON_RC_MS(4))
+                but = 4;
+
+            if (but) {
+                mode_counter = 0;
+                last_button_press = but;
+                return;
+            }
         }
     }
 
@@ -274,22 +295,22 @@ ISR(TIM0_COMPA_vect)
 
 static void setup_button_handler()
 {
-    // We want to call the interrupt every two milliseconds.
+    // We want to call the interrupt every millisecond.
     // Prescale the clock by /1024.
     TCCR0B |= ((1 << CS12) | (0 << CS11) | (1 << CS10));
-    // Count to 15 to get roughly every two milliseconds.
+    // Count to 8 to get roughly every two milliseconds.
     TCCR0B |= ((0 << WGM12) | (1 << WGM12) | (0 << WGM11) | (0 << WGM10));
-    OCR0A = 15;
+    OCR0A = 8;
     // Enable CTC interrupt.
     TIMSK0 |= (1 << OCIE0A);
 }
 
 static void handle_button_press(uint8_t button_number)
 {
-    if (button_number == 1) {
+    //    if (button_number == 1) {
         display_clear();
         _delay_ms(2000);
-    }
+        //    }
 }
 
 int main()
