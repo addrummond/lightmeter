@@ -247,6 +247,7 @@ ISR(TIM0_COMPA_vect)
         // Switch pin to input mode (with no pullup resistors).
         PUSHBUTTON_DDR &= ~(1 << PUSHBUTTON_BIT);
         PUSHBUTTON_PORT &= ~(1 << PUSHBUTTON_BIT);
+        //PUSHBUTTON_PORT |= (1 << PUSHBUTTON_BIT);
         // Check if the pin has gone high.
         if (PUSHBUTTON_PIN & (1 << PUSHBUTTON_BIT)) {
             // Switch to output mode to discharge cap.
@@ -262,6 +263,8 @@ ISR(TIM0_COMPA_vect)
         // Switch back to input mode and see how long capacitor
         // takes to charge.
         PUSHBUTTON_DDR |= (1 << PUSHBUTTON_BIT);
+        PUSHBUTTON_PORT &= ~(1 << PUSHBUTTON_BIT);
+        //PUSHBUTTON_PORT |= (1 << PUSHBUTTON_BIT);
     }
     else if (mode_counter == PUSHBUTTON_RC_MS(4)*2 + 1) {
         // Looks like the cap wasn't charged; no button was pressed.
@@ -298,7 +301,7 @@ static void setup_button_handler()
     // We want to call the interrupt every millisecond.
     // Prescale the clock by /1024.
     TCCR0B |= ((1 << CS12) | (0 << CS11) | (1 << CS10));
-    // Count to 8 to get roughly every two milliseconds.
+    // Count to 8 to get roughly every millisecond.
     TCCR0B |= ((0 << WGM12) | (1 << WGM12) | (0 << WGM11) | (0 << WGM10));
     OCR0A = 8;
     // Enable CTC interrupt.
