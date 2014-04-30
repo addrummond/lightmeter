@@ -197,6 +197,12 @@ static void show_interface()
     }
 }
 
+// Interrupt for driving charge pump clocks.
+ISR(TIM1_COMPA_vect)
+{
+    CHARGE_PUMP_CLOCKS_PORT ^= ((1 << CHARGE_PUMP_CLOCK1_BIT) | (1 << CHARGE_PUMP_CLOCK2_BIT));
+}
+
 static void setup_charge_pump()
 {
     // Set initial charge pump clocks in inverse phase.
@@ -213,6 +219,8 @@ static void setup_charge_pump()
     TIMSK1 |= (1 << OCIE1A);
 }
 
+// Some compile-time sanity checks on the values of the resistors
+// for the buttons.
 struct dummy_deviceconfig_pushbutton_test_struct {
     int dummy1[PUSHBUTTON_RC_MS(1)/2 - 1];
     int dummy2[PUSHBUTTON_RC_MS(2)/2 - 1];
@@ -231,16 +239,18 @@ ISR(TIM0_COMPA_vect)
 {
     if (mode_counter == 0) {
         // Charge capacitor (if one of the buttons is pressed).
+        PUSHBUTTON_DDR |= (1 << PUSHBUTTON_BIT);
         PUSHBUTTON_PORT |= (1 << PUSHBUTTON_BIT);
     }
     else if (mode_counter >= PUSHBUTTON_RC_MS(4)/2) {
         // Capacitor has now had enough time to charge through any of the resistors.
-        // Switch pin to input mode so we can time discharge (if any).
+        // Switch pin to input mode (with no pullup resistors) so we can time discharge (if any).
         PUSHBUTTON_DDR &= ~(1 << PUSHBUTTON_BIT);
+        PUSHBUTTON_PORT &= ~(1 << PUSHBUTTON_BIT);
     }
     else if (mode_counter <= PUSHBUTTON_RC_MS(4)/2 + PUSHBUTTON_RC_MS(4)/2) {
         // See if the pin has gone low yet.
-        if (PUSHBUTTON_PIN ^ (1 << PUSHBUTTON_BIT)) {
+        if (PUSHBUTTON_PIN & (1 << PUSHBUTTON_BIT)) {
             if (mode_counter == PUSHBUTTON_RC_MS(4)/2 + PUSHBUTTON_RC_MS(1)/2) {
                 last_button_press = 1;
             }
@@ -264,8 +274,6 @@ ISR(TIM0_COMPA_vect)
 
 static void setup_button_handler()
 {
-    // Set up for output initially.
-    PUSHBUTTON_DDR |= (1 << PUSHBUTTON_BIT);
     // We want to call the interrupt every two milliseconds.
     // Prescale the clock by /1024.
     TCCR0B |= ((1 << CS12) | (0 << CS11) | (1 << CS10));
@@ -276,10 +284,12 @@ static void setup_button_handler()
     TIMSK0 |= (1 << OCIE0A);
 }
 
-// Interrupt for driving charge pump clocks.
-ISR(TIM1_COMPA_vect)
+static void handle_button_press(uint8_t button_number)
 {
-    CHARGE_PUMP_CLOCKS_PORT ^= ((1 << CHARGE_PUMP_CLOCK1_BIT) | (1 << CHARGE_PUMP_CLOCK2_BIT));
+    if (button_number == 1) {
+        display_clear();
+        _delay_ms(2000);
+    }
 }
 
 int main()
@@ -330,6 +340,11 @@ int main()
 
         handle_measurement();
         show_interface();
+
+        // Check if a button was pressed.
+        uint8_t button_number = last_button_press;
+        if (button_number)
+            handle_button_press(button_number);
 
         _delay_ms(50);
     }
