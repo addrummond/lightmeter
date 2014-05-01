@@ -7156,65 +7156,6 @@ Source: AVX .. aphvc.pdf</description>
 </deviceset>
 </devicesets>
 </library>
-<library name="telefunken">
-<description>&lt;b&gt;Telefunken Devices&lt;/b&gt;&lt;p&gt;
-&lt;author&gt;Created by librarian@cadsoft.de&lt;/author&gt;</description>
-<packages>
-<package name="SOD106A">
-<description>&lt;b&gt;Small Outline Diode&lt;/b&gt;</description>
-<wire x1="-2.3" y1="-1.1" x2="-2.3" y2="1.1" width="0.1524" layer="51"/>
-<wire x1="-2.3" y1="1.1" x2="2.3" y2="1.1" width="0.1524" layer="21"/>
-<wire x1="-2.3" y1="-1.1" x2="2.3" y2="-1.1" width="0.1524" layer="21"/>
-<wire x1="2.3" y1="-1.1" x2="2.3" y2="1.1" width="0.1524" layer="51"/>
-<wire x1="-0.9" y1="-0.9" x2="-0.9" y2="0.9" width="0.1524" layer="21"/>
-<wire x1="-0.9" y1="0.9" x2="0.9" y2="0.9" width="0.1524" layer="21"/>
-<wire x1="0.9" y1="0.9" x2="0.9" y2="-0.9" width="0.1524" layer="21"/>
-<wire x1="0.9" y1="-0.9" x2="-0.9" y2="-0.9" width="0.1524" layer="21"/>
-<smd name="K" x="-2.3" y="0" dx="2.4" dy="2.6" layer="1"/>
-<smd name="A" x="2.3" y="0" dx="2.4" dy="2.6" layer="1"/>
-<text x="-2.54" y="1.905" size="1.27" layer="25">&gt;NAME</text>
-<text x="-2.54" y="-3.175" size="1.27" layer="27">&gt;VALUE</text>
-<rectangle x1="-1" y1="-1.1" x2="-0.5" y2="1.1" layer="21"/>
-</package>
-</packages>
-<symbols>
-<symbol name="D">
-<wire x1="1.27" y1="1.27" x2="-1.27" y2="0" width="0.254" layer="94"/>
-<wire x1="-1.27" y1="0" x2="1.27" y2="-1.27" width="0.254" layer="94"/>
-<wire x1="-1.27" y1="-1.27" x2="-1.27" y2="0" width="0.254" layer="94"/>
-<wire x1="1.27" y1="-1.27" x2="1.27" y2="1.27" width="0.254" layer="94"/>
-<wire x1="-1.27" y1="0" x2="-1.27" y2="1.27" width="0.254" layer="94"/>
-<text x="-2.54" y="1.778" size="1.778" layer="95">&gt;NAME</text>
-<text x="-2.54" y="-3.683" size="1.778" layer="96">&gt;VALUE</text>
-<pin name="A" x="2.54" y="0" visible="off" length="short" direction="pas" rot="R180"/>
-<pin name="K" x="-2.54" y="0" visible="off" length="short" direction="pas"/>
-</symbol>
-</symbols>
-<devicesets>
-<deviceset name="BYS10" prefix="D" uservalue="yes">
-<description>&lt;b&gt;DIODE&lt;/b&gt;</description>
-<gates>
-<gate name="G$1" symbol="D" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="SOD106A">
-<connects>
-<connect gate="G$1" pin="A" pad="A"/>
-<connect gate="G$1" pin="K" pad="K"/>
-</connects>
-<technologies>
-<technology name="">
-<attribute name="MF" value="" constant="no"/>
-<attribute name="MPN" value="BYS10/45" constant="no"/>
-<attribute name="OC_FARNELL" value="9549188" constant="no"/>
-<attribute name="OC_NEWARK" value="96K7236" constant="no"/>
-</technology>
-</technologies>
-</device>
-</devices>
-</deviceset>
-</devicesets>
-</library>
 <library name="battery">
 <description>&lt;b&gt;Lithium Batteries and NC Accus&lt;/b&gt;&lt;p&gt;
 &lt;author&gt;Created by librarian@cadsoft.de&lt;/author&gt;</description>
@@ -10102,6 +10043,78 @@ chip</description>
 </deviceset>
 </devicesets>
 </library>
+<library name="diode">
+<description>&lt;b&gt;Diodes&lt;/b&gt;&lt;p&gt;
+Based on the following sources:
+&lt;ul&gt;
+&lt;li&gt;Motorola : www.onsemi.com
+&lt;li&gt;Fairchild : www.fairchildsemi.com
+&lt;li&gt;Philips : www.semiconductors.com
+&lt;li&gt;Vishay : www.vishay.de
+&lt;/ul&gt;
+&lt;author&gt;Created by librarian@cadsoft.de&lt;/author&gt;</description>
+<packages>
+<package name="DO41Z10">
+<description>&lt;B&gt;DIODE&lt;/B&gt;&lt;p&gt;
+diameter 2.54 mm, horizontal, grid 10.16 mm</description>
+<wire x1="2.032" y1="-1.27" x2="-2.032" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="2.032" y1="-1.27" x2="2.032" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="-2.032" y1="1.27" x2="2.032" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="-2.032" y1="1.27" x2="-2.032" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="5.08" y1="0" x2="3.937" y2="0" width="0.762" layer="51"/>
+<wire x1="-5.08" y1="0" x2="-4.064" y2="0" width="0.762" layer="51"/>
+<wire x1="-0.635" y1="0" x2="0" y2="0" width="0.1524" layer="21"/>
+<wire x1="1.016" y1="0.635" x2="1.016" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="1.016" y1="-0.635" x2="0" y2="0" width="0.1524" layer="21"/>
+<wire x1="0" y1="0" x2="1.524" y2="0" width="0.1524" layer="21"/>
+<wire x1="0" y1="0" x2="1.016" y2="0.635" width="0.1524" layer="21"/>
+<wire x1="0" y1="0" x2="0" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="0.254" y1="0.635" x2="0" y2="0.635" width="0.1524" layer="21"/>
+<wire x1="0" y1="0.635" x2="0" y2="0" width="0.1524" layer="21"/>
+<pad name="C" x="-5.08" y="0" drill="1.1176"/>
+<pad name="A" x="5.08" y="0" drill="1.1176"/>
+<text x="-1.905" y="1.651" size="1.27" layer="25" ratio="10">&gt;NAME</text>
+<text x="-1.905" y="-2.794" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
+<rectangle x1="-1.651" y1="-1.27" x2="-1.143" y2="1.27" layer="21"/>
+<rectangle x1="2.032" y1="-0.381" x2="3.937" y2="0.381" layer="21"/>
+<rectangle x1="-3.937" y1="-0.381" x2="-2.032" y2="0.381" layer="21"/>
+</package>
+</packages>
+<symbols>
+<symbol name="ZD">
+<wire x1="-1.27" y1="-1.27" x2="1.27" y2="0" width="0.254" layer="94"/>
+<wire x1="1.27" y1="0" x2="-1.27" y2="1.27" width="0.254" layer="94"/>
+<wire x1="1.27" y1="1.27" x2="1.27" y2="0" width="0.254" layer="94"/>
+<wire x1="-1.27" y1="1.27" x2="-1.27" y2="-1.27" width="0.254" layer="94"/>
+<wire x1="1.27" y1="0" x2="1.27" y2="-1.27" width="0.254" layer="94"/>
+<wire x1="1.27" y1="-1.27" x2="0.635" y2="-1.27" width="0.254" layer="94"/>
+<text x="-1.778" y="1.905" size="1.778" layer="95">&gt;NAME</text>
+<text x="-1.778" y="-3.429" size="1.778" layer="96">&gt;VALUE</text>
+<pin name="A" x="-2.54" y="0" visible="off" length="short" direction="pas"/>
+<pin name="C" x="2.54" y="0" visible="off" length="short" direction="pas" rot="R180"/>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="1N4728" prefix="D">
+<description>&lt;b&gt;Z DIODE&lt;/b&gt;&lt;p&gt;
+3.3 V, 1W, 5 percent</description>
+<gates>
+<gate name="1" symbol="ZD" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="DO41Z10">
+<connects>
+<connect gate="1" pin="A" pad="A"/>
+<connect gate="1" pin="C" pad="C"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -10122,7 +10135,6 @@ chip</description>
 <part name="U1:2.8V" library="Texas Instruments_By_element14_Batch_1" deviceset="LP2985-10DBVT" device=""/>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
 <part name="C1" library="rcl" deviceset="C-EU" device="C1206" value="1µ"/>
-<part name="D1" library="telefunken" deviceset="BYS10" device=""/>
 <part name="G2" library="battery" deviceset="CR2032H" device=""/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
 <part name="P+3" library="supply1" deviceset="VCC" device=""/>
@@ -10156,6 +10168,7 @@ chip</description>
 <part name="R5" library="resistor" deviceset="R-EU_" device="R1206" value="6k"/>
 <part name="R6" library="resistor" deviceset="R-EU_" device="R1206" value="6k"/>
 <part name="C4" library="rcl" deviceset="C-EU" device="C1206" value="4µ7"/>
+<part name="D1" library="diode" deviceset="1N4728" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -10174,7 +10187,6 @@ chip</description>
 <instance part="U1:2.8V" gate="A" x="60.96" y="88.9"/>
 <instance part="GND5" gate="1" x="22.86" y="53.34"/>
 <instance part="C1" gate="G$1" x="27.94" y="71.12" rot="R90"/>
-<instance part="D1" gate="G$1" x="127" y="-7.62"/>
 <instance part="G2" gate="1" x="116.84" y="106.68"/>
 <instance part="GND6" gate="1" x="96.52" y="106.68" rot="R270"/>
 <instance part="P+3" gate="VCC" x="137.16" y="106.68" rot="R270"/>
@@ -10208,6 +10220,7 @@ chip</description>
 <instance part="R5" gate="G$1" x="71.12" y="-27.94" rot="R90"/>
 <instance part="R6" gate="G$1" x="91.44" y="-27.94" rot="R90"/>
 <instance part="C4" gate="G$1" x="152.4" y="12.7" rot="R90"/>
+<instance part="D1" gate="1" x="127" y="-7.62" rot="R180"/>
 </instances>
 <busses>
 </busses>
@@ -10254,10 +10267,8 @@ chip</description>
 <wire x1="137.16" y1="-7.62" x2="137.16" y2="-15.24" width="0.1524" layer="91"/>
 <wire x1="137.16" y1="-15.24" x2="114.3" y2="-15.24" width="0.1524" layer="91"/>
 <wire x1="114.3" y1="-15.24" x2="114.3" y2="20.32" width="0.1524" layer="91"/>
-<pinref part="D1" gate="G$1" pin="A"/>
 <wire x1="114.3" y1="20.32" x2="119.38" y2="20.32" width="0.1524" layer="91"/>
 <pinref part="GND4" gate="1" pin="GND"/>
-<wire x1="137.16" y1="-7.62" x2="129.54" y2="-7.62" width="0.1524" layer="91"/>
 <wire x1="182.88" y1="-7.62" x2="167.64" y2="-7.62" width="0.1524" layer="91"/>
 <pinref part="U1" gate="G$1" pin="VSS"/>
 <wire x1="167.64" y1="-7.62" x2="162.56" y2="-7.62" width="0.1524" layer="91"/>
@@ -10302,6 +10313,9 @@ chip</description>
 <pinref part="R8" gate="G$1" pin="2"/>
 <wire x1="193.04" y1="-45.72" x2="193.04" y2="-12.7" width="0.1524" layer="91"/>
 <junction x="193.04" y="-12.7"/>
+<pinref part="D1" gate="1" pin="A"/>
+<wire x1="137.16" y1="-7.62" x2="129.54" y2="-7.62" width="0.1524" layer="91"/>
+<junction x="137.16" y="-7.62"/>
 </segment>
 </net>
 <net name="VCC" class="0">
@@ -10386,10 +10400,10 @@ chip</description>
 <wire x1="180.34" y1="40.64" x2="182.88" y2="40.64" width="0.1524" layer="91"/>
 <wire x1="182.88" y1="40.64" x2="182.88" y2="30.48" width="0.1524" layer="91"/>
 <junction x="182.88" y="30.48"/>
-<pinref part="D1" gate="G$1" pin="K"/>
-<wire x1="124.46" y1="-7.62" x2="116.84" y2="-7.62" width="0.1524" layer="91"/>
 <wire x1="116.84" y1="-7.62" x2="116.84" y2="7.62" width="0.1524" layer="91"/>
 <pinref part="C4" gate="G$1" pin="2"/>
+<pinref part="D1" gate="1" pin="C"/>
+<wire x1="124.46" y1="-7.62" x2="116.84" y2="-7.62" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$16" class="0">
