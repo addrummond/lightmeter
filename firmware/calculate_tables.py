@@ -20,9 +20,10 @@ op_amp_resistor_stages = [ # In (kOhm,gain) pairs
     #(1,0.075)
 
     # For BPW21R
-    (200,20),
-    (124,1),  #(130,1)
-    (6,1)
+    (350,20),
+    (350,1),
+    (22,1),
+    (1.2,1)
 ]
 
 op_amp_normal_resistor = op_amp_resistor_stages[1][0] * op_amp_resistor_stages[1][1] 
@@ -31,12 +32,17 @@ op_amp_normal_resistor = op_amp_resistor_stages[1][0] * op_amp_resistor_stages[1
 # This is because in the region just above v = 0, the changes
 # between different voltage values lead to large discontinuities
 # in EV values which the table compression mechanism can't handle.
-voltage_offset                   = 220.0   # mV
+voltage_offset                   = 225.0   # mV
 
 # For BPW34                      = 40.0    # C
 reference_temperature            = 30.0    # C
 
 ##########
+
+
+b_voltage_offset = int(round((voltage_offset/reference_voltage)*256))
+# So that we don't introduce any rounding error into calculations.
+voltage_offset = (b_voltage_offset/256.0)*reference_voltage
 
 
 for s in op_amp_resistor_stages:
@@ -630,10 +636,10 @@ def output():
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_ABS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_DIFFS[];\n" % (i+1))
         if not e:
-            sys.sderr.write("R ERROR %.3f: (%.3f, %.3f)\n" % (op_amp_resistor_stages[i][0] * op_amp_resistor_stages[i][1], pr[0], pr[1]))
+            sys.stderr.write("R ERROR %.3f: (%.3f, %.3f)\n" % (op_amp_resistor_stages[i][0] * op_amp_resistor_stages[i][1], pr[0], pr[1]))
             break
 
-    ofh.write("#define VOLTAGE_TO_EV_ABS_OFFSET " + str(int(round((voltage_offset/reference_voltage)*256))) + '\n')
+    ofh.write("#define VOLTAGE_TO_EV_ABS_OFFSET " + str(b_voltage_offset) + '\n')
     ofh.write("#define LUMINANCE_COMPENSATION " + str(int(round(LUMINANCE_COMPENSATION*8.0))) + '\n')
     
     output_temp_table(ofc)
@@ -675,3 +681,5 @@ if __name__ == '__main__':
         output_sanity_graph()
     elif sys.argv[1] == 'output':
         output()
+    else:
+        assert False
