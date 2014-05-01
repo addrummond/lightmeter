@@ -57,7 +57,6 @@
 <library>
 <packages>
 <package name="SOP-16">
-<smd name="P$1" x="2.54" y="7.62" dx="2.54" dy="0.762" layer="1" rot="R180"/>
 <smd name="P$2" x="2.54" y="6.35" dx="2.54" dy="0.762" layer="1" rot="R180"/>
 <smd name="P$3" x="2.54" y="5.08" dx="2.54" dy="0.762" layer="1" rot="R180"/>
 <smd name="P$4" x="2.54" y="3.81" dx="2.54" dy="0.762" layer="1" rot="R180"/>
@@ -65,16 +64,14 @@
 <smd name="P$6" x="2.54" y="1.27" dx="2.54" dy="0.762" layer="1" rot="R180"/>
 <smd name="P$7" x="2.54" y="0" dx="2.54" dy="0.762" layer="1" rot="R180"/>
 <smd name="P$8" x="2.54" y="-1.27" dx="2.54" dy="0.762" layer="1" rot="R180"/>
-<smd name="P$9" x="10.795" y="7.62" dx="2.54" dy="0.762" layer="1" rot="R180"/>
-<smd name="P$10" x="10.795" y="6.35" dx="2.54" dy="0.762" layer="1" rot="R180"/>
-<smd name="P$11" x="10.795" y="5.08" dx="2.54" dy="0.762" layer="1" rot="R180"/>
-<smd name="P$12" x="10.795" y="3.81" dx="2.54" dy="0.762" layer="1" rot="R180"/>
-<smd name="P$13" x="10.795" y="2.54" dx="2.54" dy="0.762" layer="1" rot="R180"/>
-<smd name="P$14" x="10.795" y="1.27" dx="2.54" dy="0.762" layer="1" rot="R180"/>
-<smd name="P$15" x="10.795" y="0" dx="2.54" dy="0.762" layer="1" rot="R180"/>
-<smd name="P$16" x="10.795" y="-1.27" dx="2.54" dy="0.762" layer="1" rot="R180"/>
-<rectangle x1="3.8735" y1="-1.905" x2="9.4615" y2="8.509" layer="25"/>
-<rectangle x1="1.905" y1="7.4295" x2="4.445" y2="7.8105" layer="21"/>
+<smd name="P$10" x="9.525" y="6.35" dx="2.54" dy="0.762" layer="1" rot="R180"/>
+<smd name="P$11" x="9.525" y="5.08" dx="2.54" dy="0.762" layer="1" rot="R180"/>
+<smd name="P$12" x="9.525" y="3.81" dx="2.54" dy="0.762" layer="1" rot="R180"/>
+<smd name="P$13" x="9.525" y="2.54" dx="2.54" dy="0.762" layer="1" rot="R180"/>
+<smd name="P$14" x="9.525" y="1.27" dx="2.54" dy="0.762" layer="1" rot="R180"/>
+<smd name="P$15" x="9.525" y="0" dx="2.54" dy="0.762" layer="1" rot="R180"/>
+<smd name="P$16" x="9.525" y="-1.27" dx="2.54" dy="0.762" layer="1" rot="R180"/>
+<rectangle x1="4.0005" y1="-1.905" x2="8.02005" y2="6.985" layer="25"/>
 <rectangle x1="1.905" y1="6.1595" x2="4.445" y2="6.5405" layer="21"/>
 <rectangle x1="1.905" y1="4.8895" x2="4.445" y2="5.2705" layer="21"/>
 <rectangle x1="1.905" y1="3.6195" x2="4.445" y2="4.0005" layer="21"/>
@@ -82,19 +79,18 @@
 <rectangle x1="1.905" y1="1.0795" x2="4.445" y2="1.4605" layer="21"/>
 <rectangle x1="1.905" y1="-0.1905" x2="4.445" y2="0.1905" layer="21"/>
 <rectangle x1="1.905" y1="-1.4605" x2="4.445" y2="-1.0795" layer="21"/>
-<rectangle x1="8.89" y1="7.4295" x2="11.43" y2="7.8105" layer="21"/>
-<rectangle x1="8.89" y1="6.1595" x2="11.43" y2="6.5405" layer="21"/>
-<rectangle x1="8.89" y1="4.8895" x2="11.43" y2="5.2705" layer="21"/>
-<rectangle x1="8.89" y1="3.6195" x2="11.43" y2="4.0005" layer="21"/>
-<rectangle x1="8.89" y1="2.3495" x2="11.43" y2="2.7305" layer="21"/>
-<rectangle x1="8.89" y1="1.0795" x2="11.43" y2="1.4605" layer="21"/>
-<rectangle x1="8.89" y1="-0.1905" x2="11.43" y2="0.1905" layer="21"/>
-<rectangle x1="8.89" y1="-1.4605" x2="11.43" y2="-1.0795" layer="21"/>
-<text x="3.81" y="8.89" size="1.27" layer="21">&gt;NAME</text>
+<rectangle x1="7.62" y1="6.1595" x2="10.16" y2="6.5405" layer="21"/>
+<rectangle x1="7.62" y1="4.8895" x2="10.16" y2="5.2705" layer="21"/>
+<rectangle x1="7.62" y1="3.6195" x2="10.16" y2="4.0005" layer="21"/>
+<rectangle x1="7.62" y1="2.3495" x2="10.16" y2="2.7305" layer="21"/>
+<rectangle x1="7.62" y1="1.0795" x2="10.16" y2="1.4605" layer="21"/>
+<rectangle x1="7.62" y1="-0.1905" x2="10.16" y2="0.1905" layer="21"/>
+<rectangle x1="7.62" y1="-1.4605" x2="10.16" y2="-1.0795" layer="21"/>
+<text x="2.54" y="7.62" size="1.27" layer="21">&gt;NAME</text>
 </package>
 </packages>
 <symbols>
-<symbol name="SN74HC259NSR">
+<symbol name="74HC164">
 <wire x1="-7.62" y1="12.7" x2="-7.62" y2="10.16" width="0.254" layer="94"/>
 <wire x1="-7.62" y1="-10.16" x2="7.62" y2="-10.16" width="0.254" layer="94"/>
 <wire x1="7.62" y1="12.7" x2="-7.62" y2="12.7" width="0.254" layer="94"/>
@@ -114,49 +110,45 @@
 <wire x1="7.62" y1="0" x2="7.62" y2="-2.54" width="0.254" layer="94"/>
 <wire x1="7.62" y1="-2.54" x2="7.62" y2="-5.08" width="0.254" layer="94"/>
 <wire x1="7.62" y1="-5.08" x2="7.62" y2="-10.16" width="0.254" layer="94"/>
-<pin name="S0" x="-12.7" y="10.16" length="middle"/>
-<pin name="S1" x="-12.7" y="7.62" length="middle"/>
-<pin name="S2" x="-12.7" y="5.08" length="middle"/>
-<pin name="Q0" x="-12.7" y="2.54" length="middle"/>
-<pin name="Q1" x="-12.7" y="0" length="middle"/>
-<pin name="Q2" x="-12.7" y="-2.54" length="middle"/>
-<pin name="Q3" x="-12.7" y="-5.08" length="middle"/>
-<pin name="GND" x="-12.7" y="-7.62" length="middle"/>
+<pin name="DSA" x="-12.7" y="10.16" length="middle"/>
+<pin name="DSB" x="-12.7" y="7.62" length="middle"/>
+<pin name="Q0" x="-12.7" y="5.08" length="middle"/>
+<pin name="Q1" x="-12.7" y="2.54" length="middle"/>
+<pin name="Q2" x="-12.7" y="0" length="middle"/>
+<pin name="Q3" x="-12.7" y="-2.54" length="middle"/>
+<pin name="GND" x="-12.7" y="-5.08" length="middle"/>
 <pin name="VCC" x="12.7" y="10.16" length="middle" rot="R180"/>
-<pin name="CLR" x="12.7" y="7.62" length="middle" rot="R180"/>
-<pin name="G" x="12.7" y="5.08" length="middle" rot="R180"/>
-<pin name="D" x="12.7" y="2.54" length="middle" rot="R180"/>
-<pin name="Q7" x="12.7" y="0" length="middle" rot="R180"/>
-<pin name="Q6" x="12.7" y="-2.54" length="middle" rot="R180"/>
-<pin name="Q5" x="12.7" y="-5.08" length="middle" rot="R180"/>
-<pin name="Q4" x="12.7" y="-7.62" length="middle" rot="R180"/>
+<pin name="Q7" x="12.7" y="7.62" length="middle" rot="R180"/>
+<pin name="Q6" x="12.7" y="5.08" length="middle" rot="R180"/>
+<pin name="Q5" x="12.7" y="2.54" length="middle" rot="R180"/>
+<pin name="Q4" x="12.7" y="0" length="middle" rot="R180"/>
+<pin name="MR" x="12.7" y="-2.54" length="middle" rot="R180"/>
+<pin name="CP" x="12.7" y="-5.08" length="middle" rot="R180"/>
 <text x="-5.08" y="12.7" size="1.778" layer="95">&gt;NAME</text>
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="SN74HC259NSR" prefix="IC">
+<deviceset name="74HC164" prefix="IC">
 <gates>
-<gate name="G$1" symbol="SN74HC259NSR" x="0" y="0"/>
+<gate name="G$1" symbol="74HC164" x="0" y="0"/>
 </gates>
 <devices>
 <device name="" package="SOP-16">
 <connects>
-<connect gate="G$1" pin="CLR" pad="P$10"/>
-<connect gate="G$1" pin="D" pad="P$12"/>
-<connect gate="G$1" pin="G" pad="P$11"/>
+<connect gate="G$1" pin="CP" pad="P$16"/>
+<connect gate="G$1" pin="DSA" pad="P$2"/>
+<connect gate="G$1" pin="DSB" pad="P$3"/>
 <connect gate="G$1" pin="GND" pad="P$8"/>
+<connect gate="G$1" pin="MR" pad="P$15"/>
 <connect gate="G$1" pin="Q0" pad="P$4"/>
 <connect gate="G$1" pin="Q1" pad="P$5"/>
 <connect gate="G$1" pin="Q2" pad="P$6"/>
 <connect gate="G$1" pin="Q3" pad="P$7"/>
-<connect gate="G$1" pin="Q4" pad="P$16"/>
-<connect gate="G$1" pin="Q5" pad="P$15"/>
-<connect gate="G$1" pin="Q6" pad="P$14"/>
-<connect gate="G$1" pin="Q7" pad="P$13"/>
-<connect gate="G$1" pin="S0" pad="P$1"/>
-<connect gate="G$1" pin="S1" pad="P$2"/>
-<connect gate="G$1" pin="S2" pad="P$3"/>
-<connect gate="G$1" pin="VCC" pad="P$9"/>
+<connect gate="G$1" pin="Q4" pad="P$14"/>
+<connect gate="G$1" pin="Q5" pad="P$13"/>
+<connect gate="G$1" pin="Q6" pad="P$12"/>
+<connect gate="G$1" pin="Q7" pad="P$11"/>
+<connect gate="G$1" pin="VCC" pad="P$10"/>
 </connects>
 <technologies>
 <technology name=""/>
