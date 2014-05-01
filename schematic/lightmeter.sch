@@ -7280,54 +7280,6 @@ Source: AVX .. aphvc.pdf</description>
 </deviceset>
 </devicesets>
 </library>
-<library name="wirepad">
-<description>&lt;b&gt;Single Pads&lt;/b&gt;&lt;p&gt;
-&lt;author&gt;Created by librarian@cadsoft.de&lt;/author&gt;</description>
-<packages>
-<package name="3,81/1,1">
-<description>&lt;b&gt;THROUGH-HOLE PAD&lt;/b&gt;</description>
-<wire x1="1.905" y1="-1.27" x2="1.905" y2="-1.905" width="0.1524" layer="21"/>
-<wire x1="1.905" y1="-1.905" x2="1.27" y2="-1.905" width="0.1524" layer="21"/>
-<wire x1="-1.27" y1="-1.905" x2="-1.905" y2="-1.905" width="0.1524" layer="21"/>
-<wire x1="-1.905" y1="-1.905" x2="-1.905" y2="-1.27" width="0.1524" layer="21"/>
-<wire x1="-1.905" y1="1.27" x2="-1.905" y2="1.905" width="0.1524" layer="21"/>
-<wire x1="-1.905" y1="1.905" x2="-1.27" y2="1.905" width="0.1524" layer="21"/>
-<wire x1="1.27" y1="1.905" x2="1.905" y2="1.905" width="0.1524" layer="21"/>
-<wire x1="1.905" y1="1.905" x2="1.905" y2="1.27" width="0.1524" layer="21"/>
-<circle x="0" y="0" radius="1.27" width="0.1524" layer="51"/>
-<pad name="1" x="0" y="0" drill="1.1176" diameter="3.81" shape="octagon"/>
-<text x="-1.905" y="2.286" size="1.27" layer="25" ratio="10">&gt;NAME</text>
-<text x="0" y="1.2" size="0.0254" layer="27">&gt;VALUE</text>
-</package>
-</packages>
-<symbols>
-<symbol name="PAD">
-<wire x1="-1.016" y1="1.016" x2="1.016" y2="-1.016" width="0.254" layer="94"/>
-<wire x1="-1.016" y1="-1.016" x2="1.016" y2="1.016" width="0.254" layer="94"/>
-<text x="-1.143" y="1.8542" size="1.778" layer="95">&gt;NAME</text>
-<text x="-1.143" y="-3.302" size="1.778" layer="96">&gt;VALUE</text>
-<pin name="P" x="2.54" y="0" visible="off" length="short" direction="pas" rot="R180"/>
-</symbol>
-</symbols>
-<devicesets>
-<deviceset name="3,81/1,1" prefix="PAD" uservalue="yes">
-<description>&lt;b&gt;THROUGH-HOLE PAD&lt;/b&gt;</description>
-<gates>
-<gate name="P" symbol="PAD" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="3,81/1,1">
-<connects>
-<connect gate="P" pin="P" pad="1"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-</devicesets>
-</library>
 <library name="diode2">
 <description>&lt;b&gt;Diodes&lt;/b&gt;&lt;p&gt;
 Based on the following sources:
@@ -10170,7 +10122,6 @@ chip</description>
 <part name="U1:2.8V" library="Texas Instruments_By_element14_Batch_1" deviceset="LP2985-10DBVT" device=""/>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
 <part name="C1" library="rcl" deviceset="C-EU" device="C1206" value="1µ"/>
-<part name="C4" library="rcl" deviceset="C-EU" device="050-024X044" value="4µ7"/>
 <part name="D1" library="telefunken" deviceset="BYS10" device=""/>
 <part name="G2" library="battery" deviceset="CR2032H" device=""/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
@@ -10182,7 +10133,7 @@ chip</description>
 <part name="Q3" library="transistor-small-signal" deviceset="BSS123" device=""/>
 <part name="C2" library="rcl" deviceset="C-EU" device="C1206" value="µ1"/>
 <part name="C3" library="rcl" deviceset="C-EU" device="C1206" value="µ1"/>
-<part name="C8" library="rcl" deviceset="C-EU" device="C1206" value="µ1"/>
+<part name="C8" library="rcl" deviceset="C-EU" device="C1206" value="2µ"/>
 <part name="D2" library="diode2" deviceset="DIODE-" device="SOD323-W"/>
 <part name="D3" library="diode2" deviceset="DIODE-" device="SOD323-W"/>
 <part name="D4" library="diode2" deviceset="DIODE-" device="SOD323-W"/>
@@ -10194,7 +10145,6 @@ chip</description>
 <part name="S4" library="switch" deviceset="SKHMP*E010" device="" technology="S"/>
 <part name="P+5" library="supply1" deviceset="VCC" device=""/>
 <part name="C9" library="rcl" deviceset="C-EU" device="C1206" value="µ1"/>
-<part name="SHV" library="wirepad" deviceset="3,81/1,1" device=""/>
 <part name="U1" library="microbuilder" deviceset="DISP_OLED_UG-2864HSWEG01" device="0.96&quot;"/>
 <part name="C10" library="rcl" deviceset="C-EU" device="C1206" value="2µ2"/>
 <part name="R8" library="microbuilder" deviceset="RESISTOR" device="1206" value="530k"/>
@@ -10205,6 +10155,7 @@ chip</description>
 <part name="R2" library="resistor" deviceset="R-EU_" device="R1206" value="6k"/>
 <part name="R5" library="resistor" deviceset="R-EU_" device="R1206" value="6k"/>
 <part name="R6" library="resistor" deviceset="R-EU_" device="R1206" value="6k"/>
+<part name="C4" library="rcl" deviceset="C-EU" device="C1206" value="4µ7"/>
 </parts>
 <sheets>
 <sheet>
@@ -10223,7 +10174,6 @@ chip</description>
 <instance part="U1:2.8V" gate="A" x="60.96" y="88.9"/>
 <instance part="GND5" gate="1" x="22.86" y="53.34"/>
 <instance part="C1" gate="G$1" x="27.94" y="71.12" rot="R90"/>
-<instance part="C4" gate="G$1" x="154.94" y="12.7" rot="R90"/>
 <instance part="D1" gate="G$1" x="127" y="-7.62"/>
 <instance part="G2" gate="1" x="116.84" y="106.68"/>
 <instance part="GND6" gate="1" x="96.52" y="106.68" rot="R270"/>
@@ -10247,7 +10197,6 @@ chip</description>
 <instance part="S4" gate="G$1" x="91.44" y="-12.7" rot="R270"/>
 <instance part="P+5" gate="VCC" x="5.08" y="-30.48" rot="R90"/>
 <instance part="C9" gate="G$1" x="93.98" y="5.08"/>
-<instance part="SHV" gate="P" x="132.08" y="96.52"/>
 <instance part="U1" gate="G$1" x="226.06" y="-30.48"/>
 <instance part="C10" gate="G$1" x="182.88" y="-30.48" rot="R180"/>
 <instance part="R8" gate="G$1" x="193.04" y="-50.8" rot="R90"/>
@@ -10258,6 +10207,7 @@ chip</description>
 <instance part="R2" gate="G$1" x="53.34" y="-27.94" rot="R90"/>
 <instance part="R5" gate="G$1" x="71.12" y="-27.94" rot="R90"/>
 <instance part="R6" gate="G$1" x="91.44" y="-27.94" rot="R90"/>
+<instance part="C4" gate="G$1" x="152.4" y="12.7" rot="R90"/>
 </instances>
 <busses>
 </busses>
@@ -10419,8 +10369,7 @@ chip</description>
 </net>
 <net name="N$2" class="0">
 <segment>
-<pinref part="C4" gate="G$1" pin="2"/>
-<wire x1="160.02" y1="12.7" x2="182.88" y2="12.7" width="0.1524" layer="91"/>
+<wire x1="157.48" y1="12.7" x2="182.88" y2="12.7" width="0.1524" layer="91"/>
 <wire x1="185.42" y1="7.62" x2="116.84" y2="7.62" width="0.1524" layer="91"/>
 <pinref part="IC1" gate="B" pin="IN-"/>
 <pinref part="Q2" gate="G$1" pin="D"/>
@@ -10440,6 +10389,7 @@ chip</description>
 <pinref part="D1" gate="G$1" pin="K"/>
 <wire x1="124.46" y1="-7.62" x2="116.84" y2="-7.62" width="0.1524" layer="91"/>
 <wire x1="116.84" y1="-7.62" x2="116.84" y2="7.62" width="0.1524" layer="91"/>
+<pinref part="C4" gate="G$1" pin="2"/>
 </segment>
 </net>
 <net name="N$16" class="0">
@@ -10485,8 +10435,6 @@ chip</description>
 <net name="N$21" class="0">
 <segment>
 <pinref part="IC1" gate="B" pin="OUT"/>
-<pinref part="C4" gate="G$1" pin="1"/>
-<wire x1="152.4" y1="12.7" x2="142.24" y2="12.7" width="0.1524" layer="91"/>
 <wire x1="142.24" y1="12.7" x2="142.24" y2="17.78" width="0.1524" layer="91"/>
 <junction x="142.24" y="17.78"/>
 <wire x1="142.24" y1="40.64" x2="142.24" y2="30.48" width="0.1524" layer="91"/>
@@ -10504,6 +10452,8 @@ chip</description>
 <junction x="142.24" y="30.48"/>
 <pinref part="R3" gate="G$1" pin="1"/>
 <wire x1="144.78" y1="17.78" x2="142.24" y2="17.78" width="0.1524" layer="91"/>
+<pinref part="C4" gate="G$1" pin="1"/>
+<wire x1="149.86" y1="12.7" x2="142.24" y2="12.7" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$12" class="0">
@@ -10561,13 +10511,9 @@ chip</description>
 <wire x1="200.66" y1="-63.5" x2="190.5" y2="-63.5" width="0.1524" layer="91"/>
 <wire x1="190.5" y1="-63.5" x2="190.5" y2="35.56" width="0.1524" layer="91"/>
 <pinref part="D4" gate="G$1" pin="C"/>
-<wire x1="185.42" y1="101.6" x2="187.96" y2="101.6" width="0.1524" layer="91"/>
 <pinref part="C8" gate="G$1" pin="1"/>
-<wire x1="187.96" y1="101.6" x2="190.5" y2="101.6" width="0.1524" layer="91"/>
+<wire x1="185.42" y1="101.6" x2="190.5" y2="101.6" width="0.1524" layer="91"/>
 <wire x1="190.5" y1="101.6" x2="190.5" y2="96.52" width="0.1524" layer="91"/>
-<wire x1="187.96" y1="101.6" x2="187.96" y2="96.52" width="0.1524" layer="91"/>
-<junction x="187.96" y="101.6"/>
-<wire x1="187.96" y1="96.52" x2="132.08" y2="96.52" width="0.1524" layer="91"/>
 <wire x1="190.5" y1="101.6" x2="215.9" y2="101.6" width="0.1524" layer="91"/>
 <junction x="190.5" y="101.6"/>
 <wire x1="215.9" y1="101.6" x2="231.14" y2="101.6" width="0.1524" layer="91"/>
