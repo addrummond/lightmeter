@@ -195,7 +195,7 @@ def output_ev_table(of, name_prefix, op_amp_resistor):
     vallist_abs = [ ]
     vallist_diffs = [ ]
     oar = op_amp_resistor
-    for sv in xrange(0, 256, 16):
+    for sv in xrange(0, 256-b_voltage_offset, 16):
         # Write the absolute 8-bit EV value.
         voltage = (sv * bv_to_voltage) + voltage_offset
         assert voltage >= 0
@@ -274,9 +274,9 @@ def output_sanity_graph():
     f = open("sanitygraph.csv", "w")
     f.write("v," + ','.join(["s" + str(n+1) for n in xrange(len(op_amp_resistor_stages))]) + ',')
     f.write(','.join(["b" + str(n+1) for n in xrange(len(op_amp_resistor_stages))]) + '\n')
-    for v in xrange(0, 256):
+    for v in xrange(b_voltage_offset, 256):
         f.write("%i" % v)
-        voltage = (v * bv_to_voltage) + voltage_offset
+        voltage = (v * bv_to_voltage)
         bins = [ ]
         for stage in xrange(len(op_amp_resistor_stages)):
             ev = voltage_and_oa_resistor_to_ev(voltage, op_amp_resistor_stages[stage][0] * op_amp_resistor_stages[stage][1])
@@ -298,8 +298,8 @@ def output_sanity_graph():
 # working correctly. (Test will currently only be performed for normal light table.)
 def output_test_table(of):
     of.write('    { ')
-    for v in xrange(0, 256):
-        voltage = (v * bv_to_voltage) + voltage_offset
+    for v in xrange(v_voltage_offset, 256):
+        voltage = (v * bv_to_voltage)
 #            sys.stderr.write('TAVY ' + str(temperature) + ',' + str(voltage) + '\n')
         ev = voltage_and_oa_resistor_to_ev(voltage, op_amp_normal_resistor)
         eight = int(round((ev+5.0) * 8.0))
