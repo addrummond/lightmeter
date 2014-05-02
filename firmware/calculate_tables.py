@@ -161,8 +161,7 @@ for x in xrange(1): # Just here to get a new scope
 # As it turns out, there are only a small number of distinct 8-bit
 # diffs patterns. We can therefore replace each [diffs diffs] sequence
 # with the sequence [ev i], where i is a single byte containing two
-# 4-bit indices (one for each 8-bit bit pattern) into an array of 14
-# bytes.
+# 4-bit indices (one for each 8-bit bit pattern) into an array.
 #
 # Finally, we split the array into two arrays (one for the absolute
 # value bytes and one for the diff bit pattern index bytes). (This was
