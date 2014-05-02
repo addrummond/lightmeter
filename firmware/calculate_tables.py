@@ -190,7 +190,7 @@ def output_temp_table(of):
         of.write("%i," % eight)
     of.write("};\n")
 
-def get_tenth_bit(v, test=False):
+def get_tenth_bit(ev, test=False):
     """Given a representation of a voltage, return either 0 or 1,
        indicating respectively whether the voltage is nearest to the
        tenth immediately below/equal to the eighth or to the tenth
@@ -198,17 +198,17 @@ def get_tenth_bit(v, test=False):
        makes it possible to report exposures to a 1/10EV resolution
        with full accuracy.
     """
-    eighths = int(round(v*8.0))
+    eighths = int(round(ev*8.0))
     if test:
-        sys.stdout.write("Original %f, eighths %i" % (v, eighths))
+        sys.stdout.write("Original %f, eighths %i" % (ev, eighths))
     ee = eighths % 8
-    vv = v % 1.0
+    evv = ev % 1.0
     nearest_tenth = 0.0
-    while abs(vv - nearest_tenth) > 0.05:
+    while abs(evv - nearest_tenth) > 0.05:
         nearest_tenth += 0.1
     if test:
         sys.stdout.write("; nearest tenth = %f" % nearest_tenth)
-    r = (1 if nearest_tenth > vv else 0)
+    r = (1 if nearest_tenth > evv else 0)
     if test:
         sys.stdout.write("; r = %i\n" % r)
     return r
@@ -254,7 +254,7 @@ def output_ev_table(of, name_prefix, op_amp_resistor):
                     o += '1'
                 prev = eight2
 
-                tenth_bits.append(get_tenth_bit(v))
+                tenth_bits.append(get_tenth_bit(ev2))
 
             ix = None
             try:
