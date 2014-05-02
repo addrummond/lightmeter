@@ -213,7 +213,7 @@ static void setup_charge_pump()
     // Prescale clock by 1/64.
     TCCR1B |= ((0 << CS12) | (1 << CS11) | (1 << CS10));
     TCCR1B |= ((0 << WGM13) | (1 << WGM12) | (0 << WGM11) | (0 << WGM10));
-    OCR1A = 2; // Count to two.
+    OCR1A = 4; // Count to 4.
     // Enable CTC interrupt.
     TIMSK1 |= (1 << OCIE1A);
 }

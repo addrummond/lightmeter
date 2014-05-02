@@ -10247,9 +10247,9 @@ diameter 2.54 mm, horizontal, grid 10.16 mm</description>
 <part name="C7" library="rcl" deviceset="C-EU" device="C1206" value="µ1"/>
 <part name="Q1_OA" library="transistor-small-signal" deviceset="BSS123" device=""/>
 <part name="Q3_OA" library="transistor-small-signal" deviceset="BSS123" device=""/>
-<part name="C2" library="rcl" deviceset="C-EU" device="C1206" value="µ1"/>
-<part name="C3" library="rcl" deviceset="C-EU" device="C1206" value="µ1"/>
-<part name="C8" library="rcl" deviceset="C-EU" device="C1206" value="2µ"/>
+<part name="C2" library="rcl" deviceset="C-EU" device="C1206" value="2µ"/>
+<part name="C3" library="rcl" deviceset="C-EU" device="C1206" value="2µ"/>
+<part name="C8" library="rcl" deviceset="C-EU" device="C1206" value="µ1"/>
 <part name="D2" library="diode2" deviceset="DIODE-" device="SOD323-W"/>
 <part name="D3" library="diode2" deviceset="DIODE-" device="SOD323-W"/>
 <part name="D4" library="diode2" deviceset="DIODE-" device="SOD323-W"/>
