@@ -1,5 +1,6 @@
 import math
 import sys
+import itertools
 
 ##########
 # Configuration values.
@@ -218,7 +219,7 @@ def output_ev_table(of, name_prefix, op_amp_resistor):
     vallist_abs = [ ]
     vallist_diffs = [ ]
     oar = op_amp_resistor
-    tenths = [ ]
+    tenth_bits = [ ]
     for sv in xrange(0, 256-b_voltage_offset, 16):
         # Write the absolute 8-bit EV value.
         voltage = (sv * bv_to_voltage) + voltage_offset
@@ -253,6 +254,9 @@ def output_ev_table(of, name_prefix, op_amp_resistor):
                 elif eight2 - prev == 1:
                     o += '1'
                 prev = eight2
+
+                tenth_bits.append(get_tenth_bit(v))
+
             ix = None
             try:
                 ix = bitpatterns.index(o)
@@ -281,12 +285,21 @@ def output_ev_table(of, name_prefix, op_amp_resistor):
             of.write('\n    ');
         of.write('%i,' % vallist_abs[i])
     of.write('\n};\n')
+    
     of.write('const uint8_t ' + name_prefix + '_LIGHT_VOLTAGE_TO_EV_DIFFS[] PROGMEM = {')
     for i in xrange(len(vallist_diffs)):
         if i % 32 == 0:
             of.write('\n    ');
         of.write('%i,' % vallist_diffs[i])
     of.write('\n};\n')
+    
+    of.write('const uint8_t ' + name_prefix + '_LIGHT_VOLTAGE_TO_EV_TENTHS[] PROGMEM = { ')
+    bits = ['1' if x == 1 else '0' for x in tenth_bits]
+    bytes = [ ]
+    for i in xrange(0, len(bits), 8):
+        bytes.append('0b' + ''.join(bits[i:i+8]))
+    of.write(', '.join(bytes))
+    of.write(' };\n')
 
     return True, ()
 
@@ -322,7 +335,7 @@ def output_sanity_graph():
 # working correctly. (Test will currently only be performed for normal light table.)
 def output_test_table(of):
     of.write('    { ')
-    for v in xrange(v_voltage_offset, 256):
+    for v in xrange(b_voltage_offset, 256):
         voltage = (v * bv_to_voltage)
 #            sys.stderr.write('TAVY ' + str(temperature) + ',' + str(voltage) + '\n')
         ev = voltage_and_oa_resistor_to_ev(voltage, op_amp_normal_resistor)
