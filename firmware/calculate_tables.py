@@ -176,7 +176,7 @@ for x in xrange(1): # Just here to get a new scope
 #
 
 # The temperature adjustment curve is very flat, so we store it as
-# follows. The #define TEMP_EV_ADJUST_AT_T0 gives the EV compensation
+# follows. #define TEMP_EV_ADJUST_AT_T0 gives the EV compensation
 # value for t=0 (i.e. -51C). Then we store the temperatures at which the
 # EV compensation value goes down by 1 (i.e. 1/8EV) in TEMP_EV_ADJUST_CHANGE_TEMPS.
 def output_temp_table(ofc, ofh):
