@@ -191,12 +191,12 @@ def output_temp_table(of):
     of.write("};\n")
 
 def get_tenth_bit(v, test=False):
-    """Given a representation of a voltage,
-       return either 0 or 1, indicating respectively whether the voltage
-       is nearest to the tenth immediately below/equal to the eighth or to the
-       tenth immediately above it. Storing these additional "tenth
-       bits" makes it possible to report exposures to a 1/10EV
-       resolution with full accuracy.
+    """Given a representation of a voltage, return either 0 or 1,
+       indicating respectively whether the voltage is nearest to the
+       tenth immediately below/equal to the eighth or to the tenth
+       immediately above it. Storing these additional "tenth bits"
+       makes it possible to report exposures to a 1/10EV resolution
+       with full accuracy.
     """
     eighths = int(round(v*8.0))
     if test:
