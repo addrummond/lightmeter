@@ -1,6 +1,5 @@
 import math
 import sys
-import itertools
 
 ##########
 # Configuration values.
