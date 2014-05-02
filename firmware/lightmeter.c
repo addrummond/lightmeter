@@ -210,9 +210,8 @@ static void setup_charge_pump()
     CHARGE_PUMP_CLOCKS_PORT |= (1 << CHARGE_PUMP_CLOCK1_BIT);
     CHARGE_PUMP_CLOCKS_PORT &= ~(1 << CHARGE_PUMP_CLOCK2_BIT);
 
-    // Prescale clock by /1024. This gives us a 7.812KHz counter.
-    TCCR1B |= ((1 << CS12) | (0 << CS11) | (1 << CS10));
-    // We want 4KHz, so we count to two.
+    // Prescale clock by 1/64.
+    TCCR1B |= ((0 << CS12) | (1 << CS11) | (1 << CS10));
     TCCR1B |= ((0 << WGM13) | (1 << WGM12) | (0 << WGM11) | (0 << WGM10));
     OCR1A = 2; // Count to two.
     // Enable CTC interrupt.
