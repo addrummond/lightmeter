@@ -34,7 +34,7 @@ op_amp_normal_resistor = op_amp_resistor_stages[1][0] * op_amp_resistor_stages[1
 # in EV values which the table compression mechanism can't handle.
 voltage_offset                   = 225.0   # mV
 
-# For BPW34                      = 40.0    # C
+# For BPW34
 reference_temperature            = 30.0    # C
 
 ##########
