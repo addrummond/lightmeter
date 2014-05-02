@@ -175,9 +175,15 @@ for x in xrange(1): # Just here to get a new scope
 # in EV@100*8.
 #
 
-def output_temp_table(of):
-    of.write("const int8_t TEMP_EV_ADJUST[] PROGMEM = {\n");
-    for t in xrange(0,256,4):
+# The temperature adjustment curve is very flat, so we store it as
+# follows. The #define TEMP_EV_ADJUST_AT_T0 gives the EV compensation
+# value for t=0 (i.e. -51C). Then we store the temperatures at which the
+# EV compensation value goes down by 1 (i.e. 1/8EV) in TEMP_EV_ADJUST_CHANGE_TEMPS.
+def output_temp_table(ofc, ofh):
+    firstNibble = True
+    lastEight = None
+    arrayLen = 0
+    for t in xrange(256):
         temperature = -51.0 + (t * 0.4)
         dtemp = temperature - reference_temperature
         comp = ev_change_for_every_1_6_c_rise * (dtemp / 1.6)
@@ -186,8 +192,22 @@ def output_temp_table(of):
             eight = -127
         if eight > 127:
             eight = 127
-        of.write("%i," % eight)
-    of.write("};\n")
+
+        if t == 0:
+            ofh.write("#define TEMP_EV_ADJUST_AT_T0 %i\n" % eight)
+        else:
+            if t == 1:
+                ofc.write("const uint8_t TEMP_EV_ADJUST_CHANGE_TEMPS[] PROGMEM = { ")
+
+            if eight == lastEight:
+                pass
+            else:
+                arrayLen += 1
+                ofc.write("%i," % t)
+
+        lastEight = eight
+    ofc.write("};\n")
+    ofh.write("#define TEMP_EV_ADJUST_CHANGE_TEMPS_LENGTH %i\n" % arrayLen)
 
 def get_tenth_bit(ev, test=False):
     """Given a representation of a voltage, return either 0 or 1,
@@ -683,7 +703,7 @@ def output():
     ofh.write("#define VOLTAGE_TO_EV_ABS_OFFSET " + str(b_voltage_offset) + '\n')
     ofh.write("#define LUMINANCE_COMPENSATION " + str(int(round(LUMINANCE_COMPENSATION*8.0))) + '\n')
     
-    output_temp_table(ofc)
+    output_temp_table(ofc, ofh)
     ofc.write('\n#ifdef TEST\n')
     ofc.write('const uint8_t TEST_VOLTAGE_TO_EV[] PROGMEM =\n')
     ofh.write('extern const uint8_t TEST_VOLTGE_TO_EV[];\n')
@@ -696,7 +716,7 @@ def output():
     ofh.write("extern uint8_t SHUTTER_SPEEDS_BITMAP[];\n")
     ofh.write("extern uint8_t APERTURES[];\n")
     ofh.write("extern uint8_t APERTURES_BITMAP[];\n")
-    ofh.write("extern uint8_t TEMP_EV_ADJUST[];\n")
+    ofh.write("extern uint8_t TEMP_EV_ADJUST_CHANGE_TEMPS[];\n")
 
     ofh.write("\n#endif\n")
 

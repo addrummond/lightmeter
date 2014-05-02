@@ -73,7 +73,12 @@ uint8_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage, u
         bits2 &= bits2 - 1;
 
     // Compensate for effect of ambient temperature.
-    int8_t adj = TEMP_EV_ADJUST[temperature >> 2];
+    int8_t adj = TEMP_EV_ADJUST_AT_T0;
+    uint8_t i;
+    for (i = 0; i < TEMP_EV_ADJUST_CHANGE_TEMPS_LENGTH; ++i) {
+        if (temperature < TEMP_EV_ADJUST_CHANGE_TEMPS[i])
+            --adj;
+    }
     int16_t withcomp = r + adj;
     if (withcomp < 0)
         return 0;
