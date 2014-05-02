@@ -190,11 +190,35 @@ def output_temp_table(of):
         of.write("%i," % eight)
     of.write("};\n")
 
+def get_tenth_bit(v, test=False):
+    """Given a representation of a voltage,
+       return either 0 or 1, indicating respectively whether the voltage
+       is nearest to the tenth immediately below/equal to the eighth or to the
+       tenth immediately above it. Storing these additional "tenth
+       bits" makes it possible to report exposures to a 1/10EV
+       resolution with full accuracy.
+    """
+    eighths = int(round(v*8.0))
+    if test:
+        sys.stdout.write("Original %f, eighths %i" % (v, eighths))
+    ee = eighths % 8
+    vv = v % 1.0
+    nearest_tenth = 0.0
+    while abs(vv - nearest_tenth) > 0.05:
+        nearest_tenth += 0.1
+    if test:
+        sys.stdout.write("; nearest tenth = %f" % nearest_tenth)
+    r = (1 if nearest_tenth > vv else 0)
+    if test:
+        sys.stdout.write("; r = %i\n" % r)
+    return r
+
 def output_ev_table(of, name_prefix, op_amp_resistor):
     bitpatterns = [ ]
     vallist_abs = [ ]
     vallist_diffs = [ ]
     oar = op_amp_resistor
+    tenths = [ ]
     for sv in xrange(0, 256-b_voltage_offset, 16):
         # Write the absolute 8-bit EV value.
         voltage = (sv * bv_to_voltage) + voltage_offset
@@ -307,6 +331,12 @@ def output_test_table(of):
     of.write('\n')
     of.write('    }');
 
+def test_get_tenth_bit():
+    assert get_tenth_bit(0.5, True)    == 0
+    assert get_tenth_bit(0.4, True)    == 0
+    assert get_tenth_bit(0.875, True ) == 1
+    assert get_tenth_bit(99.875, True) == 1
+    assert get_tenth_bit(1.625, True)  == 0
 
 #
 # Shutter speed and aperture tables.
@@ -681,5 +711,7 @@ if __name__ == '__main__':
         output_sanity_graph()
     elif sys.argv[1] == 'output':
         output()
+    elif sys.argv[1] == 'testtenth':
+        test_get_tenth_bit()
     else:
         assert False
