@@ -18,6 +18,96 @@
 #include <stdio.h>
 #endif
 
+// See comments in calculate_tables.py for info on the way
+// temp/voltage are encoded.
+// This is explicitly implemented without using division or multiplcation,
+// since the attiny doesn't have hardware division or multiplication.
+// gcc would probably do most of these optimizations automatically, but since
+// this code really definitely needs to run quickly, I'm doing it explicitly here.
+//
+// 'voltage' is in 1/256ths of the reference voltage.
+ev_with_tenths_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage, uint8_t op_amp_resistor_stage)
+{
+    const uint8_t *ev_abs = NULL, *ev_diffs = NULL, *ev_bitpatterns = NULL, *ev_tenths = NULL;
+#define ASSIGN(n) (ev_abs = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_ABS,                 \
+                   ev_diffs = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_DIFFS,             \
+                   ev_bitpatterns = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_BITPATTERNS, \
+                   ev_tenths = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_TENTHS)
+    switch (op_amp_resistor_stage) {
+    case 1: ASSIGN(1); break;
+#if NUM_OP_AMP_RESISTOR_STAGES > 1
+    case 2: ASSIGN(2); break;
+#if NUM_OP_AMP_RESISTOR_STAGES > 2
+    case 3: ASSIGN(3); break;
+#if NUM_OP_AMP_RESISTOR_STAGES > 3
+    case 4: ASSIGN(4); break;
+#if NUM_OP_AMP_RESISTOR_STAGES > 4
+    case 5: ASSIGN(5); break;
+#if NUM_OP_AMP_RESISTOR_STAGES > 5
+#error "Too many op amp stages"
+#endif
+#endif
+#endif
+#endif
+#endif
+    }
+#undef ASSIGN
+
+    ev_with_tenths_t ret;
+
+    if (voltage < VOLTAGE_TO_EV_ABS_OFFSET)
+        voltage = 0;
+    else
+        voltage -= VOLTAGE_TO_EV_ABS_OFFSET;
+
+    uint8_t v16 = voltage >> 4;
+
+    uint8_t absi = v16;
+    uint8_t bits_to_add = (voltage & 15) + 1; // (voltage % 16) + 1
+
+    uint8_t bit_pattern_indices = pgm_read_byte(ev_diffs + absi);
+    uint8_t bits1 = pgm_read_byte(ev_bitpatterns + (bit_pattern_indices >> 4));
+    uint8_t bits2 = pgm_read_byte(ev_bitpatterns + (bit_pattern_indices & 0x0F));
+    if (bits_to_add < 8)
+        bits1 &= 0xFF << (8 - bits_to_add);
+    if (bits_to_add < 16)
+        bits2 &= 0xFF << (16 - bits_to_add);
+
+    // See http://stackoverflow.com/questions/109023/how-to-count-the-number-of-set-bits-in-a-32-bit-integer
+    uint8_t r = pgm_read_byte(ev_abs + absi);
+    for (; bits1; ++r)
+        bits1 &= bits1 - 1;
+    for (; bits2; ++r)
+        bits2 &= bits2 - 1;
+
+    // Compensate for effect of ambient temperature.
+    int8_t adj = TEMP_EV_ADJUST_AT_T0;
+    uint8_t i;
+    for (i = 0; i < TEMP_EV_ADJUST_CHANGE_TEMPS_LENGTH; ++i) {
+        if (temperature < TEMP_EV_ADJUST_CHANGE_TEMPS[i])
+            --adj;
+    }
+    int16_t withcomp = r + adj;
+    if (withcomp < 0)
+        ret.ev = 0;
+    else if (withcomp > 255)
+        ret.ev = 255;
+    else
+        ret.ev = (uint8_t)withcomp;
+
+    // Calculate tenths.
+    uint8_t tenths_bit = ev_tenths[voltage >> 3];
+    uint8_t eighths = voltage & 0b111;
+    tenths_bit >>= eighths;
+    tenths_bit &= 1;
+    ret.tenths = eighths;
+    if (eighths > 3)
+        ++ret.tenths;
+    ret.tenths += tenths_bit;
+
+    return ret;
+}
+
 void shutter_speed_to_string(uint8_t speed, shutter_string_output_t *eso)
 {
     if (speed > SS_MAX)
@@ -372,6 +462,10 @@ uint8_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, uint8_t ev_, uint8_t x)
 }
 
 #ifdef TEST
+extern const uint8_t TEST_VOLTAGE_TO_EV[];
+#endif
+
+#ifdef TEST
 
 int main()
 {
@@ -496,6 +590,24 @@ int main()
 
         printf("ISO %s (%sfull) = %.2f stops from ISO 6\n", isodigits, is_full ? "" : "not ", ((float)stops)/8.0);
     }
+
+    // Test that compressed table is giving correct values by comparing to uncompressed table.
+    printf("OFFSET %i\n", VOLTAGE_TO_EV_ABS_OFFSET);
+    uint8_t t = 227; // ~=40C; should track reference_temperature in calculate_tables.py
+    for (int v_ = 0; v_ < 246; ++v_) {
+        int v = v_ - VOLTAGE_TO_EV_ABS_OFFSET;
+        if (v < 0)
+            v = 0;
+        uint8_t uncompressed = pgm_read_byte(&TEST_VOLTAGE_TO_EV[(unsigned)v]);
+        ev_with_tenths_t evwt = get_ev100_at_temperature_voltage((uint8_t)t, (uint8_t)v_, NORMAL_GAIN);
+        uint8_t compressed = evwt.ev;
+        if (uncompressed != compressed) {
+            printf("Values not equal for t = %i, v = %i: compressed = %i, uncompressed = %i\n", (unsigned)t, (unsigned)v_, (unsigned)compressed, (unsigned)uncompressed);
+                        return 1;
+        }
+    }
+
+    printf("\nCompression test completed successfully.\n");
 
     return 0;
 }

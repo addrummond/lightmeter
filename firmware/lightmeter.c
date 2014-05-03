@@ -8,7 +8,6 @@
 #include <avr/interrupt.h>
 
 #include <state.h>
-#include <calculate.h>
 #include <exposure.h>
 #include <divmulutils.h>
 #include <tables.h>
@@ -129,22 +128,22 @@ void handle_measurement()
     // Div by 4 because we're going from units of 1/1024 to units of 1/256.
     // (Could left adjust everything, but we might want the full 10 bits for temps.)
     uint8_t adc_light_nonvol_value = (uint8_t)(adc_light_value >> 2);
-    
-    uint8_t ev = get_ev100_at_temperature_voltage(
+
+    ev_with_tenths_t evwt = get_ev100_at_temperature_voltage(
         current_temp,
         adc_light_nonvol_value,
         global_transient_meter_state.op_amp_resistor_stage
     );
-    global_transient_meter_state.last_ev = ev;
+    global_transient_meter_state.last_ev_with_tenths = evwt;
 
     uint8_t ap, shut;
     if (global_meter_state.priority == SHUTTER_PRIORITY) {
         shut = global_transient_meter_state.shutter_speed;
-        ap = aperture_given_shutter_speed_iso_ev(shut, global_meter_state.stops_iso, ev);
+        ap = aperture_given_shutter_speed_iso_ev(shut, global_meter_state.stops_iso, evwt.ev); // TODO TENTHS PRECISION
     }
     else { //if (global_meter_state.priority == APERTURE_PRIORITY) {
         ap = global_transient_meter_state.aperture;
-        shut = shutter_speed_given_aperture_iso_ev(ap, global_meter_state.stops_iso, ev);
+        shut = shutter_speed_given_aperture_iso_ev(ap, global_meter_state.stops_iso, evwt.ev); // TODO TENTHS PRECISION
     }
     shutter_speed_to_string(shut, &(global_transient_meter_state.shutter_speed_string));
     aperture_to_string(ap, &(global_transient_meter_state.aperture_string));

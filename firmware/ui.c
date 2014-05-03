@@ -215,13 +215,14 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
 
         // Output EV (TODO: Currently ignores eighths)
         if (tms.exposure_ready) {
-            uint8_t eighths = tms.last_ev & 0b111;
-            if (tms.last_ev < 5*8) {
+            uint8_t ev = tms.last_ev_with_tenths.ev;
+            uint8_t eighths = ev & 0b111;
+            if (ev < 5*8) {
                 eighths = 8-eighths;
 
                 func_state->ev_length = 2;
                 func_state->ev_chars[0] = CHAR_8PX_MINUS_O;
-                func_state->ev_chars[1] = CHAR_8PX_0_O + CHAR_OFFSET_8PX(5 - (tms.last_ev >> 3));
+                func_state->ev_chars[1] = CHAR_8PX_0_O + CHAR_OFFSET_8PX(5 - (ev >> 3));
                 func_state->ev_chars_ = func_state->ev_chars;
             }
             else {
@@ -229,7 +230,7 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
                 //func_state->ev_chars[0] = CHAR_8PX_7_O;
                 //func_state->ev_chars[1] = CHAR_8PX_8_O;
                 //func_state->ev_chars_ = func_state->ev_chars;
-                func_state->ev_chars_ = uint8_to_bcd((tms.last_ev >> 3) - 5, func_state->ev_chars, 3);
+                func_state->ev_chars_ = uint8_to_bcd((ev >> 3) - 5, func_state->ev_chars, 3);
                 func_state->ev_length = bcd_length_after_op(func_state->ev_chars, 3, func_state->ev_chars_);
                 uint8_t i;
                 for (i = 0; i < func_state->ev_length; ++i)

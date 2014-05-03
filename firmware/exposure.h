@@ -47,4 +47,13 @@ uint8_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, uint8_t ev_, uint8_t x)
 #define shutter_speed_given_aperture_iso_ev(a,b,c) x_given_y_iso_ev(a,b,c,1)
 uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length);
 
+typedef struct ev_with_tenths {
+    uint8_t ev; // The ev value in 1/8 EV steps starting from -5EV.
+    uint8_t tenths; // This + (ev/8)*10 gives EV in 1/10 stops starting from -5EV.
+} ev_with_tenths_t;
+
+uint8_t count_bits_in_word(uint16_t word);
+ev_with_tenths_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage, uint8_t op_amp_resistor_stage);
+uint8_t convert_from_reference_voltage(uint16_t adc_out);
+
 #endif

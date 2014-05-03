@@ -30,7 +30,7 @@ typedef enum meter_mode {
 } meter_mode_t;
 
 typedef struct meter_state {
-    uint8_t bcd_iso_digits[ISO_DECIMAL_MAX_DIGITS];
+  uint8_t bcd_iso_digits[ISO_DECIMAL_MAX_DIGITS];
     uint8_t bcd_iso_length;
     uint8_t stops_iso;
 
@@ -61,7 +61,7 @@ typedef struct transient_meter_state {
     uint8_t shutter_speed;
     aperture_string_output_t aperture_string;
     shutter_string_output_t shutter_speed_string;
-    uint8_t last_ev;
+    ev_with_tenths_t last_ev_with_tenths;
     bool exposure_ready;
     uint8_t op_amp_resistor_stage;
 } transient_meter_state_t;
