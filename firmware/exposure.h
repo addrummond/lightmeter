@@ -11,8 +11,8 @@
 #define SS_10000TH  154
 #define SS_16000TH  160
 
-#define SS_MIN      0
-#define SS_MAX      160
+#define SS_MIN          0
+#define SS_MAX          160
 
 #define AP_F8       48
 #define AP_F9_5     52
