@@ -169,6 +169,23 @@ void led_test()
 
 static void show_interface()
 {
+    // Used to make measurements of display power consumption.
+    /*uint8_t col, page;
+    for (page = 0; page < 8; ++page) {
+        display_command(DISPLAY_SET_COL_START_LOW + (col & 0xF));
+        display_command(DISPLAY_SET_COL_START_HIGH + (col >> 4));
+        display_command(DISPLAY_SET_PAGE_START + page);
+        for (col = 0; col < 128; ++col) {
+            DISPLAY_WRITE_DATA {
+                //display_write_byte(0xFF);
+                //display_write_byte(0xF0);
+                //display_write_byte(0b11000000);
+                display_write_byte(0b1000000);
+            }
+        }
+    }
+    return;*/
+
     uint8_t i;
     uint8_t out[6];
     ui_top_status_line_state_t state0;
