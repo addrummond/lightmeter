@@ -84,7 +84,7 @@ ev_with_tenths_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t v
     int8_t adj = TEMP_EV_ADJUST_AT_T0;
     uint8_t i;
     for (i = 0; i < TEMP_EV_ADJUST_CHANGE_TEMPS_LENGTH; ++i) {
-        if (temperature < TEMP_EV_ADJUST_CHANGE_TEMPS[i])
+        if (temperature < pgm_read_byte(TEMP_EV_ADJUST_CHANGE_TEMPS + i))
             --adj;
     }
     int16_t withcomp = r + adj;
@@ -96,7 +96,7 @@ ev_with_tenths_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t v
         ret.ev = (uint8_t)withcomp;
 
     // Calculate tenths.
-    uint8_t tenths_bit = ev_tenths[voltage >> 3];
+    uint8_t tenths_bit = pgm_read_byte(ev_tenths + (voltage >> 3));
     uint8_t eighths = voltage & 0b111;
     tenths_bit >>= eighths;
     tenths_bit &= 1;

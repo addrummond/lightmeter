@@ -211,81 +211,92 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
                                  uint8_t x)
 {
     if (func_state->expcomp_chars[0] == 0) { // State is not initialized; initialize it.
-        func_state->exposure_ready = tms.exposure_ready; // Copy because volatile.
+        // Cache because volatile.
+        func_state->exposure_ready = tms.exposure_ready;
+        
+        if (! func_state->exposure_ready)
+            return;
 
-        // Output EV (TODO: Currently ignores eighths)
-        if (tms.exposure_ready) {
-            uint8_t ev = tms.last_ev_with_tenths.ev;
-            uint8_t eighths = ev & 0b111;
-            if (ev < 5*8) {
-                eighths = 8-eighths;
+        // Compute strings for fractional EV values according to precision mode.
+        uint8_t ev = tms.last_ev_with_tenths.ev;
+        uint8_t tenths = tms.last_ev_with_tenths.tenths;
+        uint8_t eighths = ev & 0b111;
+        if (ev < 5*8) {
+            eighths = 8-eighths;
 
-                func_state->ev_length = 2;
-                func_state->ev_chars[0] = CHAR_8PX_MINUS_O;
-                func_state->ev_chars[1] = CHAR_8PX_0_O + CHAR_OFFSET_8PX(5 - (ev >> 3));
-                func_state->ev_chars_ = func_state->ev_chars;
-            }
-            else {
-                //func_state->ev_length = 2;
-                //func_state->ev_chars[0] = CHAR_8PX_7_O;
-                //func_state->ev_chars[1] = CHAR_8PX_8_O;
-                //func_state->ev_chars_ = func_state->ev_chars;
-                func_state->ev_chars_ = uint8_to_bcd((ev >> 3) - 5, func_state->ev_chars, 3);
-                func_state->ev_length = bcd_length_after_op(func_state->ev_chars, 3, func_state->ev_chars_);
-                uint8_t i;
-                for (i = 0; i < func_state->ev_length; ++i)
-                    func_state->ev_chars_[i] = CHAR_OFFSET_8PX(func_state->ev_chars_[i]) + CHAR_8PX_0_O;
-            }
-
-            if (eighths != 0 && eighths != 8) {
-                uint8_t l = func_state->ev_length;
-                func_state->ev_chars_[l++] = CHAR_8PX_PLUS_O;
-                write_eighths_8px_chars(func_state->ev_chars_ + l, eighths);
-                func_state->ev_length = l + 3;
-            }
-        }
-
-        // Exposure compensation is stored in 1/8 stops in an int8_t.
-        // This means that if we ignore the eighths, it can only be up to +/- 16 stops.
-        // We can therefore avoid doing a proper conversion to BCD,
-        // since it's easy to convert binary values from 0-16 to a two-digit decimal.
-
-        uint8_t i = 0;
-
-        int8_t exp_comp = global_meter_state.exp_comp;
-        if (exp_comp & 128) { // It's negative.
-            exp_comp = ~exp_comp + 1;
-            func_state->expcomp_chars[i++] = CHAR_8PX_MINUS_O;
+            func_state->ev_length = 2;
+            func_state->ev_chars[0] = CHAR_8PX_MINUS_O;
+            func_state->ev_chars[1] = CHAR_8PX_0_O + CHAR_OFFSET_8PX(5 - (ev >> 3));
+            func_state->ev_chars_ = func_state->ev_chars;
         }
         else {
-            func_state->expcomp_chars[i++] = CHAR_8PX_PLUS_O;
+            //func_state->ev_length = 2;
+            //func_state->ev_chars[0] = CHAR_8PX_7_O;
+            //func_state->ev_chars[1] = CHAR_8PX_8_O;
+            //func_state->ev_chars_ = func_state->ev_chars;
+            func_state->ev_chars_ = uint8_to_bcd((ev >> 3) - 5, func_state->ev_chars, 3);
+            func_state->ev_length = bcd_length_after_op(func_state->ev_chars, 3, func_state->ev_chars_);
+            uint8_t i;
+            for (i = 0; i < func_state->ev_length; ++i)
+                func_state->ev_chars_[i] = CHAR_OFFSET_8PX(func_state->ev_chars_[i]) + CHAR_8PX_0_O;
         }
-
-        uint8_t full_comp = global_meter_state.exp_comp >> 3;
-        uint8_t full_d1 = 0, full_d2 = 0;
-        if (full_comp > 9) {
-            full_d1 = 1;
-            full_comp -= 10;
+        
+        uint8_t l = func_state->ev_length;
+        if (ms.precision_mode == PRECISION_MODE_EIGHTH && eighths != 0 && eighths != 8) {
+            func_state->ev_chars_[l++] = CHAR_8PX_PLUS_O;
+            write_eighths_8px_chars(func_state->ev_chars_ + l, eighths);
+            l += 3;
         }
-        full_d2 = full_comp;
-
-        if (full_d1)
-            func_state->expcomp_chars[i++] = CHAR_8PX_0_O + CHAR_OFFSET_8PX(full_d1);
-        func_state->expcomp_chars[i++] = CHAR_8PX_0_O + CHAR_OFFSET_8PX(full_d2);
-
-        uint8_t eighths = global_meter_state.exp_comp & 0b111;
-        if (eighths) {
-            func_state->expcomp_chars[i++] = CHAR_8PX_PLUS_O;
-            write_eighths_8px_chars(func_state->expcomp_chars + i, eighths);
-            i += 3;
+        // Checking that tenths != 10 is redundant (should never have this value). Similarly,
+        // it should never be the case that eighths == 8 and tenths != 0.
+        else if (ms.precision_mode == PRECISION_MODE_TENTH && ((eighths != 0 && eighths != 8) || (tenths != 0 && tenths != 10))) {
+            func_state->ev_chars_[l++] = CHAR_8PX_PERIOD_O;
+            func_state->ev_chars_[l++] = CHAR_OFFSET_8PX(tms.last_ev_with_tenths.tenths) + CHAR_8PX_0_O;
         }
-
-        func_state->expcomp_chars_length = i;
-        func_state->start_x = DISPLAY_LCDWIDTH - (i << 2) - (i << 1);
+        
+        func_state->ev_length = l;
     }
 
     if (! func_state->exposure_ready)
         return;
+
+    // Exposure compensation is stored in 1/8 stops in an int8_t.
+    // This means that if we ignore the eighths, it can only be up to +/- 16 stops.
+    // We can therefore avoid doing a proper conversion to BCD,
+    // since it's easy to convert binary values from 0-16 to a two-digit decimal.
+    
+    uint8_t i = 0;
+    
+    int8_t exp_comp = global_meter_state.exp_comp;
+    if (exp_comp & 128) { // It's negative.
+        exp_comp = ~exp_comp + 1;
+        func_state->expcomp_chars[i++] = CHAR_8PX_MINUS_O;
+    }
+    else {
+        func_state->expcomp_chars[i++] = CHAR_8PX_PLUS_O;
+    }
+    
+    uint8_t full_comp = global_meter_state.exp_comp >> 3;
+    uint8_t full_d1 = 0, full_d2 = 0;
+    if (full_comp > 9) {
+        full_d1 = 1;
+        full_comp -= 10;
+    }
+    full_d2 = full_comp;
+    
+    if (full_d1)
+        func_state->expcomp_chars[i++] = CHAR_8PX_0_O + CHAR_OFFSET_8PX(full_d1);
+    func_state->expcomp_chars[i++] = CHAR_8PX_0_O + CHAR_OFFSET_8PX(full_d2);
+    
+    uint8_t eighths = global_meter_state.exp_comp & 0b111;
+    if (eighths) {
+        func_state->expcomp_chars[i++] = CHAR_8PX_PLUS_O;
+        write_eighths_8px_chars(func_state->expcomp_chars + i, eighths);
+        i += 3;
+    }
+    
+    func_state->expcomp_chars_length = i;
+    func_state->start_x = DISPLAY_LCDWIDTH - (i << 2) - (i << 1);
 
     if (x == 0) {
         display_bwrite_8px_char(CHAR_8PX_E, out, pages_per_col, 0);
