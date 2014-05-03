@@ -200,7 +200,7 @@ void aperture_to_string(uint8_t aperture, aperture_string_output_t *aso)
         }
     }
 
-    if (aperture & 1) {
+    /*if (aperture & 1) {
         aso->chars[last++] = '+';
         aso->chars[last++] = '1';
         aso->chars[last++] = '/';
@@ -208,7 +208,7 @@ void aperture_to_string(uint8_t aperture, aperture_string_output_t *aso)
         //        aso->chars[last++] = 's';
         //        aso->chars[last++] = 't';
         //        aso->chars[last++] = 'p';
-    }
+    }*/
 
     aso->chars[last] = '\0';
 
