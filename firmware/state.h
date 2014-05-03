@@ -29,8 +29,22 @@ typedef enum meter_mode {
     METER_MODE_INCIDENT
 } meter_mode_t;
 
+// Full, half, quarter and eighth stops are calculated from
+// the original values in 1/8EV stop increments. We get
+// tenth stops using the additional bits in the
+// STAGEx_LIGHT_VOLTAGE_TO_EV_TENTHS[] arrays. We fake 1/3
+// stop readings using tenths: 0.2 -> 0.4 -> 1/3; 0.5-0.8 -> 2/3.
+typedef enum precision_mode {
+    PRECISION_MODE_FULL=0,
+    PRECISION_MODE_HALF,
+    PRECISION_MODE_THIRD,
+    PRECISION_MODE_QUARTER,
+    PRECISION_MODE_EIGHTH,
+    PRECISION_MODE_TENTH
+} precision_mode_t;
+
 typedef struct meter_state {
-  uint8_t bcd_iso_digits[ISO_DECIMAL_MAX_DIGITS];
+    uint8_t bcd_iso_digits[ISO_DECIMAL_MAX_DIGITS];
     uint8_t bcd_iso_length;
     uint8_t stops_iso;
 
@@ -39,8 +53,8 @@ typedef struct meter_state {
     int8_t exp_comp;
   
     ui_mode_t ui_mode;
-
     meter_mode_t meter_mode;
+    precision_mode_t precision_mode;
 } meter_state_t;
 
 // This is just to check that sizeof(meter_state) <= STATE_BLOCK_LENGTH,

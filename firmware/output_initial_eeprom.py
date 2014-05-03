@@ -15,8 +15,8 @@ eeprom = [
     0,                                                             # exp comp
 
     0,                                                             # UI_MODE_DEFAULT
-
-    0,                                                             # METER_MODE_REFLECTIVE
+    0,                                                             # METER_MODE_REFLECTIVE.
+    5,                                                             # PRECISION_MODE_TENTH
 ]
 
 ih = IntelHex()
