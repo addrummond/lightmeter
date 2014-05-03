@@ -462,10 +462,9 @@ uint8_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, uint8_t ev_, uint8_t x)
 }
 
 #ifdef TEST
-extern const uint8_t TEST_VOLTAGE_TO_EV[];
-#endif
 
-#ifdef TEST
+#include <stdio.h>
+extern const uint8_t TEST_VOLTAGE_TO_EV[];
 
 int main()
 {
@@ -599,7 +598,7 @@ int main()
         if (v < 0)
             v = 0;
         uint8_t uncompressed = pgm_read_byte(&TEST_VOLTAGE_TO_EV[(unsigned)v]);
-        ev_with_tenths_t evwt = get_ev100_at_temperature_voltage((uint8_t)t, (uint8_t)v_, NORMAL_GAIN);
+        ev_with_tenths_t evwt = get_ev100_at_temperature_voltage((uint8_t)t, (uint8_t)v_, 2);
         uint8_t compressed = evwt.ev;
         if (uncompressed != compressed) {
             printf("Values not equal for t = %i, v = %i: compressed = %i, uncompressed = %i\n", (unsigned)t, (unsigned)v_, (unsigned)compressed, (unsigned)uncompressed);
