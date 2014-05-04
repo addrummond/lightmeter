@@ -196,8 +196,11 @@ void aperture_to_string(ev_with_tenths_t apev, aperture_string_output_t *aso, pr
         uint16_t d3 = r/1000;
 
         // We could step down in units of > 1 stop, but this would increase code size.
-        
-        if (aperture > 80 || precision_mode == PRECISION_MODE_FULL) {
+        if (aperture > 80*4) {
+            r *= 4;
+            aperture -= 80*4;
+        }
+        else if (aperture > 80 || precision_mode == PRECISION_MODE_FULL) {
             r += 4*d1 + 1*d2 + 4*d3;
             aperture -= 80;
         }
@@ -221,19 +224,17 @@ void aperture_to_string(ev_with_tenths_t apev, aperture_string_output_t *aso, pr
    
     uint8_t i = len - 2 + (precision_mode == PRECISION_MODE_TENTH);
     if (digits[i] >= 5) {
-        // Not doing full rounding to reduce code size.
         --i;
-        if (digits[i] < 9)
-            ++(digits[i]);
-        /*while (digits[i] >= 10 && i > 0) {
+        ++(digits[i]);
+        while (digits[i] >= 10 && i > 0) {
             digits[i] -= 10;
             --i;
             ++(digits[i]);
-        }*/
+        }
     }
     // Should never need to add additional digit. Truncate in this case.
-    /*if (digits[0] > 9)
-        digits[0] = 9;*/
+    if (digits[0] > 9)
+        digits[0] = 9;
 
     // Add decimal point.
     uint8_t o = len-4;
