@@ -195,7 +195,6 @@ void aperture_to_string(ev_with_tenths_t apev, aperture_string_output_t *aso, pr
         uint16_t d2 = r/100;
         uint16_t d3 = r/1000;
 
-        // We could step down in units of > 1 stop, but this would increase code size.
         if (aperture > 80*4) {
             r *= 4;
             aperture -= 80*4;
