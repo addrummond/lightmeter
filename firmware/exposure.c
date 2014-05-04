@@ -455,21 +455,24 @@ ev_with_tenths_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_tenths
     }
 
     r += given_iso - the_iso;
+    //printf("R: %i (%i - %i)\n", r, given_iso, the_iso);
 
     // Add back fractional eighths.
-    uint8_t rr = r + (evwt.ev & 0b111);
+    int16_t rr = r + (evwt.ev & 0b111);
 
     // Add back tenths.
-    uint8_t frac_eighths = r & 0b111;
-    uint8_t frac_tenths = frac_eighths;
-    if (frac_tenths > 3)
-        ++frac_tenths;
-    uint8_t tenths = frac_tenths + evwt.tenths;
-    // Note that we don't need to add 1 to the main value because
-    // that will already have been taken care of when we added
-    // the fractional eighths back to rr.
-    if (tenths > 9)
-        tenths -= 10;
+    uint8_t tenths = 0;
+    if (r > 0) {
+        tenths = (uint8_t)(r & 0b111);
+        if (tenths > 3)
+            ++tenths;
+        tenths += evwt.tenths;
+        // Note that we don't need to add 1 to the main value because
+        // that will already have been taken care of when we added
+        // the fractional eighths back to rr.
+        if (tenths > 9)
+          tenths -= 10;
+    }
     
     if (rr < min)
         rr = min;
