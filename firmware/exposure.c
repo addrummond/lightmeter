@@ -471,10 +471,10 @@ ev_with_tenths_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_tenths
     if (tenths > 9)
         tenths -= 10;
     
-    /*    if (rr < min)
+    if (rr < min)
         rr = min;
     else if (r > max)
-    rr = max;*/
+        rr = max;
 
     ev_with_tenths_t ret;
     ret.ev = (uint8_t)rr;
