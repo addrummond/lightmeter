@@ -649,12 +649,16 @@ int main()
     evwt = aperture_given_shutter_speed_iso_ev(0, 4*8, evwt);
     printf("VAL that should be equal to 9*8=72: %i\n", evwt.ev);
     assert(evwt.ev == 9*8);
+    aperture_to_string(evwt.ev, &aso);
+    printf("AP: %s\n", APERTURE_STRING_OUTPUT_STRING(aso));
 
     evwt.ev = (3+5)*8;
     evwt.tenths = 0;
     evwt = shutter_speed_given_aperture_iso_ev(9*8, 4*8, evwt);
     printf("VAL that should be equal to 0: %i\n", evwt.ev);
     assert(evwt.ev == 0);
+    shutter_speed_to_string(evwt.ev, &sso);
+    printf("SHUT: %s\n", SHUTTER_STRING_OUTPUT_STRING(sso));
 
     return 0;
 }
