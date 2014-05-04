@@ -71,8 +71,11 @@ void read_meter_state(meter_state_t *ms);
 void initialize_global_meter_state();
 
 typedef struct transient_meter_state {
+    // We currently assume that no-one will want to set priority apertures/shutter speeds
+    // at a resolution of more than 1/2 stop. Thus, we do not store tenths here, just eighths.
     uint8_t aperture;
     uint8_t shutter_speed;
+    
     ev_with_tenths_t last_ev_with_tenths;
     bool exposure_ready;
     uint8_t op_amp_resistor_stage;
