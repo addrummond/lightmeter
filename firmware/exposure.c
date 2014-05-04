@@ -11,7 +11,6 @@
 #include <assert.h>
 #include <exposure.h>
 #include <bcd.h>
-#include <divmulutils.h>
 #include <readbyte.h>
 #include <tables.h>
 #ifdef TEST

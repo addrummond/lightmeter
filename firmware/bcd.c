@@ -8,7 +8,6 @@
 #include <stdbool.h>
 #include <bcd.h>
 #include <readbyte.h>
-#include <divmulutils.h>
 #ifdef TEST
 #include <stdio.h>
 #include <string.h>
@@ -213,7 +212,7 @@ uint8_t *uint8_to_bcd(uint8_t n, uint8_t *digits, uint8_t length)
 {
     uint8_t i = length-1;
     while (n >= 10) {
-        uint8_t v = bitfiddle_uint16_to_uint8_div_by_10(n);
+        uint8_t v = n/10;
         //printf("  %i/%i = %i\n", n, 10, v);
         uint8_t rem = n - (v << 3) - (v << 1);
         //printf("  %i%%%i = %i\n", n, 10, rem);
