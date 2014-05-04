@@ -425,7 +425,7 @@ ev_with_tenths_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_tenths
     int16_t the_aperture = 9*8; // F22
     int16_t the_speed = 0;      // 1 minute.
     int16_t the_ev = ((3+5)*8); // 3 EV
-    int16_t the_iso = 3*8;      // 100 ISO
+    int16_t the_iso = 4*8;      // 100 ISO
 
     int16_t given_x = (int16_t)given_x_;
     int16_t given_iso = (int16_t)iso_;
@@ -637,6 +637,21 @@ int main()
     }
 
     printf("\nCompression test completed successfully.\n");
+
+    // Sanity check: pass in the values which are used as a base for the calculation
+    // and check that we get the originals back.
+    ev_with_tenths_t evwt;
+    evwt.ev = (3+5)*8;
+    evwt.tenths = 0;
+    evwt = aperture_given_shutter_speed_iso_ev(0, 4*8, evwt);
+    printf("VAL that should be equal to 9*8=72: %i\n", evwt.ev);
+    assert(evwt.ev == 9*8);
+
+    evwt.ev = (3+5)*8;
+    evwt.tenths = 0;
+    evwt = shutter_speed_given_aperture_iso_ev(9*8, 4*8, evwt);
+    printf("VAL that should be equal to 0: %i\n", evwt.ev);
+    assert(evwt.ev == 0);
 
     return 0;
 }
