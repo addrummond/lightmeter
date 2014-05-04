@@ -461,7 +461,7 @@ ev_with_tenths_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_tenths
 
     // Add back tenths.
     uint8_t frac_eighths = r & 0b111;
-    uint8_t frac_tenths = r;
+    uint8_t frac_tenths = frac_eighths;
     if (frac_tenths > 3)
         ++frac_tenths;
     uint8_t tenths = frac_tenths + evwt.tenths;
