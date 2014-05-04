@@ -17,6 +17,9 @@ eeprom = [
     0,                                                             # UI_MODE_DEFAULT
     0,                                                             # METER_MODE_REFLECTIVE.
     5,                                                             # PRECISION_MODE_TENTH
+
+    48,                                                            # priority_aperture = f8
+    88                                                             # priority_shutter_speed = 1/30
 ]
 
 ih = IntelHex()

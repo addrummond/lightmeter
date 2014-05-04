@@ -1,7 +1,8 @@
 #ifndef STATE_H
 #define STATE_H
 
-// State which is to be preserved between on/off cycles.
+// State which is to be preserved between on/off cycles is in meter_state_t.
+// Transient state is in transient_meter_state_t.
 
 #include <stdbool.h>
 #include <bcd.h>
@@ -55,6 +56,11 @@ typedef struct meter_state {
     ui_mode_t ui_mode;
     meter_mode_t meter_mode;
     precision_mode_t precision_mode;
+
+    // We currently assume that no-one will want to set priority apertures/shutter speeds
+    // at a resolution of more than 1/2 stop. Thus, we do not store tenths here, just eighths.
+    uint8_t priority_aperture;
+    uint8_t priority_shutter_speed;
 } meter_state_t;
 
 // This is just to check that sizeof(meter_state) <= STATE_BLOCK_LENGTH.
@@ -71,13 +77,12 @@ void read_meter_state(meter_state_t *ms);
 void initialize_global_meter_state();
 
 typedef struct transient_meter_state {
-    // We currently assume that no-one will want to set priority apertures/shutter speeds
-    // at a resolution of more than 1/2 stop. Thus, we do not store tenths here, just eighths.
-    uint8_t aperture;
-    uint8_t shutter_speed;
-    
     ev_with_tenths_t last_ev_with_tenths;
+    ev_with_tenths_t aperture;
+    ev_with_tenths_t shutter_speed;
+
     bool exposure_ready;
+
     uint8_t op_amp_resistor_stage;
 } transient_meter_state_t;
 

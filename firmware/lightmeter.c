@@ -136,14 +136,15 @@ void handle_measurement()
     );
     global_transient_meter_state.last_ev_with_tenths = evwt;
 
-    uint8_t ap, shut;
     if (global_meter_state.priority == SHUTTER_PRIORITY) {
-        shut = global_transient_meter_state.shutter_speed;
-        ap = aperture_given_shutter_speed_iso_ev(shut, global_meter_state.stops_iso, evwt.ev); // TODO TENTHS PRECISION
+        uint8_t shut = global_meter_state.priority_shutter_speed;
+        global_transient_meter_state.aperture =
+            aperture_given_shutter_speed_iso_ev(shut, global_meter_state.stops_iso, evwt);
     }
     else { //if (global_meter_state.priority == APERTURE_PRIORITY) {
-        ap = global_transient_meter_state.aperture;
-        shut = shutter_speed_given_aperture_iso_ev(ap, global_meter_state.stops_iso, evwt.ev); // TODO TENTHS PRECISION
+        uint8_t ap = global_meter_state.priority_aperture;
+        global_transient_meter_state.shutter_speed =
+            shutter_speed_given_aperture_iso_ev(ap, global_meter_state.stops_iso, evwt);
     }
 
     // If we're too near the top or bottom of the range, change the gain next time.
@@ -334,10 +335,6 @@ int main()
     setup_charge_pump();
     setup_button_handler();
 
-    // TEST INITIALIZATION; TODO REMOVE EVENTUALLY.
-    global_transient_meter_state.shutter_speed = 88;
-    global_transient_meter_state.aperture = 88;
-    //    global_transient_meter_state.exposure_ready = true;
     set_op_amp_resistor_stage(2);
 
     led_test();
