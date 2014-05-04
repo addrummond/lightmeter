@@ -195,20 +195,15 @@ void aperture_to_string(ev_with_tenths_t apev, aperture_string_output_t *aso, pr
         uint16_t d2 = r/100;
         uint16_t d3 = r/1000;
 
-        // Using bitshifting or multiplication depending on which one
-        // generates smallest object code in each case.
         if (aperture > 80 || precision_mode == PRECISION_MODE_FULL) {
-            //r += (d1 << 2) + d2 + (d3 << 2);
             r += 4*d1 + 1*d2 + 4*d3;
             aperture -= 80;
         }
         else if (precision_mode == PRECISION_MODE_EIGHTH) {
-            //r += (d2 << 2) + (d3 << 2);
             r += 0*d1 + 4*d2 + 4*d3;
             aperture -= 10;
         }
         else if (precision_mode == PRECISION_MODE_TENTH) {
-            //r += (d2 << 1) + d2 + (d3 << 2) + d3;
             r += 0*d1 + 3*d2 + 5*d3;
             aperture -= 8;
         }
