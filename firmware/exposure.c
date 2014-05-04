@@ -176,15 +176,18 @@ void shutter_speed_to_string(uint8_t speed, shutter_string_output_t *eso)
 
 void aperture_to_string(ev_with_tenths_t apev, aperture_string_output_t *aso, precision_mode_t precision_mode)
 {
+    //assert(precision_mode == PRECISION_MODE_FULL ||
+    //       precision_mode == PRECISION_MODE_EIGHTH ||
+    //       precision_mode == PRECISION_MODE_TENTH);
+
     // We do everything in 16-bit fixed point (three decimal places).
     // Convert into common units of 1/80th of an EV.
-    int16_t aperture;
-    if (precision_mode == PRECISION_MODE_TENTH) {
-        aperture = ((apev.ev & ~0b111) * 10) + (apev.tenths * 8);
-    }
-    else {
-        aperture = apev.ev * 10;
-    }
+    int16_t aperture = apev.ev;
+    if (precision_mode == PRECISION_MODE_TENTH)
+        aperture &= ~0b111;
+    aperture *= 10;
+    if (precision_mode == PRECISION_MODE_TENTH)
+        aperture += apev.tenths * 8;
 
     uint16_t r = 1000;
     while (aperture > 0) {
@@ -192,28 +195,21 @@ void aperture_to_string(ev_with_tenths_t apev, aperture_string_output_t *aso, pr
         uint16_t d2 = r/100;
         uint16_t d3 = r/1000;
 
+        // Using bitshifting or multiplication depending on which one
+        // generates smallest object code in each case.
         if (aperture > 80 || precision_mode == PRECISION_MODE_FULL) {
+            //r += (d1 << 2) + d2 + (d3 << 2);
             r += 4*d1 + 1*d2 + 4*d3;
             aperture -= 80;
         }
-        else if (precision_mode == PRECISION_MODE_HALF) {
-            r += 1*d1 + 8*d2 + 9*d3;
-            aperture -= 40;
-        }
-        else if (precision_mode == PRECISION_MODE_THIRD) {
-            r += 1*d1 + 2*d2 + 2*d3;
-            aperture -= 27; // TODO: Consider if this is consistent with third/tenth conversions elsewhere.
-        }
-        else if (precision_mode == PRECISION_MODE_QUARTER) {
-            r += 0*d1 + 9*d2 + 0*d3;
-            aperture -= 20;
-        }
         else if (precision_mode == PRECISION_MODE_EIGHTH) {
+            //r += (d2 << 2) + (d3 << 2);
             r += 0*d1 + 4*d2 + 4*d3;
             aperture -= 10;
         }
         else if (precision_mode == PRECISION_MODE_TENTH) {
-            r += (d2 << 1) + d2 + (d3 << 2) + d3;
+            //r += (d2 << 1) + d2 + (d3 << 2) + d3;
+            r += 0*d1 + 3*d2 + 5*d3;
             aperture -= 8;
         }
     }
@@ -228,34 +224,27 @@ void aperture_to_string(ev_with_tenths_t apev, aperture_string_output_t *aso, pr
    
     uint8_t i = len - 2 + (precision_mode == PRECISION_MODE_TENTH);
     if (digits[i] >= 5) {
+        // Not doing full rounding to reduce code size.
         --i;
-        ++(digits[i]);
-        while (digits[i] >= 10 && i > 0) {
+        if (digits[i] < 9)
+            ++(digits[i]);
+        /*while (digits[i] >= 10 && i > 0) {
             digits[i] -= 10;
             --i;
             ++(digits[i]);
-        }
+        }*/
     }
     // Should never need to add additional digit. Truncate in this case.
-    if (digits[0] > 9)
-        digits[0] = 9;
+    /*if (digits[0] > 9)
+        digits[0] = 9;*/
 
     // Add decimal point.
     uint8_t o = len-4;
-    if (precision_mode == PRECISION_MODE_TENTH) {
-        // Two decimal places.
-        digits[3+o] = digits[2+o];
-        digits[2+o] = digits[1+o];
-        digits[1+o] = '.';
-        aso->length = 4 + o;
-        //        printf("ASOL* %i\n", aso->length);
-    }
-    else {
-        // One decimal place.
-        digits[2+o] = digits[1+o];
-        digits[1+o] = '.';
-        aso->length = 3 + o;
-    }
+    // Two decimal places.
+    digits[3+o] = digits[2+o];
+    digits[2+o] = digits[1+o];
+    digits[1+o] = '.';
+    aso->length = 4 + o - 1 + (precision_mode == PRECISION_MODE_TENTH);
 
     // Copy over and convert to ASCII chars.
     //    printf("ASOL* %i\n", aso->length);
@@ -561,7 +550,7 @@ int main()
         ev_with_tenths_t xx;
         xx.ev = (a/10)*8;
         xx.tenths = a % 10;
-        aperture_to_string_test(xx, &aso, PRECISION_MODE_TENTH);
+        aperture_to_string(xx, &aso, PRECISION_MODE_TENTH);
         printf("A:  %s\n", APERTURE_STRING_OUTPUT_STRING(aso));
     }
 
@@ -715,7 +704,7 @@ int main()
     evwt = shutter_speed_given_aperture_iso_ev(9*8, 4*8, evwt);
     printf("VAL that should be equal to 0: %i\n", evwt.ev);
     assert(evwt.ev == 0);
-    shutter_speed_to_string(evwt, &sso);
+    shutter_speed_to_string(evwt.ev, &sso);
     printf("SHUT: %s\n", SHUTTER_STRING_OUTPUT_STRING(sso));
 
     return 0;
