@@ -152,13 +152,23 @@ void ui_main_reading_display_at_8col(ui_main_reading_display_state_t *func_state
     const uint8_t VOFFSET = 5;
 
     if (func_state->len == 0) { // State is unitialized; initialize it.
-        func_state->exposure_ready = tms.exposure_ready; // Copy because volatile.
+        // Copy because volatile.
+        func_state->exposure_ready = tms.exposure_ready;
         if (! func_state->exposure_ready)
             return;
 
+        uint8_t ss = tms.shutter_speed;
+        uint8_t ap = tms.aperture;
+        if (ms.precision_mode == PRECISION_MODE_TENTH) {
+            ss &= ~0b111;
+            ap &= ~0b111;
+        }
+        shutter_speed_to_string(tms.shutter_speed, &(func_state->shutter_speed_string));
+        aperture_to_string(tms.aperture, &(func_state->aperture_string));
+
         // Total number of chars is the sum of the two plus one for a space plus one for
         // the 'f' we insert before the aperture.
-        func_state->len = tms.shutter_speed_string.length + tms.aperture_string.length + 2;
+        func_state->len = func_state->shutter_speed_string.length + func_state->aperture_string.length + 2;
         func_state->start_x = (DISPLAY_LCDWIDTH >> 1) - ((func_state->len << 3) >> 1);
         func_state->i = 0;
     }
@@ -167,19 +177,24 @@ void ui_main_reading_display_at_8col(ui_main_reading_display_state_t *func_state
         return;
 
     if (x >= func_state->start_x && func_state->i < func_state->len) {
-        if (func_state->i < tms.shutter_speed_string.length) {
-            uint8_t ascii = SHUTTER_STRING_OUTPUT_STRING(tms.shutter_speed_string)[func_state->i];
+        if (func_state->i < func_state->shutter_speed_string.length) {
+            uint8_t ascii = SHUTTER_STRING_OUTPUT_STRING(func_state->shutter_speed_string)[func_state->i];
             display_bwrite_12px_char(ssa_get_12px_grid(ascii), out, pages_per_col, VOFFSET);
         }
-        else if (func_state->i == tms.shutter_speed_string.length + 1) {
+        else if (func_state->i == func_state->shutter_speed_string.length + 1) {
             display_bwrite_12px_char(CHAR_12PX_F, out, pages_per_col, VOFFSET);
         }
-        else if (func_state->i >= tms.shutter_speed_string.length + 2) {
-            uint8_t ascii = APERTURE_STRING_OUTPUT_STRING(tms.aperture_string)[func_state->i - tms.shutter_speed_string.length - 2];
+        else if (func_state->i >= func_state->shutter_speed_string.length + 2) {
+            uint8_t ascii = APERTURE_STRING_OUTPUT_STRING(func_state->aperture_string)[func_state->i - func_state->shutter_speed_string.length - 2];
             display_bwrite_12px_char(ssa_get_12px_grid(ascii), out, pages_per_col, VOFFSET);
        }
 
         ++(func_state->i);
+    }
+    else if (ms.precision_mode == PRECISION_MODE_TENTH &&
+             
+             func_state->i < func_state->len + 2) {
+        // Write tenths if any.
     }
 }
 

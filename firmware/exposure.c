@@ -421,52 +421,64 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
 //     shutter_speed_given_aperture_iso_ev(aperture,iso,ev)
 ev_with_tenths_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_tenths_t evwt, uint8_t x) // x=0: aperture, x=1: shutter_speed
 {
-    // We work internally with values at a 1/80 EV pitch so as not to lose any precision.
-    // (We may be displaying the result in either eighths or tenths.)
-
     // We know that for EV=3, ISO = 100, speed = 1minute, aperture = 22.
-    int16_t the_aperture = 9*80; // F22
-    int16_t the_speed = 0;       // 1 minute.
-    int16_t the_ev = ((3+5)*80); // 3 EV
-    int16_t the_iso = 3*80;      // 100 ISO
+    int16_t the_aperture = 9*8; // F22
+    int16_t the_speed = 0;      // 1 minute.
+    int16_t the_ev = ((3+5)*8); // 3 EV
+    int16_t the_iso = 3*8;      // 100 ISO
 
-    int16_t given_x = (((int16_t)given_x_) >> 3) * 80;
-    int16_t given_iso = (((int16_t)iso_) >> 3) * 80;
-    int16_t given_ev = (((int16_t)evwt.ev) >> 3) * 80;
+    int16_t given_x = (int16_t)given_x_;
+    int16_t given_iso = (int16_t)iso_;
+    // We remove the fractional component and add it back at the end.
+    // This way we can do the exact calculation for both eighths and tenths.
+    int16_t given_ev = (int16_t)evwt.ev & ~0b111;
 
     int16_t r;
     int16_t min, max;
-    if (x == 0) {
+    if (x == 1) {
         int16_t apdiff = given_x - the_aperture;
         the_ev += apdiff;
 
         int16_t evdiff = given_ev - the_ev;
         the_speed += evdiff;
         r = the_speed;
-        min = ((SS_MIN/8)*80), max = ((SS_MAX/8)*80);
+        min = SS_MIN, max = SS_MAX;
     }
-    else { // x == 1
+    else { // x == 0
         int16_t shutdiff = given_x - the_speed;
         the_ev += shutdiff;
 
         int16_t evdiff = given_ev - the_ev;
         the_aperture += evdiff;
         r = the_aperture;
-        min = ((AP_MIN/8)*80), max = ((AP_MAX/8)*80);
+        min = AP_MIN, max = AP_MAX;
     }
 
     r += given_iso - the_iso;
-    if (r < min)
-        r = ((AP_MIN/8)*80);
-    else if (r > max)
-        r = ((AP_MAX/8)*80);
 
-    uint8_t eighths = bitfiddle_uint16_to_uint8_div_by_10(r);
-    uint8_t d10 = bitfiddle_uint16_to_uint8_div_by_10(r);
+    // Add back fractional eighths.
+    uint8_t rr = r + (evwt.ev & 0b111);
+
+    // Add back tenths.
+    uint8_t frac_eighths = r & 0b111;
+    uint8_t frac_tenths = r;
+    if (frac_tenths > 3)
+        ++frac_tenths;
+    uint8_t tenths = frac_tenths + evwt.tenths;
+    // Note that we don't need to add 1 to the main value because
+    // that will already have been taken care of when we added
+    // the fractional eighths back to rr.
+    if (tenths > 9)
+        tenths -= 10;
+    
+    /*    if (rr < min)
+        rr = min;
+    else if (r > max)
+    rr = max;*/
 
     ev_with_tenths_t ret;
-    ret.ev = (uint8_t)eighths;
-    ret.tenths = r = (d10*10);
+    ret.ev = (uint8_t)rr;
+    ret.tenths = tenths;
 
     return ret;
 }
@@ -499,7 +511,11 @@ int main()
     for (is = ISO_MIN; is <= ISO_MAX; ++is) {
         ss = 12*8; // 1/60
         ev = 15*8; // 10 EV
-        ap = aperture_given_shutter_speed_iso_ev(ss, is, ev);
+        ev_with_tenths_t evwt;
+        evwt.ev = ev;
+        evwt.tenths = 0;
+        evwt = aperture_given_shutter_speed_iso_ev(ss, is, evwt);
+        uint8_t ap = evwt.ev;
         shutter_speed_to_string(ss, &sso);
         aperture_to_string(ap, &aso);
         printf("ISO %f stops from 6,  %s  %s (EV = %.2f)   [%i, %i, %i : %i]\n",
@@ -513,7 +529,11 @@ int main()
     for (is = ISO_MIN; is <= ISO_MAX; ++is) {
         ap = 6*8; // f8
         ev = 15*8; // 10 EV
-        ss = shutter_speed_given_aperture_iso_ev(ap, is, ev);
+        ev_with_tenths_t evwt;
+        evwt.ev = ev;
+        evwt.tenths = 0;
+        evwt = shutter_speed_given_aperture_iso_ev(ap, is, evwt);
+        uint8_t ss = evwt.ev;
         shutter_speed_to_string(ss, &sso);
         aperture_to_string(ap, &aso);
         printf("ISO %f stops from 6,  %s  %s (EV = %.2f)   [%i, %i, %i : %i]\n",

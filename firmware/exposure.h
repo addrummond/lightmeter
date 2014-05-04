@@ -11,8 +11,8 @@
 #define SS_10000TH  154
 #define SS_16000TH  160
 
-#define SS_MIN          0
-#define SS_MAX          160
+#define SS_MIN      0
+#define SS_MAX      160
 
 #define AP_F8       48
 #define AP_F9_5     52
@@ -40,17 +40,17 @@ typedef struct aperture_string_output {
 } aperture_string_output_t;
 #define APERTURE_STRING_OUTPUT_STRING(aso) ((aso).chars)
 
-void shutter_speed_to_string(uint8_t speed, shutter_string_output_t *eso);
-void aperture_to_string(uint8_t aperture, aperture_string_output_t *aso);
-uint8_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, uint8_t ev_, uint8_t x);
-#define aperture_given_shutter_speed_iso_ev(a,b,c) x_given_y_iso_ev(a,b,c,0)
-#define shutter_speed_given_aperture_iso_ev(a,b,c) x_given_y_iso_ev(a,b,c,1)
-uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length);
-
 typedef struct ev_with_tenths {
     uint8_t ev; // The ev value in 1/8 EV steps starting from -5EV.
     uint8_t tenths; // This + (ev/8)*10 gives EV in 1/10 stops starting from -5EV.
 } ev_with_tenths_t;
+
+void shutter_speed_to_string(uint8_t speed, shutter_string_output_t *eso);
+void aperture_to_string(uint8_t aperture, aperture_string_output_t *aso);
+ev_with_tenths_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_tenths_t ev, uint8_t x);
+#define aperture_given_shutter_speed_iso_ev(a,b,c) x_given_y_iso_ev(a,b,c,0)
+#define shutter_speed_given_aperture_iso_ev(a,b,c) x_given_y_iso_ev(a,b,c,1)
+uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length);
 
 uint8_t count_bits_in_word(uint16_t word);
 ev_with_tenths_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage, uint8_t op_amp_resistor_stage);

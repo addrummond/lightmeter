@@ -145,8 +145,6 @@ void handle_measurement()
         ap = global_transient_meter_state.aperture;
         shut = shutter_speed_given_aperture_iso_ev(ap, global_meter_state.stops_iso, evwt.ev); // TODO TENTHS PRECISION
     }
-    shutter_speed_to_string(shut, &(global_transient_meter_state.shutter_speed_string));
-    aperture_to_string(ap, &(global_transient_meter_state.aperture_string));
 
     // If we're too near the top or bottom of the range, change the gain next time.
     //    if (adc_light_nonvol_value > 250 && global_meter_state.op_amp_resistor_stage < NUM_OP_AMP_RESISTOR_STAGES) {

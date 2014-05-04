@@ -20,6 +20,9 @@ typedef struct ui_main_reading_display_state {
     uint8_t i;
 
     bool exposure_ready;
+
+    aperture_string_output_t aperture_string;
+    shutter_string_output_t shutter_speed_string;
 } ui_main_reading_display_state_t;
 void ui_main_reading_display_at_8col(ui_main_reading_display_state_t *func_state,
                                      uint8_t *out,
