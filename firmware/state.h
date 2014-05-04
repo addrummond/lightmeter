@@ -57,8 +57,8 @@ typedef struct meter_state {
     precision_mode_t precision_mode;
 } meter_state_t;
 
-// This is just to check that sizeof(meter_state) <= STATE_BLOCK_LENGTH,
-// since attempting to specify an array of negative length will raise
+// This is just to check that sizeof(meter_state) <= STATE_BLOCK_LENGTH.
+// Attempting to specify an array of negative length will raise
 // a compiler error.
 struct meter_state_dummy_length_test_struct {
     int foo[STATE_BLOCK_LENGTH-sizeof(meter_state_t)];
