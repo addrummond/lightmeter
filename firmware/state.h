@@ -30,20 +30,6 @@ typedef enum meter_mode {
     METER_MODE_INCIDENT
 } meter_mode_t;
 
-// Full, half, quarter and eighth stops are calculated from
-// the original values in 1/8EV stop increments. We get
-// tenth stops using the additional bits in the
-// STAGEx_LIGHT_VOLTAGE_TO_EV_TENTHS[] arrays. We fake 1/3
-// stop readings using tenths: 0.2 -> 0.4 -> 1/3; 0.5-0.8 -> 2/3.
-typedef enum precision_mode {
-    PRECISION_MODE_FULL=1,
-    PRECISION_MODE_HALF=2,
-    PRECISION_MODE_THIRD=3,
-    PRECISION_MODE_QUARTER=4,
-    PRECISION_MODE_EIGHTH=8,
-    PRECISION_MODE_TENTH=10
-} precision_mode_t;
-
 typedef struct meter_state {
     uint8_t bcd_iso_digits[ISO_DECIMAL_MAX_DIGITS];
     uint8_t bcd_iso_length;
@@ -90,8 +76,10 @@ extern transient_meter_state_t global_transient_meter_state;
 
 // Check that enums are one byte (choosing an enum type at random).
 // Emums should be one byte if gcc's -fshort-enums is enabled.
+#ifdef __AVR__
 struct dummy {
     priority_t foo[1-sizeof(priority_t)];
 };
+#endif
 
 #endif
