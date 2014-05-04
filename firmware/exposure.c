@@ -471,7 +471,7 @@ ev_with_tenths_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_tenths
         // that will already have been taken care of when we added
         // the fractional eighths back to rr.
         if (tenths > 9)
-          tenths -= 10;
+            tenths -= 10;
     }
     
     if (rr < min)
