@@ -84,7 +84,7 @@ ev_with_tenths_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t v
     int8_t adj = TEMP_EV_ADJUST_AT_T0;
     uint8_t i;
     for (i = 0; i < TEMP_EV_ADJUST_CHANGE_TEMPS_LENGTH; ++i) {
-        if (temperature < pgm_read_byte(TEMP_EV_ADJUST_CHANGE_TEMPS + i))
+        if (temperature >= pgm_read_byte(TEMP_EV_ADJUST_CHANGE_TEMPS + i))
             --adj;
     }
     int16_t withcomp = r + adj;
@@ -622,13 +622,13 @@ int main()
 
     // Test that compressed table is giving correct values by comparing to uncompressed table.
     printf("OFFSET %i\n", VOLTAGE_TO_EV_ABS_OFFSET);
-    uint8_t t = 227; // ~=40C; should track reference_temperature in calculate_tables.py
+    uint8_t t = 203; // ~=30C; should track reference_temperature in calculate_tables.py
     for (int v_ = 0; v_ < 246; ++v_) {
         int v = v_ - VOLTAGE_TO_EV_ABS_OFFSET;
         if (v < 0)
             v = 0;
         uint8_t uncompressed = pgm_read_byte(&TEST_VOLTAGE_TO_EV[(unsigned)v]);
-        ev_with_tenths_t evwt = get_ev100_at_temperature_voltage((uint8_t)t, (uint8_t)v_, 2);
+        ev_with_tenths_t evwt = get_ev100_at_temperature_voltage(t, (uint8_t)v_, 2);
         uint8_t compressed = evwt.ev;
         if (uncompressed != compressed) {
             printf("Values not equal for t = %i, v = %i: compressed = %i, uncompressed = %i\n", (unsigned)t, (unsigned)v_, (unsigned)compressed, (unsigned)uncompressed);
