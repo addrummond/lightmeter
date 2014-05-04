@@ -87,7 +87,7 @@ ev_with_tenths_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t v
         if (temperature >= pgm_read_byte(TEMP_EV_ADJUST_CHANGE_TEMPS + i))
             --adj;
     }
-    int16_t withcomp = r + adj;
+    int16_t withcomp = r;// + adj;
     if (withcomp < 0)
         ret.ev = 0;
     else if (withcomp > 255)

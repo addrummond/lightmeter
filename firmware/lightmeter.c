@@ -335,7 +335,7 @@ int main()
     setup_charge_pump();
     setup_button_handler();
 
-    set_op_amp_resistor_stage(2);
+    set_op_amp_resistor_stage(3);
 
     led_test();
     setup_output_ports();
