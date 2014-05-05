@@ -202,12 +202,12 @@ void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, pr
             thirds = 2;
         if (evwt.tenths > 2)
             thirds = 1;
-        uint8_t b = pgm_read_byte(&APERTURES[(apev >> 3) + thirds]);
+        uint8_t b = pgm_read_byte(&APERTURES_THIRD[(apev >> 3) + thirds]);
         last = 0;
-        aso->chars[last++] = pgm_read_byte(&APERTURES_BITMAP[b & 0xF]);
+        aso->chars[last++] = '0' + (b & 0xF);
         if (apev < 6 || (apev == 7 && evwt.thirds == 2))
             aso->chars[last++] = '.';
-        aso->chars[last++] = b >> 4;
+        aso->chars[last++] = '0' + (b >> 4);
     }
     else if (precision_mode == PRECISION_MODE_TENTH || precision_mode == PRECISION_MODE_EIGHTH) {
         uint8_t b1, b2;
