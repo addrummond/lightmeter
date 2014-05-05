@@ -195,7 +195,6 @@ void aperture_to_string(ev_with_tenths_t apev, aperture_string_output_t *aso, pr
         aperture += apev.tenths * 8;
 
     uint16_t r = 1000;
-    uint16_t d3rem = 0;
     //printf("AP %i\n", aperture);
     while (aperture > 0) {
         if (aperture > 800) {
@@ -222,11 +221,6 @@ void aperture_to_string(ev_with_tenths_t apev, aperture_string_output_t *aso, pr
             uint16_t d1 = r/10;
             uint16_t d2 = r/100;
             uint16_t d3 = r/1000;
-            d3rem += r-(d3*1000);//d3 % 1000;
-            if (d3rem >= 10) {
-                ++d2;
-                d3rem -= 10;
-            }
 
             if (aperture > 80 || precision_mode == PRECISION_MODE_FULL) {
                 r += 4*d1 + 1*d2 + 4*d3;
