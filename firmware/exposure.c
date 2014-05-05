@@ -174,6 +174,11 @@ void shutter_speed_to_string(uint8_t speed, shutter_string_output_t *eso)
     eso->length = j;
 }
 
+// For 1/10 stop apertures, there is a useful table of values at the following URL
+// for comparison:
+//
+// http://www.scantips.com/lights/fstop.html
+//
 void aperture_to_string(ev_with_tenths_t apev, aperture_string_output_t *aso, precision_mode_t precision_mode)
 {
     //assert(precision_mode == PRECISION_MODE_FULL ||
@@ -190,38 +195,66 @@ void aperture_to_string(ev_with_tenths_t apev, aperture_string_output_t *aso, pr
         aperture += apev.tenths * 8;
 
     uint16_t r = 1000;
+    uint16_t d3rem = 0;
+    //printf("AP %i\n", aperture);
     while (aperture > 0) {
-        uint16_t d1 = r/10;
-        uint16_t d2 = r/100;
-        uint16_t d3 = r/1000;
-
-        if (aperture > 80*4) {
+        if (aperture > 800) {
+            r *= 32;
+            aperture -= 640;
+        }
+        else if (aperture >= 640) {
+            r *= 16;
+            aperture -= 640;
+        }
+        else if (aperture >= 480) {
+            r *= 8;
+            aperture -= 480;
+        }
+        else if (aperture >= 320) {
             r *= 4;
-            aperture -= 80*4;
+            aperture -= 320;
         }
-        else if (aperture > 80 || precision_mode == PRECISION_MODE_FULL) {
-            r += 4*d1 + 1*d2 + 4*d3;
-            aperture -= 80;
+        else if (aperture >= 160) {
+            r *= 2;
+            aperture -= 160;
         }
-        else if (precision_mode == PRECISION_MODE_EIGHTH) {
-            r += 0*d1 + 4*d2 + 4*d3;
-            aperture -= 10;
-        }
-        else if (precision_mode == PRECISION_MODE_TENTH) {
-            r += 0*d1 + 3*d2 + 5*d3;
-            aperture -= 8;
+        else {
+            uint16_t d1 = r/10;
+            uint16_t d2 = r/100;
+            uint16_t d3 = r/1000;
+            d3rem += r-(d3*1000);//d3 % 1000;
+            if (d3rem >= 10) {
+                ++d2;
+                d3rem -= 10;
+            }
+
+            if (aperture > 80 || precision_mode == PRECISION_MODE_FULL) {
+                r += 4*d1 + 1*d2 + 4*d3;
+                aperture -= 80;
+            }
+            else if (aperture > 40) {
+                r += 1*d1 + 8*d2 + 9*d3;
+                aperture -= 40;
+            }
+            else if (precision_mode == PRECISION_MODE_EIGHTH) {
+                r += 0*d1 + 4*d2 + 4*d3;
+                aperture -= 10;
+            }
+            else { //if (precision_mode == PRECISION_MODE_TENTH) {
+                r += 0*d1 + 3*d2 + 5*d3;
+                aperture -= 8;
+            }
         }
     }
 
     //printf("R: %i\n", r);
 
     uint8_t digits_[5];
-    
-    // Rounding.
     uint8_t *digits = uint16_to_bcd(r, digits_, sizeof(digits_));
     uint8_t len = bcd_length_after_op(digits_, sizeof(digits_), digits);
-   
-    uint8_t i = len - 2 + (precision_mode == PRECISION_MODE_TENTH);
+
+    // Rounding.
+    uint8_t i = 3; // We use 1 dp if there are two digits before the point.
     if (digits[i] >= 5) {
         --i;
         ++(digits[i]);
@@ -232,8 +265,8 @@ void aperture_to_string(ev_with_tenths_t apev, aperture_string_output_t *aso, pr
         }
     }
     // Should never need to add additional digit. Truncate in this case.
-    if (digits[0] > 9)
-        digits[0] = 9;
+    //if (digits[0] > 9)
+    //    digits[0] = 9;
 
     // Add decimal point.
     uint8_t o = len-4;
@@ -241,11 +274,11 @@ void aperture_to_string(ev_with_tenths_t apev, aperture_string_output_t *aso, pr
     digits[3+o] = digits[2+o];
     digits[2+o] = digits[1+o];
     digits[1+o] = '.';
-    aso->length = 4 + o - 1 + (precision_mode == PRECISION_MODE_TENTH);
+    aso->length = 4; // We use 1 dp if there are two digits before the point.
 
     // Copy over and convert to ASCII chars.
     //    printf("ASOL* %i\n", aso->length);
-    for (i = 0; i < aso->length; ++i) {
+    for (i = 0; i < 4; ++i) {
         if (digits[i] == '.')
             aso->chars[i] = '.';
         else
