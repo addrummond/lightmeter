@@ -569,64 +569,54 @@ shutter_speeds = [
 assert(max(map(len, shutter_speeds)) == 5)
 
 #
-# Apertures are represented using unsigned 8-bit values. They go from
-# 1.0 to 32 in 1/8th stop steps.
+# We store compacted tables giving EV -> aperture in 1/3, 1/8 and 1/10 steps.
+# Decimal points are not included because these can be inserted in the appropriate
+# place via a simple comparison on the EV value.
 #
-# The table is quarter-stop resolution only, since eighth-stop apertures are unwieldy.
-# Instead, we display something like "1.1+1/8 stop" (for the f-stop 3/8ths of a stop above 1.0).
-#
-# To keep each entry two two characters, decimal points are not included. We rely on the fact
-# that all two-digit apertures <= 9.6 have a decimal point in the middle while all other
-# apertures do not.
-#
-# Each entry in the table is 1-byte (two 4-byte characters), so the whole table is 40 bytes.
+# Initial attempts to calculate aperture strings dynamically on the microcontroller
+# proved fruitless. Even using 16-bit fixed point arithmetic, the code for doing
+# the calculations comes out as big as (or maybe even bigger than) the tables.
+# Since the tables are much easier to debug, they seem to be the better option.
 #
 
-apertures_bitmap = [
-    None, '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', 'X'
-]
-apertures = [
-    '10', ###
-    '11',
-    '12',
-    '13',
-    '14', ###
-    '15',
-    '17',
-    '18',
-    '2', ###
-    '22',
-    '24',
-    '26',
-    '28', ###
-    '31',
-    '34',
-    '37',
-    '4', ###
-    '44',
-    '48',
-    '52',
-    '56', ###
-    '62',
-    '67',
-    '73',
-    '8', ###
-    '87',
-    '95',
-    '10',
-    '11', ###
-    '12',
-    '14',
-    '15',
-    '16', ###
-    '17',
-    '19',
-    '21',
-    '22', ###
-    '24', # made up, TODO CHECK
-    '27', # made up, TODO CHECK
-    '30', # made up, TODO CHECK
+apertures_third = [
+    '10','11','12',
+    '14','16','18',
+    '20','22','25',
+    '28','32','35',
+    '40','45','50',
+    '56','63','71',
+    '80','90','10',
+    '11','13','14',
+    '16','18','20',
+    '22','25','29',
     '32'
+]
+apertures_eighth = [
+    '100', '104', '109', '114', '119', '124', '130', '135',
+    '141', '148', '154', '161', '168', '176', '183', '192',
+    '200', '209', '218', '228', '238', '248', '259', '271',
+    '283', '295', '308', '322', '336', '351', '367', '383',
+    '400', '418', '436', '456', '476', '497', '519', '542',
+    '566', '591', '617', '644', '673', '703', '734', '766'
+    '800', '835', '872', '911', '951', '993', '103', '108',
+    '113', '118', '123', '129', '135', '141', '147', '153',
+    '160', '167', '174', '182', '190', '199', '207', '217',
+    '226', '236', '247', '258', '269', '281', '293', '306',
+    '320'
+]
+apertures_tenth = [
+    '100', '104', '107', '111', '115', '119', '123', '127', '132', '137',
+    '140', '146', '152', '157', '162', '168', '174', '180', '187', '193',
+    '200', '207', '214', '222', '230', '238', '246', '255', '264', '273',
+    '280', '293', '303', '314', '325', '336', '348', '361', '373', '386',
+    '400', '414', '429', '444', '459', '476', '492', '510', '528', '546',
+    '566', '586', '606', '628', '650', '673', '696', '721', '746', '773',
+    '800', '828', '857', '888', '919', '951', '985', '102', '106', '109',
+    '113', '117', '121', '126', '130', '135', '139', '144', '149', '155',
+    '160', '166', '171', '178', '184', '190', '197', '204', '211', '219',
+    '226', '234', '243', '251', '260', '269', '279', '288', '299', '309',
+    '320'
 ]
 
 def output_shutter_speeds(of):
@@ -656,22 +646,39 @@ def output_shutter_speeds(of):
     of.write('};\n')
 
 def output_apertures(of):
-    of.write('const uint8_t APERTURES[] PROGMEM = {\n')
-    for a in apertures:
-        n1 = apertures_bitmap.index(a[0])
-        n2 = apertures_bitmap.index(a[1]) if len(a) > 1 else 0
-        of.write('0b' +
-                 (n2 & 8 and '1' or '0') + (n2 & 4 and '1' or '0') + (n2 & 2 and '1' or '0') + (n2 & 1 and '1' or '0') +
-                 (n1 & 8 and '1' or '0') + (n1 & 4 and '1' or '0') + (n1 & 2 and '1' or '0') + (n1 & 1 and '1' or '0') +
-                 ',')
+    of.write('const uint8_t APERTURES_THIRD[] PROGMEM = {\n')
+    for a in apertures_third:
+        of.write("0b{:04b}{:04b},".format(ord(a[1]) - ord('0'), ord(a[0]) - ord('0')))
     of.write('};\n')
-    of.write('const uint8_t APERTURES_BITMAP[] PROGMEM = { ')
-    for a in apertures_bitmap:
-        if a is None:
-            of.write("'\\0',")
+
+    of.write('const uint8_t APERTURES_TENTH[] PROGMEM = {\n')
+    odd = [1]
+    def wn(n):
+        n1s = "{:04b}".format(ord(a[0]) - ord('0'))
+        n2s = "{:04b}".format(ord(a[1]) - ord('0') if len(a) > 1 else 0)
+        n3s = "{:04b}".format(ord(a[2]) - ord('0') if len(a) > 2 else 0)
+        if odd[0]:
+            of.write('0b' + n2s + n1s + ',0b' + n3s)
         else:
-            of.write("'%s'," % a)
+            of.write(n1s + ",0b" + n3s + n2s + ",")
+        odd[0] ^= 1
+    i = 0
+    for a in apertures_tenth:
+        wn(a)
+        if i % 10 == 9:
+            of.write("\n")
+        i += 1
     of.write('};\n')
+
+    #of.write('const uint8_t APERTURES_EIGHTH[] PROGMEM = {\n')
+    #odd = [1]
+    #i = 0
+    #for a in apertures_eighth:
+    #    wn(a)
+    #    if i % 10 == 9:
+    #        of.write("\n")
+    #    i += 1
+    #of.write('};\n')
 
 #
 # Final output generation.
@@ -715,8 +722,9 @@ def output():
 
     ofh.write("extern uint8_t SHUTTER_SPEEDS[];\n")
     ofh.write("extern uint8_t SHUTTER_SPEEDS_BITMAP[];\n")
-    ofh.write("extern uint8_t APERTURES[];\n")
-    ofh.write("extern uint8_t APERTURES_BITMAP[];\n")
+    ofh.write("extern uint8_t APERTURES_EIGHTH[];\n")
+    ofh.write("extern uint8_t APERTURES_TENTH[];\n")
+    ofh.write("extern uint8_t APERTURES_THIRD[];\n")
     ofh.write("extern uint8_t TEMP_EV_ADJUST_CHANGE_TEMPS[];\n")
 
     ofh.write("\n#endif\n")

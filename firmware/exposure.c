@@ -173,45 +173,102 @@ void shutter_speed_to_string(uint8_t speed, shutter_string_output_t *eso)
     eso->length = j;
 }
 
-void aperture_to_string(uint8_t aperture, aperture_string_output_t *aso)
+void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, precision_mode_t precision_mode)
 {
-    if (aperture > AP_MAX)
-        aperture = AP_MAX;
-
-    uint8_t b = pgm_read_byte(&APERTURES[aperture >> 1]);
-    aso->chars[0] = pgm_read_byte(&APERTURES_BITMAP[b & 0xF]);
-
-    uint8_t high = (b >> 4) & 0xF;
-    uint8_t c = pgm_read_byte(&APERTURES_BITMAP[high]);
-    uint8_t last = 1;
-
-    if (high != 0)
-        ++last;
-
-    if (high) {
-        if (aperture <= AP_F9_5+1) {
-            aso->chars[1] = '.';
-            aso->chars[2] = c;
-            ++last;
-        }
-        else {
-            aso->chars[1] = c;
-        }
+    // TODO: Rounding.
+    if (precision_mode == PRECISION_MODE_QUARTER) {
+        precision_mode = PRECISION_MODE_EIGHTH;
+        evwt.ev >>= 1;
+    }
+    else if (precision_mode == PRECISION_MODE_HALF) {
+        precision_mode = PRECISION_MODE_EIGHTH;
+        evwt.ev >> 2;
+    }
+    else if (precision_mode == PRECISION_MODE_FULL) {
+        precision_mode = PRECISION_MODE_EIGHTH;
+        evwt.ev >> 3;
     }
 
-    /*if (aperture & 1) {
-        aso->chars[last++] = '+';
-        aso->chars[last++] = '1';
-        aso->chars[last++] = '/';
-        aso->chars[last++] = '8';
-        //        aso->chars[last++] = 's';
-        //        aso->chars[last++] = 't';
-        //        aso->chars[last++] = 'p';
-    }*/
+    uint8_t apev = evwt.ev;
 
-    aso->chars[last] = '\0';
+    if (apev > AP_MAX)
+        apev = AP_MAX;
+
+    uint8_t last;
+    if (precision_mode == PRECISION_MODE_THIRD) {
+        uint8_t thirds = 0;
+        if (evwt.tenths > 7)
+            thirds = 2;
+        if (evwt.tenths > 2)
+            thirds = 1;
+        uint8_t b = pgm_read_byte(&APERTURES[(apev >> 3) + thirds]);
+        last = 0;
+        aso->chars[last++] = pgm_read_byte(&APERTURES_BITMAP[b & 0xF]);
+        if (apev < 6 || (apev == 7 && evwt.thirds == 2))
+            aso->chars[last++] = '.';
+        aso->chars[last++] = b >> 4;
+    }
+    else if (precision_mode == PRECISION_MODE_TENTH || precision_mode == PRECISION_MODE_EIGHTH) {
+        uint8_t b1, b2;
+        if (precision_mode == PRECISION_MODE_EIGHTH) {
+            uint8_t i = apev + (apev >> 1);
+            b1 = pgm_read_byte(&APERTURES_EIGHTH[i]);
+            b2 = pgm_read_byte(&APERTURES_EIGHTH[i+1]);
+        }
+        else { //if (precision_mode == PRECISION_MODE_TENTH) {
+            uint8_t i = ((apev >> 3) * 15) + evwt.tenths + (evwt.tenths >> 1);
+            b1 = pgm_read_byte(&APERTURES_TENTH[i]);
+            b2 = pgm_read_byte(&APERTURES_TENTH[i+1]);
+        }
+        uint8_t d1 = '0', d2 = '0', d3 = '0';
+        if (i & 1) {
+            d1 += (b1 >> 4);
+            d2 += (b2 & 0xF);
+            d3 += (b2 >> 4);
+        }
+        else {
+            d1 += (b1 & 0xF);
+            d2 += (b1 >> 4);
+            d3 += (b2 & 0xF);
+        }
+
+        last = 0;
+        aso->chars[last++] = d1;
+        if (apev > 6*8 || (precision_mode == PRECISION_MODE_TENTH && apev == 5*8 && evwt.tenths > 6) ||
+                          (precision_mode == PRECISION_MODE_EIGHTH && apev > 53)) {
+            aso->chars[last++] = '.';
+        }
+        aso->chars[last++] = d2;
+        if (last == 2)
+            aso->chars[last++] = '.';
+        aso->chars[last++] = d3;
+    }
 
     aso->length = last;
+
+    // If we're doing quarter-stop precision, round off last digit.
+    if (precision_mode == PRECISION_MODE_QUARTER) {
+        uint8_t i = last-1;
+        if (aso->chars[i] >= '5')
+            ++aso->chars[i-1];
+        do {
+            --i;
+            if (i < '9')
+                break;
+            aso->chars[i] = '0';
+            ++aso->chars[i-1];
+        } while (i > 1);
+
+        --(aso->length);
+    }
+
+    // Remove '.0'.
+    if (aso->chars[1] == '.' && aso->chars[2] == '0')
+        aso->length = 1;
+    else if (aso->length > 2 && aso->chars[2] == '.' && aso->chars[3] == '0')
+        aso->length = 3;
+
+    aso->chars[aso->length] = '\0';
 }
 
 // Table storing full-stop ISO numbers.
