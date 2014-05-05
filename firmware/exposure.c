@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <assert.h>
+#include <state.h>
 #include <exposure.h>
 #include <bcd.h>
 #include <readbyte.h>
@@ -182,11 +183,11 @@ void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, pr
     }
     else if (precision_mode == PRECISION_MODE_HALF) {
         precision_mode = PRECISION_MODE_EIGHTH;
-        evwt.ev >> 2;
+        evwt.ev >>= 2;
     }
     else if (precision_mode == PRECISION_MODE_FULL) {
         precision_mode = PRECISION_MODE_EIGHTH;
-        evwt.ev >> 3;
+        evwt.ev >>= 3;
     }
 
     uint8_t apev = evwt.ev;
