@@ -670,15 +670,15 @@ def output_apertures(of):
         i += 1
     of.write('};\n')
 
-    #of.write('const uint8_t APERTURES_EIGHTH[] PROGMEM = {\n')
-    #odd = [1]
-    #i = 0
-    #for a in apertures_eighth:
-    #    wn(a)
-    #    if i % 10 == 9:
-    #        of.write("\n")
-    #    i += 1
-    #of.write('};\n')
+    of.write('const uint8_t APERTURES_EIGHTH[] PROGMEM = {\n')
+    odd = [1]
+    i = 0
+    for a in apertures_eighth:
+        wn(a)
+        if i % 10 == 9:
+            of.write("\n")
+        i += 1
+    of.write('};\n')
 
 #
 # Final output generation.

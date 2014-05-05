@@ -205,19 +205,19 @@ void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, pr
         uint8_t b = pgm_read_byte(&APERTURES_THIRD[(apev >> 3) + thirds]);
         last = 0;
         aso->chars[last++] = '0' + (b & 0xF);
-        if (apev < 6 || (apev == 7 && evwt.thirds == 2))
+        if (apev < 6 || (apev == 7 && thirds == 2))
             aso->chars[last++] = '.';
         aso->chars[last++] = '0' + (b >> 4);
     }
     else if (precision_mode == PRECISION_MODE_TENTH || precision_mode == PRECISION_MODE_EIGHTH) {
-        uint8_t b1, b2;
+        uint8_t b1, b2, i;
         if (precision_mode == PRECISION_MODE_EIGHTH) {
-            uint8_t i = apev + (apev >> 1);
+            i = apev + (apev >> 1);
             b1 = pgm_read_byte(&APERTURES_EIGHTH[i]);
             b2 = pgm_read_byte(&APERTURES_EIGHTH[i+1]);
         }
         else { //if (precision_mode == PRECISION_MODE_TENTH) {
-            uint8_t i = ((apev >> 3) * 15) + evwt.tenths + (evwt.tenths >> 1);
+            i = ((apev >> 3) * 15) + evwt.tenths + (evwt.tenths >> 1);
             b1 = pgm_read_byte(&APERTURES_TENTH[i]);
             b2 = pgm_read_byte(&APERTURES_TENTH[i+1]);
         }
@@ -244,11 +244,14 @@ void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, pr
             aso->chars[last++] = '.';
         aso->chars[last++] = d3;
     }
+    else {
+        assert(false);
+    }
 
     aso->length = last;
 
     // If we're doing quarter-stop precision, round off last digit.
-    if (precision_mode == PRECISION_MODE_QUARTER) {
+    /*if (precision_mode == PRECISION_MODE_QUARTER) {
         uint8_t i = last-1;
         if (aso->chars[i] >= '5')
             ++aso->chars[i-1];
@@ -261,7 +264,7 @@ void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, pr
         } while (i > 1);
 
         --(aso->length);
-    }
+    }*/
 
     // Remove '.0'.
     if (aso->chars[1] == '.' && aso->chars[2] == '0')

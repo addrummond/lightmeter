@@ -158,13 +158,8 @@ void ui_main_reading_display_at_8col(ui_main_reading_display_state_t *func_state
             return;
 
         uint8_t ss = tms.shutter_speed.ev;
-        uint8_t ap = tms.aperture.ev;
-        if (ms.precision_mode == PRECISION_MODE_TENTH) {
-            ss &= ~0b111;
-            ap &= ~0b111;
-        }
         shutter_speed_to_string(ss, &(func_state->shutter_speed_string));
-        aperture_to_string(ap, &(func_state->aperture_string));
+        aperture_to_string(tms.aperture, &(func_state->aperture_string), PRECISION_MODE_TENTH); // TODO PRECISION MODES
 
         // Total number of chars is the sum of the two plus one for a space plus one for
         // the 'f' we insert before the aperture.

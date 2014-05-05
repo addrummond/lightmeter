@@ -46,7 +46,8 @@ typedef struct ev_with_tenths {
 } ev_with_tenths_t;
 
 void shutter_speed_to_string(uint8_t speed, shutter_string_output_t *eso);
-void aperture_to_string(uint8_t aperture, aperture_string_output_t *aso);
+enum precision_mode;
+void aperture_to_string(ev_with_tenths_t aperture, aperture_string_output_t *aso, enum precision_mode precision_mode);
 ev_with_tenths_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_tenths_t ev, uint8_t x);
 #define aperture_given_shutter_speed_iso_ev(a,b,c) x_given_y_iso_ev(a,b,c,0)
 #define shutter_speed_given_aperture_iso_ev(a,b,c) x_given_y_iso_ev(a,b,c,1)
