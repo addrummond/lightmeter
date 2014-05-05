@@ -370,7 +370,7 @@ def test_get_tenth_bit():
     assert get_tenth_bit(1.625, True)  == 0
 
 #
-# Shutter speed tables.
+# Shutter speed and aperture tables.
 #
 
 #
@@ -568,6 +568,67 @@ shutter_speeds = [
 ]
 assert(max(map(len, shutter_speeds)) == 5)
 
+#
+# Apertures are represented using unsigned 8-bit values. They go from
+# 1.0 to 32 in 1/8th stop steps.
+#
+# The table is quarter-stop resolution only, since eighth-stop apertures are unwieldy.
+# Instead, we display something like "1.1+1/8 stop" (for the f-stop 3/8ths of a stop above 1.0).
+#
+# To keep each entry two two characters, decimal points are not included. We rely on the fact
+# that all two-digit apertures <= 9.6 have a decimal point in the middle while all other
+# apertures do not.
+#
+# Each entry in the table is 1-byte (two 4-byte characters), so the whole table is 40 bytes.
+#
+
+apertures_bitmap = [
+    None, '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', 'X'
+]
+apertures = [
+    '10', ###
+    '11',
+    '12',
+    '13',
+    '14', ###
+    '15',
+    '17',
+    '18',
+    '2', ###
+    '22',
+    '24',
+    '26',
+    '28', ###
+    '31',
+    '34',
+    '37',
+    '4', ###
+    '44',
+    '48',
+    '52',
+    '56', ###
+    '62',
+    '67',
+    '73',
+    '8', ###
+    '87',
+    '95',
+    '10',
+    '11', ###
+    '12',
+    '14',
+    '15',
+    '16', ###
+    '17',
+    '19',
+    '21',
+    '22', ###
+    '24', # made up, TODO CHECK
+    '27', # made up, TODO CHECK
+    '30', # made up, TODO CHECK
+    '32'
+]
+
 def output_shutter_speeds(of):
     of.write('const uint8_t SHUTTER_SPEEDS[] PROGMEM = {\n')
     bits = []
@@ -592,6 +653,24 @@ def output_shutter_speeds(of):
             of.write("'\\0',")
         else:
             of.write("'%s'," % c) # None of the chars need escaping.
+    of.write('};\n')
+
+def output_apertures(of):
+    of.write('const uint8_t APERTURES[] PROGMEM = {\n')
+    for a in apertures:
+        n1 = apertures_bitmap.index(a[0])
+        n2 = apertures_bitmap.index(a[1]) if len(a) > 1 else 0
+        of.write('0b' +
+                 (n2 & 8 and '1' or '0') + (n2 & 4 and '1' or '0') + (n2 & 2 and '1' or '0') + (n2 & 1 and '1' or '0') +
+                 (n1 & 8 and '1' or '0') + (n1 & 4 and '1' or '0') + (n1 & 2 and '1' or '0') + (n1 & 1 and '1' or '0') +
+                 ',')
+    of.write('};\n')
+    of.write('const uint8_t APERTURES_BITMAP[] PROGMEM = { ')
+    for a in apertures_bitmap:
+        if a is None:
+            of.write("'\\0',")
+        else:
+            of.write("'%s'," % a)
     of.write('};\n')
 
 #
@@ -632,9 +711,12 @@ def output():
     output_test_table(ofc)
     ofc.write(';\n#endif\n')
     output_shutter_speeds(ofc)
+    output_apertures(ofc)
 
     ofh.write("extern uint8_t SHUTTER_SPEEDS[];\n")
     ofh.write("extern uint8_t SHUTTER_SPEEDS_BITMAP[];\n")
+    ofh.write("extern uint8_t APERTURES[];\n")
+    ofh.write("extern uint8_t APERTURES_BITMAP[];\n")
     ofh.write("extern uint8_t TEMP_EV_ADJUST_CHANGE_TEMPS[];\n")
 
     ofh.write("\n#endif\n")
