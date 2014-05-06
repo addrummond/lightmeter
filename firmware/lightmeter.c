@@ -334,7 +334,9 @@ int main()
     setup_charge_pump();
     setup_button_handler();
 
-    set_op_amp_resistor_stage(3);
+    set_op_amp_resistor_stage(2);
+    // TODO HACK DEBUG
+    global_meter_state.precision_mode = PRECISION_MODE_TENTH;
 
     led_test();
     setup_output_ports();
@@ -345,7 +347,7 @@ int main()
     display_clear();
     setup_ADC();
 
-    sei();
+    sei();    
 
     // The main loop. This looks at the latest exposure
     // reading every so often.

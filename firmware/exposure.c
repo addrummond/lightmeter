@@ -213,6 +213,7 @@ void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, pr
         uint8_t b1, b2, i;
         if (precision_mode == PRECISION_MODE_EIGHTH) {
             i = apev + (apev >> 1);
+            //printf("I: %i\n", i);
             b1 = pgm_read_byte(&APERTURES_EIGHTH[i]);
             b2 = pgm_read_byte(&APERTURES_EIGHTH[i+1]);
         }
@@ -222,21 +223,23 @@ void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, pr
             b2 = pgm_read_byte(&APERTURES_TENTH[i+1]);
         }
         uint8_t d1 = '0', d2 = '0', d3 = '0';
-        if (i & 1) {
-            d1 += (b1 >> 4);
-            d2 += (b2 & 0xF);
-            d3 += (b2 >> 4);
+        if (i % 3 == 0) {
+            //printf("FFF %i %i\n", b1, b2);
+            d1 += b1 >> 4;
+            d2 += b1 & 0xF;
+            d3 += b2 >> 4;
         }
         else {
-            d1 += (b1 & 0xF);
-            d2 += (b1 >> 4);
-            d3 += (b2 & 0xF);
+            //printf("GGG %i %i\n", b1, b2);
+            d1 += b1 & 0xF;
+            d2 += b2 >> 4;
+            d3 += b2 & 0xF;
         }
 
         last = 0;
         aso->chars[last++] = d1;
-        if (apev > 6*8 || (precision_mode == PRECISION_MODE_TENTH && apev == 5*8 && evwt.tenths > 6) ||
-                          (precision_mode == PRECISION_MODE_EIGHTH && apev > 53)) {
+        if (apev < 6*8 || (precision_mode == PRECISION_MODE_TENTH && apev == 5*8 && evwt.tenths < 7) ||
+                          (precision_mode == PRECISION_MODE_EIGHTH && apev < 54)) {
             aso->chars[last++] = '.';
         }
         aso->chars[last++] = d2;
@@ -266,11 +269,17 @@ void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, pr
         --(aso->length);
     }*/
 
-    // Remove '.0'.
-    if (aso->chars[1] == '.' && aso->chars[2] == '0')
-        aso->length = 1;
-    else if (aso->length > 2 && aso->chars[2] == '.' && aso->chars[3] == '0')
-        aso->length = 3;
+    // Remove '.0' and '.00'
+    uint8_t i = aso->length;
+    do {
+        --i;
+        if (aso->chars[i] == '.') {
+            aso->length = i;
+            break;
+        }
+        if (aso->chars[i] != '0')
+            break;
+    } while (i > 0);
 
     aso->chars[aso->length] = '\0';
 }
@@ -569,8 +578,10 @@ int main()
         ev_with_tenths_t evwt;
         evwt.ev = a;
         aperture_to_string(evwt, &aso, PRECISION_MODE_EIGHTH);
-        printf("A:  %s\n", APERTURE_STRING_OUTPUT_STRING(aso));
+        printf("A[%i]:  %s\n", a, APERTURE_STRING_OUTPUT_STRING(aso));
     }
+
+    return 0;
 
     printf("\nTesting aperture_given_shutter_speed_iso_ev\n");
     uint8_t is, ss, ev, ap;
