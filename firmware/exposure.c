@@ -205,7 +205,7 @@ void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, pr
         uint8_t b = pgm_read_byte(&APERTURES_THIRD[((apev >> 3)*3) + thirds]);
         last = 0;
         aso->chars[last++] = '0' + (b & 0xF);
-        if (apev < 6*8 || (apev == 7*8 && thirds == 2))
+        if (apev < 6*8 || (apev == 6*8 && thirds < 2))
             aso->chars[last++] = '.';
         aso->chars[last++] = '0' + (b >> 4);
     }
@@ -238,7 +238,7 @@ void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, pr
 
         last = 0;
         aso->chars[last++] = d1;
-        if (apev < 6*8 || (precision_mode == PRECISION_MODE_TENTH && apev == 5*8 && evwt.tenths < 7) ||
+        if (apev < 6*8 || (precision_mode == PRECISION_MODE_TENTH && apev == 6*8 && evwt.tenths < 7) ||
                           (precision_mode == PRECISION_MODE_EIGHTH && apev < 54)) {
             aso->chars[last++] = '.';
         }
@@ -590,7 +590,14 @@ int main()
         printf("A[%i]:  %s\n", a, APERTURE_STRING_OUTPUT_STRING(aso));
     }
 
-    return 0;
+    printf("\nApertures in tenths:\n");
+    for (a = AP_MIN; a <= (AP_MAX/8)*10; ++a) {
+        ev_with_tenths_t evwt;
+        evwt.ev = (a/10)*8;
+        evwt.tenths = a % 10;
+        aperture_to_string(evwt, &aso, PRECISION_MODE_TENTH);
+        printf("A[%i,%i,%i]:  %s\n", a, evwt.ev, evwt.tenths, APERTURE_STRING_OUTPUT_STRING(aso));
+    }
 
     printf("\nTesting aperture_given_shutter_speed_iso_ev\n");
     uint8_t is, ss, ev, ap;
