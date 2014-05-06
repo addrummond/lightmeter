@@ -562,10 +562,13 @@ int main()
 
     printf("\n");
 
+    printf("Apertures in eighths:\n");
     uint8_t a;
     aperture_string_output_t aso;
     for (a = AP_MIN; a <= AP_MAX; ++a) {
-        aperture_to_string(a, &aso);
+        ev_with_tenths_t evwt;
+        evwt.ev = a;
+        aperture_to_string(evwt, &aso, PRECISION_MODE_EIGHTH);
         printf("A:  %s\n", APERTURE_STRING_OUTPUT_STRING(aso));
     }
 
@@ -580,7 +583,9 @@ int main()
         evwt = aperture_given_shutter_speed_iso_ev(ss, is, evwt);
         uint8_t ap = evwt.ev;
         shutter_speed_to_string(ss, &sso);
-        aperture_to_string(ap, &aso);
+        ev_with_tenths_t evwt2;
+        evwt2.ev = ap;
+        aperture_to_string(evwt2, &aso, PRECISION_MODE_EIGHTH);
         printf("ISO %f stops from 6,  %s  %s (EV = %.2f)   [%i, %i, %i : %i]\n",
                ((float)is) / 8.0,
                SHUTTER_STRING_OUTPUT_STRING(sso),
@@ -598,7 +603,9 @@ int main()
         evwt = shutter_speed_given_aperture_iso_ev(ap, is, evwt);
         uint8_t ss = evwt.ev;
         shutter_speed_to_string(ss, &sso);
-        aperture_to_string(ap, &aso);
+        ev_with_tenths_t evwt2;
+        evwt2.ev = ap;
+        aperture_to_string(evwt2, &aso, PRECISION_MODE_EIGHTH);
         printf("ISO %f stops from 6,  %s  %s (EV = %.2f)   [%i, %i, %i : %i]\n",
                ((float)is) / 8.0,
                SHUTTER_STRING_OUTPUT_STRING(sso),
@@ -709,7 +716,7 @@ int main()
     evwt = aperture_given_shutter_speed_iso_ev(0, 4*8, evwt);
     printf("VAL that should be equal to 9*8=72: %i\n", evwt.ev);
     assert(evwt.ev == 9*8);
-    aperture_to_string(evwt.ev, &aso);
+    aperture_to_string(evwt, &aso, PRECISION_MODE_EIGHTH);
     printf("AP: %s\n", APERTURE_STRING_OUTPUT_STRING(aso));
 
     evwt.ev = (3+5)*8;
