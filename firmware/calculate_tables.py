@@ -20,8 +20,8 @@ op_amp_resistor_stages = [ # In (kOhm,gain) pairs
     #(1,0.075)
 
     # For BPW21R
-    (350,20),
-    (350,1),
+    (330,20), # Was 350; 330 is more common size.
+    (330,1),
     (22,1),
     (1.2,1)
 ]
@@ -32,7 +32,7 @@ op_amp_normal_resistor = op_amp_resistor_stages[1][0] * op_amp_resistor_stages[1
 # This is because in the region just above v = 0, the changes
 # between different voltage values lead to large discontinuities
 # in EV values which the table compression mechanism can't handle.
-voltage_offset                   = 225.0   # mV
+voltage_offset                   = 250.0   # mV
 
 # For BPW34
 reference_temperature            = 30.0    # C
