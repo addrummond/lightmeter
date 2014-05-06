@@ -158,14 +158,8 @@ void ui_main_reading_display_at_8col(ui_main_reading_display_state_t *func_state
             return;
 
         uint8_t ss = tms.shutter_speed.ev;
-        //uint8_t ap = tms.aperture.ev;
-        // TODO TODO PROPER PRECISION HANDLING
-        /*if (ms.precision_mode == PRECISION_MODE_TENTH) {
-            ss &= ~0b111;
-            ap &= ~0b111;
-        }*/
         shutter_speed_to_string(ss, &(func_state->shutter_speed_string));
-        aperture_to_string(tms.aperture, &(func_state->aperture_string), PRECISION_MODE_EIGHTH);
+        aperture_to_string(tms.aperture, &(func_state->aperture_string), PRECISION_MODE_TENTH); // TODO PRECISION MODES
 
         // Total number of chars is the sum of the two plus one for a space plus one for
         // the 'f' we insert before the aperture.
@@ -193,7 +187,6 @@ void ui_main_reading_display_at_8col(ui_main_reading_display_state_t *func_state
         ++(func_state->i);
     }
     else if (ms.precision_mode == PRECISION_MODE_TENTH &&
-             
              func_state->i < func_state->len + 2) {
         // Write tenths if any.
     }
@@ -250,7 +243,7 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
             //func_state->ev_chars[0] = CHAR_8PX_7_O;
             //func_state->ev_chars[1] = CHAR_8PX_8_O;
             //func_state->ev_chars_ = func_state->ev_chars;
-            func_state->ev_chars_ = uint16_to_bcd((ev >> 3) - 5, func_state->ev_chars, 3);
+            func_state->ev_chars_ = uint8_to_bcd((ev >> 3) - 5, func_state->ev_chars, 3);
             func_state->ev_length = bcd_length_after_op(func_state->ev_chars, 3, func_state->ev_chars_);
             uint8_t i;
             for (i = 0; i < func_state->ev_length; ++i)
@@ -263,11 +256,9 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
             write_eighths_8px_chars(func_state->ev_chars_ + l, eighths);
             l += 3;
         }
-        // Checking that tenths != 10 is redundant (should never have this value). Similarly,
-        // it should never be the case that eighths == 8 and tenths != 0.
-        else if (ms.precision_mode == PRECISION_MODE_TENTH && ((eighths != 0 && eighths != 8) || (tenths != 0 && tenths != 10))) {
+        else if (ms.precision_mode == PRECISION_MODE_TENTH && tenths != 0 && tenths != 10) {
             func_state->ev_chars_[l++] = CHAR_8PX_PERIOD_O;
-            func_state->ev_chars_[l++] = CHAR_OFFSET_8PX(tms.last_ev_with_tenths.tenths) + CHAR_8PX_0_O;
+            func_state->ev_chars_[l++] = CHAR_OFFSET_8PX(tenths) + CHAR_8PX_0_O;
         }
         
         func_state->ev_length = l;

@@ -370,7 +370,7 @@ def test_get_tenth_bit():
     assert get_tenth_bit(1.625, True)  == 0
 
 #
-# Shutter speed tables.
+# Shutter speed and aperture tables.
 #
 
 #
@@ -568,6 +568,57 @@ shutter_speeds = [
 ]
 assert(max(map(len, shutter_speeds)) == 5)
 
+#
+# We store compacted tables giving EV -> aperture in 1/3, 1/8 and 1/10 steps.
+# Decimal points are not included because these can be inserted in the appropriate
+# place via a simple comparison on the EV value.
+#
+# Initial attempts to calculate aperture strings dynamically on the microcontroller
+# proved fruitless. Even using 16-bit fixed point arithmetic, the code for doing
+# the calculations comes out as big as (or maybe even bigger than) the tables.
+# Since the tables are much easier to debug, they seem to be the better option.
+#
+
+apertures_third = [
+    '10','11','12',
+    '14','16','18',
+    '20','22','25',
+    '28','32','35',
+    '40','45','50',
+    '56','63','71',
+    '80','90','10',
+    '11','13','14',
+    '16','18','20',
+    '22','25','29',
+    '32'
+]
+apertures_eighth = [
+    '100', '104', '109', '114', '119', '124', '130', '135',
+    '140', '148', '154', '161', '168', '176', '183', '192',
+    '200', '209', '218', '228', '238', '248', '259', '271',
+    '280', '295', '308', '322', '336', '351', '367', '383',
+    '400', '418', '436', '456', '476', '497', '519', '542',
+    '560', '591', '617', '644', '673', '703', '734', '766'
+    '800', '835', '872', '911', '951', '993', '103', '108',
+    '110', '118', '123', '129', '135', '141', '147', '153',
+    '160', '167', '174', '182', '190', '199', '207', '217',
+    '220', '236', '247', '258', '269', '281', '293', '306',
+    '320'
+]
+apertures_tenth = [
+    '100', '104', '107', '111', '115', '119', '123', '127', '132', '137',
+    '140', '146', '152', '157', '162', '168', '174', '180', '187', '193',
+    '200', '207', '214', '222', '230', '238', '246', '255', '264', '273',
+    '280', '293', '303', '314', '325', '336', '348', '361', '373', '386',
+    '400', '414', '429', '444', '459', '476', '492', '510', '528', '546',
+    '566', '586', '606', '628', '650', '673', '696', '721', '746', '773',
+    '800', '828', '857', '888', '919', '951', '985', '102', '106', '109',
+    '113', '117', '121', '126', '130', '135', '139', '144', '149', '155',
+    '160', '166', '171', '178', '184', '190', '197', '204', '211', '219',
+    '226', '234', '243', '251', '260', '269', '279', '288', '299', '309',
+    '320'
+]
+
 def output_shutter_speeds(of):
     of.write('const uint8_t SHUTTER_SPEEDS[] PROGMEM = {\n')
     bits = []
@@ -592,6 +643,41 @@ def output_shutter_speeds(of):
             of.write("'\\0',")
         else:
             of.write("'%s'," % c) # None of the chars need escaping.
+    of.write('};\n')
+
+def output_apertures(of):
+    of.write('const uint8_t APERTURES_THIRD[] PROGMEM = {\n')
+    for a in apertures_third:
+        of.write("0b{:04b}{:04b},".format(ord(a[1]) - ord('0'), ord(a[0]) - ord('0')))
+    of.write('};\n')
+
+    of.write('const uint8_t APERTURES_TENTH[] PROGMEM = {\n')
+    odd = [1]
+    def wn(n):
+        n1s = "{:04b}".format(ord(a[0]) - ord('0'))
+        n2s = "{:04b}".format(ord(a[1]) - ord('0') if len(a) > 1 else 0)
+        n3s = "{:04b}".format(ord(a[2]) - ord('0') if len(a) > 2 else 0)
+        if odd[0]:
+            of.write('0b' + n2s + n1s + ',0b' + n3s)
+        else:
+            of.write(n1s + ",0b" + n3s + n2s + ",")
+        odd[0] ^= 1
+    i = 0
+    for a in apertures_tenth:
+        wn(a)
+        if i % 10 == 9:
+            of.write("\n")
+        i += 1
+    of.write('};\n')
+
+    of.write('const uint8_t APERTURES_EIGHTH[] PROGMEM = {\n')
+    odd = [1]
+    i = 0
+    for a in apertures_eighth:
+        wn(a)
+        if i % 10 == 9:
+            of.write("\n")
+        i += 1
     of.write('};\n')
 
 #
@@ -632,9 +718,13 @@ def output():
     output_test_table(ofc)
     ofc.write(';\n#endif\n')
     output_shutter_speeds(ofc)
+    output_apertures(ofc)
 
     ofh.write("extern uint8_t SHUTTER_SPEEDS[];\n")
     ofh.write("extern uint8_t SHUTTER_SPEEDS_BITMAP[];\n")
+    ofh.write("extern uint8_t APERTURES_EIGHTH[];\n")
+    ofh.write("extern uint8_t APERTURES_TENTH[];\n")
+    ofh.write("extern uint8_t APERTURES_THIRD[];\n")
     ofh.write("extern uint8_t TEMP_EV_ADJUST_CHANGE_TEMPS[];\n")
 
     ofh.write("\n#endif\n")

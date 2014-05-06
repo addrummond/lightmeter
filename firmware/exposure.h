@@ -27,19 +27,6 @@
 #define EV_MIN      0
 #define EV_MAX      254
 
-// Full, half, quarter and eighth stops are calculated from
-// the original values in 1/8EV stop increments. We get
-// tenth stops using the additional bits in the
-// STAGEx_LIGHT_VOLTAGE_TO_EV_TENTHS[] arrays. We fake 1/3
-// stop readings using tenths: 0.2 -> 0.4 -> 1/3; 0.5-0.8 -> 2/3.
-typedef enum precision_mode {
-    PRECISION_MODE_FULL=1,
-    PRECISION_MODE_HALF=2,
-    PRECISION_MODE_THIRD=3,
-    PRECISION_MODE_QUARTER=4,
-    PRECISION_MODE_EIGHTH=8,
-    PRECISION_MODE_TENTH=10
-} precision_mode_t;
 
 typedef struct shutter_string_output {
     uint8_t chars[9];
@@ -58,9 +45,9 @@ typedef struct ev_with_tenths {
     uint8_t tenths; // This + (ev/8)*10 gives EV in 1/10 stops starting from -5EV.
 } ev_with_tenths_t;
 
-enum precision_mode;
 void shutter_speed_to_string(uint8_t speed, shutter_string_output_t *eso);
-void aperture_to_string(ev_with_tenths_t apev, aperture_string_output_t *aso, precision_mode_t precision_mode);
+enum precision_mode;
+void aperture_to_string(ev_with_tenths_t aperture, aperture_string_output_t *aso, enum precision_mode precision_mode);
 ev_with_tenths_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_tenths_t ev, uint8_t x);
 #define aperture_given_shutter_speed_iso_ev(a,b,c) x_given_y_iso_ev(a,b,c,0)
 #define shutter_speed_given_aperture_iso_ev(a,b,c) x_given_y_iso_ev(a,b,c,1)

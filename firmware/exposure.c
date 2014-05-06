@@ -9,10 +9,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <assert.h>
+#include <state.h>
 #include <exposure.h>
 #include <bcd.h>
 #include <readbyte.h>
-#include <state.h>
 #include <tables.h>
 #ifdef TEST
 #include <stdio.h>
@@ -174,111 +174,105 @@ void shutter_speed_to_string(uint8_t speed, shutter_string_output_t *eso)
     eso->length = j;
 }
 
-// For 1/10 stop apertures, there is a useful table of values at the following URL
-// for comparison:
-//
-// http://www.scantips.com/lights/fstop.html
-//
-void aperture_to_string(ev_with_tenths_t apev, aperture_string_output_t *aso, precision_mode_t precision_mode)
+void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, precision_mode_t precision_mode)
 {
-    //assert(precision_mode == PRECISION_MODE_FULL ||
-    //       precision_mode == PRECISION_MODE_EIGHTH ||
-    //       precision_mode == PRECISION_MODE_TENTH);
+    // TODO: Rounding.
+    if (precision_mode == PRECISION_MODE_QUARTER) {
+        precision_mode = PRECISION_MODE_EIGHTH;
+        evwt.ev >>= 1;
+    }
+    else if (precision_mode == PRECISION_MODE_HALF) {
+        precision_mode = PRECISION_MODE_EIGHTH;
+        evwt.ev >>= 2;
+    }
+    else if (precision_mode == PRECISION_MODE_FULL) {
+        precision_mode = PRECISION_MODE_EIGHTH;
+        evwt.ev >>= 3;
+    }
 
-    // We do everything in 16-bit fixed point (three decimal places).
-    // Convert into common units of 1/80th of an EV.
-    int16_t aperture = apev.ev;
-    if (precision_mode == PRECISION_MODE_TENTH)
-        aperture &= ~0b111;
-    aperture *= 10;
-    if (precision_mode == PRECISION_MODE_TENTH)
-        aperture += apev.tenths * 8;
+    uint8_t apev = evwt.ev;
 
-    uint16_t r = 1000;
-    //printf("AP %i\n", aperture);
-    while (aperture > 0) {
-        if (aperture > 800) {
-            r *= 32;
-            aperture -= 640;
+    if (apev > AP_MAX)
+        apev = AP_MAX;
+
+    uint8_t last;
+    if (precision_mode == PRECISION_MODE_THIRD) {
+        uint8_t thirds = 0;
+        if (evwt.tenths > 7)
+            thirds = 2;
+        if (evwt.tenths > 2)
+            thirds = 1;
+        uint8_t b = pgm_read_byte(&APERTURES_THIRD[(apev >> 3) + thirds]);
+        last = 0;
+        aso->chars[last++] = '0' + (b & 0xF);
+        if (apev < 6 || (apev == 7 && thirds == 2))
+            aso->chars[last++] = '.';
+        aso->chars[last++] = '0' + (b >> 4);
+    }
+    else if (precision_mode == PRECISION_MODE_TENTH || precision_mode == PRECISION_MODE_EIGHTH) {
+        uint8_t b1, b2, i;
+        if (precision_mode == PRECISION_MODE_EIGHTH) {
+            i = apev + (apev >> 1);
+            b1 = pgm_read_byte(&APERTURES_EIGHTH[i]);
+            b2 = pgm_read_byte(&APERTURES_EIGHTH[i+1]);
         }
-        else if (aperture >= 640) {
-            r *= 16;
-            aperture -= 640;
+        else { //if (precision_mode == PRECISION_MODE_TENTH) {
+            i = ((apev >> 3) * 15) + evwt.tenths + (evwt.tenths >> 1);
+            b1 = pgm_read_byte(&APERTURES_TENTH[i]);
+            b2 = pgm_read_byte(&APERTURES_TENTH[i+1]);
         }
-        else if (aperture >= 480) {
-            r *= 8;
-            aperture -= 480;
-        }
-        else if (aperture >= 320) {
-            r *= 4;
-            aperture -= 320;
-        }
-        else if (aperture >= 160) {
-            r *= 2;
-            aperture -= 160;
+        uint8_t d1 = '0', d2 = '0', d3 = '0';
+        if (i & 1) {
+            d1 += (b1 >> 4);
+            d2 += (b2 & 0xF);
+            d3 += (b2 >> 4);
         }
         else {
-            uint16_t d1 = r/10;
-            uint16_t d2 = r/100;
-            uint16_t d3 = r/1000;
-
-            if (aperture > 80 || precision_mode == PRECISION_MODE_FULL) {
-                r += 4*d1 + 1*d2 + 4*d3;
-                aperture -= 80;
-            }
-            else if (aperture > 40) {
-                r += 1*d1 + 8*d2 + 9*d3;
-                aperture -= 40;
-            }
-            else if (precision_mode == PRECISION_MODE_EIGHTH) {
-                r += 0*d1 + 4*d2 + 4*d3;
-                aperture -= 10;
-            }
-            else { //if (precision_mode == PRECISION_MODE_TENTH) {
-                r += 0*d1 + 3*d2 + 5*d3;
-                aperture -= 8;
-            }
+            d1 += (b1 & 0xF);
+            d2 += (b1 >> 4);
+            d3 += (b2 & 0xF);
         }
+
+        last = 0;
+        aso->chars[last++] = d1;
+        if (apev > 6*8 || (precision_mode == PRECISION_MODE_TENTH && apev == 5*8 && evwt.tenths > 6) ||
+                          (precision_mode == PRECISION_MODE_EIGHTH && apev > 53)) {
+            aso->chars[last++] = '.';
+        }
+        aso->chars[last++] = d2;
+        if (last == 2)
+            aso->chars[last++] = '.';
+        aso->chars[last++] = d3;
+    }
+    else {
+        assert(false);
     }
 
-    //printf("R: %i\n", r);
+    aso->length = last;
 
-    uint8_t digits_[5];
-    uint8_t *digits = uint16_to_bcd(r, digits_, sizeof(digits_));
-    uint8_t len = bcd_length_after_op(digits_, sizeof(digits_), digits);
-
-    // Rounding.
-    uint8_t i = 3; // We use 1 dp if there are two digits before the point.
-    if (digits[i] >= 5) {
-        --i;
-        ++(digits[i]);
-        while (digits[i] >= 10 && i > 0) {
-            digits[i] -= 10;
+    // If we're doing quarter-stop precision, round off last digit.
+    /*if (precision_mode == PRECISION_MODE_QUARTER) {
+        uint8_t i = last-1;
+        if (aso->chars[i] >= '5')
+            ++aso->chars[i-1];
+        do {
             --i;
-            ++(digits[i]);
-        }
-    }
-    // Should never need to add additional digit. Truncate in this case.
-    //if (digits[0] > 9)
-    //    digits[0] = 9;
+            if (i < '9')
+                break;
+            aso->chars[i] = '0';
+            ++aso->chars[i-1];
+        } while (i > 1);
 
-    // Add decimal point.
-    uint8_t o = len-4;
-    // Two decimal places.
-    digits[3+o] = digits[2+o];
-    digits[2+o] = digits[1+o];
-    digits[1+o] = '.';
-    aso->length = 4; // We use 1 dp if there are two digits before the point.
+        --(aso->length);
+    }*/
 
-    // Copy over and convert to ASCII chars.
-    //    printf("ASOL* %i\n", aso->length);
-    for (i = 0; i < 4; ++i) {
-        if (digits[i] == '.')
-            aso->chars[i] = '.';
-        else
-            aso->chars[i] = digits[i] + '0';
-    }
-    aso->chars[i] = '\0';
+    // Remove '.0'.
+    if (aso->chars[1] == '.' && aso->chars[2] == '0')
+        aso->length = 1;
+    else if (aso->length > 2 && aso->chars[2] == '.' && aso->chars[3] == '0')
+        aso->length = 3;
+
+    aso->chars[aso->length] = '\0';
 }
 
 // Table storing full-stop ISO numbers.
@@ -560,25 +554,20 @@ extern const uint8_t TEST_VOLTAGE_TO_EV[];
 int main()
 {
     shutter_string_output_t sso;
-    /*uint8_t s;
+    uint8_t s;
     for (s = SS_MIN; s <= SS_MAX; ++s) {
         shutter_speed_to_string(s, &sso);
         printf("SS: %s (length = %i)\n", SHUTTER_STRING_OUTPUT_STRING(sso), sso.length);
     }
 
-    printf("\n");*/
+    printf("\n");
 
     uint8_t a;
     aperture_string_output_t aso;
-    for (a = (AP_MIN/8)*10; a <= (AP_MAX/8)*10; ++a) {
-        ev_with_tenths_t xx;
-        xx.ev = (a/10)*8;
-        xx.tenths = a % 10;
-        aperture_to_string(xx, &aso, PRECISION_MODE_TENTH);
+    for (a = AP_MIN; a <= AP_MAX; ++a) {
+        aperture_to_string(a, &aso);
         printf("A:  %s\n", APERTURE_STRING_OUTPUT_STRING(aso));
     }
-
-    return 0;
 
     printf("\nTesting aperture_given_shutter_speed_iso_ev\n");
     uint8_t is, ss, ev, ap;
@@ -591,7 +580,7 @@ int main()
         evwt = aperture_given_shutter_speed_iso_ev(ss, is, evwt);
         uint8_t ap = evwt.ev;
         shutter_speed_to_string(ss, &sso);
-        aperture_to_string(evwt, &aso, PRECISION_MODE_EIGHTH);
+        aperture_to_string(ap, &aso);
         printf("ISO %f stops from 6,  %s  %s (EV = %.2f)   [%i, %i, %i : %i]\n",
                ((float)is) / 8.0,
                SHUTTER_STRING_OUTPUT_STRING(sso),
@@ -609,7 +598,7 @@ int main()
         evwt = shutter_speed_given_aperture_iso_ev(ap, is, evwt);
         uint8_t ss = evwt.ev;
         shutter_speed_to_string(ss, &sso);
-        aperture_to_string(evwt, &aso, PRECISION_MODE_EIGHTH);
+        aperture_to_string(ap, &aso);
         printf("ISO %f stops from 6,  %s  %s (EV = %.2f)   [%i, %i, %i : %i]\n",
                ((float)is) / 8.0,
                SHUTTER_STRING_OUTPUT_STRING(sso),
@@ -625,7 +614,7 @@ int main()
           for (ev = 40; ev <= EV_MAX; ++ev) {
                 ap = aperture_given_shutter_speed_iso_ev(ss, is, ev);
                 shutter_speed_to_string(ss, &sso);
-                aperture_to_string(ap, &aso, PRECISION_MODE_EIGHTH);
+                aperture_to_string(ap, &aso);
                 printf("ISO %f stops from 6,  %s  %s (EV = %.2f)   [%i, %i, %i : %i]\n",
                        ((float)is) / 8.0,
                        SHUTTER_STRING_OUTPUT_STRING(sso),
@@ -720,7 +709,7 @@ int main()
     evwt = aperture_given_shutter_speed_iso_ev(0, 4*8, evwt);
     printf("VAL that should be equal to 9*8=72: %i\n", evwt.ev);
     assert(evwt.ev == 9*8);
-    aperture_to_string(evwt, &aso, PRECISION_MODE_EIGHTH);
+    aperture_to_string(evwt.ev, &aso);
     printf("AP: %s\n", APERTURE_STRING_OUTPUT_STRING(aso));
 
     evwt.ev = (3+5)*8;

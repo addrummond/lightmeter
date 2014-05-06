@@ -10,7 +10,7 @@ void bcd_to_string(uint8_t *digits, uint8_t length);
 void string_to_bcd(uint8_t *digits, uint8_t length);
 bool bcd_cmp(const uint8_t *digits1, uint8_t length1, const uint8_t *digits2, uint8_t length2, uint8_t which);
 uint8_t *bcd_div_by_lt10(uint8_t *digits, uint8_t length, uint8_t by);
-uint8_t *uint16_to_bcd(uint16_t n, uint8_t *digits, uint8_t length);
+uint8_t *uint8_to_bcd(uint8_t n, uint8_t *digits, uint8_t length);
 
 #define bcd_length_after_op(oldptr, oldlength, newptr) (((oldlength) + (oldptr)) - (newptr))
 
