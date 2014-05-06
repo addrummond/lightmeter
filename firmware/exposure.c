@@ -580,9 +580,7 @@ int main()
         aperture_to_string(evwt, &aso, PRECISION_MODE_EIGHTH);
         printf("A[%i]:  %s\n", a, APERTURE_STRING_OUTPUT_STRING(aso));
     }
-
-    return 0;
-
+    
     printf("\nTesting aperture_given_shutter_speed_iso_ev\n");
     uint8_t is, ss, ev, ap;
     for (is = ISO_MIN; is <= ISO_MAX; ++is) {
