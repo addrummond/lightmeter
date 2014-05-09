@@ -464,7 +464,7 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
             //debug_print_bcd(digits, length);
             //printf("\n");
         }
-        
+
         // Translate 1/3 stops to 1/8 stops -- yuck!
         assert(divs > 0 && divs <= 3);
         switch (divs) {
@@ -542,7 +542,7 @@ ev_with_tenths_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_tenths
         if (tenths > 9)
             tenths -= 10;
     }
-    
+
     if (rr < min)
         rr = min;
     else if (r > max)
@@ -551,7 +551,6 @@ ev_with_tenths_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_tenths
     ev_with_tenths_t ret;
     ret.ev = (uint8_t)rr;
     ret.tenths = tenths;
-
     return ret;
 }
 
@@ -602,8 +601,8 @@ int main()
     printf("\nTesting aperture_given_shutter_speed_iso_ev\n");
     uint8_t is, ss, ev, ap;
     for (is = ISO_MIN; is <= ISO_MAX; ++is) {
-        ss = 12*8; // 1/60
-        ev = 15*8; // 10 EV
+        ss = 8*8;//12*8; // 1/60
+        ev = 10*8;//15*8; // 10 EV
         ev_with_tenths_t evwt;
         evwt.ev = ev;
         evwt.tenths = 0;
@@ -620,6 +619,18 @@ int main()
                ((float)(((int16_t)(ev))-(5*8)))/8.0,
                is, ss, ev, ap);
     }
+
+    printf("\n");
+    uint8_t evv = 0;
+    for (evv = 0; evv < 100; ++evv) {
+        ev_with_tenths_t x;
+        x.ev = evv;
+        x.tenths = 0;
+        x = aperture_given_shutter_speed_iso_ev(12*8, 4*8, x);
+        aperture_to_string(x, &aso, PRECISION_MODE_EIGHTH);
+        printf("At EV %i, %s\n", evv, APERTURE_STRING_OUTPUT_STRING(aso));
+    }
+
     printf("\nTesting shutter_speed_given_aperture_iso_ev\n");
     for (is = ISO_MIN; is <= ISO_MAX; ++is) {
         ap = 6*8; // f8
@@ -700,8 +711,8 @@ int main()
         2,   0, 0, 0, 0, 0, 1, 6,  0,
         2,   0, 0, 0, 0, 0, 1, 2,  0,
         2,   0, 0, 0, 0, 0, 1, 0,  0,
-        1,   0, 0, 0, 0, 0, 0, 8,  0, 
-        1,   0, 0, 0, 0, 0, 0, 6,  0 
+        1,   0, 0, 0, 0, 0, 0, 8,  0,
+        1,   0, 0, 0, 0, 0, 0, 6,  0
     };
 
     int i;

@@ -35,14 +35,23 @@ typedef enum meter_mode {
 // tenth stops using the additional bits in the
 // STAGEx_LIGHT_VOLTAGE_TO_EV_TENTHS[] arrays. We fake 1/3
 // stop readings using tenths: 0.2 -> 0.4 -> 1/3; 0.5-0.8 -> 2/3.
-typedef enum precision_mode {
+/*typedef enum precision_mode {
     PRECISION_MODE_FULL=1,
     PRECISION_MODE_HALF=2,
     PRECISION_MODE_THIRD=3,
     PRECISION_MODE_QUARTER=4,
     PRECISION_MODE_EIGHTH=8,
     PRECISION_MODE_TENTH=10
-} precision_mode_t;
+} precision_mode_t;*/
+// gcc insisted on making this enum two bytes, I think because there
+// was a prototype declaration in another file.
+typedef uint8_t precision_mode_t;
+#define PRECISION_MODE_FULL 1
+#define PRECISION_MODE_HALF 2
+#define PRECISION_MODE_THIRD 3
+#define PRECISION_MODE_QUARTER 4
+#define PRECISION_MODE_EIGHTH 8
+#define PRECISION_MODE_TENTH 10
 
 typedef struct meter_state {
     uint8_t bcd_iso_digits[ISO_DECIMAL_MAX_DIGITS];
@@ -62,6 +71,14 @@ typedef struct meter_state {
     uint8_t priority_aperture;
     uint8_t priority_shutter_speed;
 } meter_state_t;
+
+#ifdef __AVR__
+struct state_h_enum_size_test_struct {
+    int test1[1-sizeof(ui_mode_t)];
+    int test2[1-sizeof(meter_mode_t)];
+    int test3[1-sizeof(precision_mode_t)];
+};
+#endif
 
 // This is just to check that sizeof(meter_state) <= STATE_BLOCK_LENGTH.
 // Attempting to specify an array of negative length will raise
