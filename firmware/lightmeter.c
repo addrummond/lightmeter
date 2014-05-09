@@ -263,9 +263,6 @@ ISR(TIM0_COMPA_vect)
     // See http://forums.parallax.com/showthread.php/110209-Multiple-buttons-to-one-IO-pin, post by
     // virtuPIC for description of method used here.
 
-    // TODO TEST CODE REMOVE.
-    TEST_LED_PORT ^= (1 << TEST_LED_BIT);
-
     if (mode_counter == 0) {
         // Switch pin to input mode (with no pullup resistors).
         PUSHBUTTON_DDR &= ~(1 << PUSHBUTTON_BIT);
