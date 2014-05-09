@@ -13,13 +13,13 @@
 //         Display CS    |    PB1 3--12  PA/ADC1  | Op amp comparison pin (ground).
 //                       |  RESET 4--11  PA/ADC2  | Charge pump clock 1.
 //         Display Clk   |    PB2 5--10  PA/ADC3  | Charge pump clock 2 (and shift register clock).
-//         Display DC    |    PA7 6---9  PA/ADC4  | Data to shift register.
-//         Display reset |    PA6 7---8  PA/ADC5  | Test LED / switch input pin.
+//         Display DC    |    PA7 6---9  PA/ADC4  | Pushbutton input port.
+//         Display reset |    PA6 7---8  PA/ADC5  | Serial debug port Tx.
 
 
 //
-// Display 
-// 
+// Display
+//
 #define DISPLAY_DATA_PORT   PORTB
 #define DISPLAY_DATA_DDR    DDRB
 #define DISPLAY_DATA_BIT    PB0
@@ -85,6 +85,13 @@
 #define PUSHBUTTON4_RVAL_KO             180L
 
 #define PUSHBUTTON_RC_MS(n) ((uint8_t)((PUSHBUTTON ## n ## _RVAL_KO * 1000L * PUSHBUTTON_CAPVAL_TENTHS_MU_F * 1000L) / 10000000L))
+
+
+//
+// Port for sending serial debug output.
+//
+#define UART_PORT        PORTA
+#define UART_PORT_NUMBER 5 // I.e. PA5
 
 
 //

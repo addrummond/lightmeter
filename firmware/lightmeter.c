@@ -14,6 +14,8 @@
 #include <ui.h>
 #include <mymemset.h>
 
+#include <basic_serial/basic_serial.h>
+
 const uint8_t ADMUX_CLEAR_SOURCE = ~((1 << MUX5) | (1 << MUX4) | (1 << MUX2) | (1 << MUX2) | (1 << MUX1) | (0 << MUX0));
 const uint8_t ADMUX_CLEAR_REF_VOLTAGE = 0b11000000; // Couldn't do this with macros without getting overflow warning for some reason.
 
@@ -39,7 +41,7 @@ ISR(ADC_vect) {
 //
 // For current test chip, slope = 1.12 and k = 290
 // We're going from x to y, 1/slope = 0.89.
-// After 
+// After
 #define ADC_TEMP_CONSTANT              785
 #define ADC_TEMP_SLOPE_WHOLES          0 // I.e. add one more whole.
 #define ADC_TEMP_SLOPE_EIGHT_TENTHS    0
@@ -116,7 +118,7 @@ void setup_output_ports()
 static void set_op_amp_resistor_stage(uint8_t op_amp_resistor_stage)
 {
     // TODO: Code that actually switches the MOFSETs.
-    
+
     global_transient_meter_state.op_amp_resistor_stage = op_amp_resistor_stage;
 }
 
@@ -128,22 +130,25 @@ void handle_measurement()
     // (Could left adjust everything, but we might want the full 10 bits for temps.)
     uint8_t adc_light_nonvol_value = (uint8_t)(adc_light_value >> 2);
 
-    ev_with_tenths_t evwt = get_ev100_at_temperature_voltage(
+    global_transient_meter_state.last_ev_with_tenths = get_ev100_at_temperature_voltage(
         current_temp,
         adc_light_nonvol_value,
         global_transient_meter_state.op_amp_resistor_stage
     );
-    global_transient_meter_state.last_ev_with_tenths = evwt;
 
     if (global_meter_state.priority == SHUTTER_PRIORITY) {
-        uint8_t shut = global_meter_state.priority_shutter_speed;
-        global_transient_meter_state.aperture =
-            aperture_given_shutter_speed_iso_ev(shut, global_meter_state.stops_iso, evwt);
+        global_transient_meter_state.shutter_speed.ev = global_meter_state.priority_shutter_speed;
+        global_transient_meter_state.shutter_speed.tenths = 0;
+        global_transient_meter_state.aperture = aperture_given_shutter_speed_iso_ev(
+            global_transient_meter_state.shutter_speed.ev,
+            global_meter_state.stops_iso,
+            global_transient_meter_state.last_ev_with_tenths
+        );
     }
     else { //if (global_meter_state.priority == APERTURE_PRIORITY) {
         uint8_t ap = global_meter_state.priority_aperture;
         global_transient_meter_state.shutter_speed =
-            shutter_speed_given_aperture_iso_ev(ap, global_meter_state.stops_iso, evwt);
+            shutter_speed_given_aperture_iso_ev(ap, global_meter_state.stops_iso, global_transient_meter_state.last_ev_with_tenths);
     }
 
     // If we're too near the top or bottom of the range, change the gain next time.
@@ -185,6 +190,7 @@ static void show_interface()
 
     uint8_t i;
     uint8_t out[6];
+    memset8_zero(out, sizeof(out));
     ui_top_status_line_state_t state0;
     memset8_zero(&state0, sizeof(state0));
     for (i = 0; i < DISPLAY_LCDWIDTH; i += 6) {
@@ -194,15 +200,19 @@ static void show_interface()
     }
 
     uint8_t out2[24];
+    memset8_zero(out2, sizeof(out2));
     ui_main_reading_display_state_t state;
     memset8_zero(&state, sizeof(state));
+    //static uint8_t val = 0;
     for (i = 0; i < DISPLAY_LCDWIDTH; i += 8) {
         memset8_zero(out2, sizeof(out2));
         ui_main_reading_display_at_8col(&state, out2, 3, i);
+        //out2[0] = val++;
         display_write_page_array(out2, 8, 3, i, 3);
     }
 
     ui_bttm_status_line_state_t state2;
+    memset8_zero(out, sizeof(out));
     memset8_zero(&state2, sizeof(state2));
     for (i = 0; DISPLAY_LCDWIDTH - i >= 6; i += 6) {
         memset8_zero(out, sizeof(out));
@@ -335,8 +345,6 @@ int main()
     setup_button_handler();
 
     set_op_amp_resistor_stage(2);
-    // TODO HACK DEBUG
-    global_meter_state.precision_mode = PRECISION_MODE_TENTH;
 
     led_test();
     setup_output_ports();
@@ -347,7 +355,7 @@ int main()
     display_clear();
     setup_ADC();
 
-    sei();    
+    sei();
 
     // The main loop. This looks at the latest exposure
     // reading every so often.
@@ -364,7 +372,7 @@ int main()
         else if (cnt == 0b100000) {
             // TODO: Calling this seems to give rise to some kind of memory corruption bug.
             //calculate_current_temp();
-            
+
             // Make the next ADC reading a light reading.
             ADMUX &= ADMUX_CLEAR_REF_VOLTAGE;
             ADMUX |= ADMUX_LIGHT_SOURCE_REF_VOLTAGE;

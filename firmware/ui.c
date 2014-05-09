@@ -140,15 +140,11 @@ diff:
     return CHAR_12PX_GRIDS + CHAR_12PX_0_O + CHAR_OFFSET_12PX(ascii - m);
 }
 
-
 void ui_main_reading_display_at_8col(ui_main_reading_display_state_t *func_state,
                                      uint8_t *out,
                                      uint8_t pages_per_col,
                                      uint8_t x)
 {
-    if (! tms.exposure_ready)
-        return;
-    
     const uint8_t VOFFSET = 5;
 
     if (func_state->len == 0) { // State is unitialized; initialize it.
@@ -187,7 +183,7 @@ void ui_main_reading_display_at_8col(ui_main_reading_display_state_t *func_state
         ++(func_state->i);
     }
     else if (ms.precision_mode == PRECISION_MODE_TENTH &&
-             func_state->i < func_state->len + 2) {
+        func_state->i < func_state->len + 2) {
         // Write tenths if any.
     }
 }
@@ -227,7 +223,7 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
             return;
 
         // Compute strings for fractional EV values according to precision mode.
-        uint8_t ev = 80 + (ms.precision_mode * 8);//tms.last_ev_with_tenths.ev;// TODO DEBU HACK TODO
+        uint8_t ev = tms.last_ev_with_tenths.ev;
         uint8_t tenths = tms.last_ev_with_tenths.tenths;
         uint8_t eighths = ev & 0b111;
         if (ev < 5*8) {
@@ -249,7 +245,7 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
             for (i = 0; i < func_state->ev_length; ++i)
                 func_state->ev_chars_[i] = CHAR_OFFSET_8PX(func_state->ev_chars_[i]) + CHAR_8PX_0_O;
         }
-        
+
         uint8_t l = func_state->ev_length;
         if (ms.precision_mode == PRECISION_MODE_EIGHTH && eighths != 0 && eighths != 8) {
             func_state->ev_chars_[l++] = CHAR_8PX_PLUS_O;

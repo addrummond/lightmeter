@@ -19,7 +19,7 @@ eeprom = [
     10,                                                            # PRECISION_MODE_TENTH
 
     48,                                                            # priority_aperture = f8
-    88                                                             # priority_shutter_speed = 1/30
+    64                                                             # priority_shutter_speed = 1/4
 ]
 
 ih = IntelHex()
