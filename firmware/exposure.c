@@ -100,9 +100,7 @@ ev_with_tenths_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t v
     uint8_t eighths = voltage & 0b111;
     tenths_bit >>= eighths;
     tenths_bit &= 1;
-    ret.tenths = eighths;
-    if (eighths > 3)
-        ++ret.tenths;
+    ret.tenths = tenths_from_eighths(eighths);
     ret.tenths += tenths_bit;
 
     return ret;
@@ -197,11 +195,7 @@ void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, pr
 
     uint8_t last;
     if (precision_mode == PRECISION_MODE_THIRD) {
-        uint8_t thirds = 0;
-        if (evwt.tenths > 6)
-            thirds = 2;
-        else if (evwt.tenths > 2)
-            thirds = 1;
+        uint8_t thirds = thirds_from_tenths(evwt.tenths);
         uint8_t b = pgm_read_byte(&APERTURES_THIRD[((apev >> 3)*3) + thirds]);
         last = 0;
         aso->chars[last++] = '0' + (b & 0xF);
@@ -532,9 +526,7 @@ ev_with_tenths_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_tenths
     // Add back tenths.
     uint8_t tenths = 0;
     if (r > 0) {
-        tenths = (uint8_t)(r & 0b111);
-        if (tenths > 3)
-            ++tenths;
+        tenths = tenths_from_eighths(r);
         tenths += evwt.tenths;
         // Note that we don't need to add 1 to the main value because
         // that will already have been taken care of when we added

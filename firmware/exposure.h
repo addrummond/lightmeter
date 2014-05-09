@@ -55,4 +55,7 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length);
 ev_with_tenths_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage, uint8_t op_amp_resistor_stage);
 uint8_t convert_from_reference_voltage(uint16_t adc_out);
 
+#define tenths_from_eighths(e) (e > 3 ? e + 1 : e)
+#define thirds_from_tenths(e) (e > 6 ? 2 : (e > 2 ? 1 : 0))
+
 #endif

@@ -138,7 +138,7 @@ void handle_measurement()
 
     if (global_meter_state.priority == SHUTTER_PRIORITY) {
         global_transient_meter_state.shutter_speed.ev = global_meter_state.priority_shutter_speed;
-        global_transient_meter_state.shutter_speed.tenths = 0;
+        global_transient_meter_state.shutter_speed.tenths = tenths_from_eighths(global_meter_state.priority_shutter_speed);
         global_transient_meter_state.aperture = aperture_given_shutter_speed_iso_ev(
             global_transient_meter_state.shutter_speed.ev,
             global_meter_state.stops_iso,
