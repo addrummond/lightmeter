@@ -238,9 +238,9 @@ def output_ev_table(of, name_prefix, op_amp_resistor):
     vallist_diffs = [ ]
     oar = op_amp_resistor
     tenth_bits = [ ]
-    for sv in xrange(0, 256-b_voltage_offset, 16):
+    for sv in xrange(b_voltage_offset, 256, 16):
         # Write the absolute 8-bit EV value.
-        voltage = (sv * bv_to_voltage) + voltage_offset
+        voltage = (sv * bv_to_voltage)
         assert voltage >= 0
         if voltage > reference_voltage:
             break
@@ -257,7 +257,7 @@ def output_ev_table(of, name_prefix, op_amp_resistor):
             eight2 = None
             o = ""
             for k in xrange(0, 8):
-                v = ((sv + (j * 8.0) + k) * bv_to_voltage) + voltage_offset
+                v = ((sv + (j * 8.0) + k) * bv_to_voltage)
                 ev2 = voltage_and_oa_resistor_to_ev(v, oar)
                 eight2 = int(round((ev2+5.0) * 8.0))
                 if eight2 < 0:
@@ -335,7 +335,8 @@ def output_sanity_graph():
         bins = [ ]
         for stage in xrange(len(op_amp_resistor_stages)):
             ev = voltage_and_oa_resistor_to_ev(voltage, op_amp_resistor_stages[stage][0] * op_amp_resistor_stages[stage][1])
-            bins.append(int(round((ev + 5.0) *8.0)))
+            ev8 = int(round((ev + 5.0) * 8.0))
+            bins.append(ev8)
             f.write(",%f" % ev)
         f.write("," + ",".join(map(str,bins)))
         f.write("\n")
