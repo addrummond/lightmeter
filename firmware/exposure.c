@@ -98,10 +98,9 @@ ev_with_tenths_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t v
 
     // Calculate tenths.
     uint8_t tenths_bit = pgm_read_byte(ev_tenths + (voltage >> 3));
-    uint8_t eighths = voltage & 0b111;
-    tenths_bit >>= eighths;
+    tenths_bit >>= (voltage & 0b111);
     tenths_bit &= 1;
-    ret.tenths = tenth_below_eighth(eighths);
+    ret.tenths = tenth_below_eighth(ret.ev);
     ret.tenths += tenths_bit;
 
     return ret;
