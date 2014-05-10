@@ -101,7 +101,7 @@ ev_with_tenths_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t v
     uint8_t eighths = voltage & 0b111;
     tenths_bit >>= eighths;
     tenths_bit &= 1;
-    ret.tenths = tenths_from_eighths(eighths);
+    ret.tenths = tenth_below_eighth(eighths);
     ret.tenths += tenths_bit;
 
     return ret;
@@ -526,7 +526,7 @@ ev_with_tenths_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_tenths
     else if (r > max)
         r = max;
     else
-        tenths = tenths_from_eighths(r);
+        tenths = tenth_below_eighth(r);
 
     // Add back tenths.
     tenths += evwt.tenths;
