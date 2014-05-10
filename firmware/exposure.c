@@ -175,6 +175,7 @@ void shutter_speed_to_string(uint8_t speed, shutter_string_output_t *eso)
 void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, precision_mode_t precision_mode)
 {
     // TODO: Rounding.
+    precision_mode_t orig_precision_mode = precision_mode;
     if (precision_mode == PRECISION_MODE_QUARTER) {
         precision_mode = PRECISION_MODE_EIGHTH;
         evwt.ev >>= 1;
@@ -248,7 +249,7 @@ void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, pr
     aso->length = last;
 
     // If we're doing quarter-stop precision, round off last digit.
-    /*if (precision_mode == PRECISION_MODE_QUARTER) {
+    /*if (orig_precision_mode == PRECISION_MODE_QUARTER) {
         uint8_t i = last-1;
         if (aso->chars[i] >= '5')
             ++aso->chars[i-1];
