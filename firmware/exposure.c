@@ -526,7 +526,6 @@ ev_with_tenths_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_tenths
 
     // Adjust for difference between reference ISO and actual ISO.
     r += given_iso - the_iso;
-    //printf("R: %i (%i - %i)\n", r, given_iso, the_iso);
 
     // Add back fractional eighths.
     r += (evwt.ev & 0b111);
