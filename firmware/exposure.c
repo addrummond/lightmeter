@@ -232,7 +232,7 @@ void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, pr
 
         last = 0;
         aso->chars[last++] = d1;
-        if (apev < 6*8 || (precision_mode == PRECISION_MODE_TENTH && apev == 6*8 && evwt.tenths < 7) ||
+        if (apev < 6*8 || (precision_mode == PRECISION_MODE_TENTH && apev < 7*8 && evwt.tenths < 7) ||
                           (precision_mode == PRECISION_MODE_EIGHTH && apev < 54)) {
             aso->chars[last++] = '.';
         }
@@ -268,13 +268,13 @@ void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, pr
     do {
         --i;
         if (aso->chars[i] == '.') {
-            aso->length = i;
+            --i;
             break;
         }
         if (aso->chars[i] != '0')
             break;
     } while (i > 0);
-
+    aso->length = i+1;
     aso->chars[aso->length] = '\0';
 }
 
