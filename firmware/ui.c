@@ -7,6 +7,8 @@
 #include <mymemset.h>
 #include <assert.h>
 
+#include <basic_serial/basic_serial.h>
+
 //
 // Modularizing the display code takes a little bit of care when
 // we're not buffering the entire screen area. We will often want
@@ -169,14 +171,16 @@ void ui_main_reading_display_at_8col(ui_main_reading_display_state_t *func_state
 
     if (x >= func_state->start_x && func_state->i < func_state->len) {
         if (func_state->i < func_state->shutter_speed_string.length) {
-            uint8_t ascii = SHUTTER_STRING_OUTPUT_STRING(func_state->shutter_speed_string)[func_state->i];
+            const uint8_t *shutstr = SHUTTER_STRING_OUTPUT_STRING(func_state->shutter_speed_string);
+            uint8_t ascii = shutstr[func_state->i];
             display_bwrite_12px_char(ssa_get_12px_grid(ascii), out, pages_per_col, VOFFSET);
         }
         else if (func_state->i == func_state->shutter_speed_string.length + 1) {
             display_bwrite_12px_char(CHAR_12PX_F, out, pages_per_col, VOFFSET);
         }
         else if (func_state->i >= func_state->shutter_speed_string.length + 2) {
-            uint8_t ascii = APERTURE_STRING_OUTPUT_STRING(func_state->aperture_string)[func_state->i - func_state->shutter_speed_string.length - 2];
+            const uint8_t *apstr = APERTURE_STRING_OUTPUT_STRING(func_state->aperture_string);
+            uint8_t ascii = apstr[func_state->i - func_state->shutter_speed_string.length - 2];
             display_bwrite_12px_char(ssa_get_12px_grid(ascii), out, pages_per_col, VOFFSET);
        }
 
@@ -218,7 +222,7 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
     if (func_state->expcomp_chars[0] == 0) { // State is not initialized; initialize it.
         // Cache because volatile.
         func_state->exposure_ready = tms.exposure_ready;
-        
+
         if (! func_state->exposure_ready)
             return;
 
@@ -256,7 +260,7 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
             func_state->ev_chars_[l++] = CHAR_8PX_PERIOD_O;
             func_state->ev_chars_[l++] = CHAR_OFFSET_8PX(tenths) + CHAR_8PX_0_O;
         }
-        
+
         func_state->ev_length = l;
     }
 
@@ -267,9 +271,9 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
     // This means that if we ignore the eighths, it can only be up to +/- 16 stops.
     // We can therefore avoid doing a proper conversion to BCD,
     // since it's easy to convert binary values from 0-16 to a two-digit decimal.
-    
+
     uint8_t i = 0;
-    
+
     int8_t exp_comp = global_meter_state.exp_comp;
     if (exp_comp & 128) { // It's negative.
         exp_comp = ~exp_comp + 1;
@@ -278,7 +282,7 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
     else {
         func_state->expcomp_chars[i++] = CHAR_8PX_PLUS_O;
     }
-    
+
     uint8_t full_comp = global_meter_state.exp_comp >> 3;
     uint8_t full_d1 = 0, full_d2 = 0;
     if (full_comp > 9) {
@@ -286,18 +290,18 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
         full_comp -= 10;
     }
     full_d2 = full_comp;
-    
+
     if (full_d1)
         func_state->expcomp_chars[i++] = CHAR_8PX_0_O + CHAR_OFFSET_8PX(full_d1);
     func_state->expcomp_chars[i++] = CHAR_8PX_0_O + CHAR_OFFSET_8PX(full_d2);
-    
+
     uint8_t eighths = global_meter_state.exp_comp & 0b111;
     if (eighths) {
         func_state->expcomp_chars[i++] = CHAR_8PX_PLUS_O;
         write_eighths_8px_chars(func_state->expcomp_chars + i, eighths);
         i += 3;
     }
-    
+
     func_state->expcomp_chars_length = i;
     func_state->start_x = DISPLAY_LCDWIDTH - (i << 2) - (i << 1);
 
@@ -321,7 +325,7 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
         return;
 
     // We're now two pixels behind alignment with the right edge of the display.
-    
+
     if (x >= func_state->start_x - 2) {
         // Write tail end of previous char if there was one.
         if (func_state->charbuffer_has_contents) {
@@ -332,7 +336,7 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
         }
 
         memset8_zero(func_state->charbuffer, sizeof(func_state->charbuffer));
-    
+
         uint8_t index;
         for (index = 0; x > func_state->start_x - 2; x -= 6, ++index);
 

@@ -3,6 +3,12 @@
 CFLAGS=`cat CFLAGS`
 LINKFLAGS=`cat LINKFLAGS`
 
+if [ "$1" == "debug" ]
+then
+    echo "Building in debug mode"
+    CFLAGS="$CFLAGS -DDEBUG"
+fi
+
 python calculate_tables.py output
 cd bitmaps
 python process_bitmaps.py output

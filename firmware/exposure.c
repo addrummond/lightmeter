@@ -17,6 +17,7 @@
 #ifdef TEST
 #include <stdio.h>
 #endif
+#include <basic_serial/basic_serial.h>
 
 // See comments in calculate_tables.py for info on the way
 // temp/voltage are encoded.
@@ -485,35 +486,31 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
 ev_with_tenths_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_tenths_t evwt, uint8_t x) // x=0: aperture, x=1: shutter_speed
 {
     // We know that for EV=3, ISO = 100, speed = 1minute, aperture = 22.
-    int16_t the_aperture = 9*8; // F22
-    int16_t the_speed = 0;      // 1 minute.
-    int16_t the_ev = ((3+5)*8); // 3 EV
-    int16_t the_iso = 4*8;      // 100 ISO
+    const int16_t the_aperture = 9*8; // F22
+    const int16_t the_speed = 0;      // 1 minute.
+    const int16_t the_ev = (3+5)*8;   // 3 EV
+    const int16_t the_iso = 4*8;      // 100 ISO
 
     int16_t given_x = (int16_t)given_x_;
     int16_t given_iso = (int16_t)iso_;
     // We remove the fractional component and add it back at the end.
     // This way we can do the exact calculation for both eighths and tenths.
-    int16_t given_ev = (int16_t)evwt.ev & ~0b111;
+    int16_t given_ev = (int16_t)(evwt.ev & ~0b111);
 
     int16_t r;
     int16_t min, max;
     if (x == 1) {
-        int16_t apdiff = given_x - the_aperture;
-        the_ev += apdiff;
+        int16_t ap_adjusted = the_ev + given_x - the_aperture;
 
-        int16_t evdiff = given_ev - the_ev;
-        the_speed += evdiff;
-        r = the_speed;
+        int16_t evdiff = given_ev - ap_adjusted;
+        r = the_speed + evdiff;
         min = SS_MIN, max = SS_MAX;
     }
     else { // x == 0
-        int16_t shutdiff = given_x - the_speed;
-        the_ev += shutdiff;
+        int16_t shut_adjusted = the_ev + given_x - the_speed;
 
-        int16_t evdiff = given_ev - the_ev;
-        the_aperture += evdiff;
-        r = the_aperture;
+        int16_t evdiff = given_ev - shut_adjusted;
+        r = the_aperture + evdiff;
         min = AP_MIN, max = AP_MAX;
     }
 
@@ -521,27 +518,26 @@ ev_with_tenths_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_tenths
     //printf("R: %i (%i - %i)\n", r, given_iso, the_iso);
 
     // Add back fractional eighths.
-    int16_t rr = r + (evwt.ev & 0b111);
+    r += (evwt.ev & 0b111);
+
+    uint8_t tenths = 0;
+    if (r < min)
+        r = min;
+    else if (r > max)
+        r = max;
+    else
+        tenths = tenths_from_eighths(r);
 
     // Add back tenths.
-    uint8_t tenths = 0;
-    if (r > 0) {
-        tenths = tenths_from_eighths(r);
-        tenths += evwt.tenths;
-        // Note that we don't need to add 1 to the main value because
-        // that will already have been taken care of when we added
-        // the fractional eighths back to rr.
-        if (tenths > 9)
-            tenths -= 10;
-    }
-
-    if (rr < min)
-        rr = min;
-    else if (r > max)
-        rr = max;
+    tenths += evwt.tenths;
+    // Note that we don't need to add 1 to the main value because
+    // that will already have been taken care of when we added
+    // the fractional eighths back to rr.
+    if (tenths > 9)
+        tenths -= 10;
 
     ev_with_tenths_t ret;
-    ret.ev = (uint8_t)rr;
+    ret.ev = (uint8_t)r;
     ret.tenths = tenths;
     return ret;
 }
@@ -553,6 +549,13 @@ extern const uint8_t TEST_VOLTAGE_TO_EV[];
 
 int main()
 {
+    /*ev_with_tenths_t current_ev;
+    current_ev.ev = 12*8;
+    current_ev.tenths = 0;
+    ev_with_tenths_t result = aperture_given_shutter_speed_iso_ev(64, 4*8, current_ev);
+    printf("RESULT: %i, %i\n", result.ev, result.tenths);
+    return 0;*/
+
     shutter_string_output_t sso;
     uint8_t s;
     for (s = SS_MIN; s <= SS_MAX; ++s) {

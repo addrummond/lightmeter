@@ -8,6 +8,8 @@
 #ifndef BASIC_SERIAL_H
 #define BASIC_SERIAL_H
 
+#ifdef DEBUG
+
 #include <deviceconfig.h>
 
 #define BAUD_RATE 19200
@@ -25,5 +27,7 @@
 void TxTimedByte(char, char);
 
 #define tx_byte(C) TxTimedByte(C , TXDELAY)
+
+#endif
 
 #endif
