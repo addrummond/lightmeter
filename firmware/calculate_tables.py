@@ -693,6 +693,11 @@ assert(max(map(len, shutter_speeds)) == 5)
 # the calculations comes out as big as (or maybe even bigger than) the tables.
 # Since the tables are much easier to debug, they seem to be the better option.
 #
+# There is a small amount of redundancy in the tables, since the full-stop apertures
+# are duplicated three times and the half-stop apertures two times. However, it is
+# unlikely that much flash space could be saved by eliminating this redundancy since
+# it would complicate the code.
+#
 
 apertures_third = [
     '10','11','12',
