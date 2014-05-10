@@ -514,31 +514,38 @@ ev_with_tenths_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_tenths
         min = AP_MIN, max = AP_MAX;
     }
 
+    bool was_minormaxed = false;
+    if (r < min) {
+        r = min;
+        was_minormaxed = true;
+    }
+    else if (r > max) {
+        r = max;
+        was_minormaxed = true;
+    }
+
     r += given_iso - the_iso;
     //printf("R: %i (%i - %i)\n", r, given_iso, the_iso);
 
     // Add back fractional eighths.
     r += (evwt.ev & 0b111);
 
-    uint8_t tenths = 0;
-    if (r < min)
-        r = min;
-    else if (r > max)
-        r = max;
-    else
-        tenths = tenth_below_eighth(r);
-
-    // Add back tenths.
-    tenths += evwt.tenths;
-    // Note that we don't need to add 1 to the main value because
-    // that will already have been taken care of when we added
-    // the fractional eighths back to rr.
-    if (tenths > 9)
-        tenths -= 10;
-
     ev_with_tenths_t ret;
     ret.ev = (uint8_t)r;
-    ret.tenths = tenths;
+
+    // Add back tenths.
+    if (was_minormaxed) {
+       ret.tenths = 0;
+    }
+    else {
+        ret.tenths = evwt.tenths;
+        // Note that we don't need to add 1 to the main value because
+        // that will already have been taken care of when we added
+        // the fractional eighths back to rr.
+        if (ret.tenths > 9)
+            ret.tenths -= 10;
+    }
+
     return ret;
 }
 
