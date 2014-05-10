@@ -26,7 +26,7 @@ op_amp_resistor_stages = [ # In (kOhm,gain) pairs
     (1.2,1)
 ]
 
-op_amp_normal_resistor = op_amp_resistor_stages[1][0] * op_amp_resistor_stages[1][1] 
+op_amp_normal_resistor = op_amp_resistor_stages[1][0] * op_amp_resistor_stages[1][1]
 
 # Table cells not calculated for voltages lower than this.
 # This is because in the region just above v = 0, the changes
@@ -65,7 +65,7 @@ bv_to_voltage = ((1/256.0) * reference_voltage)
 # For BPW21
 def temp_to_rrlc(temp):
     return ((19.0/22500.0)*temp) + (97.0/100.0)
-    
+
 
 # Log10 reverse light current microamps to log10 lux.
 # http://www.vishay.com/docs/81521/bpw34.pdf, p. 3 Fig 4
@@ -303,14 +303,14 @@ def output_ev_table(of, name_prefix, op_amp_resistor):
             of.write('\n    ');
         of.write('%i,' % vallist_abs[i])
     of.write('\n};\n')
-    
+
     of.write('const uint8_t ' + name_prefix + '_LIGHT_VOLTAGE_TO_EV_DIFFS[] PROGMEM = {')
     for i in xrange(len(vallist_diffs)):
         if i % 32 == 0:
             of.write('\n    ');
         of.write('%i,' % vallist_diffs[i])
     of.write('\n};\n')
-    
+
     of.write('const uint8_t ' + name_prefix + '_LIGHT_VOLTAGE_TO_EV_TENTHS[] PROGMEM = { ')
     bits = ['1' if x == 1 else '0' for x in tenth_bits]
     bytes = [ ]
@@ -423,7 +423,7 @@ shutter_speeds = [
     '9',
     '8',  ###
     '8-/4', # 'S' preceding +/- is not included.
-    '7+/2', 
+    '7+/2',
     '7',
     '6',
     '5+/2',
@@ -431,7 +431,7 @@ shutter_speeds = [
     '4+/2',
     '4', ###
     '3+/2', # can't display this differently
-    '3+/2',  
+    '3+/2',
     '3+/4',
     '3',
     '2+/4', # can't display this differently.
@@ -456,8 +456,8 @@ shutter_speeds = [
     '/2', ###
     '/2', # No sensible way of displaying this differently.
     '/2-/A', # i.e. 7/16. special case, A -> 16
-    '/4+/8', # No sensible way of displaying this differently. 
-    '/4+/8', # i.e. 3/8 
+    '/4+/8', # No sensible way of displaying this differently.
+    '/4+/8', # i.e. 3/8
     '/4+/A', # No sensible way of displaying this differently.
     '/4+/A', # i.e. 5/16
     '/4',    # No sensible way of displaying this differently.
@@ -493,7 +493,7 @@ shutter_speeds = [
     '/49',
     '/53',
     '/56',
-    '/60', ### 
+    '/60', ###
     '/68',
     '/75',
     '/83',
@@ -557,7 +557,7 @@ shutter_speeds = [
     '/1300',
     '/1400',
     '/1500',
-    '/1600', ### 
+    '/1600', ###
     '/1600',
     '/1600',
     '/1600',
@@ -611,11 +611,11 @@ apertures_tenth = [
     '200', '207', '214', '222', '230', '238', '246', '255', '264', '273',
     '280', '293', '303', '314', '325', '336', '348', '361', '373', '386',
     '400', '414', '429', '444', '459', '476', '492', '510', '528', '546',
-    '566', '586', '606', '628', '650', '673', '696', '721', '746', '773',
+    '560', '586', '606', '628', '650', '673', '696', '721', '746', '773',
     '800', '828', '857', '888', '919', '951', '985', '102', '106', '109',
-    '113', '117', '121', '126', '130', '135', '139', '144', '149', '155',
+    '110', '117', '121', '126', '130', '135', '139', '144', '149', '155',
     '160', '166', '171', '178', '184', '190', '197', '204', '211', '219',
-    '226', '234', '243', '251', '260', '269', '279', '288', '299', '309',
+    '220', '234', '243', '251', '260', '269', '279', '288', '299', '309',
     '320'
 ]
 
@@ -710,7 +710,7 @@ def output():
 
     ofh.write("#define VOLTAGE_TO_EV_ABS_OFFSET " + str(b_voltage_offset) + '\n')
     ofh.write("#define LUMINANCE_COMPENSATION " + str(int(round(LUMINANCE_COMPENSATION*8.0))) + '\n')
-    
+
     output_temp_table(ofc, ofh)
     ofc.write('\n#ifdef TEST\n')
     ofc.write('const uint8_t TEST_VOLTAGE_TO_EV[] PROGMEM =\n')
