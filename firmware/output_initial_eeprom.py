@@ -8,7 +8,7 @@ eeprom = [
 
     1, 0, 0, 0, 0, 0, 0,                                           # bcd_iso
     3,                                                             # bcd_iso_length
-    38,                                                            # iso 100
+    32,                                                            # iso 100
 
     1,                                                             # shutter_priority
 
