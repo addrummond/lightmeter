@@ -130,11 +130,22 @@ void handle_measurement()
     // (Could left adjust everything, but we might want the full 10 bits for temps.)
     uint8_t adc_light_nonvol_value = (uint8_t)(adc_light_value >> 2);
 
+#ifdef DEBUG
+    adc_light_nonvol_value = 0;
+#endif
+
     global_transient_meter_state.last_ev_with_tenths = get_ev100_at_temperature_voltage(
         current_temp,
         adc_light_nonvol_value,
         global_transient_meter_state.op_amp_resistor_stage
     );
+#ifdef DEBUG
+    tx_byte('E');
+    tx_byte(global_transient_meter_state.last_ev_with_tenths.ev);
+    tx_byte(global_transient_meter_state.last_ev_with_tenths.tenths);
+    //global_transient_meter_state.last_ev_with_tenths.ev = (5+5)*8;
+    //global_transient_meter_state.last_ev_with_tenths.tenths = 0;
+#endif
 
     if (global_meter_state.priority == SHUTTER_PRIORITY) {
         global_transient_meter_state.shutter_speed.ev = global_meter_state.priority_shutter_speed;
@@ -146,9 +157,14 @@ void handle_measurement()
         );
     }
     else { //if (global_meter_state.priority == APERTURE_PRIORITY) {
-        uint8_t ap = global_meter_state.priority_aperture;
+        global_transient_meter_state.aperture.ev = global_meter_state.priority_aperture;
+        global_transient_meter_state.aperture.tenths = tenth_below_eighth(global_meter_state.priority_aperture);
         global_transient_meter_state.shutter_speed =
-            shutter_speed_given_aperture_iso_ev(ap, global_meter_state.stops_iso, global_transient_meter_state.last_ev_with_tenths);
+            shutter_speed_given_aperture_iso_ev(
+                global_transient_meter_state.aperture.ev,
+                global_meter_state.stops_iso,
+                global_transient_meter_state.last_ev_with_tenths
+        );
     }
 
     // If we're too near the top or bottom of the range, change the gain next time.

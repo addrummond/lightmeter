@@ -399,13 +399,13 @@ shutter_speeds_bitmap = [
 assert len(shutter_speeds_bitmap) <= 16
 
 new_shutter_speeds_bitmap = [
-    None # String terminator
+    None, # String terminator
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
     'S', # 12
     '/', # 13
     'X', # 14: = "00"
     'Y', # 15: = "000"
-    'T', # 16: = "5S"
+    'T'  # 16: = "5S"
 ]
 assert len(new_shutter_speeds_bitmap) <= 16
 
@@ -420,11 +420,11 @@ shutter_speeds_thirds = [
 
     '15S',
     '12S',
-    '9S'
+    '9S',
 
     '8S',
     '6S',
-    '5S'
+    '5S',
 
     '4S',
     '3S',
@@ -435,12 +435,12 @@ shutter_speeds_thirds = [
     '1.3S',
 
     '1S',
-    '/1.3'
-    '/1.6'
+    '/1.3',
+    '/1.6',
 
     '/2',
-    '/2.5'
-    '/3'
+    '/2.5',
+    '/3',
 
     '/4',
     '/5',
@@ -468,7 +468,7 @@ shutter_speeds_thirds = [
 
     '/250',
     '/310',
-    '/400'
+    '/400',
 
     '/500',
     '/630',
@@ -492,6 +492,7 @@ shutter_speeds_thirds = [
 
     '/16Y'
 ]
+assert(max(map(len, shutter_speeds_thirds)) == 4)
 
 shutter_speeds_eighths = [
     '60S',
@@ -519,7 +520,7 @@ shutter_speeds_eighths = [
     '11S',
     '10S',
     '9S', # TODO: Bit awkward here
-    '8.2S'
+    '8.2S',
 
     '8S',
     '7.5S',
@@ -550,7 +551,7 @@ shutter_speeds_eighths = [
     '1.1S',
 
     '1S',
-    '/1.1'
+    '/1.1',
     '/1.2',
     '/1.3',
     '/1.4',
@@ -571,7 +572,7 @@ shutter_speeds_eighths = [
     '/4.4',
     '/4.8',
     '/5.2',
-    '/5.7'
+    '/5.7',
     '/6.2',
     '/6.7',
     '/7.3',
@@ -585,7 +586,7 @@ shutter_speeds_eighths = [
     '/13',
     '/14', # TODO: Bit awkward here.
 
-    '/15'
+    '/15',
     '/16',
     '/18',
     '/19',
@@ -639,7 +640,7 @@ shutter_speeds_eighths = [
     '/840',
     '/920',
 
-    '/10X', # Last zero not included from this point on.
+    '/10X',
     '/11X',
     '/12X',
     '/13X',
@@ -674,8 +675,9 @@ shutter_speeds_eighths = [
     '/12Y',
     '/13Y',
     '/15Y',
-    '/16Y',
+    '/16Y'
 ]
+assert(max(map(len, shutter_speeds_eighths)) == 4)
 
 shutter_speeds_tenths = [
     '60S',
@@ -698,13 +700,14 @@ shutter_speeds_tenths = [
     '20S',
     '19S',
     '17S',
+    '16S', # TODO: Check this
 
     '15S',
     '14S',
     '13S',
     '12S',
     '11S',
-    '10.5S',
+    '10S', # TODO Was 10.5S need to find a way to encode a unique value here.
     '10S',
     '9S',
     '8.5S',
@@ -716,7 +719,7 @@ shutter_speeds_tenths = [
     '6.5S',
     '6S',
     '5.5S',
-    '5.3S'
+    '5.3S',
     '5S',
     '4.5S',
     '4.3S',
@@ -732,7 +735,6 @@ shutter_speeds_tenths = [
     '2.3S',
     '2.1S',
 
-
     '2S',
     '1.9S',
     '1.7S',
@@ -744,17 +746,16 @@ shutter_speeds_tenths = [
     '1.1S',
     '1.0T',
 
-
     '1S',
     '/1.1',
-    '/1.1T',
+    '/1.1', # TODO Need to find a way of encoding a unique value here.
     '/1.2',
     '/1.3',
     '/1.4',
     '/1.5',
     '/1.6',
     '/1.7',
-    '/1.9'
+    '/1.9',
 
     '/2',
     '/2.1',
@@ -765,7 +766,7 @@ shutter_speeds_tenths = [
     '/3.0',
     '/3.2',
     '/3.5',
-    '/3.7'
+    '/3.7',
 
     '/4',
     '/4.3',
@@ -782,19 +783,19 @@ shutter_speeds_tenths = [
     '/8.5',
     '/9',
     '/9.5',
-    '/10.5',
+    '/10', # TODO Should be 10.5 really but that won't fit.
     '/11',
     '/12',
     '/13',
     '/14',
-    '/14.9',
+    '/14', # TODO Need to find a way to encode a unique value here.
 
     '/15',
     '/16',
     '/17',
     '/19',
     '/20',
-    '/21.',
+    '/21',
     '/23',
     '/24',
     '/26',
@@ -844,7 +845,6 @@ shutter_speeds_tenths = [
     '/435',
     '/465',
 
-
     '/500',
     '/535',
     '/575',
@@ -856,17 +856,53 @@ shutter_speeds_tenths = [
     '/870',
     '/930',
 
+    '/10X',
+    '/11X',
+    '/11X', # TODO TODO
+    '/12X',
+    '/13X',
+    '/14X',
+    '/15X',
+    '/16X',
+    '/17X',
+    '/19X',
 
-    '/100', # Last zero not included from this point on.
+    '/20X',
+    '/21X',
+    '/23X',
+    '/25X',
+    '/26X',
+    '/28X',
+    '/30X',
+    '/32X',
+    '/35X',
+    '/37X',
 
-    '/200',
+    '/40X',
+    '/43X',
+    '/46X',
+    '/50X',
+    '/53X',
+    '/57X',
+    '/61X',
+    '/65X',
+    '/70X',
+    '/75X',
 
-    '/400',
+    '/80X',
+    '/86X',
+    '/92X',
+    '/98X',
+    '/10Y',
+    '/11Y',
+    '/12Y',
+    '/13Y',
+    '/14Y',
+    '/15Y',
 
-    '/800',
-
-    '/1600'
+    '/16Y'
 ]
+assert(max(map(len, shutter_speeds_tenths)) == 4)
 
 shutter_speeds = [
     '1', ### FROM HERE ....
