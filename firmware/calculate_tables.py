@@ -683,7 +683,7 @@ shutter_speeds_eighths = [
 assert(max(map(len, shutter_speeds_eighths)) == 4)
 
 shutter_speeds_tenths = [
-    # '' postfix is implicit.
+    # 'S' postfix is implicit.
     '60',
     '56',
     '52',
