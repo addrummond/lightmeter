@@ -172,27 +172,81 @@ void shutter_speed_to_string(uint8_t speed, shutter_string_output_t *eso)
     eso->length = j;
 }
 
-void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, precision_mode_t precision_mode)
+static void normalize_precision(precision_mode_t *precision_mode, ev_with_tenths_t *evwt)
 {
     // TODO: Rounding.
-    precision_mode_t orig_precision_mode = precision_mode;
-    if (precision_mode == PRECISION_MODE_QUARTER) {
-        precision_mode = PRECISION_MODE_EIGHTH;
-        evwt.ev >>= 1;
+    if (*precision_mode == PRECISION_MODE_QUARTER) {
+        *precision_mode = PRECISION_MODE_EIGHTH;
+        evwt->ev >>= 1;
     }
     else if (precision_mode == PRECISION_MODE_HALF) {
-        precision_mode = PRECISION_MODE_EIGHTH;
-        evwt.ev >>= 2;
+        *precision_mode = PRECISION_MODE_EIGHTH;
+        evwt->ev >>= 2;
     }
     else if (precision_mode == PRECISION_MODE_FULL) {
         precision_mode = PRECISION_MODE_EIGHTH;
-        evwt.ev >>= 3;
+        evwt->ev >>= 3;
+    }
+}
+
+void new_shutter_speed_to_string(ev_with_tenths_t speed, shutter_string_output_t *sso, precision_mode_t precision_mode)
+{
+    precision_mode_t orig_precision_mode = precision_mode;
+    normalize_precision(&precision_mode, &evwt);
+
+    if (evwt.ev >= SHUTTER_SPEED_MAX) {
+        evwt.ev = SHUTTER_SPEED_MAX;
+        evwt.tenths = 0;
+    }
+
+    uint8_t shutev = evwt.ev;
+
+    uint8_t *schars;
+    if (precision_mode == PRECISION_MODE_THIRD) {
+        schars = SHUTTER_SPEEDS_THIRD[(shutev/8) * 3 * 4];
+        uint8_t thirds = thirds_from_tenths(evwt.tenths);
+        schars += thirds*4;
+    }
+    else if (precision_mode == PRECISION_MODE_EIGHTH) {
+        schars = SHUTTER_SPEEDS_EIGHTH[shutev * 4];
+    }
+    else if (precision_mode == PRECISION_MODE_TENTH) {
+        schars = SHUTTER_SPEEDS_TENTH[(shutev/8)*10*4];
+        schars += evwt.tenths*4;
+    }
+
+    uint8_t last = 0;
+    if (shutev > 5*8) {
+        sso->chars[last++] = '1';
+        sso->chars[last++] = '/';
+    }
+
+    uint8_t i;
+    for (i = 0; i < 4 && schars[i]; ++i) {
+        if (schars[i] == 'X') {
+            sso->chars[last++] = '0';
+            sso->chars[last++] = '0';
+        }
+        else {
+            sso->chars[last++] = SHUTTER_SPEEDS_BITMAP[schars[i]];
+        }
+    }
+
+    if (shutev < 5*8)
+        sso->chars[last++] = 'S';
+}
+
+void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, precision_mode_t precision_mode)
+{
+    precision_mode_t orig_precision_mode = precision_mode;
+    normalize_precision(&precision_mode, &evwt);
+
+    if (evwt.ev >= AP_MAX) {
+        evwt.ev = AP_MAX;
+        evwt.tenths = 0;
     }
 
     uint8_t apev = evwt.ev;
-
-    if (apev > AP_MAX)
-        apev = AP_MAX;
 
     uint8_t last;
     if (precision_mode == PRECISION_MODE_THIRD) {

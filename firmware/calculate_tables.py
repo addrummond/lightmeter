@@ -405,7 +405,6 @@ new_shutter_speeds_bitmap = [
     'S', # 12
     '.', # 13
     'X', # 14: = "00"
-    'Y'  # 15: = "000"
 ]
 assert len(new_shutter_speeds_bitmap) <= 16
 
@@ -1139,7 +1138,7 @@ apertures_tenth = [
 ]
 
 def new_output_shutter_speeds(of):
-    for x in [('THIRDS', shutter_speeds_thirds), ('EIGHTHS', shutter_speeds_eighths), ('TENTHS', shutter_speeds_tenths)]:
+    for x in [('THIRD', shutter_speeds_thirds), ('EIGHTH', shutter_speeds_eighths), ('TENTH', shutter_speeds_tenths)]:
         name = x[0]
         ss = x[1]
         of.write('const uint8_t SHUTTER_SPEEDS_%s PROGMEM = {\n' % name)
