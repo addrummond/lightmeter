@@ -179,19 +179,19 @@ static void normalize_precision(precision_mode_t *precision_mode, ev_with_tenths
         *precision_mode = PRECISION_MODE_EIGHTH;
         evwt->ev >>= 1;
     }
-    else if (precision_mode == PRECISION_MODE_HALF) {
+    else if (*precision_mode == PRECISION_MODE_HALF) {
         *precision_mode = PRECISION_MODE_EIGHTH;
         evwt->ev >>= 2;
     }
-    else if (precision_mode == PRECISION_MODE_FULL) {
-        precision_mode = PRECISION_MODE_EIGHTH;
+    else if (*precision_mode == PRECISION_MODE_FULL) {
+        *precision_mode = PRECISION_MODE_EIGHTH;
         evwt->ev >>= 3;
     }
 }
 
-void new_shutter_speed_to_string(ev_with_tenths_t speed, shutter_string_output_t *sso, precision_mode_t precision_mode)
+void new_shutter_speed_to_string(ev_with_tenths_t evwt, shutter_string_output_t *sso, precision_mode_t precision_mode)
 {
-    precision_mode_t orig_precision_mode = precision_mode;
+    //precision_mode_t orig_precision_mode = precision_mode;
     normalize_precision(&precision_mode, &evwt);
 
     if (evwt.ev >= SHUTTER_SPEED_MAX) {
@@ -203,15 +203,15 @@ void new_shutter_speed_to_string(ev_with_tenths_t speed, shutter_string_output_t
 
     uint8_t *schars;
     if (precision_mode == PRECISION_MODE_THIRD) {
-        schars = SHUTTER_SPEEDS_THIRD[(shutev/8) * 3 * 4];
+        schars = SHUTTER_SPEEDS_THIRD + ((shutev/8) * 3 * 4);
         uint8_t thirds = thirds_from_tenths(evwt.tenths);
         schars += thirds*4;
     }
     else if (precision_mode == PRECISION_MODE_EIGHTH) {
-        schars = SHUTTER_SPEEDS_EIGHTH[shutev * 4];
+        schars = SHUTTER_SPEEDS_EIGHTH + (shutev * 4);
     }
-    else if (precision_mode == PRECISION_MODE_TENTH) {
-        schars = SHUTTER_SPEEDS_TENTH[(shutev/8)*10*4];
+    else { //if (precision_mode == PRECISION_MODE_TENTH) {
+        schars = SHUTTER_SPEEDS_TENTH + ((shutev/8)*10*4);
         schars += evwt.tenths*4;
     }
 
@@ -238,7 +238,7 @@ void new_shutter_speed_to_string(ev_with_tenths_t speed, shutter_string_output_t
 
 void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, precision_mode_t precision_mode)
 {
-    precision_mode_t orig_precision_mode = precision_mode;
+    //precision_mode_t orig_precision_mode = precision_mode;
     normalize_precision(&precision_mode, &evwt);
 
     if (evwt.ev >= AP_MAX) {

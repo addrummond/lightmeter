@@ -20,6 +20,9 @@
 #define AP_MIN      0
 #define AP_MAX      80
 
+#define SHUTTER_SPEED_MIN 0
+#define SHUTTER_SPEED_MAX (20*8)
+
 #define ISO_MIN     0
 #define ISO_MAX     144 // 1600000
 #define ISO_DECIMAL_MAX_DIGITS 7

@@ -1141,7 +1141,7 @@ def new_output_shutter_speeds(of):
     for x in [('THIRD', shutter_speeds_thirds), ('EIGHTH', shutter_speeds_eighths), ('TENTH', shutter_speeds_tenths)]:
         name = x[0]
         ss = x[1]
-        of.write('const uint8_t SHUTTER_SPEEDS_%s PROGMEM = {\n' % name)
+        of.write('const uint8_t SHUTTER_SPEEDS_%s[] PROGMEM = {\n' % name)
         for spd in ss:
             indexes = [new_shutter_speeds_bitmap.index(c) for c in spd]
             for i in xrange(0, 4, 2):
@@ -1157,6 +1157,13 @@ def new_output_shutter_speeds(of):
                     v2 = indexes[i+1]
                 of.write('0b{:08b},'.format(v1 | (v2 << 4)))
         of.write('\n};\n')
+    of.write('const uint8_t NEW_SHUTTER_SPEEDS_BITMAP[] PROGMEM = { ')
+    for c in new_shutter_speeds_bitmap:
+        if c is None:
+            of.write("'\\0',")
+        else:
+            of.write("'%s'," % c) # None of the chars need escaping.
+    of.write('};\n')
 
 def output_shutter_speeds(of):
     of.write('const uint8_t SHUTTER_SPEEDS[] PROGMEM = {\n')
@@ -1261,6 +1268,9 @@ def output():
     output_apertures(ofc)
 
     ofh.write("extern uint8_t SHUTTER_SPEEDS[];\n")
+    ofh.write("extern uint8_t SHUTTER_SPEEDS_EIGHTH[];")
+    ofh.write("extern uint8_t SHUTTER_SPEEDS_TENTH[];")
+    ofh.write("extern uint8_t SHUTTER_SPEEDS_THIRD[];")
     ofh.write("extern uint8_t SHUTTER_SPEEDS_BITMAP[];\n")
     ofh.write("extern uint8_t APERTURES_EIGHTH[];\n")
     ofh.write("extern uint8_t APERTURES_TENTH[];\n")
