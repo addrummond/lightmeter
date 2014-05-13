@@ -156,7 +156,7 @@ void ui_main_reading_display_at_8col(ui_main_reading_display_state_t *func_state
             return;
 
         uint8_t ss = tms.shutter_speed.ev;
-        shutter_speed_to_string(ss, &(func_state->shutter_speed_string));
+        shutter_speed_to_string(tms.shutter_speed, &(func_state->shutter_speed_string), PRECISION_MODE_TENTH); // TODO PRECISION MODES
         aperture_to_string(tms.aperture, &(func_state->aperture_string), PRECISION_MODE_TENTH); // TODO PRECISION MODES
 
         // Total number of chars is the sum of the two plus one for a space plus one for

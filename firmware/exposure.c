@@ -106,72 +106,6 @@ ev_with_tenths_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t v
     return ret;
 }
 
-void shutter_speed_to_string(uint8_t speed, shutter_string_output_t *eso)
-{
-    if (speed > SS_MAX)
-        speed = SS_MAX;
-
-    uint16_t bytei = (uint16_t)speed;
-    bytei = (bytei << 1) + (bytei >> 1);
-
-    uint8_t shift = (speed & 1) << 2;
-
-    uint8_t i, j, nibble;
-    uint8_t previous = 0;
-    bool already_got_slash = false;
-    for (i = 0, j = 0; i < 5; ++j, ++i, shift ^= 4) {
-        nibble = (pgm_read_byte(&SHUTTER_SPEEDS[bytei]) >> shift) & 0xF;
-        if (nibble == 0)
-            break;
-
-        uint8_t c = pgm_read_byte(&SHUTTER_SPEEDS_BITMAP[nibble]);
-        if ((c == '+' || c == '-') && !already_got_slash) {
-            eso->chars[j++] = 'S';
-            eso->chars[j] = c;
-        }
-        else if (c == '/' && (!previous || previous == '+' || previous == '-')) {
-            eso->chars[j++] = '1';
-            eso->chars[j] = c;
-        }
-        else if (c == 'A') {
-            eso->chars[j++] = '1';
-            eso->chars[j] = '6';
-        }
-        else if (c == 'B') {
-            eso->chars[j++] = '3';
-            eso->chars[j] = '2';
-        }
-        else {
-            eso->chars[j] = c;
-        }
-
-        if (c == '/')
-            already_got_slash = true;
-
-        bytei += ((shift & 4) >> 2);
-
-        previous = c;
-    }
-
-    // Add any required trailing zeros. TODO: could probably get rid of the conditionals.
-    if (speed >= SS_1000TH)
-        eso->chars[j++] = '0';
-    if (speed >= SS_10000TH)
-        eso->chars[j++] = '0';
-
-    // If it's 1 minute, add the trailing M.
-    if (speed == 0)
-        eso->chars[j++] = 'M';
-    // Add trailing S if required.
-    else if (speed <= 51 && !already_got_slash)
-        eso->chars[j++] = 'S';
-
-    // Add '\0' termination.
-    eso->chars[j] = '\0';
-
-    eso->length = j;
-}
-
 static void normalize_precision(precision_mode_t *precision_mode, ev_with_tenths_t *evwt)
 {
     // TODO: Rounding.
@@ -189,7 +123,7 @@ static void normalize_precision(precision_mode_t *precision_mode, ev_with_tenths
     }
 }
 
-void new_shutter_speed_to_string(ev_with_tenths_t evwt, shutter_string_output_t *sso, precision_mode_t precision_mode)
+void shutter_speed_to_string(ev_with_tenths_t evwt, shutter_string_output_t *sso, precision_mode_t precision_mode)
 {
     //precision_mode_t orig_precision_mode = precision_mode;
     normalize_precision(&precision_mode, &evwt);

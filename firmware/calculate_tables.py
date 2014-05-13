@@ -376,7 +376,7 @@ def test_get_tenth_bit():
 #
 
 #
-# Shutter speeds are represented using 13 characters: 0-9, '/', '+' and 'S'.
+# Shutter speeds are represented using 13 characters: 0-9, '/', '.' and 'S'.
 # E.g.:
 #
 #     18    One eigth of a second
@@ -388,25 +388,16 @@ def test_get_tenth_bit():
 #
 # Special case chars:
 #
-#     A -> 16
-#     B -> 32
+#     X -> '00'
 #
 shutter_speeds_bitmap = [
-    None, # Zero is reserved as a terminator for strings < 5 chars.
-    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '/', '+', '-',
-    'A', # 14
-    'B', # 15
-]
-assert len(shutter_speeds_bitmap) <= 16
-
-new_shutter_speeds_bitmap = [
     None, # String terminator
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
     'S', # 12
     '.', # 13
     'X', # 14: = "00"
 ]
-assert len(new_shutter_speeds_bitmap) <= 16
+assert len(shutter_speeds_bitmap) <= 16
 
 shutter_speeds_thirds = [
     # 'S' postfix is implicit.
@@ -1137,13 +1128,13 @@ apertures_tenth = [
     '320'
 ]
 
-def new_output_shutter_speeds(of):
+def output_shutter_speeds(of):
     for x in [('THIRD', shutter_speeds_thirds), ('EIGHTH', shutter_speeds_eighths), ('TENTH', shutter_speeds_tenths)]:
         name = x[0]
         ss = x[1]
         of.write('const uint8_t SHUTTER_SPEEDS_%s[] PROGMEM = {\n' % name)
         for spd in ss:
-            indexes = [new_shutter_speeds_bitmap.index(c) for c in spd]
+            indexes = [shutter_speeds_bitmap.index(c) for c in spd]
             for i in xrange(0, 4, 2):
                 v1 = None
                 v2 = None
@@ -1157,32 +1148,6 @@ def new_output_shutter_speeds(of):
                     v2 = indexes[i+1]
                 of.write('0b{:08b},'.format(v1 | (v2 << 4)))
         of.write('\n};\n')
-    of.write('const uint8_t NEW_SHUTTER_SPEEDS_BITMAP[] PROGMEM = { ')
-    for c in new_shutter_speeds_bitmap:
-        if c is None:
-            of.write("'\\0',")
-        else:
-            of.write("'%s'," % c) # None of the chars need escaping.
-    of.write('};\n')
-
-def output_shutter_speeds(of):
-    of.write('const uint8_t SHUTTER_SPEEDS[] PROGMEM = {\n')
-    bits = []
-    for speed in shutter_speeds:
-        x = 0
-        for c in speed:
-            x += 1
-            n = shutter_speeds_bitmap.index(c)
-            bits.append((n & 8 and '1' or '0') + (n & 4 and '1' or '0') + (n & 2 and '1' or '0') + (n & 1 and '1' or '0'))
-        for i in xrange(5 - x):
-            bits.append('0000')
-    for i in xrange(0, len(bits)-1, 2):
-        if i < len(bits) - 1:
-            of.write('0b' + bits[i+1] + bits[i] + ',')
-        else:
-            of.write('0b' + bits[i] + ',')
-    of.write('};\n')
-#    sys.stdout.write('// ' + ' '.join(bits));
     of.write('const uint8_t SHUTTER_SPEEDS_BITMAP[] PROGMEM = { ')
     for c in shutter_speeds_bitmap:
         if c is None:
@@ -1264,10 +1229,8 @@ def output():
     output_test_table(ofc)
     ofc.write(';\n#endif\n')
     output_shutter_speeds(ofc)
-    new_output_shutter_speeds(ofc)
     output_apertures(ofc)
 
-    ofh.write("extern uint8_t SHUTTER_SPEEDS[];\n")
     ofh.write("extern uint8_t SHUTTER_SPEEDS_EIGHTH[];")
     ofh.write("extern uint8_t SHUTTER_SPEEDS_TENTH[];")
     ofh.write("extern uint8_t SHUTTER_SPEEDS_THIRD[];")
