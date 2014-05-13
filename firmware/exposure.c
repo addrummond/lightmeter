@@ -150,7 +150,7 @@ void shutter_speed_to_string(ev_with_tenths_t evwt, shutter_string_output_t *sso
     }
 
     uint8_t last = 0;
-    if (shutev > 6*8) {
+    if (shutev > (6*8) || (shutev == (6*8) && evwt.tenths > 0)) {
         sso->chars[last++] = '1';
         sso->chars[last++] = '/';
     }
@@ -170,7 +170,7 @@ void shutter_speed_to_string(ev_with_tenths_t evwt, shutter_string_output_t *sso
         }
     }
 
-    if (shutev <= 6*8)
+    if (shutev < 6*8 || (shutev == 6*8 && evwt.tenths == 0))
         sso->chars[last++] = 'S';
 
     sso->chars[last] = '\0';
@@ -573,10 +573,10 @@ int main()
     printf("Shutter speeds in tenths:\n");
     for (s = (SS_MIN/8)*10; s <= (SS_MAX/8)*10; ++s) {
         ev_with_tenths_t evwt;
-        evwt.ev = (s/10)*8;
+        evwt.ev = (s*8)/10;
         evwt.tenths = s%10;
         shutter_speed_to_string(evwt, &sso, PRECISION_MODE_TENTH);
-        printf("SS: %s (ev = %i.%i, length = %i)\n", SHUTTER_STRING_OUTPUT_STRING(sso), s/10, s%10, sso.length);
+        printf("SS: %s (ev = %i.%i, rev=%i, length = %i)\n", SHUTTER_STRING_OUTPUT_STRING(sso), s/10, s%10, evwt.ev, sso.length);
     }
 
     printf("\n");
@@ -585,7 +585,7 @@ int main()
     uint8_t last_thirds = 3;
     for (s = (SS_MIN/8)*10; s <= (SS_MAX/8)*10; ++s) {
         ev_with_tenths_t evwt;
-        evwt.ev = (s/10)*8;
+        evwt.ev = (s*8)/10;
         evwt.tenths = s%10;
         uint8_t thirds = thirds_from_tenths(evwt.tenths);
         if (thirds == last_thirds)
