@@ -130,22 +130,11 @@ void handle_measurement()
     // (Could left adjust everything, but we might want the full 10 bits for temps.)
     uint8_t adc_light_nonvol_value = (uint8_t)(adc_light_value >> 2);
 
-#ifdef DEBUG
-    adc_light_nonvol_value = 0;
-#endif
-
     global_transient_meter_state.last_ev_with_tenths = get_ev100_at_temperature_voltage(
         current_temp,
         adc_light_nonvol_value,
         global_transient_meter_state.op_amp_resistor_stage
     );
-#ifdef DEBUG
-    tx_byte('E');
-    tx_byte(global_transient_meter_state.last_ev_with_tenths.ev);
-    tx_byte(global_transient_meter_state.last_ev_with_tenths.tenths);
-    //global_transient_meter_state.last_ev_with_tenths.ev = (5+5)*8;
-    //global_transient_meter_state.last_ev_with_tenths.tenths = 0;
-#endif
 
     if (global_meter_state.priority == SHUTTER_PRIORITY) {
         global_transient_meter_state.shutter_speed.ev = global_meter_state.priority_shutter_speed;
@@ -286,6 +275,10 @@ ISR(TIM0_COMPA_vect)
         //PUSHBUTTON_PORT |= (1 << PUSHBUTTON_BIT);
         // Check if the pin has gone high.
         if (PUSHBUTTON_PIN & (1 << PUSHBUTTON_BIT)) {
+#ifdef DEBUG
+tx_byte('B');
+tx_byte('!');
+#endif
             // Switch to output mode to discharge cap.
             PUSHBUTTON_DDR |= (1 << PUSHBUTTON_BIT);
             PUSHBUTTON_PORT &= ~(1 << PUSHBUTTON_BIT);
@@ -309,8 +302,16 @@ ISR(TIM0_COMPA_vect)
         return;
     }
     else if (mode_counter > PUSHBUTTON_RC_MS(4)) {
+#ifdef DEBUG
+tx_byte('B');
+tx_byte('C');
+#endif
         // Has it charged yet?
         if (PUSHBUTTON_PIN & (1 << PUSHBUTTON_BIT)) {
+#ifdef DEBUG
+tx_byte('B');
+tx_byte('X');
+#endif
             uint8_t but = 0;
             if (mode_counter <= PUSHBUTTON_RC_MS(4) + PUSHBUTTON_RC_MS(1))
                 but = 1;

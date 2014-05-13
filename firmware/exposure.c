@@ -137,16 +137,16 @@ void shutter_speed_to_string(ev_with_tenths_t evwt, shutter_string_output_t *sso
 
     uint8_t *schars;
     if (precision_mode == PRECISION_MODE_THIRD) {
-        schars = SHUTTER_SPEEDS_THIRD + ((shutev/8) * 3 * 4);
+        schars = SHUTTER_SPEEDS_THIRD + ((shutev/8) * 3 * 2);
         uint8_t thirds = thirds_from_tenths(evwt.tenths);
-        schars += thirds*4;
+        schars += thirds*2;
     }
     else if (precision_mode == PRECISION_MODE_EIGHTH) {
-        schars = SHUTTER_SPEEDS_EIGHTH + (shutev * 4);
+        schars = SHUTTER_SPEEDS_EIGHTH + (shutev * 2);
     }
     else { //if (precision_mode == PRECISION_MODE_TENTH) {
-        schars = SHUTTER_SPEEDS_TENTH + ((shutev/8)*10*4);
-        schars += evwt.tenths*4;
+        schars = SHUTTER_SPEEDS_TENTH + ((shutev/8)*10*2);
+        schars += evwt.tenths*2;
     }
 
     uint8_t last = 0;
@@ -156,18 +156,23 @@ void shutter_speed_to_string(ev_with_tenths_t evwt, shutter_string_output_t *sso
     }
 
     uint8_t i;
-    for (i = 0; i < 4 && schars[i]; ++i) {
-        if (schars[i] == 'X') {
-            sso->chars[last++] = '0';
-            sso->chars[last++] = '0';
-        }
-        else {
-            sso->chars[last++] = SHUTTER_SPEEDS_BITMAP[schars[i]];
+    for (i = 0; i < 2; ++i) {
+        uint8_t val, i;
+        for (val = schars[i] & 0xF, i = 0; i < 2; val = schars[i] >> 4, ++i) {
+            if (val == 'X') {
+                sso->chars[last++] = '0';
+                sso->chars[last++] = '0';
+            }
+            else {
+                sso->chars[last++] = SHUTTER_SPEEDS_BITMAP[val];
+            }
         }
     }
 
     if (shutev < 5*8)
         sso->chars[last++] = 'S';
+
+    sso->chars[last] = '\0';
 }
 
 void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, precision_mode_t precision_mode)
