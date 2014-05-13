@@ -528,7 +528,6 @@ shutter_speeds_eighths = [
     '3.7',
     '3.4',
     '3.1',
-    '3',
     '2.8',
     '2.6',
     '2.4',
@@ -544,7 +543,7 @@ shutter_speeds_eighths = [
     '1.1',
 
     '1',
-    # Initial '' starts here.
+    # Initial '/' starts here.
     '1.1',
     '1.2',
     '1.3',

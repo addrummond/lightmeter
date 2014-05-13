@@ -150,26 +150,27 @@ void shutter_speed_to_string(ev_with_tenths_t evwt, shutter_string_output_t *sso
     }
 
     uint8_t last = 0;
-    if (shutev > 5*8) {
+    if (shutev > 6*8) {
         sso->chars[last++] = '1';
         sso->chars[last++] = '/';
     }
 
     uint8_t i;
     for (i = 0; i < 2; ++i) {
-        uint8_t val, i;
-        for (val = schars[i] & 0xF, i = 0; i < 2; val = schars[i] >> 4, ++i) {
-            if (val == 'X') {
+        uint8_t val, j;
+        for (val = schars[i] & 0xF, j = 0; j < 2 && val != 0; val = schars[i] >> 4, ++j) {
+            uint8_t b = SHUTTER_SPEEDS_BITMAP[val];
+            if (b == 'X') {
                 sso->chars[last++] = '0';
                 sso->chars[last++] = '0';
             }
             else {
-                sso->chars[last++] = SHUTTER_SPEEDS_BITMAP[val];
+                sso->chars[last++] = b;
             }
         }
     }
 
-    if (shutev < 5*8)
+    if (shutev <= 6*8)
         sso->chars[last++] = 'S';
 
     sso->chars[last] = '\0';
@@ -564,7 +565,7 @@ int main()
         evwt.ev = s;
         evwt.tenths = tenth_below_eighth(s);
         shutter_speed_to_string(evwt, &sso, PRECISION_MODE_EIGHTH);
-        printf("SS: %s (length = %i)\n", SHUTTER_STRING_OUTPUT_STRING(sso), sso.length);
+        printf("SS: %s (ev = %i, length = %i)\n", SHUTTER_STRING_OUTPUT_STRING(sso), s, sso.length);
     }
 
     printf("\n");
