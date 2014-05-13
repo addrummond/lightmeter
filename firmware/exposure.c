@@ -106,7 +106,7 @@ ev_with_tenths_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t v
     return ret;
 }
 
-static void normalize_precision(precision_mode_t *precision_mode, ev_with_tenths_t *evwt)
+static void normalize_precision_to_tenth_eighth_or_third(precision_mode_t *precision_mode, ev_with_tenths_t *evwt)
 {
     // TODO: Rounding.
     if (*precision_mode == PRECISION_MODE_QUARTER) {
@@ -126,7 +126,7 @@ static void normalize_precision(precision_mode_t *precision_mode, ev_with_tenths
 void shutter_speed_to_string(ev_with_tenths_t evwt, shutter_string_output_t *sso, precision_mode_t precision_mode)
 {
     //precision_mode_t orig_precision_mode = precision_mode;
-    normalize_precision(&precision_mode, &evwt);
+    normalize_precision_to_tenth_eighth_or_third(&precision_mode, &evwt);
 
     if (evwt.ev >= SHUTTER_SPEED_MAX) {
         evwt.ev = SHUTTER_SPEED_MAX;
@@ -179,7 +179,7 @@ void shutter_speed_to_string(ev_with_tenths_t evwt, shutter_string_output_t *sso
 void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, precision_mode_t precision_mode)
 {
     //precision_mode_t orig_precision_mode = precision_mode;
-    normalize_precision(&precision_mode, &evwt);
+    normalize_precision_to_tenth_eighth_or_third(&precision_mode, &evwt);
 
     if (evwt.ev >= AP_MAX) {
         evwt.ev = AP_MAX;
@@ -565,10 +565,37 @@ int main()
         evwt.ev = s;
         evwt.tenths = tenth_below_eighth(s);
         shutter_speed_to_string(evwt, &sso, PRECISION_MODE_EIGHTH);
-        printf("SS: %s (ev = %i, length = %i)\n", SHUTTER_STRING_OUTPUT_STRING(sso), s, sso.length);
+        printf("SS: %s (ev*8 = %i, length = %i)\n", SHUTTER_STRING_OUTPUT_STRING(sso), s, sso.length);
     }
 
     printf("\n");
+
+    printf("Shutter speeds in tenths:\n");
+    for (s = (SS_MIN/8)*10; s <= (SS_MAX/8)*10; ++s) {
+        ev_with_tenths_t evwt;
+        evwt.ev = (s/10)*8;
+        evwt.tenths = s%10;
+        shutter_speed_to_string(evwt, &sso, PRECISION_MODE_TENTH);
+        printf("SS: %s (ev = %i.%i, length = %i)\n", SHUTTER_STRING_OUTPUT_STRING(sso), s/10, s%10, sso.length);
+    }
+
+    printf("\n");
+
+    printf("Shutter speeds in thirds:\n");
+    uint8_t last_thirds = 3;
+    for (s = (SS_MIN/8)*10; s <= (SS_MAX/8)*10; ++s) {
+        ev_with_tenths_t evwt;
+        evwt.ev = (s/10)*8;
+        evwt.tenths = s%10;
+        uint8_t thirds = thirds_from_tenths(evwt.tenths);
+        if (thirds == last_thirds)
+            continue;
+        last_thirds = thirds;
+        shutter_speed_to_string(evwt, &sso, PRECISION_MODE_THIRD);
+        printf("SS: %s (ev = %i+%i/3, length = %i)\n", SHUTTER_STRING_OUTPUT_STRING(sso), s/10, thirds_from_tenths(s%10), sso.length);
+    }
+
+    return 0;
 
     printf("Apertures in thirds:\n");
     uint8_t a;
