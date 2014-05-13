@@ -551,10 +551,14 @@ int main()
     printf("RESULT: %i, %i\n", result.ev, result.tenths);
     return 0;*/
 
+    printf("Shutter speeds in eighths:\n");
     shutter_string_output_t sso;
     uint8_t s;
     for (s = SS_MIN; s <= SS_MAX; ++s) {
-        shutter_speed_to_string(s, &sso);
+        ev_with_tenths_t evwt;
+        evwt.ev = s;
+        evwt.tenths = tenth_below_eighth(s);
+        shutter_speed_to_string(evwt, &sso, PRECISION_MODE_EIGHTH);
         printf("SS: %s (length = %i)\n", SHUTTER_STRING_OUTPUT_STRING(sso), sso.length);
     }
 
@@ -598,7 +602,10 @@ int main()
         evwt.tenths = 0;
         evwt = aperture_given_shutter_speed_iso_ev(ss, is, evwt);
         uint8_t ap = evwt.ev;
-        shutter_speed_to_string(ss, &sso);
+        ev_with_tenths_t ssevwt;
+        ssevwt.ev = ss;
+        ssevwt.tenths = tenth_below_eighth(ss);
+        shutter_speed_to_string(ssevwt, &sso, PRECISION_MODE_EIGHTH);
         ev_with_tenths_t evwt2;
         evwt2.ev = ap;
         aperture_to_string(evwt2, &aso, PRECISION_MODE_EIGHTH);
@@ -629,8 +636,7 @@ int main()
         evwt.ev = ev;
         evwt.tenths = 0;
         evwt = shutter_speed_given_aperture_iso_ev(ap, is, evwt);
-        uint8_t ss = evwt.ev;
-        shutter_speed_to_string(ss, &sso);
+        shutter_speed_to_string(evwt, &sso, PRECISION_MODE_EIGHTH);
         ev_with_tenths_t evwt2;
         evwt2.ev = ap;
         aperture_to_string(evwt2, &aso, PRECISION_MODE_EIGHTH);
@@ -752,7 +758,7 @@ int main()
     evwt = shutter_speed_given_aperture_iso_ev(9*8, 4*8, evwt);
     printf("VAL that should be equal to 0: %i\n", evwt.ev);
     assert(evwt.ev == 0);
-    shutter_speed_to_string(evwt.ev, &sso);
+    shutter_speed_to_string(evwt, &sso, PRECISION_MODE_TENTH);
     printf("SHUT: %s\n", SHUTTER_STRING_OUTPUT_STRING(sso));
 
     return 0;
