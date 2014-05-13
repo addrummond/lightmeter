@@ -1132,6 +1132,7 @@ def output_shutter_speeds(of):
         name = x[0]
         ss = x[1]
         of.write('const uint8_t SHUTTER_SPEEDS_%s[] PROGMEM = {\n' % name)
+        x = 0
         for spd in ss:
             indexes = [shutter_speeds_bitmap.index(c) for c in spd]
             for i in xrange(0, 4, 2):
@@ -1146,6 +1147,9 @@ def output_shutter_speeds(of):
                 else:
                     v2 = indexes[i+1]
                 of.write('0b{:08b},'.format(v1 | (v2 << 4)))
+            if x % 4 == 3:
+                of.write("\n")
+            x += 1
         of.write('\n};\n')
     of.write('const uint8_t SHUTTER_SPEEDS_BITMAP[] PROGMEM = { ')
     for c in shutter_speeds_bitmap:
@@ -1175,7 +1179,7 @@ def output_apertures(of):
     i = 0
     for a in apertures_tenth:
         wn(a)
-        if i % 10 == 9:
+        if i % 8 == 7:
             of.write("\n")
         i += 1
     of.write('};\n')
