@@ -4,17 +4,21 @@
 #include <stdint.h>
 
 //
-// Attiny84 final(ish) configuration.
+// Attiny1634 final(ish) configuration.
 //
 
 
-//                       |    VCC 1--14  GND      |
-//         Display data  |    PB0 2--13  PA/ADC0  | Op amp output.
-//         Display CS    |    PB1 3--12  PA/ADC1  | Op amp comparison pin (ground).
-//                       |  RESET 4--11  PA/ADC2  | Charge pump clock 1.
-//         Display Clk   |    PB2 5--10  PA/ADC3  | Charge pump clock 2 (and shift register clock).
-//         Display DC    |    PA7 6---9  PA/ADC4  | Pushbutton input port.
-//         Display reset |    PA6 7---8  PA/ADC5  | Serial debug port Tx.
+//
+//        Display data   |    ADC5/PB0 1--20 PB1/ADC6  | Display CS
+//        Display DC     |    ADC4/PA7 2--19 PB2/ADC7  | Display Clk
+//        Display reset  |    ADC3/PA6 3--18 PB3/ADC8  | Op amp output
+//     Serial debug port |    ADC2/PA5 4--17 PC0/ADC9  |
+//     Pushbutton input  |    ADC1/PA4 5--16 PC1/ADC10 |
+//     Charge pump clk 2 |    ADC0/PA3 6--15 PC2/ADC11 |
+//     Charge pump clk 1 |         PA2 7--14 RESET     |
+//                       |         PA1 8--13 PC4       |
+//                       |         PA0 9--12 PC5       |
+//                       |         GND 10--11 VCC      |
 
 
 //
@@ -44,18 +48,21 @@
 //
 // ADC
 //
-// Set differential ADC with PA0 +input and PA1 -input gain 1x.
-#define ADMUX_LIGHT_SOURCE             ((0 << MUX5) | (0 << MUX4) | (1 << MUX3) | \
-                                        (0 << MUX2) | (0 << MUX1) | (0 << MUX0))
+// Set ADC for PB3 input.
+#define ADMUX_LIGHT_SOURCE             ((1 << MUX3) | (0 << MUX2) | (0 << MUX1) | (0 << MUX0))
 
-#define ADMUX_TEMPERATURE_SOURCE       ((1 << MUX5) | (0 << MUX4) | (0 << MUX3) | \
-                                        (0 << MUX2) | (1 << MUX1) | (0 << MUX0))
+#define ADMUX_TEMPERATURE_SOURCE       ((1 << MUX3) | (1 << MUX2) | (1 << MUX1) | (0 << MUX0))
 
 // Use 1.1V internal reference.
 #define ADMUX_TEMP_REF_VOLTAGE         ((1 << REFS1) | (0 << REFS0))
 
 // Use Vcc as reference voltage.
 #define ADMUX_LIGHT_SOURCE_REF_VOLTAGE ((0 << REFS1) | (0 << REFS0))
+
+// At some point we may want to switch to the internal 1.1V reference as a lame
+// substitute for increasing gain on the attiny1634. This would in effect give
+// us about 2.5x gain over measuring against VCC (2.8V when running on batteries).
+#define ADMUX_LOW_LIGH_REF_VOLTAGE     ((1 << REFS1) | (0 << REFS0))
 
 
 //
