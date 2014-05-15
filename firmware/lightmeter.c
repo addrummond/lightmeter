@@ -16,9 +16,6 @@
 
 #include <basic_serial/basic_serial.h>
 
-const uint8_t ADMUX_CLEAR_SOURCE = ~((1 << MUX5) | (1 << MUX4) | (1 << MUX2) | (1 << MUX2) | (1 << MUX1) | (0 << MUX0));
-const uint8_t ADMUX_CLEAR_REF_VOLTAGE = 0b11000000; // Couldn't do this with macros without getting overflow warning for some reason.
-
 // Save result of ADC on interrupt.
 volatile static uint16_t adc_light_value = 0;
 volatile static uint16_t adc_temperature_value = 300; // About 25C
@@ -32,7 +29,7 @@ ISR(ADC_vect) {
         global_transient_meter_state.exposure_ready = true;
     }
 
-    TIFR0 |= (1<<OCF0A); // Clear timer compare match flag.
+    TIFR |= (1<<OCF0A); // Clear timer compare match flag.
     ADCSRA |= (1 << ADSC);
 }
 
@@ -93,10 +90,16 @@ void setup_ADC()
     TCCR0B |= ((1 << CS02) | (0 << CS01) | (0 << CS00)); // prescaler: clock/256
     TCNT0 = 0;
     OCR0A = 4; // TO-----------
+
     // Turn off bipolar input mode.
-    ADCSRB &= ~(1 << BIN);
+    // N/A on attiny1634.
+    //ADCSRB &= ~(1 << BIN);
+
     // Sets prescaler to 128, which at 8MHz gives a 62KHz ADC.
     ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
+
+    // Disable digital input on ADC pin.
+    ADC_LIGHT_DIDR |= (1 << ADC_LIGHT_DIDR_BIT);
 
     // Enable ADC.
     ADCSRA |= (1 << ADEN);
@@ -169,8 +172,8 @@ void led_test()
 {
 #ifdef TEST_LED_PORT
     TEST_LED_PORT |= (1 << TEST_LED_BIT);
-    _delay_ms(250);
-    TEST_LED_PORT &= ~(1 << TEST_LED_BIT);
+    //_delay_ms(250);
+    //TEST_LED_PORT &= ~(1 << TEST_LED_BIT);
 #endif
 }
 
@@ -224,27 +227,6 @@ static void show_interface()
         ui_bttm_status_line_at_6col(&state2, out, 1, i);
         display_write_page_array(out, 6, 1, i, 7);
     }
-}
-
-// Interrupt for driving charge pump clocks.
-ISR(TIM1_COMPA_vect)
-{
-    CHARGE_PUMP_CLOCKS_PORT ^= ((1 << CHARGE_PUMP_CLOCK1_BIT) | (1 << CHARGE_PUMP_CLOCK2_BIT));
-}
-
-static void setup_charge_pump()
-{
-    // Set initial charge pump clocks in inverse phase.
-    DDRA |= ((1 << CHARGE_PUMP_CLOCK1_BIT) | (1 << CHARGE_PUMP_CLOCK2_BIT));
-    CHARGE_PUMP_CLOCKS_PORT |= (1 << CHARGE_PUMP_CLOCK1_BIT);
-    CHARGE_PUMP_CLOCKS_PORT &= ~(1 << CHARGE_PUMP_CLOCK2_BIT);
-
-    // Prescale clock by 1/64.
-    TCCR1B |= ((0 << CS12) | (1 << CS11) | (1 << CS10));
-    TCCR1B |= ((0 << WGM13) | (1 << WGM12) | (0 << WGM11) | (0 << WGM10));
-    OCR1A = 4; // Count to 4.
-    // Enable CTC interrupt.
-    TIMSK1 |= (1 << OCIE1A);
 }
 
 // Some compile-time sanity checks on the values of the resistors
@@ -342,7 +324,7 @@ static void setup_button_handler()
     TCCR0B |= ((0 << WGM12) | (1 << WGM12) | (0 << WGM11) | (0 << WGM10));
     OCR0A = 8;
     // Enable CTC interrupt.
-    TIMSK0 |= (1 << OCIE0A);
+    TIMSK |= (1 << OCIE0A);
 }
 
 static void handle_button_press(uint8_t button_number)
@@ -355,12 +337,10 @@ static void handle_button_press(uint8_t button_number)
 
 int main()
 {
-    setup_charge_pump();
     setup_button_handler();
 
     set_op_amp_resistor_stage(2);
 
-    led_test();
     setup_output_ports();
     led_test();
 

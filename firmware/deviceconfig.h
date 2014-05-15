@@ -14,10 +14,10 @@
 //        Display reset  |    ADC3/PA6 3--18 PB3/ADC8  | Op amp output
 //     Serial debug port |    ADC2/PA5 4--17 PC0/ADC9  |
 //     Pushbutton input  |    ADC1/PA4 5--16 PC1/ADC10 |
-//     Charge pump clk 2 |    ADC0/PA3 6--15 PC2/ADC11 |
-//     Charge pump clk 1 |         PA2 7--14 RESET     |
+//                       |    ADC0/PA3 6--15 PC2/ADC11 |
+//                       |         PA2 7--14 RESET     |
 //                       |         PA1 8--13 PC4       |
-//                       |         PA0 9--12 PC5       |
+//              Test LED |         PA0 9--12 PC5       |
 //                       |         GND 10--11 VCC      |
 
 
@@ -64,17 +64,11 @@
 // us about 2.5x gain over measuring against VCC (2.8V when running on batteries).
 #define ADMUX_LOW_LIGH_REF_VOLTAGE     ((1 << REFS1) | (0 << REFS0))
 
+#define ADMUX_CLEAR_SOURCE             (~((1 << MUX3) | (1 << MUX2) | (1 << MUX1) | (0 << MUX0)));
+#define ADMUX_CLEAR_REF_VOLTAGE        (~0b11000000); // Couldn't do this with macros without getting overflow warning for some reason.
 
-//
-// Charge pump clock output ports.
-//
-#define CHARGE_PUMP_CLOCKS_PORT  PORTA
-
-#define CHARGE_PUMP_CLOCK1_DDR   DDRA
-#define CHARGE_PUMP_CLOCK1_BIT   PA2
-
-#define CHARGE_PUMP_CLOCK2_DDR   DDRA
-#define CHARGE_PUMP_CLOCK2_BIT   PA3
+#define ADC_LIGHT_DIDR                 DIDR1
+#define ADC_LIGHT_DIDR_BIT             3
 
 
 //
@@ -106,6 +100,6 @@
 //
 #define TEST_LED_PORT    PORTA
 #define TEST_LED_DDR     DDRA
-#define TEST_LED_BIT     PA5
+#define TEST_LED_BIT     PA0
 
 #endif
