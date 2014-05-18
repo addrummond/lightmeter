@@ -10,7 +10,6 @@ then
 fi
 
 python output_initial_eeprom.py
-cp lightmeter.eep /tmp
 
 python calculate_tables.py output
 cd bitmaps
