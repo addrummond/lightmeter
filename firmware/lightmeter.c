@@ -172,8 +172,8 @@ void led_test()
 {
 #ifdef TEST_LED_PORT
     TEST_LED_PORT |= (1 << TEST_LED_BIT);
-    //_delay_ms(250);
-    //TEST_LED_PORT &= ~(1 << TEST_LED_BIT);
+    _delay_ms(250);
+    TEST_LED_PORT &= ~(1 << TEST_LED_BIT);
 #endif
 }
 

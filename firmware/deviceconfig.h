@@ -6,8 +6,7 @@
 //
 // Attiny1634 final(ish) configuration.
 //
-Display CS
-Display CLK
+
 
 //
 //  Currently we are leaving pins used for serial programming unattached to
