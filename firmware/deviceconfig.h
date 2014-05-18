@@ -6,19 +6,25 @@
 //
 // Attiny1634 final(ish) configuration.
 //
-
+Display CS
+Display CLK
 
 //
-//        Display data   |    ADC5/PB0 1--20 PB1/ADC6  | Display CS
-//        Display DC     |    ADC4/PA7 2--19 PB2/ADC7  | Display Clk
-//        Display reset  |    ADC3/PA6 3--18 PB3/ADC8  | Op amp output
-//     Serial debug port |    ADC2/PA5 4--17 PC0/ADC9  |
-//     Pushbutton input  |    ADC1/PA4 5--16 PC1/ADC10 |
-//                       |    ADC0/PA3 6--15 PC2/ADC11 |
-//                       |         PA2 7--14 RESET     |
-//                       |         PA1 8--13 PC4       |
-//              Test LED |         PA0 9--12 PC5       |
-//                       |         GND 10--11 VCC      |
+//  Currently we are leaving pins used for serial programming unattached to
+//  make in-circuit programming more reliable. With some care some of these pins
+//  could be re-used (e.g. if they are only used as output pins in the
+//  lightmeter app).
+//
+//        Display data   |    ADC5/PB0 1---20 [MOSI]    | **********
+//        Display DC     |    ADC4/PA7 2---19 [MISO]    | **********
+//        Display reset  |    ADC3/PA6 3---18 PB3/ADC8  | Op amp output
+//     Serial debug port |    ADC2/PA5 4---17 PC0/ADC9  |
+//     Pushbutton input  |    ADC1/PA4 5---16 [USCK]    | **********
+//                       |    ADC0/PA3 6---15 PC2/ADC11 |
+//                       |         PA2 7---14 [RESET]   | **********
+//                       |         PA1 8---13 PC4       | Display CS
+//              Test LED |         PA0 9---12 PC5       | Display CLK
+//            ********** |       [GND] 10--11 [VCC]     | **********
 
 
 //
@@ -28,13 +34,13 @@
 #define DISPLAY_DATA_DDR    DDRB
 #define DISPLAY_DATA_BIT    PB0
 
-#define DISPLAY_CS_PORT     PORTB
-#define DISPLAY_CS_DDR      DDRB
-#define DISPLAY_CS_BIT      PB1
+#define DISPLAY_CS_PORT     PORTC
+#define DISPLAY_CS_DDR      DDRC
+#define DISPLAY_CS_BIT      PC4
 
-#define DISPLAY_CLK_PORT    PORTB
-#define DISPLAY_CLK_DDR     DDRB
-#define DISPLAY_CLK_BIT     PB2
+#define DISPLAY_CLK_PORT    PORTC
+#define DISPLAY_CLK_DDR     DDRC
+#define DISPLAY_CLK_BIT     PC5
 
 #define DISPLAY_DC_PORT     PORTA
 #define DISPLAY_DC_DDR      DDRA
