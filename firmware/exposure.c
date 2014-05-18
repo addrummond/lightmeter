@@ -158,8 +158,8 @@ void shutter_speed_to_string(ev_with_tenths_t evwt, shutter_string_output_t *sso
     uint8_t i;
     for (i = 0; i < 2; ++i) {
         uint8_t val, j;
-        for (val = schars[i] & 0xF, j = 0; j < 2 && val != 0; val = schars[i] >> 4, ++j) {
-            uint8_t b = SHUTTER_SPEEDS_BITMAP[val];
+        for (val = pgm_read_byte(&schars[i]) & 0xF, j = 0; j < 2 && val != 0; val = pgm_read_byte(&schars[i]) >> 4, ++j) {
+            uint8_t b = pgm_read_byte(&SHUTTER_SPEEDS_BITMAP[val]);
             if (b == 'X') {
                 sso->chars[last++] = '0';
                 sso->chars[last++] = '0';
@@ -174,6 +174,7 @@ void shutter_speed_to_string(ev_with_tenths_t evwt, shutter_string_output_t *sso
         sso->chars[last++] = 'S';
 
     sso->chars[last] = '\0';
+    sso->length = last;
 }
 
 void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, precision_mode_t precision_mode)
