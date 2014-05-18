@@ -5,7 +5,7 @@ Factory settings (alleged): H:DF, E:1F, L:62
 
 Settings for 8MHZ: E=0x1F
                    H=0xDF
-                   L=0x62
+                   L=0xE2
 
 
 Attiny84
