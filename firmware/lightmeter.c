@@ -245,7 +245,7 @@ struct dummy_deviceconfig_pushbutton_test_struct {
 
 static volatile uint8_t mode_counter = 0;
 static volatile uint8_t last_button_press = 0;
-ISR(TIM0_COMPA_vect)
+ISR(TIM1_COMPA_vect)
 {
     // See http://forums.parallax.com/showthread.php/110209-Multiple-buttons-to-one-IO-pin, post by
     // virtuPIC for description of method used here.
@@ -317,14 +317,18 @@ tx_byte('X');
 
 static void setup_button_handler()
 {
+    // Disconnect ports.
+    TCCR1B &= ~((1 << COM1A1) | (1 << COM1A0) | (1 << COM1B1) | (1 << COM1B0));
     // We want to call the interrupt every millisecond.
     // Prescale the clock by /1024.
-    TCCR0B |= ((1 << CS12) | (0 << CS11) | (1 << CS10));
+    TCCR1B |= ((1 << CS12) | (0 << CS11) | (1 << CS10));
+    // Set CTC mode.
+    TCCR1A |= ((0 << WGM11) | (0 << WCM10));
+    TCCR1B |= ((0 << WGM13) | (1 << WGM12));
     // Count to 8 to get roughly every millisecond.
-    TCCR0B |= ((0 << WGM12) | (1 << WGM12) | (0 << WGM11) | (0 << WGM10));
-    OCR0A = 8;
+    OCR1A = 8;
     // Enable CTC interrupt.
-    TIMSK |= (1 << OCIE0A);
+    TIMSK |= (1 << OCIE1A);
 }
 
 static void handle_button_press(uint8_t button_number)
@@ -337,7 +341,7 @@ static void handle_button_press(uint8_t button_number)
 
 int main()
 {
-    setup_button_handler();
+    //setup_button_handler();
 
     set_op_amp_resistor_stage(2);
 
