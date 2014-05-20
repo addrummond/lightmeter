@@ -252,18 +252,16 @@ ISR(TIM1_COMPA_vect)
         PUSHBUTTON_PORT &= ~(1 << PUSHBUTTON_BIT);
         //PUSHBUTTON_PORT |= (1 << PUSHBUTTON_BIT);
         // Check if the pin has gone high.
-        if (PUSHBUTTON_PIN & (1 << PUSHBUTTON_BIT)) {
+
+        if (! (PUSHBUTTON_PIN & (1 << PUSHBUTTON_BIT)))
+            return;
 #ifdef DEBUG
 tx_byte('B');
 tx_byte('!');
 #endif
-            // Switch to output mode to discharge cap.
-            PUSHBUTTON_DDR |= (1 << PUSHBUTTON_BIT);
-            PUSHBUTTON_PORT &= ~(1 << PUSHBUTTON_BIT);
-        }
-        else {
-            return;
-        }
+        // Switch to output mode to discharge cap.
+        PUSHBUTTON_DDR |= (1 << PUSHBUTTON_BIT);
+        PUSHBUTTON_PORT &= ~(1 << PUSHBUTTON_BIT);
     }
     else if (mode_counter == PUSHBUTTON_RC_MS(4)) {
         // All capacitors have now had enough time to discharge.
@@ -300,11 +298,11 @@ tx_byte('X');
             else if (mode_counter <= PUSHBUTTON_RC_MS(4) + PUSHBUTTON_RC_MS(4))
                 but = 4;
 
-            if (but) {
-                mode_counter = 0;
+            if (but)
                 last_button_press = but;
-                return;
-            }
+
+            mode_counter = 0;
+            return;
         }
     }
 
@@ -320,6 +318,7 @@ static void setup_button_handler()
     TCCR1B |= ((0 << WGM13) | (1 << WGM12));
     TCCR1A |= ((0 << WGM11) | (0 << WGM10));
     // Prescale the clock by /1024.
+    TCCR1B |= ((1 << CS12) | (0 << CS11) | (1 << CS10));
     TCCR1B |= ((1 << CS12) | (0 << CS11) | (1 << CS10));
     // We want to call the interrupt every millisecond.
     // Count to 8 to get roughly every millisecond.
@@ -340,6 +339,11 @@ int main()
 {
     setup_output_ports();
     led_test();
+
+#ifdef DEBUG
+    tx_byte('I');
+    tx_byte('I');
+#endif
 
     setup_button_handler();
     setup_ADC();
