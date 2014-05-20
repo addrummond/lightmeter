@@ -84,7 +84,6 @@ void setup_ADC()
     // This causes the ADC to fire on an interupt once every 1024 clock cycles
     // (so about 8 times a second if we're running at 8MHz).
     ADCSRB &= ~((1 << ADTS2) | (1 << ADTS1) | (1 << ADTS0));
-    ADCSRB &= ~((1 << ADTS2) | (1 << ADTS1) | (1 << ADTS0));
     ADCSRB |= ((0 << ADTS2) | (1 << ADTS1) | (1 << ADTS0)); // Timer/Counter0 Compare Match A
     TCCR0B &= ~((1 << CS02) | (1 << CS01) | (1 << CS00));
     TCCR0B |= ((1 << CS02) | (0 << CS01) | (0 << CS00)); // prescaler: clock/256
@@ -105,9 +104,6 @@ void setup_ADC()
     ADCSRA |= (1 << ADEN);
     // Start taking readings.
     ADCSRA |= (1 << ADSC);
-
-    // Enable global interrupts.
-    sei();
 }
 
 void setup_output_ports()
@@ -313,18 +309,19 @@ tx_byte('X');
     }
 
     ++mode_counter;
+
+    // Clear timer compare match flag.
+    TIFR |= (1<<OCF1A);
 }
 
 static void setup_button_handler()
 {
-    // Disconnect ports.
-    TCCR1B &= ~((1 << COM1A1) | (1 << COM1A0) | (1 << COM1B1) | (1 << COM1B0));
-    // We want to call the interrupt every millisecond.
+    // Set CTC mode.
+    TCCR1B |= ((0 << WGM13) | (1 << WGM12));
+    TCCR1A |= ((0 << WGM11) | (0 << WGM10));
     // Prescale the clock by /1024.
     TCCR1B |= ((1 << CS12) | (0 << CS11) | (1 << CS10));
-    // Set CTC mode.
-    TCCR1A |= ((0 << WGM11) | (0 << WCM10));
-    TCCR1B |= ((0 << WGM13) | (1 << WGM12));
+    // We want to call the interrupt every millisecond.
     // Count to 8 to get roughly every millisecond.
     OCR1A = 8;
     // Enable CTC interrupt.
@@ -341,19 +338,19 @@ static void handle_button_press(uint8_t button_number)
 
 int main()
 {
-    //setup_button_handler();
-
-    set_op_amp_resistor_stage(2);
-
     setup_output_ports();
     led_test();
 
-    initialize_global_meter_state();
-    display_init();
-    display_clear();
+    setup_button_handler();
     setup_ADC();
 
     sei();
+
+    set_op_amp_resistor_stage(2);
+    initialize_global_meter_state();
+
+    display_init();
+    display_clear();
 
     // The main loop. This looks at the latest exposure
     // reading every so often.
