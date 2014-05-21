@@ -15,7 +15,7 @@
 //  lightmeter app).
 //
 //        Display data   |    ADC5/PB0 1---20 [MOSI]    | **********
-//        Display DC     |    ADC4/PA7 2---19 [MISO]    | **********
+//        Display DC     |    ADC4/PA7 2---19 [MISO]        | **********
 //        Display reset  |    ADC3/PA6 3---18 PB3/ADC8  | Op amp output
 //     Serial debug port |    ADC2/PA5 4---17 PC0/ADC9  |
 //     Pushbutton input  |    ADC1/PA4 5---16 [USCK]    | **********
@@ -79,18 +79,20 @@
 //
 // Pushbutton input port.
 //
-#define PUSHBUTTON_PORT PORTA
-#define PUSHBUTTON_PIN  PINA
-#define PUSHBUTTON_DDR  DDRA
-#define PUSHBUTTON_BIT  PA4
+#define PUSHBUTTON_PORT  PORTA
+#define PUSHBUTTON_PIN   PINA
+#define PUSHBUTTON_DDR   DDRA
+#define PUSHBUTTON_BIT   PA4
+#define PUSHBUTTON_PCMSK PCMSK0
+#define PUSHBUTTON_PCINT PCINT4
 
-#define PUSHBUTTON_CAPVAL_TENTHS_MU_F   1L
-#define PUSHBUTTON1_RVAL_KO             33L
-#define PUSHBUTTON2_RVAL_KO             55L
-#define PUSHBUTTON3_RVAL_KO             82L
-#define PUSHBUTTON4_RVAL_KO             180L
+#define PUSHBUTTON_COMMON_RVAL          10L
+#define PUSHBUTTON1_RVAL_KO             22L
+#define PUSHBUTTON2_RVAL_KO             39L
+#define PUSHBUTTON3_RVAL_KO             68L
+#define PUSHBUTTON4_RVAL_KO             100L
 
-#define PUSHBUTTON_RC_MS(n) ((uint8_t)((PUSHBUTTON ## n ## _RVAL_KO * 1000L * PUSHBUTTON_CAPVAL_TENTHS_MU_F * 1000L) / 10000000L))
+#define PUSHBUTTON_BVOLTAGE(n) ((uint8_t)(((PUSHBUTTON_COMMON_RVAL + PUSHBUTTON ## n ## _RVAL) * 256L) / PUSHBUTTON_COMMON_RVAL))
 
 
 //

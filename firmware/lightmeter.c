@@ -228,103 +228,27 @@ static void show_interface()
 // Some compile-time sanity checks on the values of the resistors
 // for the buttons.
 struct dummy_deviceconfig_pushbutton_test_struct {
-    int dummy1[PUSHBUTTON_RC_MS(1) - 1];
-    int dummy2[PUSHBUTTON_RC_MS(2) - 1];
-    int dummy3[PUSHBUTTON_RC_MS(3) - 1];
-    int dummy4[PUSHBUTTON_RC_MS(4) - 1];
-
     // Check that resistor values go up in sequence.
     int dummy5[(PUSHBUTTON1_RVAL_KO < PUSHBUTTON2_RVAL_KO &&
                 PUSHBUTTON2_RVAL_KO < PUSHBUTTON3_RVAL_KO &&
                 PUSHBUTTON3_RVAL_KO < PUSHBUTTON4_RVAL_KO) - 1];
 };
 
-static volatile uint8_t mode_counter = 0;
-static volatile uint8_t last_button_press = 0;
-ISR(TIM1_COMPA_vect)
+static volatile uint8_t last_button_press;
+ISR(PCINT0_vect)
 {
-    // See http://forums.parallax.com/showthread.php/110209-Multiple-buttons-to-one-IO-pin, post by
-    // virtuPIC for description of method used here.
-
-    if (mode_counter == 0) {
-        // Switch pin to input mode (with no pullup resistors).
-        PUSHBUTTON_DDR &= ~(1 << PUSHBUTTON_BIT);
-        PUSHBUTTON_PORT &= ~(1 << PUSHBUTTON_BIT);
-        //PUSHBUTTON_PORT |= (1 << PUSHBUTTON_BIT);
-        // Check if the pin has gone high.
-
-        if (! (PUSHBUTTON_PIN & (1 << PUSHBUTTON_BIT)))
-            return;
 #ifdef DEBUG
-tx_byte('B');
-tx_byte('!');
+    tx_byte('N');
+    tx_byte('N');
 #endif
-        // Switch to output mode to discharge cap.
-        PUSHBUTTON_DDR |= (1 << PUSHBUTTON_BIT);
-        PUSHBUTTON_PORT &= ~(1 << PUSHBUTTON_BIT);
-    }
-    else if (mode_counter == PUSHBUTTON_RC_MS(4)) {
-        // All capacitors have now had enough time to discharge.
-        // Switch back to input mode and see how long capacitor
-        // takes to charge.
-        PUSHBUTTON_DDR |= (1 << PUSHBUTTON_BIT);
-        PUSHBUTTON_PORT &= ~(1 << PUSHBUTTON_BIT);
-        //PUSHBUTTON_PORT |= (1 << PUSHBUTTON_BIT);
-    }
-    else if (mode_counter == PUSHBUTTON_RC_MS(4)*2 + 1) {
-        // Looks like the cap wasn't charged; no button was pressed.
-        // Back to square one.
-        mode_counter = 0;
-        return;
-    }
-    else if (mode_counter > PUSHBUTTON_RC_MS(4)) {
-#ifdef DEBUG
-tx_byte('B');
-tx_byte('C');
-#endif
-        // Has it charged yet?
-        if (PUSHBUTTON_PIN & (1 << PUSHBUTTON_BIT)) {
-#ifdef DEBUG
-tx_byte('B');
-tx_byte('X');
-#endif
-            uint8_t but = 0;
-            if (mode_counter <= PUSHBUTTON_RC_MS(4) + PUSHBUTTON_RC_MS(1))
-                but = 1;
-            else if (mode_counter <= PUSHBUTTON_RC_MS(4) + PUSHBUTTON_RC_MS(2))
-                but = 2;
-            else if (mode_counter <= PUSHBUTTON_RC_MS(4) + PUSHBUTTON_RC_MS(3))
-                but = 3;
-            else if (mode_counter <= PUSHBUTTON_RC_MS(4) + PUSHBUTTON_RC_MS(4))
-                but = 4;
-
-            if (but)
-                last_button_press = but;
-
-            mode_counter = 0;
-            return;
-        }
-    }
-
-    ++mode_counter;
-
-    // Clear timer compare match flag.
-    TIFR |= (1<<OCF1A);
 }
 
 static void setup_button_handler()
 {
-    // Set CTC mode.
-    TCCR1B |= ((0 << WGM13) | (1 << WGM12));
-    TCCR1A |= ((0 << WGM11) | (0 << WGM10));
-    // Prescale the clock by /1024.
-    TCCR1B |= ((1 << CS12) | (0 << CS11) | (1 << CS10));
-    TCCR1B |= ((1 << CS12) | (0 << CS11) | (1 << CS10));
-    // We want to call the interrupt every millisecond.
-    // Count to 8 to get roughly every millisecond.
-    OCR1A = 8;
-    // Enable CTC interrupt.
-    TIMSK |= (1 << OCIE1A);
+    GIMSK |= (1 << PCIE0);
+    PUSHBUTTON_PCMSK |= (1 << PUSHBUTTON_PCINT);
+    // Enable pullup resistor.
+    PUSHBUTTON_PORT |= (1 << PUSHBUTTON_BIT);
 }
 
 static void handle_button_press(uint8_t button_number)
