@@ -18,8 +18,8 @@
 //        Display DC     |    ADC4/PA7 2---19 [MISO]        | **********
 //        Display reset  |    ADC3/PA6 3---18 PB3/ADC8  | Op amp output
 //     Serial debug port |    ADC2/PA5 4---17 PC0/ADC9  |
-//     Pushbutton input  |    ADC1/PA4 5---16 [USCK]    | **********
-//                       |    ADC0/PA3 6---15 PC2/ADC11 |
+//                       |    ADC1/PA4 5---16 [USCK]    | **********
+//     Pushbiton input   |    ADC0/PA3 6---15 PC2/ADC11 |
 //                       |         PA2 7---14 [RESET]   | **********
 //                       |         PA1 8---13 PC4       | Display CS
 //              Test LED |         PA0 9---12 PC5       | Display CLK
@@ -82,9 +82,10 @@
 #define PUSHBUTTON_PORT  PORTA
 #define PUSHBUTTON_PIN   PINA
 #define PUSHBUTTON_DDR   DDRA
-#define PUSHBUTTON_BIT   PA4
+#define PUSHBUTTON_BIT   PA3
 #define PUSHBUTTON_PCMSK PCMSK0
-#define PUSHBUTTON_PCINT PCINT4
+#define PUSHBUTTON_PCINT PCINT3
+#define PUSHBUTTON_ADMUX ((0 << MUX3) | (0 << MUX2) | (0 << MUX1) | (0 << MUX0) | (0 << REFS1) | (0 << REFS0))
 
 #define PUSHBUTTON_COMMON_RVAL          10L
 #define PUSHBUTTON1_RVAL_KO             22L
