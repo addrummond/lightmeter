@@ -15,11 +15,11 @@
 //  lightmeter app).
 //
 //        Display data   |    ADC5/PB0 1---20 [MOSI]    | **********
-//        Display DC     |    ADC4/PA7 2---19 [MISO]        | **********
+//        Display DC     |    ADC4/PA7 2---19 [MISO]    | **********
 //        Display reset  |    ADC3/PA6 3---18 PB3/ADC8  | Op amp output
 //     Serial debug port |    ADC2/PA5 4---17 PC0/ADC9  |
 //                       |    ADC1/PA4 5---16 [USCK]    | **********
-//     Pushbutton input   |    ADC0/PA3 6---15 PC2/ADC11 |
+//     Pushbutton input  |    ADC0/PA3 6---15 PC2/ADC11 |
 //                       |         PA2 7---14 [RESET]   | **********
 //                       |         PA1 8---13 PC4       | Display CS
 //              Test LED |         PA0 9---12 PC5       | Display CLK
