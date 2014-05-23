@@ -234,28 +234,61 @@ struct dummy_deviceconfig_pushbutton_test_struct {
                 PUSHBUTTON3_RVAL_KO < PUSHBUTTON4_RVAL_KO) - 1];
 };
 
-static volatile uint8_t last_button_press;
+static volatile uint8_t last_button_voltage_reading;
 ISR(PCINT0_vect)
 {
 #ifdef DEBUG
     tx_byte('N');
-    tx_byte('N');
+    tx_byte('!');
 #endif
+
+    // We haven't finished handling the last button press yet, so return.
+    if (last_button_voltage_reading)
+        return;
+
+    // We now need to switch the ADC temporarily to read from the button
+    // input pin.
+    ADMUX = PUSHBUTTON_ADMUX;
+    // Disable ADC interrupt.
+    ADCSRA &= ~(1 << ADIE);
+    // Disable auto triggering.
+    ADCSRA &= ~(1 << ADATE);
+    // Start conversion.
+    ADCSRA |= (1 << ADSC);
+
+    // First conversion will be junk; ignore it.
+    while (ADCSRA & (1 << ADSC));
+    ADCSRA |= (1 << ADSC);
+    while (ADCSRA & (1 << ADSC));
+    uint8_t r = (uint8_t)(ADC >> 2);
+
+#ifdef DEBUG
+    tx_byte('R');
+    tx_byte(r);
+#endif
+
+    // Ensure that it's not zero (since zero signals that no button has been pressed).
+    // The small loss of accuracy doesn't matter.
+    last_button_voltage_reading = r | 1;
+
+    // ADC is reset to the usual settings in the main loop, so as to
+    // minimize the amount of processing done in this interrupt.
 }
 
 static void setup_button_handler()
 {
+    PUSHBUTTON_DDR &= ~(1 << PUSHBUTTON_BIT);
     GIMSK |= (1 << PCIE0);
     PUSHBUTTON_PCMSK |= (1 << PUSHBUTTON_PCINT);
     // Enable pullup resistor.
-    PUSHBUTTON_PORT |= (1 << PUSHBUTTON_BIT);
+    PUSHBUTTON_PUE |= (1 << PUSHBUTTON_BIT);
 }
 
-static void handle_button_press(uint8_t button_number)
+static void handle_button_press(uint8_t lbvr)
 {
     //    if (button_number == 1) {
-        display_clear();
-        _delay_ms(2000);
+    //    display_clear();
+//    _delay_ms(2000);
         //    }
 }
 
@@ -265,7 +298,6 @@ int main()
     led_test();
 
 #ifdef DEBUG
-    tx_byte('I');
     tx_byte('I');
 #endif
 
@@ -284,6 +316,14 @@ int main()
     // reading every so often.
     uint8_t cnt;
     for (cnt = 0;; ++cnt) {
+        // Check if a button was pressed.
+        uint8_t lbvr = last_button_voltage_reading;
+        if (lbvr) {
+            handle_button_press(lbvr);
+            last_button_voltage_reading = 0;
+            setup_ADC();
+        }
+
         // Do lightmetery stuff.
         if (cnt == 0) {
             // Make the next ADC reading a temperature reading.
@@ -306,11 +346,6 @@ int main()
 
         handle_measurement();
         show_interface();
-
-        // Check if a button was pressed.
-        uint8_t button_number = last_button_press;
-        if (button_number)
-            handle_button_press(button_number);
 
         _delay_ms(50);
     }
