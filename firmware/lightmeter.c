@@ -237,13 +237,12 @@ struct dummy_deviceconfig_pushbutton_test_struct {
 static volatile uint8_t last_button_voltage_reading;
 ISR(PCINT0_vect)
 {
-#ifdef DEBUG
-    tx_byte('N');
-    tx_byte('!');
-#endif
-
     // We haven't finished handling the last button press yet, so return.
     if (last_button_voltage_reading)
+        return;
+
+    // Ignore if it's high rather than low.
+    if (PUSHBUTTON_PIN & (1 << PUSHBUTTON_BIT))
         return;
 
     // We now need to switch the ADC temporarily to read from the button
@@ -261,11 +260,6 @@ ISR(PCINT0_vect)
     ADCSRA |= (1 << ADSC);
     while (ADCSRA & (1 << ADSC));
     uint8_t r = (uint8_t)(ADC >> 2);
-
-#ifdef DEBUG
-    tx_byte('R');
-    tx_byte(r);
-#endif
 
     // Ensure that it's not zero (since zero signals that no button has been pressed).
     // The small loss of accuracy doesn't matter.
@@ -286,6 +280,10 @@ static void setup_button_handler()
 
 static void handle_button_press(uint8_t lbvr)
 {
+#ifdef DEBUG
+    tx_byte('B');
+    tx_byte(lbvr);
+#endif
     //    if (button_number == 1) {
     //    display_clear();
 //    _delay_ms(2000);

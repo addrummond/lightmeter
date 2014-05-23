@@ -88,13 +88,13 @@
 #define PUSHBUTTON_PCINT PCINT3
 #define PUSHBUTTON_ADMUX ((0 << MUX3) | (0 << MUX2) | (0 << MUX1) | (0 << MUX0) | (0 << REFS1) | (0 << REFS0))
 
-#define PUSHBUTTON_COMMON_RVAL          10L
+#define PULLUP_RESISTOR_KO              40L // Approx.
 #define PUSHBUTTON1_RVAL_KO             22L
 #define PUSHBUTTON2_RVAL_KO             39L
 #define PUSHBUTTON3_RVAL_KO             68L
 #define PUSHBUTTON4_RVAL_KO             100L
 
-#define PUSHBUTTON_BVOLTAGE(n) ((uint8_t)(((PUSHBUTTON_COMMON_RVAL + PUSHBUTTON ## n ## _RVAL) * 256L) / PUSHBUTTON_COMMON_RVAL))
+#define PUSHBUTTON_BVOLTAGE(n) ((uint8_t)(((PULLUP_RESISTOR_KO + PUSHBUTTON ## n ## _RVAL) * 256L) / PUSHBUTTON_COMMON_RVAL))
 
 
 //
