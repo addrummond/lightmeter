@@ -20,8 +20,8 @@
 //     Serial debug port |    ADC2/PA5 4---17 PC0/ADC9  |
 //                       |    ADC1/PA4 5---16 [USCK]    | **********
 //     Pushbutton input  |    ADC0/PA3 6---15 PC2/ADC11 |
-//                       |         PA2 7---14 [RESET]   | **********
-//                       |         PA1 8---13 PC4       | Display CS
+//   Charge pump clock 1 |         PA2 7---14 [RESET]   | **********
+//   Charge pump clock 2 |         PA1 8---13 PC4       | Display CS
 //              Test LED |         PA0 9---12 PC5       | Display CLK
 //            ********** |       [GND] 10--11 [VCC]     | **********
 
@@ -95,6 +95,15 @@
 #define PUSHBUTTON4_RVAL_KO             100L
 
 #define PUSHBUTTON_BVOLTAGE(n) ((uint8_t)(((PULLUP_RESISTOR_KO + PUSHBUTTON ## n ## _RVAL) * 256L) / PUSHBUTTON_COMMON_RVAL))
+
+
+//
+// Charge pump clock output ports.
+//
+#define CHARGE_PUMP_CLOCKS_PORT  PORTA
+#define CHARGE_PUMP_CLOCKS_DDR   DDRA
+#define CHARGE_PUMP_CLOCK1_BIT   PA2
+#define CHARGE_PUMP_CLOCK2_BIT   PA1
 
 
 //

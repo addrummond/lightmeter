@@ -106,14 +106,6 @@ void setup_ADC()
     ADCSRA |= (1 << ADSC);
 }
 
-void setup_output_ports()
-{
-    // Output DDR for display handled in display_init.
-#ifdef TEST_LED_PORT
-    TEST_LED_DDR      |= (1 << TEST_LED_BIT);
-#endif
-}
-
 static void set_op_amp_resistor_stage(uint8_t op_amp_resistor_stage)
 {
     // TODO: Code that actually switches the MOFSETs.
@@ -290,10 +282,40 @@ static void handle_button_press(uint8_t lbvr)
         //    }
 }
 
+static void setup_charge_pump()
+{
+    // Might be worth investigating the possibility of getting the chip to flip
+    // the ports automatically instead of using an interrupt. However, I couldn't
+    // figure out any way of getting it to output to two ports simultaneously via
+    // a counter. The following SO question may be helpful:
+    //
+    // http://electronics.stackexchange.com/questions/49852/need-help-understanding-avr-atmega-attiny-timer-mirrored-output
+
+    CHARGE_PUMP_CLOCKS_DDR |= (1 << CHARGE_PUMP_CLOCK1_BIT) | (1 << CHARGE_PUMP_CLOCK2_BIT);
+    // Set inital charge pump port outputs as opposites.
+    CHARGE_PUMP_CLOCKS_PORT |= (1 << CHARGE_PUMP_CLOCK1_BIT);
+    CHARGE_PUMP_CLOCKS_PORT &= ~(1 << CHARGE_PUMP_CLOCK2_BIT);
+
+    TCCR1A = 0;
+    TCCR1B = (0 << WGM13) | (1 << WGM12); // CTC OCR1A.
+    // Prescale clock by 1/64.
+    TCCR1B |= (0 << CS12) | (1 << CS11) | (1 << CS10);
+    OCR1A = 4;
+    // Enable timer counter interrupt.
+    TIMSK |= (1 << OCIE1A);
+}
+
+ISR(TIM1_COMPA_vect)
+{
+    CHARGE_PUMP_CLOCKS_PORT ^= ((1 << CHARGE_PUMP_CLOCK1_BIT) | (1 << CHARGE_PUMP_CLOCK2_BIT));
+}
+
 int main()
 {
-    setup_output_ports();
-    led_test();
+    #ifdef TEST_LED_PORT
+        TEST_LED_DDR      |= (1 << TEST_LED_BIT);
+        led_test();
+    #endif
 
 #ifdef DEBUG
     tx_byte('I');
@@ -302,10 +324,12 @@ int main()
     setup_button_handler();
     setup_ADC();
 
-    sei();
-
     set_op_amp_resistor_stage(2);
     initialize_global_meter_state();
+
+    setup_charge_pump();
+
+    sei();
 
     display_init();
     display_clear();
@@ -319,6 +343,8 @@ int main()
         if (lbvr) {
             handle_button_press(lbvr);
             last_button_voltage_reading = 0;
+            // Ordinary ADC settings will have been overwritten to read voltage at
+            // button input pin; reset them now.
             setup_ADC();
         }
 
