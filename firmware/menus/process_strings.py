@@ -165,13 +165,13 @@ if __name__ == '__main__':
     f = open(fname)
     contents = f.read()
 
-    fh = open("menu_strings.h", "w")
-    fc = open("menu_strings.c", "w")
+    fh = open("menu_strings_table.h", "w")
+    fc = open("menu_strings_table.c", "w")
 
     fc.write('#include <menu_strings.h>\n\n')
 
-    fh.write('#ifndef MENU_STRINGS_H\n')
-    fh.write('#define MENU_STRINGS_H\n\n')
+    fh.write('#ifndef MENU_STRINGS_TABLE_H\n')
+    fh.write('#define MENU_STRINGS_TABLE_H\n\n')
     fh.write('#include <bitmaps.h>\n\n')
 
     process(fh, fc, contents)
