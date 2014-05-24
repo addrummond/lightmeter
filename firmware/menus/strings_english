@@ -1,0 +1,20 @@
+SET_ISO { set iso }
+
+SET_PRIORITY_MODE { set priority mode }
+SHUTTER_PRIORITY { shutter priority }
+APERTURE_PRIORITY { aperture priority }
+ISO_GIVEN_AP_SHUT { iso given ap/shut }
+
+SET_PRECISION { set precision }
+STOPS@stops { stops }
+FULL_STOPS@fs { full $stops }
+FULL_STOPS_PM_1_2_STOPS { $fs +/-1/2  $stops }
+FULL_STOPS_PM_1_3_STOPS { $fs +/-1/3  $stops }
+FULL_STOPS_PM_1_4_STOPS { $fs +/-1/4  $stops }
+FULL_STOPS_PM_1_8_STOPS { $fs +/-1/8  $stops }
+FULL_STOPS_P_1_10_STOPS { $fs   +1/10 $stops }
+HALF_STOPS { 1/2  $stops }
+THIRD_STOPS { 1/3  $stops }
+QUARTER_STOPS { 1/4  $stops }
+EIGHTH_STOPS { 1/8  $stops }
+TENTH_STOPS { 1/10 $stops }
