@@ -9,14 +9,19 @@ import math
 # 6-bit characters, where each character is an offset in the the relevant table
 # of characters.
 #
-# The table of strings is then organized as follows. MENU_DEFINES is a list
-# of pointers to 6-bit compacted strings. Each string is then an array of
-# uint8_t named MENU_STRING_*. There are two special characters,
-# SPECIAL_DEFINCLUDE6 and SPECIAL_DEFINCLUDE12, which specify that a string from
-# MENU_DEFINES should be spliced into the string. This special character is
-# followed by either one or two two 6-bit values giving a
-# 6 or 12-bit index into MENU_DEFINES (little-endian order for 12-bit indices).
+# As an extension of this format, strings may include the special characters
+# SPECIAL_DEFINCLUDE6 and SPECIAL_DEFINCLUDE12. These specify that a string
+# from an array MENU_DEFINES should be spliced in place of the special character.
+# Each special character is followed either by one or two 6-bit values giving
+# an index into the MENU_DEFINES array (little-endian format for 12-bit indices).
 # The value of 12-bit indices should not exceed 255.
+#
+# The menu strings themselves are stored in variables named MENU_STRING_*.
+#
+# To decode a string, one reads 6-bit chars from MENU_STRING_* until the
+# terminating zero is found. Each time a special char is read, the relevant
+# entry in MENU_DEFINES is looked up. Strings in MENU_DEFINES may themselves
+# contain special chars.
 #
 
 SPECIAL_SPACE = 63
@@ -72,27 +77,9 @@ def compact_string(string):
     return out
 
 def output_strings_table(fh, fc, strings, defines):
-    defkeys = defines.keys()
-    defkeys.sort()
-    index = 0
-    for k in defkeys:
-        v = defines[k]
-        fc.write('const uint8_t MENU_DEFINE_' + str(index) + '[] PROGMEM = { ' + compact_string(v) + '};\n')
-        index += 1
-
-    fh.write('extern const uint8_t *MENU_DEFINES[];\n')
-    fc.write('const uint8_t *MENU_DEFINES[] PROGMEM = {\n')
-    index = 0
-    for k in defkeys:
-        fc.write('    &MENU_DEFINE_' + str(index) + ',\n')
-        index += 1
-    fc.write('};\n\n')
-
-    for k, v in strings.iteritems():
-        fh.write('const uint8_t MENU_STRING_' + k + '[];\n')
-        fc.write('const uint8_t MENU_STRING_' + k + '[] PROGMEM = { ')
+    def out(table):
         s = []
-        for elem in v:
+        for elem in table:
             if elem['type'] == 'lit':
                 for c in elem['text']:
                     s.append(c)
@@ -109,7 +96,28 @@ def output_strings_table(fh, fc, strings, defines):
                     s.append(i >> 6)
             else:
                 assert False
-        fc.write(compact_string(s))
+        return compact_string(s)
+
+    defkeys = defines.keys()
+    defkeys.sort()
+    index = 0
+    for k in defkeys:
+        v = defines[k]
+        fc.write('const uint8_t MENU_DEFINE_' + str(index) + '[] PROGMEM = { ' + out(v) + '};\n')
+        index += 1
+
+    fh.write('extern const uint8_t *MENU_DEFINES[];\n')
+    fc.write('const uint8_t *MENU_DEFINES[] PROGMEM = {\n')
+    index = 0
+    for k in defkeys:
+        fc.write('    &MENU_DEFINE_' + str(index) + ',\n')
+        index += 1
+    fc.write('};\n\n')
+
+    for k, v in strings.iteritems():
+        fh.write('const uint8_t MENU_STRING_' + k + '[];\n')
+        fc.write('const uint8_t MENU_STRING_' + k + '[] PROGMEM = { ')
+        fc.write(out(v))
         fc.write('};\n\n')
 
 blank_or_comment_regex = re.compile(r"^\s*(?:#.*)?$")
@@ -134,28 +142,19 @@ def process(fh, fc, contents):
         string_text = m.group(3).strip()
 
         textelems = list(re.finditer(text_regex, string_text))
-        aggregate_text = ""
+
+        seq = [ ]
         for m in textelems:
             if m.group(0)[0] == '$':
-                if not defines.has_key(m.group(0)[1:]):
-                    sys.stderr.write("Could not find define '%s'" % m.group(0)[1:])
-                    sys.exit(1)
-                aggregate_text += defines[m.group(0)[1:]]
+                seq.append(dict(type='def', name=m.group(0)[1:]))
             else:
-                aggregate_text += m.group(0)
-
-        strings[string_name] = []
-        if def_name is None or len(def_name) == 0:
-            for m in textelems:
-                if m.group(0)[0] == '$':
-                    strings[string_name].append(dict(type='def', name=m.group(0)[1:]))
-                else:
-                    strings[string_name].append(dict(type='lit', text=m.group(0)))
-        else:
-            strings[string_name].append(dict(type='def', name=def_name))
+                seq.append(dict(type='lit', text=m.group(0)))
 
         if def_name is not None and len(def_name) > 0:
-            defines[def_name] = aggregate_text
+            defines[def_name] = seq
+            strings[string_name] = [dict(type='def',name=def_name)]
+        else:
+            strings[string_name] = seq
 
         line_number += 1
 
