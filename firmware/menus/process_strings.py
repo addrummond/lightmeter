@@ -23,10 +23,15 @@ import math
 # entry in MENU_DEFINES is looked up. Strings in MENU_DEFINES may themselves
 # contain special chars.
 #
+# There is another special character, SPECIAL_LONGONLY, which is placed on
+# either side of substrings which can be edited out to generate a shorter
+# version of the string.
+#
 
 SPECIAL_SPACE = 63
 SPECIAL_DEFINCLUDE6 = 62
 SPECIAL_DEFINCLUDE12 = 61
+SPECIAL_LONGONLY = 60
 
 def map_char_to_12px_name(c):
     if re.match(r"[A-Za-z0-9]", c):
@@ -40,13 +45,13 @@ def map_char_to_12px_name(c):
     elif c == '/':
         return 'CHAR_12PX_SLASH_O'
     elif c == ' ':
-        return str(SPECIAL_SPACE)
+        return 'MENU_STRING_SPECIAL_SPACE'
     else:
         sys.stderr.write("Could not map char '%s' to 12px name\n" % c)
         sys.exit(1)
 
 def compact_string(string):
-    """'string' is a sequence of characters/integers"""
+    """'string' is a sequence of characters/integers/tuples of strings [gross]"""
     out = ""
     n_bytes = (len(string)*8/6) + 1
     bytes = [[] for x in xrange(n_bytes)]
@@ -63,6 +68,8 @@ def compact_string(string):
             elif type(si) == type(0):
                 assert si < 64
                 c = str(si)
+            elif type(si) == type(()):
+                c = si[0]
             else:
                 assert False
         val = '(' + c + ' << ' + str(bit_offset) + ')'
@@ -83,14 +90,16 @@ def output_strings_table(fh, fc, strings, defines):
             if elem['type'] == 'lit':
                 for c in elem['text']:
                     s.append(c)
+            elif elem['type'] == 'longonly':
+                s.append(('MENU_STRING_SPECIAL_LONGONLY',))
             elif elem['type'] == 'def':
                 i = defkeys.index(elem['name'])
                 assert i < 256
                 if i < math.pow(2,6):
-                    s.append(SPECIAL_DEFINCLUDE6)
+                    s.append(('MENU_STRING_SPECIAL_DEFINCLUDE6',))
                     s.append(i)
                 else:
-                    s.append(SPECIAL_DEFINCLUDE12)
+                    s.append(('MENU_STRING_SPECIAL_DEFINCLUDE12',))
                     # Make 12-bit index.
                     s.append(i & 0b111111)
                     s.append(i >> 6)
@@ -120,21 +129,22 @@ def output_strings_table(fh, fc, strings, defines):
         fc.write(out(v))
         fc.write('};\n\n')
 
+# TODO: Backslash escaping not quite properly handled yet.
 blank_or_comment_regex = re.compile(r"^\s*(?:#.*)?$")
 line_regex = re.compile(r"^\s*(\w*)\s*(?:@(\w+))?\s*\{((?:(?:[^}\\])|(?:\\.))*)\}\s*(?:#.*)?$")
-text_regex = re.compile(r"((?:[^$]+)|(?:\$\w*))")
+text_regex = re.compile(r"\]|\[|(?:(?:[^$\[\]]|(?:\\.))+)|(?:\$\w*)")
 def process(fh, fc, contents):
     strings = { }
     defines = { }
 
     lines = re.split(r"\r?\n", contents)
-    line_number = 0
+    line_number = 1
     for l in lines:
         if re.match(blank_or_comment_regex, l):
             continue
         m = re.match(line_regex, l)
         if not m:
-            sys.stderr.write("Parse error on line %i" % line_number)
+            sys.stderr.write("Parse error on line %i\n" % line_number)
             sys.exit(1)
 
         string_name = m.group(1)
@@ -144,9 +154,23 @@ def process(fh, fc, contents):
         textelems = list(re.finditer(text_regex, string_text))
 
         seq = [ ]
+        open_count = 0
         for m in textelems:
             if m.group(0)[0] == '$':
                 seq.append(dict(type='def', name=m.group(0)[1:]))
+            elif m.group(0) == '[':
+                if open_count > 0:
+                    sys.stderr.write("Nested '[' at line %i\n" % line_number)
+                    sys.exit(1)
+                else:
+                    open_count = 1
+                    seq.append(dict(type='longonly'))
+            elif m.group(0) == ']':
+                if open_count < 1:
+                    sys.stderr.write("Closing ']' without openening '[' at line %i\n" % line_number)
+                    sys.exit(1)
+                open_count -= 1
+                seq.append(dict(type='longonly'))
             else:
                 seq.append(dict(type='lit', text=m.group(0)))
 
@@ -173,6 +197,10 @@ if __name__ == '__main__':
     fh.write('#ifndef MENU_STRINGS_TABLE_H\n')
     fh.write('#define MENU_STRINGS_TABLE_H\n\n')
     fh.write('#include <bitmaps.h>\n\n')
+    fh.write('#define MENU_STRINGS_SPECIAL_SPACE %i\n' % SPECIAL_SPACE)
+    fh.write('#define MENU_STRINGS_SPECIAL_DEFINCLUDE6 %i\n' % SPECIAL_DEFINCLUDE6)
+    fh.write('#define MENU_STRINGS_SPECIAL_DEFINCLUDE12 %i\n' % SPECIAL_DEFINCLUDE12)
+    fh.write('#define MENU_STRINGS_SPECIAL_LONGONLY %i\n\n' % SPECIAL_LONGONLY)
 
     process(fh, fc, contents)
 
