@@ -1,6 +1,6 @@
 #include <menu_strings.h>
 
-void menu_string_decode(bool get_long, const uint8_t *menu_string, uint8_t *dest)
+void menu_string_decode_(bool get_long, const uint8_t *menu_string, uint8_t *dest)
 {
     uint16_t i = 0;
     bool in_longonly = false;
