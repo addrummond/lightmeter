@@ -3,7 +3,7 @@
 #endif
 #include <menus/menu_strings.h>
 
-// Writes CHAR_12PX_*_O+1 values into dest. (+1 because we reserve 0 as
+// Writes CHAR_12PX_*_CODE values into dest. (+1 because we reserve 0 as
 // terminator).
 uint8_t menu_string_decode_(bool get_long, const uint8_t *menu_string, uint8_t *dest)
 {
