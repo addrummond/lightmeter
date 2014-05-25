@@ -72,7 +72,7 @@ def compact_string(string):
                 c = si[0]
             else:
                 assert False
-        val = '(' + c + ' << ' + str(bit_offset) + ')'
+        val = '(uint8_t)(' + c + ' << ' + str(bit_offset) + ')'
         bytes[byte_i].append(val)
         if bit_offset > 2:
             val = '(' + c + ' >> ' + str(6 - (8 - bit_offset)) + ')'
@@ -119,7 +119,7 @@ def output_strings_table(fh, fc, strings, defines):
     fc.write('const uint8_t *MENU_DEFINES[] PROGMEM = {\n')
     index = 0
     for k in defkeys:
-        fc.write('    &MENU_DEFINE_' + str(index) + ',\n')
+        fc.write('    MENU_DEFINE_' + str(index) + ',\n')
         index += 1
     fc.write('};\n\n')
 
@@ -193,14 +193,18 @@ if __name__ == '__main__':
     fc = open("menu_strings_table.c", "w")
 
     fc.write('#include <menu_strings.h>\n\n')
+    fc.write('#include <bitmaps.h>\n')
 
+    fh.write('#ifndef __AVR__\n')
+    fh.write('#define PROGMEM\n')
+    fh.write('#endif\n')
     fh.write('#ifndef MENU_STRINGS_TABLE_H\n')
     fh.write('#define MENU_STRINGS_TABLE_H\n\n')
     fh.write('#include <bitmaps.h>\n\n')
-    fh.write('#define MENU_STRINGS_SPECIAL_SPACE %i\n' % SPECIAL_SPACE)
-    fh.write('#define MENU_STRINGS_SPECIAL_DEFINCLUDE6 %i\n' % SPECIAL_DEFINCLUDE6)
-    fh.write('#define MENU_STRINGS_SPECIAL_DEFINCLUDE12 %i\n' % SPECIAL_DEFINCLUDE12)
-    fh.write('#define MENU_STRINGS_SPECIAL_LONGONLY %i\n\n' % SPECIAL_LONGONLY)
+    fh.write('#define MENU_STRING_SPECIAL_SPACE %i\n' % SPECIAL_SPACE)
+    fh.write('#define MENU_STRING_SPECIAL_DEFINCLUDE6 %i\n' % SPECIAL_DEFINCLUDE6)
+    fh.write('#define MENU_STRING_SPECIAL_DEFINCLUDE12 %i\n' % SPECIAL_DEFINCLUDE12)
+    fh.write('#define MENU_STRING_SPECIAL_LONGONLY %i\n\n' % SPECIAL_LONGONLY)
 
     process(fh, fc, contents)
 

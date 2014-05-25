@@ -1,5 +1,9 @@
 #!/bin/sh
 
+cd ../bitmaps
+python process_bitmaps.py output
+cd ../menus
+
 python process_strings.py strings_english &&
 gcc -c -DTEST -I../ -I./ -I../bitmaps menu_strings.c -o menu_strings_test.out &&
 gcc -c -DTEST -I../ -I./ -I../bitmaps menu_strings_table.c -o menu_strings_table_test.out &&

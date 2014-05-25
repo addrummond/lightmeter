@@ -1,3 +1,6 @@
+#ifdef TEST
+#include <stdio.h>
+#endif
 #include <menu_strings.h>
 
 void menu_string_decode_(bool get_long, const uint8_t *menu_string, uint8_t *dest)
@@ -20,10 +23,27 @@ void menu_string_decode_(bool get_long, const uint8_t *menu_string, uint8_t *des
             in_longonly = !in_longonly;
         }
         else {
-            if (in_longoly && !get_long)
+            if (in_longonly && !get_long)
                 continue;
 
             dest[i] = c+1;
         }
     }
 }
+
+#ifdef TEST
+
+int main()
+{
+    uint8_t out[50];
+
+    menu_string_decode_long(MENU_STRING_FULL_STOPS_PM_1_2_STOPS, out);
+
+    uint8_t i;
+    for (i = 0; out[i]; ++i) {
+        printf("%i ", out[i]);
+    }
+    printf("\n");
+}
+
+#endif
