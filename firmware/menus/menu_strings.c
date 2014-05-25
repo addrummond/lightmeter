@@ -1,7 +1,7 @@
 #ifdef TEST
 #include <stdio.h>
 #endif
-#include <menu_strings.h>
+#include <menus/menu_strings.h>
 
 // Writes CHAR_12PX_*_O+1 values into dest. (+1 because we reserve 0 as
 // terminator).

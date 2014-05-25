@@ -115,8 +115,9 @@ def output_strings_table(fh, fc, strings, defines):
         fc.write('const uint8_t MENU_DEFINE_' + str(index) + '[] PROGMEM = { ' + out(v) + '};\n')
         index += 1
 
-    fh.write('extern const uint8_t *MENU_DEFINES[];\n')
-    fc.write('const uint8_t *MENU_DEFINES[] PROGMEM = {\n')
+    fh.write('typedef const uint8_t *const_ptr_to_uint8_t;')
+    fh.write('extern const const_ptr_to_uint8_t MENU_DEFINES[];\n')
+    fc.write('const const_ptr_to_uint8_t MENU_DEFINES[] PROGMEM = {\n')
     index = 0
     for k in defkeys:
         fc.write('    MENU_DEFINE_' + str(index) + ',\n')
@@ -192,15 +193,13 @@ if __name__ == '__main__':
     fh = open("menu_strings_table.h", "w")
     fc = open("menu_strings_table.c", "w")
 
-    fc.write('#include <menu_strings.h>\n\n')
-    fc.write('#include <bitmaps.h>\n')
+    fc.write('#include <menus/menu_strings.h>\n\n')
+    fc.write('#include <bitmaps/bitmaps.h>\n')
 
-    fh.write('#ifndef __AVR__\n')
-    fh.write('#define PROGMEM\n')
-    fh.write('#endif\n')
+    fh.write('#include <readbyte.h>\n')
     fh.write('#ifndef MENU_STRINGS_TABLE_H\n')
     fh.write('#define MENU_STRINGS_TABLE_H\n\n')
-    fh.write('#include <bitmaps.h>\n\n')
+    fh.write('#include <bitmaps/bitmaps.h>\n\n')
     fh.write('#define MENU_STRING_SPECIAL_SPACE %i\n' % SPECIAL_SPACE)
     fh.write('#define MENU_STRING_SPECIAL_DEFINCLUDE6 %i\n' % SPECIAL_DEFINCLUDE6)
     fh.write('#define MENU_STRING_SPECIAL_DEFINCLUDE12 %i\n' % SPECIAL_DEFINCLUDE12)

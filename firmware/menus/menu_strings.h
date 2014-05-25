@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include <menu_strings_table.h>
+#include <menus/menu_strings_table.h>
 
 uint8_t menu_string_decode_(bool get_long, const uint8_t *menu_string, uint8_t *dest);
 #define menu_string_decode_short(x,y) menu_string_decode_(false, (x), (y))
