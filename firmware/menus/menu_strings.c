@@ -2,7 +2,7 @@
 
 void menu_string_decode(bool get_long, const uint8_t *menu_string, uint8_t *dest)
 {
-    uint8_t i = 0;
+    uint16_t i = 0;
     bool in_longonly = false;
     for (;; ++i) {
         uint8_t bytei = i*6/8;
