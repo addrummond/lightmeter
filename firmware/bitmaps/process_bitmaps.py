@@ -94,7 +94,7 @@ def get_12px_chars():
 #             for row in pixels:
 #                 for p in row:
 #                     sys.stdout.write("%i " % p)
-#                 print 
+#                 print
 #             print pixels
              blocks, block_grid, num_blocks = get_unique_blocks(pixels, 0, width-4, height, blocks)
              name_to_block_grid[name] = block_grid
@@ -129,7 +129,7 @@ def get_stats():
      blockcount = len(blocks_array)
      uncompressed = bitmap_count*12*8/8
      compressed = blockcount*BLOCK_SIZE*BLOCK_SIZE/8 + bitmap_count*(12/BLOCK_SIZE)*(8/BLOCK_SIZE)
-     
+
      print "There are %i blocks" % blockcount
      print "Maximum blocks per char: %i" % max_blocks_per_char
      print "Size uncompressed %i" % uncompressed
@@ -186,9 +186,11 @@ def output_tables():
     dotc.write("#include <stdint.h>\n")
     dotc.write("#include <readbyte.h>\n\n")
 
-    doth.write("#define CHAR_WIDTH_8PX 6\n\n")
-    doth.write("#define CHAR_OFFSET_8PX(n) (((n) << 2) + ((n) << 1)) // I.e. n*6\n\n")
-    doth.write("#define CHAR_OFFSET_12PX(n) (((n) << 2) + ((n) << 1)) // I.e. n*6\n\n")
+    doth.write("#define CHAR_WIDTH_8PX 6\n")
+    doth.write("#define CHAR_OFFSET_8PX(n) (((n) << 2) + ((n) << 1)) // I.e. n*6\n")
+    doth.write("#define CHAR_OFFSET_12PX(n) (((n) << 2) + ((n) << 1)) // I.e. n*6\n")
+    doth.write("#define CHAR_OFFSET_FROM_CODE_8PX(n) CHAR_OFFSET_8PX(n-1)\n")
+    doth.write("#define CHAR_OFFSET_FROM_CODE_12PX(n) CHAR_OFFSET_12PX(n-1)\n\n")
 
     #
     # TABLES FOR 12PX CHARS
@@ -221,6 +223,7 @@ def output_tables():
     doth.write('extern const uint8_t CHAR_12PX_GRIDS[];\n')
     dotc.write('const uint8_t CHAR_12PX_GRIDS[] PROGMEM = {\n')
     i = 0
+    code = 1
     ordered_keys = name_to_block_grid.keys()
     ordered_keys.sort()
     for name in ordered_keys:
@@ -230,6 +233,7 @@ def output_tables():
         cname = 'CHAR_12PX_' + m.group(1).upper()
         doth.write('#define ' + cname + ' (CHAR_12PX_GRIDS + ' + str(i) + ')\n')
         doth.write('#define ' + cname + '_O ' + str(i) + '\n')
+        doth.write('#define ' + cname + '_CODE ' + str(code) + '\n')
         dotc.write("// " + cname + "\n")
         for row in grid:
             assert BLOCK_SIZE == 4
@@ -246,6 +250,7 @@ def output_tables():
             dotc.write('    ' + ', '.join(map(str, (map(genindex, row)))) + ',\n')
         dotc.write('\n')
         i += (12/BLOCK_SIZE)*(8/BLOCK_SIZE)
+        code += 1
     dotc.write('};\n')
 
     doth.write('#define CHAR_12PX_BLOCK_SIZE ' + str(BLOCK_SIZE))
@@ -276,7 +281,7 @@ def output_tables():
 
         i += 1
     dotc.write("};\n")
-                
+
     #
     # POSTAMBLE
     #

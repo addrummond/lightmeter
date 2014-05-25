@@ -35,15 +35,15 @@ SPECIAL_LONGONLY = 60
 
 def map_char_to_12px_name(c):
     if re.match(r"[A-Za-z0-9]", c):
-        return '(CHAR_12PX_' + c.upper() + '_O+1)'
+        return 'CHAR_12PX_' + c.upper() + '_CODE'
     elif c == '/':
-        return '(CHAR_12PX_SLASH_O+1)'
+        return 'CHAR_12PX_SLASH_CODE'
     elif c == '+':
-        return '(CHAR_12PX_PLUS_O+1)'
+        return 'CHAR_12PX_PLUS_CODE'
     elif c == '-':
-        return '(CHAR_12PX_MINUS_O+1)'
+        return 'CHAR_12PX_MINUS_CODE'
     elif c == '/':
-        return '(CHAR_12PX_SLASH_O+1)'
+        return 'CHAR_12PX_SLASH_CODE'
     elif c == ' ':
         return 'MENU_STRING_SPECIAL_SPACE'
     else:
@@ -75,7 +75,7 @@ def compact_string(string):
         val = '(uint8_t)(' + c + ' << ' + str(bit_offset) + ')'
         bytes[byte_i].append(val)
         if bit_offset > 2:
-            val = '(' + c + ' >> ' + str(6 - (8 - bit_offset)) + ')'
+            val = '(' + c + ' >> ' + str((6 - (6 - (8 - bit_offset)))) + ')'
             bytes[byte_i+1].append(val)
     while len(bytes[-1]) == 0:
         bytes.pop()
