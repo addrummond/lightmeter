@@ -35,15 +35,15 @@ SPECIAL_LONGONLY = 60
 
 def map_char_to_12px_name(c):
     if re.match(r"[A-Za-z0-9]", c):
-        return 'CHAR_12PX_' + c.upper() + '_O'
+        return '(CHAR_12PX_' + c.upper() + '_O+1)'
     elif c == '/':
-        return 'CHAR_12PX_SLASH_O'
+        return '(CHAR_12PX_SLASH_O+1)'
     elif c == '+':
-        return 'CHAR_12PX_PLUS_O'
+        return '(CHAR_12PX_PLUS_O+1)'
     elif c == '-':
-        return 'CHAR_12PX_MINUS_O'
+        return '(CHAR_12PX_MINUS_O+1)'
     elif c == '/':
-        return 'CHAR_12PX_SLASH_O'
+        return '(CHAR_12PX_SLASH_O+1)'
     elif c == ' ':
         return 'MENU_STRING_SPECIAL_SPACE'
     else:
@@ -124,7 +124,7 @@ def output_strings_table(fh, fc, strings, defines):
     fc.write('};\n\n')
 
     for k, v in strings.iteritems():
-        fh.write('const uint8_t MENU_STRING_' + k + '[];\n')
+        fh.write('extern const uint8_t MENU_STRING_' + k + '[];\n')
         fc.write('const uint8_t MENU_STRING_' + k + '[] PROGMEM = { ')
         fc.write(out(v))
         fc.write('};\n\n')
