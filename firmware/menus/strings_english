@@ -1,14 +1,14 @@
 #
 # Main menu entries.
 #
-SET_ISO { set iso }
+MAIN_MENU:ISO { iso }
 
-SET_PRIORITY_MODE { set priority[ mode] }
+MAIN_MENU:PRIORITY_MODE { priority[ mode] }
   SHUTTER_PRIORITY  { sh[u]t[ter] priority }
   APERTURE_PRIORITY { ap[erture] priority }
   EV_TO_ISO         { ev to iso }
 
-PRECISION { precision }
+MAIN_MENU:PRECISION { precision }
   STOPS@stops { stops }
   FULL_STOPS@fs { full $stops }
   FULL_STOPS_PM_1_2_STOPS { $fs +/-1/2[  $stops] }
@@ -21,3 +21,10 @@ PRECISION { precision }
   QUARTER_STOPS { 1/4  $stops }
   EIGHTH_STOPS { 1/8  $stops }
   TENTH_STOPS { 1/10 $stops }
+
+MAIN_MENU:CINEMATOGRAPHY { cinematography }
+
+MAIN_MENU:SETTINGS { settings }
+
+MAIN_MENU:ABOUT { about }
+  VERSION { xulux 999 }

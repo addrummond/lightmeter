@@ -27,6 +27,9 @@ import math
 # either side of substrings which can be edited out to generate a shorter
 # version of the string.
 #
+# Strings can be placed in named groups. The script outputs #defines giving
+# max short/long lengths for the strings in each group.
+#
 
 SPECIAL_SPACE = 63
 SPECIAL_DEFINCLUDE6 = 62
@@ -99,7 +102,7 @@ def get_length(seq, defines, long=False):
             assert False
     return length
 
-def output_strings_table(fh, fc, strings, defines):
+def output_strings_table(fh, fc, strings, defines, groups_to_lists_of_string_names):
     def out(table):
         s = []
         for elem in table:
@@ -123,10 +126,18 @@ def output_strings_table(fh, fc, strings, defines):
                 assert False
         return compact_string(s)
 
+    # Globals max lengths.
     short_lengths = [get_length(s, defines, long=False) for s in strings.itervalues()]
     long_lengths = [get_length(s, defines, long=True) for s in strings.itervalues()]
     fh.write('#define MENU_MAX_SHORT_STRING_LENGTH %i\n' % max(short_lengths))
     fh.write('#define MENU_MAX_LONG_STRING_LENGTH %i\n' % max(long_lengths))
+
+    # Max lengths for each group.
+    for g, lst in groups_to_lists_of_string_names.iteritems():
+        short_lengths = [get_length(strings[n], defines, long=False) for n in lst]
+        long_lengths = [get_length(strings[n], defines, long=True)  for n in lst]
+        fh.write('#define MENU_GROUP_%s_MAX_SHORT_STRING_LENGTH %i\n' % (g, max(short_lengths)))
+        fh.write('#define MENU_GROUP_%s_MAX_LONG_STRING_LENGTH %i\n' % (g, max(long_lengths)))
 
     defkeys = defines.keys()
     defkeys.sort()
@@ -157,11 +168,12 @@ def output_strings_table(fh, fc, strings, defines):
 
 # TODO: Backslash escaping not quite properly handled yet.
 blank_or_comment_regex = re.compile(r"^\s*(?:#.*)?$")
-line_regex = re.compile(r"^\s*(\w*)\s*(?:@(\w+))?\s*\{((?:(?:[^}\\])|(?:\\.))*)\}\s*(?:#.*)?$")
+line_regex = re.compile(r"^\s*((?:[\w,]*:)?\w*)\s*(?:@(\w+))?\s*\{((?:(?:[^}\\])|(?:\\.))*)\}\s*(?:#.*)?$")
 text_regex = re.compile(r"\]|\[|(?:(?:[^$\[\]]|(?:\\.))+)|(?:\$\w*)")
 def process(fh, fc, contents):
     strings = { }
     defines = { }
+    groups_to_lists_of_string_names = { }
 
     lines = re.split(r"\r?\n", contents)
     line_number = 1
@@ -173,7 +185,22 @@ def process(fh, fc, contents):
             sys.stderr.write("Parse error on line %i\n" % line_number)
             sys.exit(1)
 
-        string_name = m.group(1)
+        g1 = m.group(1)
+        ns = g1.split(":")
+        string_name = None
+        group_names = [ ]
+        if min(map(len, ns)) == 0 or len(ns) == 0 or len(ns) > 2:
+            sys.stderr.write("Bad string name one line %i\n" % line_number)
+            sys.exit(1)
+        if len(ns) == 1:
+            string_name = ns[0]
+        else:
+            string_name = ns[1]
+            group_names = ns[0].split(",")
+            if min(map(len, group_names)) == 0:
+                sys.stderr.write("Bad group name on line %i\n" % line_number)
+                sys.exit(1)
+
         def_name = m.group(2)
         string_text = m.group(3).strip()
 
@@ -206,9 +233,14 @@ def process(fh, fc, contents):
         else:
             strings[string_name] = seq
 
+        for g in group_names:
+            if not groups_to_lists_of_string_names.has_key(g):
+                groups_to_lists_of_string_names[g] = [ ]
+            groups_to_lists_of_string_names[g].append(string_name)
+
         line_number += 1
 
-    output_strings_table(fh, fc, strings, defines)
+    output_strings_table(fh, fc, strings, defines, groups_to_lists_of_string_names)
 
 if __name__ == '__main__':
     fname = sys.argv[1]
