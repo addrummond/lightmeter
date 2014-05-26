@@ -19,9 +19,8 @@ typedef enum priority {
 } priority_t;
 
 typedef enum ui_mode {
-    UI_MODE_DEFAULT=0,
+    UI_MODE_READING=0,
     UI_MODE_MAIN_MENU,
-    
     UI_MODE_CALIBRATE,
 } ui_mode_t;
 
@@ -61,7 +60,7 @@ typedef struct meter_state {
     priority_t priority;
 
     int8_t exp_comp;
-  
+
     ui_mode_t ui_mode;
     meter_mode_t meter_mode;
     precision_mode_t precision_mode;

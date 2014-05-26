@@ -14,7 +14,7 @@ eeprom = [
 
     0,                                                             # exp comp
 
-    0,                                                             # UI_MODE_DEFAULT
+    1,                                                             # UI_MODE_READING
     0,                                                             # METER_MODE_REFLECTIVE.
     10,                                                            # PRECISION_MODE_TENTH
 

@@ -12,8 +12,8 @@
 //
 // Modularizing the display code takes a little bit of care when
 // we're not buffering the entire screen area. We will often want
-// have multiple ui widgets drawing to the same page. E.g., the
-// top status line is 12px high, so that other ui widgets might
+// have multiple ui widgets drawing to the same page. E.g., if one line is
+// 12px high, then other ui widgets might
 // want to draw on the remaining 4px of the second page. The basic
 // strategy here is to have a function for each widget which
 // renders some number of columns of the widget at the specified x value.
@@ -24,6 +24,65 @@
 
 #define ms global_meter_state
 #define tms global_transient_meter_state
+
+static void show_reading()
+{
+    uint8_t i;
+    uint8_t out[6];
+    memset8_zero(out, sizeof(out));
+    ui_top_status_line_state_t state0;
+    memset8_zero(&state0, sizeof(state0));
+    for (i = 0; i < DISPLAY_LCDWIDTH; i += 6) {
+        memset8_zero(out, sizeof(out));
+        ui_top_status_line_at_6col(&state0, out, 1, i);
+        display_write_page_array(out, 6, 1, i, 0);
+    }
+
+    uint8_t out2[24];
+    memset8_zero(out2, sizeof(out2));
+    ui_main_reading_display_state_t state;
+    memset8_zero(&state, sizeof(state));
+    //static uint8_t val = 0;
+    for (i = 0; i < DISPLAY_LCDWIDTH; i += 8) {
+        memset8_zero(out2, sizeof(out2));
+        ui_main_reading_display_at_8col(&state, out2, 3, i);
+        //out2[0] = val++;
+        display_write_page_array(out2, 8, 3, i, 3);
+    }
+
+    ui_bttm_status_line_state_t state2;
+    memset8_zero(out, sizeof(out));
+    memset8_zero(&state2, sizeof(state2));
+    for (i = 0; DISPLAY_LCDWIDTH - i >= 6; i += 6) {
+        memset8_zero(out, sizeof(out));
+        ui_bttm_status_line_at_6col(&state2, out, 1, i);
+        display_write_page_array(out, 6, 1, i, 7);
+    }
+}
+
+void ui_show_interface()
+{
+    // Used to make measurements of display power consumption.
+    /*uint8_t col, page;
+    for (page = 0; page < 8; ++page) {
+        display_command(DISPLAY_SET_COL_START_LOW + (col & 0xF));
+        display_command(DISPLAY_SET_COL_START_HIGH + (col >> 4));
+        display_command(DISPLAY_SET_PAGE_START + page);
+        for (col = 0; col < 128; ++col) {
+            DISPLAY_WRITE_DATA {
+                //display_write_byte(0xFF);
+                //display_write_byte(0xF0);
+                //display_write_byte(0b11000000);
+                display_write_byte(0b1000000);
+            }
+        }
+    }
+    return;*/
+
+    if (ms.ui_mode == UI_MODE_READING) {
+        show_reading();
+    }
+}
 
 void ui_top_status_line_at_6col(ui_top_status_line_state_t *func_state,
                                 uint8_t *out,

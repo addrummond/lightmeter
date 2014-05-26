@@ -5,6 +5,8 @@
 #include <stddef.h>
 #include <state.h>
 
+void ui_show_interface();
+
 typedef struct ui_top_status_line_state {
     uint8_t charbuffer[6];
     bool charbuffer_has_contents;
