@@ -83,6 +83,22 @@ def compact_string(string):
         out += '|'.join(byte) + ','
     return out
 
+def get_length(seq, defines, long=False):
+    length = 0
+    in_long = False
+    for elem in seq:
+        if elem['type'] == 'lit':
+            if not (in_long and not long):
+                length += len(elem['text'])
+        elif elem['type'] == 'def':
+            if not (in_long and not long):
+                length += get_length(defines[elem['name']], defines, long)
+        elif elem['type'] == 'longonly':
+            in_long = not in_long
+        else:
+            assert False
+    return length
+
 def output_strings_table(fh, fc, strings, defines):
     def out(table):
         s = []
@@ -107,6 +123,11 @@ def output_strings_table(fh, fc, strings, defines):
                 assert False
         return compact_string(s)
 
+    short_lengths = [get_length(s, defines, long=False) for s in strings.itervalues()]
+    long_lengths = [get_length(s, defines, long=True) for s in strings.itervalues()]
+    fh.write('#define MENU_MAX_SHORT_STRING_LENGTH %i\n' % max(short_lengths))
+    fh.write('#define MENU_MAX_LONG_STRING_LENGTH %i\n' % max(long_lengths))
+
     defkeys = defines.keys()
     defkeys.sort()
     index = 0
@@ -126,6 +147,10 @@ def output_strings_table(fh, fc, strings, defines):
 
     for k, v in strings.iteritems():
         fh.write('extern const uint8_t MENU_STRING_' + k + '[];\n')
+        ll = get_length(v, defines, long=True)
+        sl = get_length(v, defines, long=False)
+        fh.write('#define MENU_STRING_' + k + '_LONG_LENGTH ' + str(ll) + '\n')
+        fh.write('#define MENU_STRING_' + k + '_SHORT_LENGTH ' + str(sl) + '\n')
         fc.write('const uint8_t MENU_STRING_' + k + '[] PROGMEM = { ')
         fc.write(out(v))
         fc.write('};\n\n')
