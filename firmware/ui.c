@@ -87,6 +87,16 @@ const const_ptr_to_uint8_t ui_main_menu_strings[] PROGMEM = {
 #define NUM_MAIN_MENU_STRINGS (sizeof(ui_main_menu_strings)/sizeof(const_ptr_to_uint8_t))
 #define MMS(i) ((const_ptr_to_uint8_t)pgm_read_word(&ui_main_menu_strings[(i)]))
 
+static uint8_t menu_bwrite_12px_char(uint8_t code, uint8_t *buf, uint8_t voffset)
+{
+    if (code == MENU_STRING_SPECIAL_SPACE)
+        return 0;
+    if (code == 0)
+        return 1;
+    display_bwrite_12px_char(CHAR_12PX_GRIDS + CHAR_OFFSET_FROM_CODE_12PX(code), buf, DISPLAY_NUM_PAGES, voffset);
+    return 0;
+}
+
 static void show_main_menu()
 {
     assert(NUM_MAIN_MENU_STRINGS >= 5);
@@ -116,17 +126,8 @@ static void show_main_menu()
     for (i = 0; i < DISPLAY_LCDWIDTH/8 && finished_mask != 0b11111; ++i) {
         memset8_zero(buf, sizeof(buf));
 
-        if (! (finished_mask & 0b100)) {
-            if (center_str[i] == MENU_STRING_SPECIAL_SPACE)
-                ;
-            else if (center_str[i] == 0) {
-                finished_mask |= 0b100;
-            }
-            else {
-                display_bwrite_12px_char(CHAR_12PX_GRIDS + CHAR_OFFSET_FROM_CODE_12PX(center_str[i]),
-                                         buf+2, DISPLAY_NUM_PAGES, 0);
-            }
-        }
+        if (! (finished_mask & 0b100))
+            finished_mask |= (menu_bwrite_12px_char(center_str[i], buf+2, 0) << 2);
 
         display_write_page_array(buf, 8, DISPLAY_NUM_PAGES, i*8, 0);
     }
