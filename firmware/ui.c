@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <mymemset.h>
 #include <assert.h>
+#include <menus/menu_strings.h>
 
 #include <basic_serial/basic_serial.h>
 
@@ -60,6 +61,77 @@ static void show_reading()
     }
 }
 
+static uint8_t down_from(uint8_t max, uint8_t i, uint8_t down)
+{
+    if (i >= down)
+        return i-down;
+    else
+        return max - (down - i);
+}
+
+static uint8_t up_from(uint8_t max, uint8_t i, uint8_t up)
+{
+    if (i + up < max)
+        return i + up;
+    else
+        return i - max;
+}
+
+const const_ptr_to_uint8_t ui_main_menu_strings[] PROGMEM = {
+    MENU_STRING_ISO,
+    MENU_STRING_PRIORITY_MODE,
+    MENU_STRING_PRECISION,
+    MENU_STRING_CINEMATOGRAPHY,
+    MENU_STRING_SETTINGS
+};
+#define NUM_MAIN_MENU_STRINGS (sizeof(ui_main_menu_strings)/sizeof(const_ptr_to_uint8_t))
+#define MMS(i) ((const_ptr_to_uint8_t)pgm_read_word(&ui_main_menu_strings[(i)]))
+
+static void show_main_menu()
+{
+    assert(NUM_MAIN_MENU_STRINGS >= 5);
+    assert(ms.ui_mode_state.main_menu.item_index < NUM_MAIN_MENU_STRINGS);
+
+    // Selected item is in the middle, with two above it and two below it.
+    // y coord of top of selected item is 27, so y coord of top of first item
+    // is 2.
+
+    uint8_t center_str[MENU_MAX_SHORT_STRING_LENGTH+1];
+    //uint8_t top1_str[MENU_MAX_SHORT_STRING_LENGTH+1];
+    //uint8_t top2_str[MENU_MAX_SHORT_STRING_LENGTH+1];
+    //uint8_t bttm1_str[MENU_MAX_SHORT_STRING_LENGTH+1];
+    //uint8_t bttm2_str[MENU_MAX_SHORT_STRING_LENGTH+1];
+
+    // Write selected (center) item.
+    menu_string_decode_short(MMS(ms.ui_mode_state.main_menu.item_index), center_str);
+    // Write other items.
+    //menu_string_decode_short(MMS(down_from(NUM_MAIN_MENU_STRINGS, ms.ui_mode_state.main_menu.item_index, 1)), top1_str);
+    //menu_string_decode_short(MMS(down_from(NUM_MAIN_MENU_STRINGS, ms.ui_mode_state.main_menu.item_index, 2)), top2_str);
+    //menu_string_decode_short(MMS(up_from(NUM_MAIN_MENU_STRINGS, ms.ui_mode_state.main_menu.item_index, 1)), bttm1_str);
+    //menu_string_decode_short(MMS(up_from(NUM_MAIN_MENU_STRINGS, ms.ui_mode_state.main_menu.item_index, 2)), bttm2_str);
+
+    uint8_t i;
+    uint8_t buf[8*DISPLAY_NUM_PAGES];
+    uint8_t finished_mask = 0;
+    for (i = 0; i < DISPLAY_LCDWIDTH/8 && finished_mask != 0b11111; ++i) {
+        memset8_zero(buf, sizeof(buf));
+
+        if (! (finished_mask & 0b100)) {
+            if (center_str[i] == MENU_STRING_SPECIAL_SPACE)
+                ;
+            else if (center_str[i] == 0) {
+                finished_mask |= 0b100;
+            }
+            else {
+                display_bwrite_12px_char(CHAR_12PX_GRIDS + CHAR_OFFSET_FROM_CODE_12PX(center_str[i]),
+                                         buf+2, DISPLAY_NUM_PAGES, 0);
+            }
+        }
+
+        display_write_page_array(buf, 8, DISPLAY_NUM_PAGES, i*8, 0);
+    }
+}
+
 void ui_show_interface()
 {
     // Used to make measurements of display power consumption.
@@ -81,6 +153,9 @@ void ui_show_interface()
 
     if (ms.ui_mode == UI_MODE_READING) {
         show_reading();
+    }
+    else if (ms.ui_mode == UI_MODE_MAIN_MENU) {
+        show_main_menu();
     }
 }
 

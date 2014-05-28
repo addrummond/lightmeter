@@ -24,6 +24,12 @@ typedef enum ui_mode {
     UI_MODE_CALIBRATE,
 } ui_mode_t;
 
+typedef union ui_mode_state {
+    struct {
+        uint8_t item_index;
+    } main_menu;
+} ui_mode_state_t;
+
 typedef enum meter_mode {
     METER_MODE_REFLECTIVE=0,
     METER_MODE_INCIDENT
@@ -62,6 +68,8 @@ typedef struct meter_state {
     int8_t exp_comp;
 
     ui_mode_t ui_mode;
+    ui_mode_state_t ui_mode_state;
+
     meter_mode_t meter_mode;
     precision_mode_t precision_mode;
 

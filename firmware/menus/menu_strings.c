@@ -61,10 +61,7 @@ uint8_t menu_string_decode_(bool get_long, const uint8_t *menu_string, uint8_t *
             if (in_longonly && !get_long)
                 continue;
 
-            if (c == MENU_STRING_SPECIAL_SPACE)
-                dest[desti++] = 255;
-            else
-                dest[desti++] = c;
+            dest[desti++] = c;
         }
     }
 
