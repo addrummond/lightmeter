@@ -495,7 +495,6 @@ uint8_t iso_bcd_to_third_stops(uint8_t *digits, uint8_t length)
     return stops;
 }
 
-// We represent ISO in 1/8 stops, with 0 as ISO 6.
 // This is called by the following macros defined in exposure.h:
 //
 //     aperture_given_shutter_speed_iso_ev(shutter_speed,iso,ev)
