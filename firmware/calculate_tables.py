@@ -166,72 +166,73 @@ for x in xrange(1): # Just here to get a new scope
 # Finally, we split the array into two arrays (one for the absolute
 # value bytes and one for the diff bit pattern index bytes). (This was
 # previously necessary because the monolithic array was too large to
-# index with a single byte; may not be necessary now.)
+# index with a single byte; may not be necessary now but does no harm.)
 #
 # EV values for very low voltages are not stored. The
 # VOLTAGE_TO_EV_ABS_OFFSET constant indicates the voltage for the
 # first element of the table.
 #
 # A separate table of int8_t values maps temperatures to compensation
-# in EV@100*8.
+# in EV@100*80.
+#
 #
 
 # The temperature adjustment curve is very flat, so we store it as
 # follows. #define TEMP_EV_ADJUST_AT_T0 gives the EV compensation
 # value for t=0 (i.e. -51C). Then we store the temperatures at which the
 # EV compensation value goes down by 1 (i.e. 1/8EV) in TEMP_EV_ADJUST_CHANGE_TEMPS.
-def output_temp_table(ofc, ofh):
-    firstNibble = True
-    lastEight = None
+#
+# Update: we have three separate tables for 1/8, 1/10 and 1/3 increments.
+def output_temp_table(ofc, ofh, name, frac):
+    lastFracs = None
     arrayLen = 0
     for t in xrange(256):
         temperature = -51.0 + (t * 0.4)
         dtemp = temperature - reference_temperature
         comp = ev_change_for_every_1_6_c_rise * (dtemp / 1.6)
-        eight = int(round(comp * 8.0))
-        if eight < -127:
-            eight = -127
-        if eight > 127:
-            eight = 127
+        fracs = int(round(comp * frac))
+        assert fracs > -127 and fracs < 127
 
         if t == 0:
-            ofh.write("#define TEMP_EV_ADJUST_AT_T0 %i\n" % eight)
+            # Ugly -- this will get output multiple times, but it doesn't really matter.
+            ofh.write("#undef TEMP_EV_ADJUST_AT_T0\n#define TEMP_EV_ADJUST_AT_T0 %i\n" % (fracs))
         else:
             if t == 1:
-                ofc.write("const uint8_t TEMP_EV_ADJUST_CHANGE_TEMPS[] PROGMEM = { ")
+                ofc.write("const uint8_t TEMP_EV_ADJUST_CHANGE_TEMPS_%s[] PROGMEM = { " % name)
 
-            if eight == lastEight:
+            if fracs == lastFracs:
                 pass
             else:
                 arrayLen += 1
                 ofc.write("%i," % t)
 
-        lastEight = eight
+        lastFracs = fracs
     ofc.write("};\n")
-    ofh.write("#define TEMP_EV_ADJUST_CHANGE_TEMPS_LENGTH %i\n" % arrayLen)
+    ofh.write("#define TEMP_EV_ADJUST_CHANGE_TEMPS_LENGTH_%s %i\n" % (name, arrayLen))
 
-def get_tenth_bit(ev, test=False):
+def get_xth_bit(ev, x):
     """Given a representation of a voltage, return either 0 or 1,
        indicating respectively whether the voltage is nearest to the
-       tenth immediately below/equal to the eighth or to the tenth
-       immediately above it. Storing these additional "tenth bits"
-       makes it possible to report exposures to a 1/10EV resolution
-       with full accuracy.
-    """
+       xth immediately below/equal to the eighth or to the xth
+       immediately above it. If the differences are identical, returns 1.
+       Storing these additional "tenth/third bits" makes it possible to report
+       exposures to a 1/10EV and 1/3EV resolution with full accuracy."""
     eighths = int(round(ev*8.0))
-    if test:
-        sys.stdout.write("Original %f, eighths %i" % (ev, eighths))
-    ee = eighths % 8
     evv = ev % 1.0
-    nearest_tenth = 0.0
-    while abs(evv - nearest_tenth) > 0.05:
-        nearest_tenth += 0.1
-    if test:
-        sys.stdout.write("; nearest tenth = %f" % nearest_tenth)
-    r = (1 if nearest_tenth > evv else 0)
-    if test:
-        sys.stdout.write("; r = %i\n" % r)
-    return r
+    first_third_above = 0.0
+    while first_third_above <= evv:
+        first_third_above += 1.0/x
+    diffdown = evv - (first_third_above - (1.0/x))
+    diffup = first_third_above - evv
+    if diffdown < diffup:
+        return 0
+    else:
+        return 1
+
+def get_third_bit(ev):
+    return get_xth_bit(ev, 3.0)
+def get_tenth_bit(ev):
+    return get_xth_bit(ev, 10.0)
 
 def output_ev_table(of, name_prefix, op_amp_resistor):
     bitpatterns = [ ]
@@ -239,6 +240,7 @@ def output_ev_table(of, name_prefix, op_amp_resistor):
     vallist_diffs = [ ]
     oar = op_amp_resistor
     tenth_bits = [ ]
+    third_bits = [ ]
     for sv in xrange(b_voltage_offset, 256, 16):
         # Write the absolute 8-bit EV value.
         voltage = (sv * bv_to_voltage)
@@ -275,6 +277,7 @@ def output_ev_table(of, name_prefix, op_amp_resistor):
                 prev = eight2
 
                 tenth_bits.append(get_tenth_bit(ev2))
+                third_bits.append(get_third_bit(ev2))
 
             ix = None
             try:
@@ -312,13 +315,18 @@ def output_ev_table(of, name_prefix, op_amp_resistor):
         of.write('%i,' % vallist_diffs[i])
     of.write('\n};\n')
 
-    of.write('const uint8_t ' + name_prefix + '_LIGHT_VOLTAGE_TO_EV_TENTHS[] PROGMEM = { ')
-    bits = ['1' if x == 1 else '0' for x in tenth_bits]
-    bytes = [ ]
-    for i in xrange(0, len(bits), 8):
-        bytes.append('0b' + ''.join(bits[i:i+8]))
-    of.write(', '.join(bytes))
-    of.write(' };\n')
+    def write_x_bits(x):
+        name = "TENTHS" if x == 10 else "THIRDS"
+        xth_bits = tenth_bits if x == 10 else third_bits
+        of.write('const uint8_t ' + name_prefix + ('_LIGHT_VOLTAGE_TO_EV_%s[] PROGMEM = { ' % name))
+        bits = ['1' if x == 1 else '0' for x in xth_bits]
+        bytes = [ ]
+        for i in xrange(0, len(bits), 8):
+            bytes.append('0b' + ''.join(bits[i:i+8]))
+        of.write(', '.join(bytes))
+        of.write(' };\n')
+    write_x_bits(3)
+    write_x_bits(10)
 
     return True, ()
 
@@ -1218,6 +1226,7 @@ def output():
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_ABS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_DIFFS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_TENTHS[];\n" % (i+1))
+        ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_THIRDS[];\n" % (i+1))
         if not e:
             sys.stderr.write("R ERROR %.3f: (%.3f, %.3f)\n" % (op_amp_resistor_stages[i][0] * op_amp_resistor_stages[i][1], pr[0], pr[1]))
             break
@@ -1225,7 +1234,9 @@ def output():
     ofh.write("#define VOLTAGE_TO_EV_ABS_OFFSET " + str(b_voltage_offset) + '\n')
     ofh.write("#define LUMINANCE_COMPENSATION " + str(int(round(LUMINANCE_COMPENSATION*8.0))) + '\n')
 
-    output_temp_table(ofc, ofh)
+    output_temp_table(ofc, ofh, 'EIGHTH', 8)
+    output_temp_table(ofc, ofh, 'THIRD', 3)
+    output_temp_table(ofc, ofh, 'TENTH', 10)
     ofc.write('\n#ifdef TEST\n')
     ofc.write('const uint8_t TEST_VOLTAGE_TO_EV[] PROGMEM =\n')
     ofh.write('extern const uint8_t TEST_VOLTGE_TO_EV[];\n')
@@ -1241,7 +1252,9 @@ def output():
     ofh.write("extern uint8_t APERTURES_EIGHTH[];\n")
     ofh.write("extern uint8_t APERTURES_TENTH[];\n")
     ofh.write("extern uint8_t APERTURES_THIRD[];\n")
-    ofh.write("extern uint8_t TEMP_EV_ADJUST_CHANGE_TEMPS[];\n")
+    ofh.write("extern uint8_t TEMP_EV_ADJUST_CHANGE_TEMPS_EIGHTH[];\n")
+    ofh.write("extern uint8_t TEMP_EV_ADJUST_CHANGE_TEMPS_THIRD[];\n")
+    ofh.write("extern uint8_t TEMP_EV_ADJUST_CHANGE_TEMPS_TENTH[];\n")
 
     ofh.write("\n#endif\n")
 

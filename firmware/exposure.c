@@ -4,6 +4,8 @@
 // Shutter speeds are represented as unsigned 8-bit quantities
 // from 1 minute to 1/16000 in 1/8-stop steps. Some key points
 // on the scale are defined in exposure.h
+//
+// ISO is represented as an unsigned 8-bit quantity giving 1/3-stops from ISO 6.
 
 #include <readbyte.h>
 #include <stdint.h>
@@ -27,13 +29,14 @@
 // this code really definitely needs to run quickly, I'm doing it explicitly here.
 //
 // 'voltage' is in 1/256ths of the reference voltage.
-ev_with_tenths_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage, uint8_t op_amp_resistor_stage)
+ev_with_fracs_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage, uint8_t op_amp_resistor_stage)
 {
-    const uint8_t *ev_abs = NULL, *ev_diffs = NULL, *ev_bitpatterns = NULL, *ev_tenths = NULL;
+    const uint8_t *ev_abs = NULL, *ev_diffs = NULL, *ev_bitpatterns = NULL, *ev_tenths = NULL, *ev_thirds = NULL;
 #define ASSIGN(n) (ev_abs = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_ABS,                 \
                    ev_diffs = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_DIFFS,             \
                    ev_bitpatterns = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_BITPATTERNS, \
-                   ev_tenths = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_TENTHS)
+                   ev_tenths = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_TENTHS,           \
+                   ev_thirds = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_THIRDS)
     switch (op_amp_resistor_stage) {
     case 1: ASSIGN(1); break;
 #if NUM_OP_AMP_RESISTOR_STAGES > 1
@@ -54,7 +57,7 @@ ev_with_tenths_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t v
     }
 #undef ASSIGN
 
-    ev_with_tenths_t ret;
+    ev_with_fracs_t ret;
 
     if (voltage < VOLTAGE_TO_EV_ABS_OFFSET)
         voltage = 0;
@@ -75,38 +78,67 @@ ev_with_tenths_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t v
         bits2 &= 0xFF << (16 - bits_to_add);
 
     // See http://stackoverflow.com/questions/109023/how-to-count-the-number-of-set-bits-in-a-32-bit-integer
-    uint8_t r = pgm_read_byte(ev_abs + absi);
-    for (; bits1; ++r)
+    ret.ev = pgm_read_byte(ev_abs + absi);
+    for (; bits1; ++ret.ev)
         bits1 &= bits1 - 1;
-    for (; bits2; ++r)
+    for (; bits2; ++ret.ev)
         bits2 &= bits2 - 1;
-
-    // Compensate for effect of ambient temperature.
-    int8_t adj = TEMP_EV_ADJUST_AT_T0;
-    uint8_t i;
-    for (i = 0; i < TEMP_EV_ADJUST_CHANGE_TEMPS_LENGTH; ++i) {
-        if (temperature >= pgm_read_byte(TEMP_EV_ADJUST_CHANGE_TEMPS + i))
-            --adj;
-    }
-    int16_t withcomp = r;// + adj;
-    if (withcomp < 0)
-        ret.ev = 0;
-    else if (withcomp > 255)
-        ret.ev = 255;
-    else
-        ret.ev = (uint8_t)withcomp;
 
     // Calculate tenths.
     uint8_t tenths_bit = pgm_read_byte(ev_tenths + (voltage >> 3));
     tenths_bit >>= (voltage & 0b111);
     tenths_bit &= 1;
-    ret.tenths = tenth_below_eighth(ret.ev);
-    ret.tenths += tenths_bit;
+    int8_t ret_tenths = tenth_below_eighth(ret.ev);
+    ret_tenths += tenths_bit;
+
+    // Calculate thirds.
+    uint8_t thirds_bit = pgm_read_byte(ev_thirds + (voltage >> 3));
+    thirds_bit >>= (voltage & 0b111);
+    thirds_bit &= 0b11;
+    int8_t ret_thirds = third_below_eighth(ret.ev);
+    ret_thirds += thirds_bit;
+
+    int8_t adj8 =  TEMP_EV_ADJUST_AT_T0,
+           adj10 = TEMP_EV_ADJUST_AT_T0,
+           adj3 =  TEMP_EV_ADJUST_AT_T0;
+    uint8_t i;
+#define GET_TEMP_COMP(xth, xn)                                                      \
+    for (i = 0; i < TEMP_EV_ADJUST_CHANGE_TEMPS_LENGTH_ ## xth; ++i) {              \
+        if (temperature >= pgm_read_byte(TEMP_EV_ADJUST_CHANGE_TEMPS_ ## xth + i))  \
+            --adj ## xn;                                                            \
+    }
+    GET_TEMP_COMP(EIGHTH, 8)
+    GET_TEMP_COMP(TENTH, 10)
+    GET_TEMP_COMP(THIRD, 3)
+#undef GET_TEMP_COMP
+
+    int16_t withcomp = ret.ev + adj8;
+    if (withcomp < 0) {
+        ret.ev = 0;
+        ev_with_fracs_make_whole(ret);
+        return ret;
+    }
+    else if (withcomp > 255) {
+        ret.ev = 255;
+        ev_with_fracs_make_whole(ret);
+        return ret;
+    }
+
+    ret.ev = (uint8_t) withcomp;
+
+    // Any whole adjustments will have been taken care of by the preceding
+    // change to ret.ev, so we just want to do the fractional bit now.
+    adj10 %= 10;
+    adj3 %= 3;
+
+    // Note behavior of '%' with respect to negative numbers. E.g. -3 % 8 == 5.
+    ev_with_fracs_set_tenths(ret, (ret_tenths + adj10) % 10);
+    ev_with_fracs_set_thirds(ret, (ret_thirds + adj3) % 3);
 
     return ret;
 }
 
-static void normalize_precision_to_tenth_eighth_or_third(precision_mode_t *precision_mode, ev_with_tenths_t *evwt)
+static void normalize_precision_to_tenth_eighth_or_third(precision_mode_t *precision_mode, ev_with_fracs_t *evwt)
 {
     // TODO: Rounding.
     if (*precision_mode == PRECISION_MODE_QUARTER) {
@@ -123,14 +155,14 @@ static void normalize_precision_to_tenth_eighth_or_third(precision_mode_t *preci
     }
 }
 
-void shutter_speed_to_string(ev_with_tenths_t evwt, shutter_string_output_t *sso, precision_mode_t precision_mode)
+void shutter_speed_to_string(ev_with_fracs_t evwt, shutter_string_output_t *sso, precision_mode_t precision_mode)
 {
     //precision_mode_t orig_precision_mode = precision_mode;
     normalize_precision_to_tenth_eighth_or_third(&precision_mode, &evwt);
 
     if (evwt.ev >= SHUTTER_SPEED_MAX) {
         evwt.ev = SHUTTER_SPEED_MAX;
-        evwt.tenths = 0;
+        ev_with_fracs_make_whole(evwt);
     }
 
     uint8_t shutev = evwt.ev;
@@ -138,7 +170,7 @@ void shutter_speed_to_string(ev_with_tenths_t evwt, shutter_string_output_t *sso
     uint8_t *schars;
     if (precision_mode == PRECISION_MODE_THIRD) {
         schars = SHUTTER_SPEEDS_THIRD + ((shutev/8) * 3 * 2);
-        uint8_t thirds = thirds_from_tenths(evwt.tenths);
+        uint8_t thirds = ev_with_fracs_get_thirds(evwt);
         schars += thirds*2;
     }
     else if (precision_mode == PRECISION_MODE_EIGHTH) {
@@ -146,11 +178,11 @@ void shutter_speed_to_string(ev_with_tenths_t evwt, shutter_string_output_t *sso
     }
     else { //if (precision_mode == PRECISION_MODE_TENTH) {
         schars = SHUTTER_SPEEDS_TENTH + ((shutev/8)*10*2);
-        schars += evwt.tenths*2;
+        schars += ev_with_fracs_get_tenths(evwt) * 2;
     }
 
     uint8_t last = 0;
-    if (shutev > (6*8) || (shutev == (6*8) && evwt.tenths > 0)) {
+    if (shutev > (6*8) || (shutev == (6*8) && !ev_with_fracs_is_whole(evwt))) {
         sso->chars[last++] = '1';
         sso->chars[last++] = '/';
     }
@@ -170,28 +202,28 @@ void shutter_speed_to_string(ev_with_tenths_t evwt, shutter_string_output_t *sso
         }
     }
 
-    if (shutev < 6*8 || (shutev == 6*8 && evwt.tenths == 0))
+    if (shutev < 6*8 || (shutev == 6*8 && ev_with_fracs_is_whole(evwt)))
         sso->chars[last++] = 'S';
 
     sso->chars[last] = '\0';
     sso->length = last;
 }
 
-void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, precision_mode_t precision_mode)
+void aperture_to_string(ev_with_fracs_t evwt, aperture_string_output_t *aso, precision_mode_t precision_mode)
 {
     //precision_mode_t orig_precision_mode = precision_mode;
     normalize_precision_to_tenth_eighth_or_third(&precision_mode, &evwt);
 
     if (evwt.ev >= AP_MAX) {
         evwt.ev = AP_MAX;
-        evwt.tenths = 0;
+        ev_with_fracs_make_whole(evwt);
     }
 
     uint8_t apev = evwt.ev;
 
     uint8_t last;
     if (precision_mode == PRECISION_MODE_THIRD) {
-        uint8_t thirds = thirds_from_tenths(evwt.tenths);
+        uint8_t thirds = ev_with_fracs_get_thirds(evwt);
         uint8_t b = pgm_read_byte(&APERTURES_THIRD[((apev >> 3)*3) + thirds]);
         last = 0;
         aso->chars[last++] = '0' + (b & 0xF);
@@ -208,7 +240,8 @@ void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, pr
             b2 = pgm_read_byte(&APERTURES_EIGHTH[i+1]);
         }
         else { //if (precision_mode == PRECISION_MODE_TENTH) {
-            i = ((apev >> 3) * 15) + evwt.tenths + (evwt.tenths >> 1);
+            uint8_t tenths = ev_with_fracs_get_tenths(evwt);
+            i = ((apev >> 3) * 15) + tenths + (tenths >> 1);
             b1 = pgm_read_byte(&APERTURES_TENTH[i]);
             b2 = pgm_read_byte(&APERTURES_TENTH[i+1]);
         }
@@ -228,7 +261,7 @@ void aperture_to_string(ev_with_tenths_t evwt, aperture_string_output_t *aso, pr
 
         last = 0;
         aso->chars[last++] = d1;
-        if (apev < 6*8 || (precision_mode == PRECISION_MODE_TENTH && apev < 7*8 && evwt.tenths < 7) ||
+        if (apev < 6*8 || (precision_mode == PRECISION_MODE_TENTH && apev < 7*8 && ev_with_fracs_get_tenths(evwt) < 7) ||
                           (precision_mode == PRECISION_MODE_EIGHTH && apev < 54)) {
             aso->chars[last++] = '.';
         }
@@ -367,7 +400,7 @@ continue_main:;
 // Convert a BCD ISO number into the closest equivalent 8-bit representation.
 // In the 8-bit representation, ISOs start from 6 and go up in steps of 1/8 stop.
 static const uint8_t BCD_6[] = { 6 };
-uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
+uint8_t iso_bcd_to_third_stops(uint8_t *digits, uint8_t length)
 {
     assert(length <= ISO_DECIMAL_MAX_DIGITS);
 
@@ -397,7 +430,7 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
         tdigits = r;
     }
 
-    uint8_t stops = count*8;
+    uint8_t stops = count*3;
 
     // If it's not a full-stop ISO number then we've calculated the
     // stop equivalent of the next full-stop ISO number ABOVE the
@@ -455,19 +488,8 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
             //printf("\n");
         }
 
-        // Translate 1/3 stops to 1/8 stops -- yuck!
         assert(divs > 0 && divs <= 3);
-        switch (divs) {
-        case 1: {
-            stops -= 3;
-        } break;
-        case 2: {
-            stops -= 5;
-        } break;
-        case 3: {
-            stops -= 8;
-        }
-        }
+        stops -= divs;
     }
 
     return stops;
@@ -478,19 +500,28 @@ uint8_t iso_bcd_to_stops(uint8_t *digits, uint8_t length)
 //
 //     aperture_given_shutter_speed_iso_ev(shutter_speed,iso,ev)
 //     shutter_speed_given_aperture_iso_ev(aperture,iso,ev)
-ev_with_tenths_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_tenths_t evwt, uint8_t x) // x=0: aperture, x=1: shutter_speed
+ev_with_fracs_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_fracs_t evwf, uint8_t x) // x=0: aperture, x=1: shutter_speed
 {
-    // We know that for EV=3, ISO = 100, speed = 1minute, aperture = 22.
-    const int16_t the_aperture = 9*8; // F22
-    const int16_t the_speed = 0;      // 1 minute.
-    const int16_t the_ev = (3+5)*8;   // 3 EV
-    const int16_t the_iso = 4*8;      // 100 ISO
+    // We use an internal represenation of values in 1/120 EV steps. This permits
+    // exact division by 8, 10 and 3.
+    // 255*120 < (2^16)/2, so we can use signed 16-bit integers.
 
-    int16_t given_x = (int16_t)given_x_;
-    int16_t given_iso = (int16_t)iso_;
-    // We remove the fractional component and add it back at the end.
-    // This way we can do the exact calculation for both eighths and tenths.
-    int16_t given_ev = (int16_t)(evwt.ev & ~0b111);
+    // We know that for EV=3, ISO = 100, speed = 1minute, aperture = 22.
+    const int16_t the_aperture = 9*120; // F22
+    const int16_t the_speed = 0;        // 1 minute.
+    const int16_t the_ev = (3+5)*120;   // 3 EV
+    const int16_t the_iso = 4*120;      // 100 ISO
+
+    int16_t given_x = (int16_t)(given_x_ * 15);
+    int16_t given_iso = (int16_t)(iso_ * 40);
+    int16_t given_ev = (int16_t)(evwf.ev * 15);
+    int16_t whole_given_ev = (int16_t)((evwf.ev & 0b111) * 15);
+    // We do the main calculation using the 1/120EV value derived from the 1/8 EV value.
+    // We now make a note of the small difference in the EV value which we get if
+    // we calculate it from the 1/10 or 1/3 EV value. Then we can add this difference
+    // back on at the end to calculate the exact tenths/thirds for the end result.
+    int8_t given_ev_tenths_diff = (int8_t)(whole_given_ev + (ev_with_fracs_get_tenths(evwf) * 12) - given_ev);
+    int8_t given_ev_thirds_diff = (int8_t)(whole_given_ev + (ev_with_fracs_get_thirds(evwf) * 40) - given_ev);
 
     int16_t r;
     int16_t min, max;
@@ -499,49 +530,35 @@ ev_with_tenths_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_tenths
 
         int16_t evdiff = given_ev - ap_adjusted;
         r = the_speed + evdiff;
-        min = SS_MIN, max = SS_MAX;
+        min = SS_MIN*15, max = SS_MAX*15;
     }
     else { // x == 0
         int16_t shut_adjusted = the_ev + given_x - the_speed;
 
         int16_t evdiff = given_ev - shut_adjusted;
         r = the_aperture + evdiff;
-        min = AP_MIN, max = AP_MAX;
-    }
-
-    bool was_minormaxed = false;
-    if (r < min) {
-        r = min;
-        was_minormaxed = true;
-    }
-    else if (r > max) {
-        r = max;
-        was_minormaxed = true;
+        min = AP_MIN*15, max = AP_MAX*15;
     }
 
     // Adjust for difference between reference ISO and actual ISO.
     r += given_iso - the_iso;
 
-    // Add back fractional eighths.
-    r += (evwt.ev & 0b111);
+    if (r < min)
+        r = min;
+    else if (r > max)
+        r = max;
 
-    ev_with_tenths_t ret;
-    ret.ev = (uint8_t)r;
+    // Figure out eighths, thirds and tenths.
+    // Note that we're relying on the property discussed in exposure.h, i.e.,
+    // that calculations in eighths/thirds/tenths always yield the same whole
+    // EV values.
+    evwf.ev = r / 15;
+    int16_t tenth_ev = r + given_ev_tenths_diff;
+    int16_t third_ev = r + given_ev_thirds_diff;
+    ev_with_fracs_set_tenths(evwf, (uint8_t)(tenth_ev/12)%10);
+    ev_with_fracs_set_thirds(evwf, (uint8_t)(third_ev/40)%3);
 
-    // Add back tenths.
-    if (was_minormaxed) {
-       ret.tenths = 0;
-    }
-    else {
-        ret.tenths = evwt.tenths;
-        // Note that we don't need to add 1 to the main value because
-        // that will already have been taken care of when we added
-        // the fractional eighths back to rr.
-        if (ret.tenths > 9)
-            ret.tenths -= 10;
-    }
-
-    return ret;
+    return evwf;
 }
 
 #ifdef TEST
@@ -551,18 +568,11 @@ extern const uint8_t TEST_VOLTAGE_TO_EV[];
 
 int main()
 {
-    /*ev_with_tenths_t current_ev;
-    current_ev.ev = 12*8;
-    current_ev.tenths = 0;
-    ev_with_tenths_t result = aperture_given_shutter_speed_iso_ev(64, 4*8, current_ev);
-    printf("RESULT: %i, %i\n", result.ev, result.tenths);
-    return 0;*/
-
     printf("Shutter speeds in eighths:\n");
     shutter_string_output_t sso;
     uint8_t s;
     for (s = SS_MIN; s <= SS_MAX; ++s) {
-        ev_with_tenths_t evwt;
+        ev_with_fracs_t evwt;
         evwt.ev = s;
         evwt.tenths = tenth_below_eighth(s);
         shutter_speed_to_string(evwt, &sso, PRECISION_MODE_EIGHTH);
@@ -573,7 +583,7 @@ int main()
 
     printf("Shutter speeds in tenths:\n");
     for (s = (SS_MIN/8)*10; s <= (SS_MAX/8)*10; ++s) {
-        ev_with_tenths_t evwt;
+        ev_with_fracs_t evwt;
         evwt.ev = (s*8)/10;
         evwt.tenths = s%10;
         shutter_speed_to_string(evwt, &sso, PRECISION_MODE_TENTH);
@@ -585,7 +595,7 @@ int main()
     printf("Shutter speeds in thirds:\n");
     uint8_t last_thirds = 3;
     for (s = (SS_MIN/8)*10; s <= (SS_MAX/8)*10; ++s) {
-        ev_with_tenths_t evwt;
+        ev_with_fracs_t evwt;
         evwt.ev = (s*8)/10;
         evwt.tenths = s%10;
         uint8_t thirds = thirds_from_tenths(evwt.tenths);
@@ -602,7 +612,7 @@ int main()
     uint8_t a;
     aperture_string_output_t aso;
     for (a = AP_MIN; a <= (AP_MAX/8)*10; ++a) {
-        ev_with_tenths_t evwt;
+        ev_with_fracs_t evwt;
         evwt.ev = (a/10)*8;
         evwt.tenths = a % 10;
         aperture_to_string(evwt, &aso, PRECISION_MODE_THIRD);
@@ -611,7 +621,7 @@ int main()
 
     printf("\nApertures in eighths:\n");
     for (a = AP_MIN; a <= AP_MAX; ++a) {
-        ev_with_tenths_t evwt;
+        ev_with_fracs_t evwt;
         evwt.ev = a;
         aperture_to_string(evwt, &aso, PRECISION_MODE_EIGHTH);
         printf("A[%i]:  %s\n", a, APERTURE_STRING_OUTPUT_STRING(aso));
@@ -619,7 +629,7 @@ int main()
 
     printf("\nApertures in tenths:\n");
     for (a = AP_MIN; a <= (AP_MAX/8)*10; ++a) {
-        ev_with_tenths_t evwt;
+        ev_with_fracs_t evwt;
         evwt.ev = (a/10)*8;
         evwt.tenths = a % 10;
         aperture_to_string(evwt, &aso, PRECISION_MODE_TENTH);
@@ -631,16 +641,16 @@ int main()
     for (is = ISO_MIN; is <= ISO_MAX; ++is) {
         ss = 8*8;//12*8; // 1/60
         ev = 10*8;//15*8; // 10 EV
-        ev_with_tenths_t evwt;
+        ev_with_fracs_t evwt;
         evwt.ev = ev;
         evwt.tenths = 0;
         evwt = aperture_given_shutter_speed_iso_ev(ss, is, evwt);
         uint8_t ap = evwt.ev;
-        ev_with_tenths_t ssevwt;
+        ev_with_fracs_t ssevwt;
         ssevwt.ev = ss;
         ssevwt.tenths = tenth_below_eighth(ss);
         shutter_speed_to_string(ssevwt, &sso, PRECISION_MODE_EIGHTH);
-        ev_with_tenths_t evwt2;
+        ev_with_fracs_t evwt2;
         evwt2.ev = ap;
         aperture_to_string(evwt2, &aso, PRECISION_MODE_EIGHTH);
         printf("ISO %f stops from 6,  %s  %s (EV = %.2f)   [%i, %i, %i : %i]\n",
@@ -654,7 +664,7 @@ int main()
     printf("\n");
     uint8_t evv = 0;
     for (evv = 0; evv < 100; ++evv) {
-        ev_with_tenths_t x;
+        ev_with_fracs_t x;
         x.ev = evv;
         x.tenths = 0;
         x = aperture_given_shutter_speed_iso_ev(12*8, 4*8, x);
@@ -666,12 +676,12 @@ int main()
     for (is = ISO_MIN; is <= ISO_MAX; ++is) {
         ap = 6*8; // f8
         ev = 15*8; // 10 EV
-        ev_with_tenths_t evwt;
+        ev_with_fracs_t evwt;
         evwt.ev = ev;
         evwt.tenths = 0;
         evwt = shutter_speed_given_aperture_iso_ev(ap, is, evwt);
         shutter_speed_to_string(evwt, &sso, PRECISION_MODE_EIGHTH);
-        ev_with_tenths_t evwt2;
+        ev_with_fracs_t evwt2;
         evwt2.ev = ap;
         aperture_to_string(evwt2, &aso, PRECISION_MODE_EIGHTH);
         printf("ISO %f stops from 6,  %s  %s (EV = %.2f)   [%i, %i, %i : %i]\n",
@@ -755,7 +765,7 @@ int main()
         int stops = iso_bcd_to_stops(isodigits, length);
         bcd_to_string(isodigits, length);
 
-        printf("ISO %s (%sfull) = %.2f stops from ISO 6\n", isodigits, is_full ? "" : "not ", ((float)stops)/8.0);
+        printf("ISO %s (%sfull) = %.2f stops from ISO 6\n", isodigits, is_full ? "" : "not ", ((float)stops)/3.0);
     }
 
     // Test that compressed table is giving correct values by comparing to uncompressed table.
@@ -766,7 +776,7 @@ int main()
         if (v < 0)
             v = 0;
         uint8_t uncompressed = pgm_read_byte(&TEST_VOLTAGE_TO_EV[(unsigned)v]);
-        ev_with_tenths_t evwt = get_ev100_at_temperature_voltage(t, (uint8_t)v_, 2);
+        ev_with_fracs_t evwt = get_ev100_at_temperature_voltage(t, (uint8_t)v_, 2);
         uint8_t compressed = evwt.ev;
         if (uncompressed != compressed) {
             printf("Values not equal for t = %i, v = %i: compressed = %i, uncompressed = %i\n", (unsigned)t, (unsigned)v_, (unsigned)compressed, (unsigned)uncompressed);
@@ -778,7 +788,7 @@ int main()
 
     // Sanity check: pass in the values which are used as a base for the calculation
     // and check that we get the originals back.
-    ev_with_tenths_t evwt;
+    ev_with_fracs_t evwt;
     evwt.ev = (3+5)*8;
     evwt.tenths = 0;
     evwt = aperture_given_shutter_speed_iso_ev(0, 4*8, evwt);

@@ -101,9 +101,9 @@ void read_meter_state(meter_state_t *ms);
 void initialize_global_meter_state();
 
 typedef struct transient_meter_state {
-    ev_with_tenths_t last_ev_with_tenths;
-    ev_with_tenths_t aperture;
-    ev_with_tenths_t shutter_speed;
+    ev_with_fracs_t last_ev_with_fracs;
+    ev_with_fracs_t aperture;
+    ev_with_fracs_t shutter_speed;
 
     bool exposure_ready;
 

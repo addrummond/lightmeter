@@ -361,8 +361,8 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
             return;
 
         // Compute strings for fractional EV values according to precision mode.
-        uint8_t ev = tms.last_ev_with_tenths.ev;
-        uint8_t tenths = tms.last_ev_with_tenths.tenths;
+        uint8_t ev = tms.last_ev_with_fracs.ev;
+        uint8_t tenths = ev_with_fracs_get_tenths(tms.last_ev_with_fracs);
         uint8_t eighths = ev & 0b111;
         if (ev < 5*8) {
             eighths = 8-eighths;
