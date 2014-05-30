@@ -573,7 +573,7 @@ int main()
     for (s = SS_MIN; s <= SS_MAX; ++s) {
         ev_with_fracs_t evwf;
         evwf.ev = s;
-        evwf.tenths = tenth_below_eighth(s);
+        ev_with_fracs_set_tenths(evwf, tenth_below_eighth(s));
         shutter_speed_to_string(evwf, &sso, PRECISION_MODE_EIGHTH);
         printf("SS: %s (ev*8 = %i, length = %i)\n", SHUTTER_STRING_OUTPUT_STRING(sso), s, sso.length);
     }
@@ -583,23 +583,27 @@ int main()
     printf("Shutter speeds in tenths:\n");
     for (s = (SS_MIN/8)*10; s <= (SS_MAX/8)*10; ++s) {
         ev_with_fracs_t evwf;
-        evwf.ev = (s*8)/10;
-        evwf.tenths = s%10;
+        ev_with_fracs_init(evwf);
+        ev_with_fracs_set_ev8(evwf, (s*8)/10);
+        ev_with_fracs_set_tenths(evwf, s%10);
         shutter_speed_to_string(evwf, &sso, PRECISION_MODE_TENTH);
         printf("SS: %s (ev = %i.%i, rev=%i, length = %i)\n", SHUTTER_STRING_OUTPUT_STRING(sso), s/10, s%10, evwf.ev, sso.length);
     }
 
     printf("\n");
+    return 0;
 
     printf("Shutter speeds in thirds:\n");
     uint8_t last_thirds = 3;
     for (s = (SS_MIN/8)*10; s <= (SS_MAX/8)*10; ++s) {
         ev_with_fracs_t evwf;
-        evwf.ev = (s*8)/10;
-        evwf.tenths = s%10;
-        uint8_t thirds = thirds_from_tenths(evwf.tenths);
+        ev_with_fracs_init(evwf);
+        ev_with_fracs_set_ev8(evwf, (s*8)/10);
+        ev_with_fracs_set_tenths(evwf, s%10);
+        uint8_t thirds = thirds_from_eighths(evwf.ev);
         if (thirds == last_thirds)
             continue;
+        ev_with_fracs_set_thirds(evwf, thirds);
         last_thirds = thirds;
         shutter_speed_to_string(evwf, &sso, PRECISION_MODE_THIRD);
         printf("SS: %s (ev = %i+%i/3, length = %i)\n", SHUTTER_STRING_OUTPUT_STRING(sso), s/10, thirds_from_tenths(s%10), sso.length);
@@ -612,16 +616,18 @@ int main()
     aperture_string_output_t aso;
     for (a = AP_MIN; a <= (AP_MAX/8)*10; ++a) {
         ev_with_fracs_t evwf;
-        evwf.ev = (a/10)*8;
-        evwf.tenths = a % 10;
+        ev_with_fracs_init(evwf);
+        ev_with_fracs_set_ev8(evwf, (a/10)%8);
+        ev_with_fracs_set_tenths(evwf, a % 10);
         aperture_to_string(evwf, &aso, PRECISION_MODE_THIRD);
-        printf("A[%i,%i,%i]:  %s\n", a, evwf.ev, evwf.tenths, APERTURE_STRING_OUTPUT_STRING(aso));
+        printf("A[%i,%i,%i]:  %s\n", a, evwf.ev, ev_with_fracs_get_tenths(evwf), APERTURE_STRING_OUTPUT_STRING(aso));
     }
 
     printf("\nApertures in eighths:\n");
     for (a = AP_MIN; a <= AP_MAX; ++a) {
         ev_with_fracs_t evwf;
-        evwf.ev = a;
+        ev_with_fracs_init(evwf);
+        ev_with_fracs_set_ev8(evwf, a);
         aperture_to_string(evwf, &aso, PRECISION_MODE_EIGHTH);
         printf("A[%i]:  %s\n", a, APERTURE_STRING_OUTPUT_STRING(aso));
     }
@@ -629,10 +635,11 @@ int main()
     printf("\nApertures in tenths:\n");
     for (a = AP_MIN; a <= (AP_MAX/8)*10; ++a) {
         ev_with_fracs_t evwf;
-        evwf.ev = (a/10)*8;
-        evwf.tenths = a % 10;
+        ev_with_fracs_init(evwf);
+        ev_with_fracs_set_ev8(evwf, (a/10)*8);
+        ev_with_fracs_set_tenths(evwf, a%10);
         aperture_to_string(evwf, &aso, PRECISION_MODE_TENTH);
-        printf("A[%i,%i,%i]:  %s\n", a, evwf.ev, evwf.tenths, APERTURE_STRING_OUTPUT_STRING(aso));
+        printf("A[%i,%i,%i]:  %s\n", a, evwf.ev, ev_with_fracs_get_tenths(evwf), APERTURE_STRING_OUTPUT_STRING(aso));
     }
 
     printf("\nTesting aperture_given_shutter_speed_iso_ev\n");
@@ -641,16 +648,18 @@ int main()
         ss = 8*8;//12*8; // 1/60
         ev = 10*8;//15*8; // 10 EV
         ev_with_fracs_t evwf;
-        evwf.ev = ev;
-        evwf.tenths = 0;
+        ev_with_fracs_init(evwf);
+        ev_with_fracs_set_ev8(evwf, ev);
         evwf = aperture_given_shutter_speed_iso_ev(ss, is, evwf);
         uint8_t ap = evwf.ev;
         ev_with_fracs_t ssevwf;
-        ssevwf.ev = ss;
-        ssevwf.tenths = tenth_below_eighth(ss);
+        ev_with_fracs_init(ssevwf);
+        ev_with_fracs_set_ev8(ssevwf, ss);
+        ev_with_fracs_set_tenth(ssevwf, tenth_below_eighth(ss));
         shutter_speed_to_string(ssevwf, &sso, PRECISION_MODE_EIGHTH);
         ev_with_fracs_t evwf2;
-        evwf2.ev = ap;
+        ev_with_fracs_init(evwf2);
+        ev_with_fracs_set_ev8(evwf2, ap);
         aperture_to_string(evwf2, &aso, PRECISION_MODE_EIGHTH);
         printf("ISO %f stops from 6,  %s  %s (EV = %.2f)   [%i, %i, %i : %i]\n",
                ((float)is) / 8.0,
@@ -664,8 +673,8 @@ int main()
     uint8_t evv = 0;
     for (evv = 0; evv < 100; ++evv) {
         ev_with_fracs_t x;
-        x.ev = evv;
-        x.tenths = 0;
+        ev_with_fracs_init(x);
+        ev_with_fracs_set_ev8(x, evv);
         x = aperture_given_shutter_speed_iso_ev(12*8, 4*8, x);
         aperture_to_string(x, &aso, PRECISION_MODE_EIGHTH);
         printf("At EV %i, %s\n", evv, APERTURE_STRING_OUTPUT_STRING(aso));
@@ -676,12 +685,13 @@ int main()
         ap = 6*8; // f8
         ev = 15*8; // 10 EV
         ev_with_fracs_t evwf;
-        evwf.ev = ev;
-        evwf.tenths = 0;
+        ev_with_fracs_init(evwf);
+        ev_with_fracs_set_ev8(evwf, ev);
         evwf = shutter_speed_given_aperture_iso_ev(ap, is, evwf);
         shutter_speed_to_string(evwf, &sso, PRECISION_MODE_EIGHTH);
         ev_with_fracs_t evwf2;
-        evwf2.ev = ap;
+        ev_with_fracs_init(evwf2);
+        ev_with_fracs_set_ev8(evwf, ap);
         aperture_to_string(evwf2, &aso, PRECISION_MODE_EIGHTH);
         printf("ISO %f stops from 6,  %s  %s (EV = %.2f)   [%i, %i, %i : %i]\n",
                ((float)is) / 8.0,
@@ -789,7 +799,7 @@ int main()
     // and check that we get the originals back.
     ev_with_fracs_t evwf;
     evwf.ev = (3+5)*8;
-    evwf.tenths = 0;
+    ev_with_fracs_make_whole(evwf);
     evwf = aperture_given_shutter_speed_iso_ev(0, 4*8, evwf);
     printf("VAL that should be equal to 9*8=72: %i\n", evwf.ev);
     assert(evwf.ev == 9*8);
@@ -797,7 +807,7 @@ int main()
     printf("AP: %s\n", APERTURE_STRING_OUTPUT_STRING(aso));
 
     evwf.ev = (3+5)*8;
-    evwf.tenths = 0;
+    ev_with_fracs_make_whole(evwf);
     evwf = shutter_speed_given_aperture_iso_ev(9*8, 4*8, evwf);
     printf("VAL that should be equal to 0: %i\n", evwf.ev);
     assert(evwf.ev == 0);
