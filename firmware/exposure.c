@@ -504,7 +504,7 @@ ev_with_fracs_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_fracs_t
 {
     // We use an internal represenation of values in 1/120 EV steps. This permits
     // exact division by 8, 10 and 3.
-    // 255*120 < (2^16)/2, so we can use signed 16-bit integers.
+    // 256*120 < (2^16)/2, so we can use signed 16-bit integers.
 
     // We know that for EV=3, ISO = 100, speed = 1minute, aperture = 22.
     const int16_t the_aperture = 9*120; // F22
