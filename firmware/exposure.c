@@ -591,7 +591,6 @@ int main()
     }
 
     printf("\n");
-    return 0;
 
     printf("Shutter speeds in thirds:\n");
     uint8_t last_thirds = 3;
@@ -600,7 +599,7 @@ int main()
         ev_with_fracs_init(evwf);
         ev_with_fracs_set_ev8(evwf, (s*8)/10);
         ev_with_fracs_set_tenths(evwf, s%10);
-        uint8_t thirds = thirds_from_eighths(evwf.ev);
+        uint8_t thirds = thirds_from_eighths(evwf.ev % 8);
         if (thirds == last_thirds)
             continue;
         ev_with_fracs_set_thirds(evwf, thirds);
@@ -609,16 +608,14 @@ int main()
         printf("SS: %s (ev = %i+%i/3, length = %i)\n", SHUTTER_STRING_OUTPUT_STRING(sso), s/10, thirds_from_tenths(s%10), sso.length);
     }
 
-    return 0;
-
     printf("Apertures in thirds:\n");
     uint8_t a;
     aperture_string_output_t aso;
-    for (a = AP_MIN; a <= (AP_MAX/8)*10; ++a) {
+    for (a = AP_MIN; a <= (AP_MAX/8)*3; ++a) {
         ev_with_fracs_t evwf;
         ev_with_fracs_init(evwf);
-        ev_with_fracs_set_ev8(evwf, (a/10)%8);
-        ev_with_fracs_set_tenths(evwf, a % 10);
+        ev_with_fracs_set_ev8(evwf, (a/3)*8);
+        ev_with_fracs_set_thirds(evwf, a % 3);
         aperture_to_string(evwf, &aso, PRECISION_MODE_THIRD);
         printf("A[%i,%i,%i]:  %s\n", a, evwf.ev, ev_with_fracs_get_tenths(evwf), APERTURE_STRING_OUTPUT_STRING(aso));
     }
