@@ -517,7 +517,7 @@ ev_with_fracs_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_fracs_t
     int16_t whole_given_ev = (int16_t)((evwf.ev & 0b111) * 15);
     // We do the main calculation using the 1/120EV value derived from the 1/8 EV value.
     // We now make a note of the small difference in the EV value which we get if
-    // we calculate it from the 1/10 or 1/3 EV value. Then we can add this difference
+    // we calculate it from the 1/10 or 1/3 EV value. We add this difference
     // back on at the end to calculate the exact tenths/thirds for the end result.
     int8_t given_ev_tenths_diff = (int8_t)(whole_given_ev + (ev_with_fracs_get_tenths(evwf) * 12) - given_ev);
     int8_t given_ev_thirds_diff = (int8_t)(whole_given_ev + (ev_with_fracs_get_thirds(evwf) * 40) - given_ev);
