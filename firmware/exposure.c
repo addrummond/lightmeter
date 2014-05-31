@@ -143,15 +143,21 @@ static void normalize_precision_to_tenth_eighth_or_third(precision_mode_t *preci
     // TODO: Rounding.
     if (*precision_mode == PRECISION_MODE_QUARTER) {
         *precision_mode = PRECISION_MODE_EIGHTH;
-        evwf->ev >>= 1;
+        evwf->ev &= 1;
     }
     else if (*precision_mode == PRECISION_MODE_HALF) {
         *precision_mode = PRECISION_MODE_EIGHTH;
+        uint8_t rem = evwf->ev & 0b11;
         evwf->ev >>= 2;
+        if (rem >= 2)
+            evwf->ev += 4;
     }
     else if (*precision_mode == PRECISION_MODE_FULL) {
         *precision_mode = PRECISION_MODE_EIGHTH;
+        uint8_t rem = evwf->ev & 0b111;
         evwf->ev >>= 3;
+        if (rem >= 4)
+            evwf->ev += 8;
     }
 }
 
