@@ -456,7 +456,7 @@ uint8_t iso_bcd_to_third_stops(uint8_t *digits, uint8_t length)
         //printf("\n");
 
         uint8_t divs;
-        for (divs = 1; bcd_gt(nextup_digits, nextup_length, digits, length); ++divs) {
+        for (divs = 0; bcd_gt(nextup_digits, nextup_length, digits, length); ++divs) {
             // printf("DIVS %i\n", divs);
 
             uint8_t fifth_digits_[nextup_length];
@@ -488,7 +488,7 @@ uint8_t iso_bcd_to_third_stops(uint8_t *digits, uint8_t length)
             //printf("\n");
         }
 
-        printf("D: %i\n", divs);
+        //printf("STOPS %i DIVS %i\n", stops, divs);
         assert(divs > 0 && divs <= 3);
         stops -= divs;
     }
