@@ -488,6 +488,7 @@ uint8_t iso_bcd_to_third_stops(uint8_t *digits, uint8_t length)
             //printf("\n");
         }
 
+        printf("D: %i\n", divs);
         assert(divs > 0 && divs <= 3);
         stops -= divs;
     }
@@ -652,20 +653,22 @@ int main()
         ev_with_fracs_t ssevwf;
         ev_with_fracs_init(ssevwf);
         ev_with_fracs_set_ev8(ssevwf, ss);
-        ev_with_fracs_set_tenth(ssevwf, tenth_below_eighth(ss));
+        ev_with_fracs_set_tenths(ssevwf, tenth_below_eighth(ss));
         shutter_speed_to_string(ssevwf, &sso, PRECISION_MODE_EIGHTH);
         ev_with_fracs_t evwf2;
         ev_with_fracs_init(evwf2);
         ev_with_fracs_set_ev8(evwf2, ap);
         aperture_to_string(evwf2, &aso, PRECISION_MODE_EIGHTH);
         printf("ISO %f stops from 6,  %s  %s (EV = %.2f)   [%i, %i, %i : %i]\n",
-               ((float)is) / 8.0,
+               ((float)is) / 3.0,
                SHUTTER_STRING_OUTPUT_STRING(sso),
                APERTURE_STRING_OUTPUT_STRING(aso),
                ((float)(((int16_t)(ev))-(5*8)))/8.0,
                is, ss, ev, ap);
     }
 
+    // TODO: What was this supposed to test exactly?
+    /*
     printf("\n");
     uint8_t evv = 0;
     for (evv = 0; evv < 100; ++evv) {
@@ -675,7 +678,7 @@ int main()
         x = aperture_given_shutter_speed_iso_ev(12*8, 4*8, x);
         aperture_to_string(x, &aso, PRECISION_MODE_EIGHTH);
         printf("At EV %i, %s\n", evv, APERTURE_STRING_OUTPUT_STRING(aso));
-    }
+    }*/
 
     printf("\nTesting shutter_speed_given_aperture_iso_ev\n");
     for (is = ISO_MIN; is <= ISO_MAX; ++is) {
@@ -768,7 +771,7 @@ int main()
         uint8_t *isodigits = isobcds+offset;
 
         bool is_full = iso_is_full_stop(isodigits, length);
-        int stops = iso_bcd_to_stops(isodigits, length);
+        int stops = iso_bcd_to_third_stops(isodigits, length);
         bcd_to_string(isodigits, length);
 
         printf("ISO %s (%sfull) = %.2f stops from ISO 6\n", isodigits, is_full ? "" : "not ", ((float)stops)/3.0);
