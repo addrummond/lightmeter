@@ -98,11 +98,11 @@ uint8_t convert_from_reference_voltage(uint16_t adc_out);
 
 // Note that these gives the tenth/third immediately <= the nearest eighth
 // (i.e. they don't round up).
-#define tenth_below_eighth(e) (((e)&0b111) > 3 ? ((e)&0b111) + 1 : ((e)&0b111))
-#define third_below_eighth(e) ((e) <= 2 ? 0 : ((e) <= 5 ? 1 : 2))
+#define tenth_below_eighth(e)  (((e)&0b111) > 3 ? ((e)&0b111) + 1 : ((e)&0b111))
+#define third_below_eighth(e)  ((e) <= 2 ? 0 : ((e) <= 5 ? 1 : 2))
 
 #define thirds_from_tenths(e)  ((e) > 6 ? 2 : ((e) > 2 ? 1 : 0))
-#define thirds_from_eighths(e)  ((e) > 4 ? 2 : ((e) > 1 ? 1 : 0))
+#define thirds_from_eighths(e) ((e) > 4 ? 2 : ((e) > 1 ? 1 : 0))
 #define tenths_from_thirds(e)  ((e) == 0 ? 0 : ((e) == 1 ? 3 : 7))
 #define eighths_from_thirds(e) ((e) < 2 ? 0 : ((e) < 5 ? 1 : 2))
 
