@@ -84,7 +84,7 @@ typedef struct ev_with_fracs {
 #define ev_with_fracs_get_tenths(evwf)    ((evwf).fracs >> 4)
 #define ev_with_fracs_set_tenths(evwf, v) ((evwf).fracs |= (v) << 4)
 #define ev_with_fracs_is_whole(evwf)      ((evwf).fracs == 0)
-#define ev_with_fracs_make_whole(evwf)    ((evwf).fracs = 0)
+#define ev_with_fracs_zero_fracs(evwf)    ((evwf).fracs = 0)
 
 void shutter_speed_to_string(ev_with_fracs_t shutter_speed, shutter_string_output_t *eso, uint8_t precision_mode);
 void aperture_to_string(ev_with_fracs_t aperture, aperture_string_output_t *aso, uint8_t precision_mode);

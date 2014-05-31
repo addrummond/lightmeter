@@ -112,7 +112,7 @@ ev_with_fracs_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t vo
     GET_TEMP_COMP(THIRD, 3)
 #undef GET_TEMP_COMP
 
-    int16_t withcomp = ret.ev + adj8;
+    int16_t withcomp = ret.ev;/* + adj8;
     if (withcomp < 0) {
         ret.ev = 0;
         ev_with_fracs_zero_fracs(ret);
@@ -122,7 +122,7 @@ ev_with_fracs_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t vo
         ret.ev = 255;
         ev_with_fracs_zero_fracs(ret);
         return ret;
-    }
+    }*/
 
     ret.ev = (uint8_t) withcomp;
 
