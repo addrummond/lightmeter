@@ -19,7 +19,7 @@
 //        Display reset  |    ADC3/PA6 3---18 PB3/ADC8  | Op amp output
 //     Serial debug port |    ADC2/PA5 4---17 PC0/ADC9  | Shift register CLK
 //     Shift register A  |    ADC1/PA4 5---16 [USCK]    | **********
-//     Pushbutton input  |    ADC0/PA3 6---15 PC2/ADC11 | Shift register CLR
+//     Pushbutton input  |    ADC0/PA3 6---15 PC2/ADC11 |
 //   Charge pump clock 1 |         PA2 7---14 [RESET]   | **********
 //   Charge pump clock 2 |         PA1 8---13 PC4       | Display CS
 //              Test LED |         PA0 9---12 PC5       | Display CLK

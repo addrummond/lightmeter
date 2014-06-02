@@ -268,8 +268,12 @@ static void setup_shift_register()
 static void set_shift_register_output(uint8_t out)
 {
     // Clear the register.
-    SHIFT_REGISTER_CLR_PORT &= ~(1 << SHIFT_REGISTER_CLR_BIT);
-    SHIFT_REGISTER_CLR_PORT |= (1 << SHIFT_REGISTER_CLR_BIT);
+    // Appears not to be necessary if we're not worried about having outputs
+    // in a weird state for a few moments.
+    //
+    //SHIFT_REGISTER_CLR_PORT &= ~(1 << SHIFT_REGISTER_CLR_BIT);
+    //SHIFT_REGISTER_CLR_PORT |= (1 << SHIFT_REGISTER_CLR_BIT);
+    
     uint8_t j;
     for (j = 0; j < 8; ++j) {
         uint8_t bit = out & 1;
@@ -313,6 +317,8 @@ int main()
 
     display_init();
     display_clear();
+
+    set_shift_register_output(0xFF);//0b10101010);
 
     // The main loop. This looks at the latest exposure
     // reading every so often.
