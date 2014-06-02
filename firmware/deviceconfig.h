@@ -17,9 +17,9 @@
 //        Display data   |    ADC5/PB0 1---20 [MOSI]    | **********
 //        Display DC     |    ADC4/PA7 2---19 [MISO]    | **********
 //        Display reset  |    ADC3/PA6 3---18 PB3/ADC8  | Op amp output
-//     Serial debug port |    ADC2/PA5 4---17 PC0/ADC9  |
-//                       |    ADC1/PA4 5---16 [USCK]    | **********
-//     Pushbutton input  |    ADC0/PA3 6---15 PC2/ADC11 |
+//     Serial debug port |    ADC2/PA5 4---17 PC0/ADC9  | Shift register CLK
+//     Shift register A  |    ADC1/PA4 5---16 [USCK]    | **********
+//     Pushbutton input  |    ADC0/PA3 6---15 PC2/ADC11 | Shift register CLR
 //   Charge pump clock 1 |         PA2 7---14 [RESET]   | **********
 //   Charge pump clock 2 |         PA1 8---13 PC4       | Display CS
 //              Test LED |         PA0 9---12 PC5       | Display CLK
@@ -111,6 +111,20 @@
 //
 #define UART_PORT        PORTA
 #define UART_PORT_NUMBER 5 // I.e. PA5
+
+//
+// Shift register output port. Note that the shift register shares a clock
+// with the charge pump.
+//
+#define SHIFT_REGISTER_OUTPUT_PORT  PORTA
+#define SHIFT_REGISTER_OUTPUT_DDR   DDRA
+#define SHIFT_REGISTER_OUTPUT_BIT   PA4
+#define SHIFT_REGISTER_CLR_PORT     PORTC
+#define SHIFT_REGISTER_CLR_DDR      DDRC
+#define SHIFT_REGISTER_CLR_BIT      PC2
+#define SHIFT_REGISTER_CLK_PORT     PORTC
+#define SHIFT_REGISTER_CLK_DDR      DDRC
+#define SHIFT_REGISTER_CLK_BIT      PC0
 
 
 //
