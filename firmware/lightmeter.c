@@ -255,6 +255,35 @@ static void setup_charge_pump()
     TIMSK |= (1 << OCIE1A);
 }
 
+static void setup_shift_register()
+{
+    SHIFT_REGISTER_OUTPUT_DDR |= (1 << SHIFT_REGISTER_OUTPUT_BIT);
+    SHIFT_REGISTER_CLR_DDR |= (1 << SHIFT_REGISTER_CLR_BIT);
+    SHIFT_REGISTER_CLR_PORT |= (1 << SHIFT_REGISTER_CLR_BIT);
+    SHIFT_REGISTER_CLK_DDR |= (1 << SHIFT_REGISTER_CLK_BIT);
+    SHIFT_REGISTER_CLK_PORT &= ~(1 << SHIFT_REGISTER_CLK_BIT);
+}
+
+// Low bit of 'out' is QA, high bit is QE.
+static void set_shift_register_output(uint8_t out)
+{
+    // Clear the register.
+    SHIFT_REGISTER_CLR_PORT &= ~(1 << SHIFT_REGISTER_CLR_BIT);
+    SHIFT_REGISTER_CLR_PORT |= (1 << SHIFT_REGISTER_CLR_BIT);
+    uint8_t j;
+    for (j = 0; j < 8; ++j) {
+        uint8_t bit = out & 1;
+        out >>= 1;
+        // Set the clock low.
+        SHIFT_REGISTER_CLK_PORT &= ~(1 << SHIFT_REGISTER_CLK_BIT);
+        // Output the bit.
+        SHIFT_REGISTER_OUTPUT_PORT &= ~(1 << SHIFT_REGISTER_OUTPUT_BIT);
+        SHIFT_REGISTER_OUTPUT_PORT |= (bit << SHIFT_REGISTER_OUTPUT_BIT);
+        // Set the clock high.
+        SHIFT_REGISTER_CLK_PORT |= (1 << SHIFT_REGISTER_CLK_BIT);
+    }
+}
+
 ISR(TIM1_COMPA_vect)
 {
     CHARGE_PUMP_CLOCKS_PORT ^= ((1 << CHARGE_PUMP_CLOCK1_BIT) | (1 << CHARGE_PUMP_CLOCK2_BIT));
@@ -278,6 +307,7 @@ int main()
     initialize_global_meter_state();
 
     setup_charge_pump();
+    setup_shift_register();
 
     sei();
 
