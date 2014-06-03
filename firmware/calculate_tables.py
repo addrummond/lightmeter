@@ -5,7 +5,7 @@ import sys
 # Configuration values.
 ##########
 
-reference_voltage                = 2600.8  # mV
+reference_voltage                = 2772.72  # mV
 op_amp_resistor_stages = [ # In (kOhm,gain) pairs
     # For BPW 34
     #(320.0,1), # Very low light

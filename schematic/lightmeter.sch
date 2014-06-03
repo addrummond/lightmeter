@@ -10800,7 +10800,7 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <part name="GND15" library="supply1" deviceset="GND" device=""/>
 <part name="IC$1" library="custom" deviceset="TI-TLV61220" device=""/>
 <part name="R1" library="resistor" deviceset="R-EU_" device="R1206" value="1M"/>
-<part name="R2" library="resistor" deviceset="R-EU_" device="R1206" value="238k"/>
+<part name="R2" library="resistor" deviceset="R-EU_" device="R1206" value="220k"/>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
 <part name="P+1" library="supply1" deviceset="VCC" device=""/>
 <part name="GND16" library="supply1" deviceset="GND" device=""/>
@@ -10833,13 +10833,15 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <plain>
 <text x="63.5" y="91.44" size="1.778" layer="91">Shift Register</text>
 <text x="66.04" y="33.02" size="1.778" layer="91">Battery</text>
-<text x="137.16" y="93.98" size="1.778" layer="91">Charge Pump</text>
-<text x="-40.64" y="91.44" size="1.778" layer="91">Boost Regulator (outputs 2.6008 volts)</text>
-<text x="78.74" y="5.08" size="1.778" layer="91">Op Amp and Photodiode</text>
+<text x="137.16" y="93.98" size="1.778" layer="91">Charge pump</text>
+<text x="-40.64" y="91.44" size="1.778" layer="91">Boost regulator (outputs 2.77272 volts)</text>
+<text x="78.74" y="5.08" size="1.778" layer="91">Op amp and photodiode</text>
 <text x="-25.4" y="-20.32" size="1.778" layer="91">Pushbuttons</text>
 <text x="-7.62" y="35.56" size="1.778" layer="91">Microcontroller</text>
 <text x="213.36" y="60.96" size="1.778" layer="91">Screen</text>
 <text x="-71.12" y="76.2" size="1.778" layer="91">AVR programming pads</text>
+<text x="104.14" y="-48.26" size="1.778" layer="91">Test pad for op amp output</text>
+<text x="170.18" y="93.98" size="1.778" layer="91">Test pad for charge pump output</text>
 </plain>
 <instances>
 <instance part="IC$3P" gate="A" x="63.5" y="0"/>
