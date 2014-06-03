@@ -404,7 +404,7 @@ continue_main:;
 }
 
 // Convert a BCD ISO number into the closest equivalent 8-bit representation.
-// In the 8-bit representation, ISOs start from 6 and go up in steps of 1/8 stop.
+// In the 8-bit representation, ISOs start from 6 and go up in steps of 1/3 stop.
 static const uint8_t BCD_6[] = { 6 };
 uint8_t iso_bcd_to_third_stops(uint8_t *digits, uint8_t length)
 {
