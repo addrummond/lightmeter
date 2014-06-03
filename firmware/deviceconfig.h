@@ -19,7 +19,7 @@
 //        Display reset  |    ADC3/PA6 3---18 PB3/ADC8  | Op amp output
 //     Serial debug port |    ADC2/PA5 4---17 PC0/ADC9  | Shift register CLK
 //     Shift register A  |    ADC1/PA4 5---16 [USCK]    | **********
-//     Pushbutton input  |    ADC0/PA3 6---15 PC2/ADC11 |
+//     Pushbutton input  |    ADC0/PA3 6---15 PC2/ADC11 | Screen power MOSFET
 //   Charge pump clock 1 |         PA2 7---14 [RESET]   | **********
 //   Charge pump clock 2 |         PA1 8---13 PC4       | Display CS
 //              Test LED |         PA0 9---12 PC5       | Display CLK
@@ -84,17 +84,6 @@
 #define PUSHBUTTON_PUE   PUEA
 #define PUSHBUTTON_DDR   DDRA
 #define PUSHBUTTON_BIT   PA3
-#define PUSHBUTTON_PCMSK PCMSK0
-#define PUSHBUTTON_PCINT PCINT3
-#define PUSHBUTTON_ADMUX ((0 << MUX3) | (0 << MUX2) | (0 << MUX1) | (0 << MUX0) | (0 << REFS1) | (0 << REFS0))
-
-#define PULLUP_RESISTOR_KO              40L // Approx.
-#define PUSHBUTTON1_RVAL_KO             22L
-#define PUSHBUTTON2_RVAL_KO             39L
-#define PUSHBUTTON3_RVAL_KO             68L
-#define PUSHBUTTON4_RVAL_KO             100L
-
-#define PUSHBUTTON_BVOLTAGE(n) ((uint8_t)(((PULLUP_RESISTOR_KO + PUSHBUTTON ## n ## _RVAL) * 256L) / PUSHBUTTON_COMMON_RVAL))
 
 
 //
