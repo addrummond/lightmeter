@@ -10835,6 +10835,8 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="TPSCK" library="testpad" deviceset="TP" device="B1,27"/>
 <part name="TPGND" library="testpad" deviceset="TP" device="B1,27"/>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
+<part name="TPCPOUT" library="testpad" deviceset="TP" device="B1,27"/>
+<part name="TPOAOUT" library="testpad" deviceset="TP" device="B1,27"/>
 </parts>
 <sheets>
 <sheet>
@@ -10847,7 +10849,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <text x="-25.4" y="-20.32" size="1.778" layer="91">Pushbuttons</text>
 <text x="-7.62" y="35.56" size="1.778" layer="91">Microcontroller</text>
 <text x="213.36" y="60.96" size="1.778" layer="91">Screen</text>
-<text x="-66.04" y="76.2" size="1.778" layer="91">Test Pads</text>
+<text x="-71.12" y="76.2" size="1.778" layer="91">AVR programming pads</text>
 </plain>
 <instances>
 <instance part="IC1" gate="A" x="63.5" y="0"/>
@@ -10915,6 +10917,8 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <instance part="TPSCK" gate="G$1" x="-55.88" y="60.96"/>
 <instance part="TPGND" gate="G$1" x="-48.26" y="45.72"/>
 <instance part="GND5" gate="1" x="-53.34" y="40.64" rot="R270"/>
+<instance part="TPCPOUT" gate="G$1" x="165.1" y="96.52"/>
+<instance part="TPOAOUT" gate="G$1" x="96.52" y="-45.72"/>
 </instances>
 <busses>
 </busses>
@@ -11186,9 +11190,13 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pinref part="C8" gate="G$1" pin="1"/>
 <wire x1="154.94" y1="86.36" x2="160.02" y2="86.36" width="0.1524" layer="91"/>
 <wire x1="160.02" y1="86.36" x2="160.02" y2="81.28" width="0.1524" layer="91"/>
-<wire x1="160.02" y1="86.36" x2="167.64" y2="86.36" width="0.1524" layer="91"/>
+<wire x1="160.02" y1="86.36" x2="165.1" y2="86.36" width="0.1524" layer="91"/>
 <junction x="160.02" y="86.36"/>
 <label x="167.64" y="86.36" size="1.778" layer="95" xref="yes"/>
+<pinref part="TPCPOUT" gate="G$1" pin="TP"/>
+<wire x1="165.1" y1="86.36" x2="167.64" y2="86.36" width="0.1524" layer="91"/>
+<wire x1="165.1" y1="93.98" x2="165.1" y2="86.36" width="0.1524" layer="91"/>
+<junction x="165.1" y="86.36"/>
 </segment>
 <segment>
 <pinref part="U1" gate="G$1" pin="VCC"/>
@@ -11531,6 +11539,11 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pinref part="C4" gate="G$1" pin="1"/>
 <wire x1="91.44" y1="-33.02" x2="83.82" y2="-33.02" width="0.1524" layer="91"/>
 <label x="78.74" y="-35.56" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="TPOAOUT" gate="G$1" pin="TP"/>
+<wire x1="96.52" y1="-48.26" x2="96.52" y2="-50.8" width="0.1524" layer="91"/>
+<label x="96.52" y="-50.8" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 <net name="AVRSCK" class="0">
