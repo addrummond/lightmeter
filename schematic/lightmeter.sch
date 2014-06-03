@@ -49,6 +49,7 @@
 <layer number="53" name="tGND_GNDA" color="7" fill="9" visible="yes" active="no"/>
 <layer number="54" name="bGND_GNDA" color="1" fill="9" visible="yes" active="no"/>
 <layer number="56" name="wert" color="7" fill="1" visible="yes" active="no"/>
+<layer number="57" name="tCAD" color="7" fill="1" visible="no" active="no"/>
 <layer number="91" name="Nets" color="2" fill="1" visible="yes" active="yes"/>
 <layer number="92" name="Busses" color="1" fill="1" visible="yes" active="yes"/>
 <layer number="93" name="Pins" color="2" fill="1" visible="no" active="yes"/>
@@ -82,8 +83,12 @@
 <layer number="131" name="prix" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="132" name="test" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="144" name="Drill_legend" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="150" name="Notes" color="7" fill="1" visible="no" active="yes"/>
 <layer number="151" name="HeatSink" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="152" name="_bDocu" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="153" name="FabDoc1" color="6" fill="1" visible="no" active="no"/>
+<layer number="154" name="FabDoc2" color="2" fill="1" visible="no" active="no"/>
+<layer number="155" name="FabDoc3" color="7" fill="15" visible="no" active="no"/>
 <layer number="199" name="Contour" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="200" name="200bmp" color="1" fill="10" visible="yes" active="yes"/>
 <layer number="201" name="201bmp" color="2" fill="10" visible="yes" active="yes"/>
@@ -6822,71 +6827,6 @@ Source: AVX .. aphvc.pdf</description>
 </deviceset>
 </devicesets>
 </library>
-<library name="battery">
-<description>&lt;b&gt;Lithium Batteries and NC Accus&lt;/b&gt;&lt;p&gt;
-&lt;author&gt;Created by librarian@cadsoft.de&lt;/author&gt;</description>
-<packages>
-<package name="CR2032H">
-<description>&lt;b&gt;LI BATTERY&lt;/b&gt; Varta</description>
-<wire x1="-0.635" y1="8.255" x2="0.635" y2="8.255" width="0.254" layer="21"/>
-<wire x1="0" y1="8.89" x2="0" y2="7.62" width="0.254" layer="21"/>
-<wire x1="-0.635" y1="-8.89" x2="0.635" y2="-8.89" width="0.254" layer="21"/>
-<wire x1="-3.556" y1="11.049" x2="-6.604" y2="11.049" width="0.1524" layer="51"/>
-<wire x1="-6.604" y1="11.049" x2="-6.604" y2="-2.54" width="0.1524" layer="21"/>
-<wire x1="6.604" y1="-2.54" x2="6.604" y2="11.049" width="0.1524" layer="21"/>
-<wire x1="-6.604" y1="-2.54" x2="-1.27" y2="-2.54" width="0.1524" layer="21"/>
-<wire x1="-1.27" y1="3.175" x2="-1.27" y2="-2.54" width="0.1524" layer="21"/>
-<wire x1="-1.27" y1="3.175" x2="1.27" y2="3.175" width="0.1524" layer="21"/>
-<wire x1="1.27" y1="-2.54" x2="1.27" y2="3.175" width="0.1524" layer="21"/>
-<wire x1="1.27" y1="-2.54" x2="6.604" y2="-2.54" width="0.1524" layer="21"/>
-<wire x1="-6.698" y1="7.5979" x2="10.033" y2="0" width="0.1524" layer="21" curve="227.397154"/>
-<wire x1="3.556" y1="11.049" x2="-3.556" y2="11.049" width="0.1524" layer="21"/>
-<wire x1="6.477" y1="11.049" x2="3.556" y2="11.049" width="0.1524" layer="51"/>
-<wire x1="6.6203" y1="7.6668" x2="10.0331" y2="0" width="0.1524" layer="21" curve="-49.440271"/>
-<pad name="+@1" x="-5.08" y="10.795" drill="1.1176" diameter="2.54" shape="octagon"/>
-<pad name="+" x="5.08" y="10.795" drill="1.1176" diameter="2.54" shape="octagon"/>
-<pad name="-" x="0" y="-6.985" drill="1.1176" diameter="2.54" shape="octagon"/>
-<text x="-2.54" y="11.43" size="1.27" layer="25" ratio="10">&gt;NAME</text>
-<text x="5.08" y="-1.905" size="1.27" layer="27" ratio="10" rot="R90">&gt;VALUE</text>
-<text x="-2.921" y="-5.08" size="1.27" layer="21" ratio="10">Lit.3V</text>
-</package>
-</packages>
-<symbols>
-<symbol name="1V2+2">
-<wire x1="-1.905" y1="0.635" x2="-1.905" y2="0" width="0.4064" layer="94"/>
-<wire x1="-2.54" y1="0" x2="-1.905" y2="0" width="0.1524" layer="94"/>
-<wire x1="-1.905" y1="0" x2="-1.905" y2="-0.635" width="0.4064" layer="94"/>
-<wire x1="-0.635" y1="2.54" x2="-0.635" y2="0" width="0.4064" layer="94"/>
-<wire x1="-0.635" y1="0" x2="2.54" y2="0" width="0.1524" layer="94"/>
-<wire x1="-0.635" y1="0" x2="-0.635" y2="-2.54" width="0.4064" layer="94"/>
-<text x="-2.54" y="3.175" size="1.778" layer="95">&gt;NAME</text>
-<text x="-2.54" y="-5.08" size="1.778" layer="96">&gt;VALUE</text>
-<pin name="+" x="5.08" y="0" visible="pad" length="short" direction="pas" rot="R180"/>
-<pin name="-" x="-5.08" y="0" visible="pad" length="short" direction="pas"/>
-<pin name="+@1" x="2.54" y="0" visible="off" length="point" direction="pas" rot="R180"/>
-</symbol>
-</symbols>
-<devicesets>
-<deviceset name="CR2032H" prefix="G">
-<description>&lt;b&gt;LI BATTERY&lt;/b&gt; Varta</description>
-<gates>
-<gate name="1" symbol="1V2+2" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="CR2032H">
-<connects>
-<connect gate="1" pin="+" pad="+"/>
-<connect gate="1" pin="+@1" pad="+@1"/>
-<connect gate="1" pin="-" pad="-"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-</devicesets>
-</library>
 <library name="diode2">
 <description>&lt;b&gt;Diodes&lt;/b&gt;&lt;p&gt;
 Based on the following sources:
@@ -10762,6 +10702,52 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 </deviceset>
 </devicesets>
 </library>
+<library name="adafruit">
+<packages>
+<package name="12BH412">
+<wire x1="-20" y1="4.5" x2="-20" y2="-4.5" width="0.127" layer="21"/>
+<wire x1="18.5" y1="-4.5" x2="18.5" y2="-1.5" width="0.127" layer="21"/>
+<wire x1="18.5" y1="-1.5" x2="20" y2="-1.5" width="0.127" layer="21"/>
+<wire x1="20" y1="-1.5" x2="20" y2="1.5" width="0.127" layer="21"/>
+<wire x1="20" y1="1.5" x2="18.5" y2="1.5" width="0.127" layer="21"/>
+<wire x1="18.5" y1="1.5" x2="18.5" y2="4.5" width="0.127" layer="21"/>
+<pad name="-" x="-22.5" y="0" drill="1" diameter="2.54"/>
+<pad name="+" x="22.5" y="0" drill="1" diameter="2.54"/>
+<text x="-5.08" y="-1.27" size="2.54" layer="25" font="vector">&gt;NAME</text>
+</package>
+</packages>
+<symbols>
+<symbol name="AAA">
+<wire x1="-2.54" y1="5.08" x2="-2.54" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="0" y1="2.54" x2="0" y2="-2.54" width="0.254" layer="94"/>
+<text x="-7.62" y="5.08" size="1.778" layer="95" font="vector">&gt;NAME</text>
+<pin name="-" x="-7.62" y="0" visible="off" length="middle"/>
+<pin name="+" x="5.08" y="0" visible="off" length="middle" rot="R180"/>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="AAA" prefix="BATT">
+<description>&lt;b&gt;AAA PC pin holder&lt;/b&gt;
+&lt;p&gt;
+Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the same 
+&lt;p&gt;http://www.ladyada.net/library/pcb/eaglelibrary.html&lt;/p&gt;</description>
+<gates>
+<gate name="G$1" symbol="AAA" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="12BH412">
+<connects>
+<connect gate="G$1" pin="+" pad="+"/>
+<connect gate="G$1" pin="-" pad="-"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -10775,7 +10761,6 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="IC1" library="analog-devices" deviceset="AD8542" device="R"/>
 <part name="GND2" library="supply1" deviceset="GND" device=""/>
 <part name="Q2_OA" library="transistor-small-signal" deviceset="BSS123" device=""/>
-<part name="G2" library="battery" deviceset="CR2032H" device=""/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
 <part name="P+3" library="supply1" deviceset="VCC" device=""/>
 <part name="C6" library="rcl" deviceset="C-EU" device="C1206" value="µ1"/>
@@ -10835,6 +10820,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="TPOAOUT" library="testpad" deviceset="TP" device="B1,27"/>
 <part name="Q3_OA2" library="transistor-small-signal" deviceset="BSS123" device=""/>
 <part name="GND17" library="supply1" deviceset="GND" device=""/>
+<part name="BATT1" library="adafruit" deviceset="AAA" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -10855,7 +10841,6 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <instance part="IC1" gate="P" x="48.26" y="-10.16"/>
 <instance part="GND2" gate="1" x="48.26" y="-43.18"/>
 <instance part="Q2_OA" gate="G$1" x="116.84" y="-27.94" rot="R270"/>
-<instance part="G2" gate="1" x="68.58" y="25.4"/>
 <instance part="GND6" gate="1" x="48.26" y="25.4" rot="R270"/>
 <instance part="P+3" gate="VCC" x="88.9" y="25.4" rot="R270"/>
 <instance part="C6" gate="G$1" x="43.18" y="-7.62"/>
@@ -10915,16 +10900,12 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <instance part="TPOAOUT" gate="G$1" x="96.52" y="-45.72"/>
 <instance part="Q3_OA2" gate="G$1" x="147.32" y="2.54" rot="R270"/>
 <instance part="GND17" gate="1" x="137.16" y="2.54" rot="R270"/>
+<instance part="BATT1" gate="G$1" x="68.58" y="25.4"/>
 </instances>
 <busses>
 </busses>
 <nets>
 <net name="GND" class="0">
-<segment>
-<wire x1="63.5" y1="25.4" x2="50.8" y2="25.4" width="0.1524" layer="91"/>
-<pinref part="G2" gate="1" pin="-"/>
-<pinref part="GND6" gate="1" pin="GND"/>
-</segment>
 <segment>
 <pinref part="C8" gate="G$1" pin="2"/>
 <pinref part="GND3" gate="1" pin="GND"/>
@@ -11003,13 +10984,13 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pinref part="GND17" gate="1" pin="GND"/>
 <wire x1="142.24" y1="2.54" x2="139.7" y2="2.54" width="0.1524" layer="91"/>
 </segment>
+<segment>
+<pinref part="BATT1" gate="G$1" pin="-"/>
+<pinref part="GND6" gate="1" pin="GND"/>
+<wire x1="60.96" y1="25.4" x2="50.8" y2="25.4" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="VCC" class="0">
-<segment>
-<wire x1="73.66" y1="25.4" x2="86.36" y2="25.4" width="0.1524" layer="91"/>
-<pinref part="G2" gate="1" pin="+"/>
-<pinref part="P+3" gate="VCC" pin="VCC"/>
-</segment>
 <segment>
 <pinref part="U$1" gate="G$1" pin="VBAT"/>
 <pinref part="U$4" gate="G$1" pin="VBAT"/>
@@ -11031,6 +11012,11 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pinref part="C7" gate="G$1" pin="2"/>
 <wire x1="-30.48" y1="76.2" x2="-30.48" y2="73.66" width="0.1524" layer="91"/>
 <junction x="-30.48" y="76.2"/>
+</segment>
+<segment>
+<pinref part="BATT1" gate="G$1" pin="+"/>
+<pinref part="P+3" gate="VCC" pin="VCC"/>
+<wire x1="73.66" y1="25.4" x2="86.36" y2="25.4" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$2" class="0">
