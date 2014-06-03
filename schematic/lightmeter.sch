@@ -10837,7 +10837,7 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <text x="-40.64" y="91.44" size="1.778" layer="91">Boost regulator (outputs 2.77272 volts)</text>
 <text x="78.74" y="5.08" size="1.778" layer="91">Op amp and photodiode</text>
 <text x="-25.4" y="-20.32" size="1.778" layer="91">Pushbuttons</text>
-<text x="-7.62" y="35.56" size="1.778" layer="91">Microcontroller</text>
+<text x="-7.62" y="35.56" size="1.778" layer="91">Microcontroller (attiny1634)</text>
 <text x="213.36" y="60.96" size="1.778" layer="91">Screen</text>
 <text x="-71.12" y="76.2" size="1.778" layer="91">AVR programming pads</text>
 <text x="104.14" y="-48.26" size="1.778" layer="91">Test pad for op amp output</text>
@@ -11657,13 +11657,13 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 </segment>
 <segment>
 <pinref part="U$4" gate="G$1" pin="VLSS"/>
-<wire x1="203.2" y1="-17.78" x2="160.02" y2="-17.78" width="0.1524" layer="91"/>
-<label x="160.02" y="-17.78" size="1.778" layer="95" rot="R180" xref="yes"/>
+<wire x1="203.2" y1="-17.78" x2="165.1" y2="-17.78" width="0.1524" layer="91"/>
+<label x="165.1" y="-17.78" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
 <pinref part="U$4" gate="G$1" pin="NC(GND)@2"/>
-<wire x1="203.2" y1="-20.32" x2="142.24" y2="-20.32" width="0.1524" layer="91"/>
-<label x="142.24" y="-20.32" size="1.778" layer="95" rot="R180" xref="yes"/>
+<wire x1="203.2" y1="-20.32" x2="152.4" y2="-20.32" width="0.1524" layer="91"/>
+<label x="152.4" y="-20.32" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
 <pinref part="U$4" gate="G$1" pin="NC(GND)@1"/>
