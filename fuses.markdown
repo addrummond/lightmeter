@@ -1,4 +1,4 @@
-Attiny1634
+attiny1634
 --------
 
 Factory settings (alleged): H:DF, E:1F, L:62
@@ -8,7 +8,7 @@ Settings for 8MHZ: E=0x1F
                    L=0xE2
 
 
-Attiny84
+attiny84
 --------
 
 To run at 8MHz:
@@ -16,7 +16,7 @@ To run at 8MHz:
    0xc2 (low) 0xdf (high)
 
 
-Attiny 85
+attiny85
 ---------
 
 To run at 16.5MHz (required to use vusb without an external crystal), fuses on the attiny85 need to be set to:
