@@ -5,23 +5,21 @@ TLV61220 (boost converter)
     GND ---- VOUT
     EN  ---- FB
 
-Pin layout with one-row DIP adapter with chip the right way up:
+Pin layout with one-row DIP adapter with chip the right way up (X represents chip)::
 
       |
-    X | - SW-----|
-    X |          |
-    X | - GND--- | ---- gnd
-    X |          |
-    X | - EN-----|
-    X |        _ | ____ gnd
-    X | - FB---| |
-    X |       R1 |
-    X | - VOUT-| |
-    X |          L
-    X | - VBAT---|----------|
-      |                     |
-                            |
-                           cap 10uf
+    X | - SW
+    X | 
+    X | - GND
+    X |  
+    X | - EN
+    X | 
+    X | - FB
+    X | 
+    X | - VOUT
+    X | 
+    X | - VBAT
+      |   
 
 Pin layout with chip upside down:
 
