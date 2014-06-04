@@ -5,6 +5,8 @@ TLV61220
     GND ---- VOUT
     EN  ---- FB
 
+Pin layout with one-row DIP adapter with chip the right way up:
+
       |
     X | - SW-----|
     X |          |
@@ -21,16 +23,18 @@ TLV61220
                             |
                            cap 10uf
 
-  |
-X | - FB
-X |
-X | - VOUT
-X |
-X | - VBAT
-X |
-X | - SW
-X |  
-X | - GND
-X |
-X | - EN
-  |
+Pin layout with chip upside down:
+
+      |
+    X | - FB
+    X |
+    X | - VOUT
+    X |
+    X | - VBAT
+    X |
+    X | - SW
+    X |  
+    X | - GND
+    X |
+    X | - EN
+      |
