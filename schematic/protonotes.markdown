@@ -1,4 +1,4 @@
-TLV61220
+TLV61220 (boost converter)
 --------
 
     SW  1--- VBAT
