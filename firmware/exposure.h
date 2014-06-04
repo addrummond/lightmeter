@@ -44,10 +44,11 @@ typedef struct aperture_string_output {
 #define APERTURE_STRING_OUTPUT_STRING(aso) ((aso).chars)
 
 typedef struct ev_with_fracs {
-    uint8_t ev; // The ev value in 1/8 EV steps starting from -5EV.
-    uint8_t fracs;
+    // The ev value in 1/8 EV steps starting from -5EV.
+    uint8_t ev;
     // Low nibble of fracs + (ev/8)*3 gives EV in 1/3 stops starting from -5EV.
     // High nibble of fracs + (ev/8)*10 gives EV in 1/10 stops starting from -5EV.
+    uint8_t fracs;
 
     // Mini essay: Could we ever get 10/10 or 3/3?
     //
