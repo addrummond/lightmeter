@@ -20,8 +20,8 @@
 //     Serial debug port |    ADC2/PA5 4---17 PC0/ADC9  | Shift register CLK
 //     Shift register A  |    ADC1/PA4 5---16 [USCK]    | **********
 //     Pushbutton input  |    ADC0/PA3 6---15 PC2/ADC11 | Screen power MOSFET
-//   Charge pump clock 1 |         PA2 7---14 [RESET]   | **********
-//   Charge pump clock 2 |         PA1 8---13 PC4       | Display CS
+//     Charge pump clock |         PA2 7---14 [RESET]   | **********
+//                       |         PA1 8---13 PC4       | Display CS
 //              Test LED |         PA0 9---12 PC5       | Display CLK
 //            ********** |       [GND] 10--11 [VCC]     | **********
 
@@ -79,20 +79,22 @@
 //
 // Pushbutton input port.
 //
-#define PUSHBUTTON_PORT  PORTA
-#define PUSHBUTTON_PIN   PINA
-#define PUSHBUTTON_PUE   PUEA
-#define PUSHBUTTON_DDR   DDRA
-#define PUSHBUTTON_BIT   PA3
+#define PUSHBUTTON_PORT       PORTA
+#define PUSHBUTTON_PIN        PINA
+#define PUSHBUTTON_PUE        PUEA
+#define PUSHBUTTON_DDR        DDRA
+#define PUSHBUTTON_BIT        PA3
+#define PUSHBUTTON_PCMSK      PCMSK0
+#define PUSHBUTTON_PCINT      PCINT0
+#define PUSHBUTTON_PCINT_VECT PCINT0_vect
 
 
 //
 // Charge pump clock output ports.
 //
-#define CHARGE_PUMP_CLOCKS_PORT  PORTA
-#define CHARGE_PUMP_CLOCKS_DDR   DDRA
-#define CHARGE_PUMP_CLOCK1_BIT   PA2
-#define CHARGE_PUMP_CLOCK2_BIT   PA1
+#define CHARGE_PUMP_CLOCK_PORT  PORTA
+#define CHARGE_PUMP_CLOCK_DDR   DDRA
+#define CHARGE_PUMP_CLOCK_BIT   PA2
 
 
 //

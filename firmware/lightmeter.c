@@ -167,50 +167,6 @@ void led_test()
 #endif
 }
 
-// Some compile-time sanity checks on the values of the resistors
-// for the buttons.
-struct dummy_deviceconfig_pushbutton_test_struct {
-    // Check that resistor values go up in sequence.
-    int dummy5[(PUSHBUTTON1_RVAL_KO < PUSHBUTTON2_RVAL_KO &&
-                PUSHBUTTON2_RVAL_KO < PUSHBUTTON3_RVAL_KO &&
-                PUSHBUTTON3_RVAL_KO < PUSHBUTTON4_RVAL_KO) - 1];
-};
-
-static volatile uint8_t last_button_voltage_reading;
-ISR(PCINT0_vect)
-{
-    // We haven't finished handling the last button press yet, so return.
-    if (last_button_voltage_reading)
-        return;
-
-    // Ignore if it's high rather than low.
-    if (PUSHBUTTON_PIN & (1 << PUSHBUTTON_BIT))
-        return;
-
-    // We now need to switch the ADC temporarily to read from the button
-    // input pin.
-    ADMUX = PUSHBUTTON_ADMUX;
-    // Disable ADC interrupt.
-    ADCSRA &= ~(1 << ADIE);
-    // Disable auto triggering.
-    ADCSRA &= ~(1 << ADATE);
-    // Start conversion.
-    ADCSRA |= (1 << ADSC);
-
-    // First conversion will be junk; ignore it.
-    while (ADCSRA & (1 << ADSC));
-    ADCSRA |= (1 << ADSC);
-    while (ADCSRA & (1 << ADSC));
-    uint8_t r = (uint8_t)(ADC >> 2);
-
-    // Ensure that it's not zero (since zero signals that no button has been pressed).
-    // The small loss of accuracy doesn't matter.
-    last_button_voltage_reading = r | 1;
-
-    // ADC is reset to the usual settings in the main loop, so as to
-    // minimize the amount of processing done in this interrupt.
-}
-
 static void setup_button_handler()
 {
     PUSHBUTTON_DDR &= ~(1 << PUSHBUTTON_BIT);
@@ -232,6 +188,12 @@ static void handle_button_press(uint8_t lbvr)
         //    }
 }
 
+// Called when a pushbutton is pressed.
+ISR(PUSHBUTTON_PCINT_VECT)
+{
+    handle_button_press(0);
+}
+
 static void setup_charge_pump()
 {
     // Might be worth investigating the possibility of getting the chip to flip
@@ -241,10 +203,7 @@ static void setup_charge_pump()
     //
     // http://electronics.stackexchange.com/questions/49852/need-help-understanding-avr-atmega-attiny-timer-mirrored-output
 
-    CHARGE_PUMP_CLOCKS_DDR |= (1 << CHARGE_PUMP_CLOCK1_BIT) | (1 << CHARGE_PUMP_CLOCK2_BIT);
-    // Set inital charge pump port outputs as opposites.
-    CHARGE_PUMP_CLOCKS_PORT |= (1 << CHARGE_PUMP_CLOCK1_BIT);
-    CHARGE_PUMP_CLOCKS_PORT &= ~(1 << CHARGE_PUMP_CLOCK2_BIT);
+    CHARGE_PUMP_CLOCK_DDR |= (1 << CHARGE_PUMP_CLOCK_BIT);
 
     TCCR1A = 0;
     TCCR1B = (0 << WGM13) | (1 << WGM12); // CTC OCR1A.
@@ -258,8 +217,6 @@ static void setup_charge_pump()
 static void setup_shift_register()
 {
     SHIFT_REGISTER_OUTPUT_DDR |= (1 << SHIFT_REGISTER_OUTPUT_BIT);
-    SHIFT_REGISTER_CLR_DDR |= (1 << SHIFT_REGISTER_CLR_BIT);
-    SHIFT_REGISTER_CLR_PORT |= (1 << SHIFT_REGISTER_CLR_BIT);
     SHIFT_REGISTER_CLK_DDR |= (1 << SHIFT_REGISTER_CLK_BIT);
     SHIFT_REGISTER_CLK_PORT &= ~(1 << SHIFT_REGISTER_CLK_BIT);
 }
@@ -276,8 +233,8 @@ static void set_shift_register_output(uint8_t out)
 
     uint8_t j;
     for (j = 0; j < 8; ++j) {
-        uint8_t bit = out & 1;
-        out >>= 1;
+        uint8_t bit = (out & 0b10000000) >> 7;
+        out <<= 1;
         // Set the clock low.
         SHIFT_REGISTER_CLK_PORT &= ~(1 << SHIFT_REGISTER_CLK_BIT);
         // Output the bit.
@@ -290,7 +247,7 @@ static void set_shift_register_output(uint8_t out)
 
 ISR(TIM1_COMPA_vect)
 {
-    CHARGE_PUMP_CLOCKS_PORT ^= ((1 << CHARGE_PUMP_CLOCK1_BIT) | (1 << CHARGE_PUMP_CLOCK2_BIT));
+    CHARGE_PUMP_CLOCK_PORT ^= (1 << CHARGE_PUMP_CLOCK_BIT);
 }
 
 int main()
@@ -318,20 +275,15 @@ int main()
     display_init();
     display_clear();
 
+    // Test code.
+    //
+    //uint8_t shift_out = 0b10101010;
+    //set_shift_register_output(shift_out);
+
     // The main loop. This looks at the latest exposure
     // reading every so often.
     uint8_t cnt;
     for (cnt = 0;; ++cnt) {
-        // Check if a button was pressed.
-        uint8_t lbvr = last_button_voltage_reading;
-        if (lbvr) {
-            handle_button_press(lbvr);
-            last_button_voltage_reading = 0;
-            // Ordinary ADC settings will have been overwritten to read voltage at
-            // button input pin; reset them now.
-            setup_ADC();
-        }
-
         // Do lightmetery stuff.
         if (cnt == 0) {
             // Make the next ADC reading a temperature reading.
@@ -356,6 +308,13 @@ int main()
         ui_show_interface();
 
         _delay_ms(50);
+
+        // Test code (alternate LEDs connected to shift register).
+        //
+        //if (cnt == 255) {
+        //    shift_out ^= 0xFF;
+        //    set_shift_register_output(shift_out);
+        //}
     }
 
     return 0;
