@@ -113,7 +113,7 @@ static void set_op_amp_resistor_stage(uint8_t op_amp_resistor_stage)
     global_transient_meter_state.op_amp_resistor_stage = op_amp_resistor_stage;
 }
 
-void led_test(void);
+static void led_test(void);
 void handle_measurement()
 {
     // Copy the volatile value, which could change in the middle of this function.
@@ -158,60 +158,13 @@ void handle_measurement()
     //    }
 }
 
-void led_test()
+static void led_test()
 {
 #ifdef TEST_LED_PORT
     TEST_LED_PORT |= (1 << TEST_LED_BIT);
     _delay_ms(250);
     TEST_LED_PORT &= ~(1 << TEST_LED_BIT);
 #endif
-}
-
-static void setup_button_handler()
-{
-    PUSHBUTTON_DDR &= ~(1 << PUSHBUTTON_BIT);
-    GIMSK |= (1 << PCIE0);
-    PUSHBUTTON_PCMSK |= (1 << PUSHBUTTON_PCINT);
-    // Enable pullup resistor.
-    PUSHBUTTON_PUE |= (1 << PUSHBUTTON_BIT);
-}
-
-static void handle_button_press(uint8_t lbvr)
-{
-#ifdef DEBUG
-    tx_byte('B');
-    tx_byte(lbvr);
-#endif
-    //    if (button_number == 1) {
-    //    display_clear();
-//    _delay_ms(2000);
-        //    }
-}
-
-// Called when a pushbutton is pressed.
-ISR(PUSHBUTTON_PCINT_VECT)
-{
-    handle_button_press(0);
-}
-
-static void setup_charge_pump()
-{
-    // Might be worth investigating the possibility of getting the chip to flip
-    // the ports automatically instead of using an interrupt. However, I couldn't
-    // figure out any way of getting it to output to two ports simultaneously via
-    // a counter. The following SO question may be helpful:
-    //
-    // http://electronics.stackexchange.com/questions/49852/need-help-understanding-avr-atmega-attiny-timer-mirrored-output
-
-    CHARGE_PUMP_CLOCK_DDR |= (1 << CHARGE_PUMP_CLOCK_BIT);
-
-    TCCR1A = 0;
-    TCCR1B = (0 << WGM13) | (1 << WGM12); // CTC OCR1A.
-    // Prescale clock by 1/64.
-    TCCR1B |= (0 << CS12) | (1 << CS11) | (1 << CS10);
-    OCR1A = 4;
-    // Enable timer counter interrupt.
-    TIMSK |= (1 << OCIE1A);
 }
 
 static void setup_shift_register()
@@ -222,7 +175,8 @@ static void setup_shift_register()
 }
 
 // Low bit of 'out' is QA, high bit is QE.
-static void set_shift_register_output(uint8_t out)
+static volatile uint8_t shift_register_out = 0;
+static void set_shift_register_out()
 {
     // Clear the register.
     // Appears not to be necessary if we're not worried about having outputs
@@ -231,6 +185,7 @@ static void set_shift_register_output(uint8_t out)
     //SHIFT_REGISTER_CLR_PORT &= ~(1 << SHIFT_REGISTER_CLR_BIT);
     //SHIFT_REGISTER_CLR_PORT |= (1 << SHIFT_REGISTER_CLR_BIT);
 
+    uint8_t out = shift_register_out;
     uint8_t j;
     for (j = 0; j < 8; ++j) {
         uint8_t bit = (out & 0b10000000) >> 7;
@@ -245,10 +200,116 @@ static void set_shift_register_output(uint8_t out)
     }
 }
 
-ISR(TIM1_COMPA_vect)
+static void setup_button_handler()
 {
-    CHARGE_PUMP_CLOCK_PORT ^= (1 << CHARGE_PUMP_CLOCK_BIT);
+    PUSHBUTTON_DDR &= ~(1 << PUSHBUTTON_BIT);
+    GIMSK |= (1 << PCIE0);
+    PUSHBUTTON_PCMSK |= (1 << PUSHBUTTON_PCINT_BIT);
+    // Disable pullup resistor.
+    PUSHBUTTON_PUE &= ~(1 << PUSHBUTTON_BIT);
 }
+
+static volatile bool in_handle_button_press = false;
+static void handle_button_press()
+{
+#ifdef DEBUG
+    tx_byte('B');
+#endif
+
+    // Set pin to output to drain cap.
+    PUSHBUTTON_DDR &= ~(1 << PUSHBUTTON_BIT);
+    PUSHBUTTON_PORT &= ~(1 << PUSHBUTTON_BIT);
+#ifdef DEBUG
+    tx_byte('K');
+#endif
+    // Wait for cap to drain.
+    _delay_us(600);
+
+#ifdef DEBUG
+    tx_byte('Q');
+#endif
+
+    // Set pin to input and disable this interrupt.
+    //GIMSK &= ~(1 << PCIE0);
+    PUSHBUTTON_DDR |= (1 << PUSHBUTTON_BIT);
+
+#ifdef DEBUG
+    tx_byte('4');
+#endif
+
+    // See how long it takes for cap to charge.
+    uint8_t i = 0;
+    while (! (PUSHBUTTON_PIN & (1 << PUSHBUTTON_BIT)) && i < 50)
+        ++i;
+
+#ifdef DEBUG
+    tx_byte('5');
+#endif
+
+    // Drain cap again.
+    PUSHBUTTON_DDR &= ~(1 << PUSHBUTTON_BIT);
+    PUSHBUTTON_PORT &= ~(1 << PUSHBUTTON_BIT);
+    _delay_us(600);
+
+    // Set pin back to input and re-enable interrupt.
+    PUSHBUTTON_DDR |= (1 << PUSHBUTTON_BIT);
+    //GIMSK |= (1 << PCIE0);
+
+#ifdef DEBUG
+    tx_byte('C');
+    tx_byte('N');
+    tx_byte(i);
+#endif
+}
+
+// Called when a pushbutton is pressed.
+ISR(PUSHBUTTON_PCINT_VECT)
+{
+#ifdef DEBUG
+    tx_byte('G');
+#endif
+    //if ((PUSHBUTTON_PIN & (1 << PUSHBUTTON_BIT)) && !in_handle_button_press) {
+        in_handle_button_press = true;
+        handle_button_press();
+        in_handle_button_press = false;
+    //}
+}
+
+static void setup_charge_pump()
+{
+    // Might be worth investigating the possibility of getting the chip to flip
+    // the ports automatically instead of using an interrupt. However, I couldn't
+    // figure out any way of getting it to output to two ports simultaneously via
+    // a counter. The following SO question may be helpful:
+    //
+    // http://electronics.stackexchange.com/questions/49852/need-help-understanding-avr-atmega-attiny-timer-mirrored-output
+
+    DDRA |= (1 << PA6);
+    DDRB |= (1 << PB3);
+
+    // Enable fast 8-bit PWM mode with TOP=0xFF.
+    TCCR1B = ((0 << WGM13) | (1 << WGM12));
+    TCCR1A = ((0 << WGM11) | (1 << WGM10));
+
+    // Set output pins out of phase.
+    TCCR1A |= (1 << COM1A1);
+    TCCR1A &= ~(1 << COM1A0);
+    TCCR1A |= (1 << COM1B1) | (1 << COM1B0);
+
+    // Prescale clock by 1/1.
+    TCCR1B |= (0 << CS12) | (0 << CS11) | (1 << CS10);
+    OCR1A = 128;
+    OCR1B = 128;
+}
+
+//ISR(TIM1_COMPA_vect)
+//{
+//    CHARGE_PUMP_CLOCK_PORT ^= (1 << CHARGE_PUMP_CLOCK1_BIT)
+//#ifdef CHARGE_PUMP_CLOCK2_BIT
+//                            | (1 << CHARGE_PUMP_CLOCK2_BIT)
+//#endif
+//    ;
+//}
 
 int main()
 {
@@ -272,13 +333,10 @@ int main()
 
     sei();
 
+    set_shift_register_out();
+
     display_init();
     display_clear();
-
-    // Test code.
-    //
-    //uint8_t shift_out = 0b10101010;
-    //set_shift_register_output(shift_out);
 
     // The main loop. This looks at the latest exposure
     // reading every so often.
@@ -309,12 +367,9 @@ int main()
 
         _delay_ms(50);
 
-        // Test code (alternate LEDs connected to shift register).
-        //
-        //if (cnt == 255) {
-        //    shift_out ^= 0xFF;
-        //    set_shift_register_output(shift_out);
-        //}
+#ifdef DEBUG
+    tx_byte('X');
+#endif
     }
 
     return 0;

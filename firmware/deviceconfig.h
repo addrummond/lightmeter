@@ -16,12 +16,12 @@
 //
 //        Display data   |    ADC5/PB0 1---20 [MOSI]    | **********
 //        Display DC     |    ADC4/PA7 2---19 [MISO]    | **********
-//        Display reset  |    ADC3/PA6 3---18 PB3/ADC8  | Op amp output
-//     Serial debug port |    ADC2/PA5 4---17 PC0/ADC9  | Shift register CLK
+//   Charge pump clock 1 |    ADC3/PA6 3---18 PB3/ADC8  | Charge pump clock 2
+//     Serial debug port |    ADC2/PA5 4---17 PC0/ADC9  | Op amp output
 //     Shift register A  |    ADC1/PA4 5---16 [USCK]    | **********
 //     Pushbutton input  |    ADC0/PA3 6---15 PC2/ADC11 | Screen power MOSFET
-//     Charge pump clock |         PA2 7---14 [RESET]   | **********
-//                       |         PA1 8---13 PC4       | Display CS
+//         Display reset |         PA2 7---14 [RESET]   | **********
+//  Shift register clock |         PA1 8---13 PC4       | Display CS
 //              Test LED |         PA0 9---12 PC5       | Display CLK
 //            ********** |       [GND] 10--11 [VCC]     | **********
 
@@ -47,14 +47,14 @@
 
 #define DISPLAY_RESET_PORT  PORTA
 #define DISPLAY_RESET_DDR   DDRA
-#define DISPLAY_RESET_BIT   PA6
+#define DISPLAY_RESET_BIT   PA2
 
 
 //
 // ADC
 //
-// Set ADC for PB3 input.
-#define ADMUX_LIGHT_SOURCE             ((1 << MUX3) | (0 << MUX2) | (0 << MUX1) | (0 << MUX0))
+// Set ADC for PC0 input.
+#define ADMUX_LIGHT_SOURCE             ((1 << MUX3) | (0 << MUX2) | (0 << MUX1) | (1 << MUX0))
 
 #define ADMUX_TEMPERATURE_SOURCE       ((1 << MUX3) | (1 << MUX2) | (1 << MUX1) | (0 << MUX0))
 
@@ -79,22 +79,14 @@
 //
 // Pushbutton input port.
 //
-#define PUSHBUTTON_PORT       PORTA
-#define PUSHBUTTON_PIN        PINA
-#define PUSHBUTTON_PUE        PUEA
-#define PUSHBUTTON_DDR        DDRA
-#define PUSHBUTTON_BIT        PA3
-#define PUSHBUTTON_PCMSK      PCMSK0
-#define PUSHBUTTON_PCINT      PCINT0
-#define PUSHBUTTON_PCINT_VECT PCINT0_vect
-
-
-//
-// Charge pump clock output ports.
-//
-#define CHARGE_PUMP_CLOCK_PORT  PORTA
-#define CHARGE_PUMP_CLOCK_DDR   DDRA
-#define CHARGE_PUMP_CLOCK_BIT   PA2
+#define PUSHBUTTON_PORT          PORTA
+#define PUSHBUTTON_PIN           PINA
+#define PUSHBUTTON_PUE           PUEA
+#define PUSHBUTTON_DDR           DDRA
+#define PUSHBUTTON_BIT           PA3
+#define PUSHBUTTON_PCMSK         PCMSK0
+#define PUSHBUTTON_PCINT_BIT     PCINT3
+#define PUSHBUTTON_PCINT_VECT    PCINT0_vect
 
 
 //
@@ -113,9 +105,9 @@
 //#define SHIFT_REGISTER_CLR_PORT     PORTC
 //#define SHIFT_REGISTER_CLR_DDR      DDRC
 //#define SHIFT_REGISTER_CLR_BIT      PC2
-#define SHIFT_REGISTER_CLK_PORT     PORTC
-#define SHIFT_REGISTER_CLK_DDR      DDRC
-#define SHIFT_REGISTER_CLK_BIT      PC0
+#define SHIFT_REGISTER_CLK_PORT     PORTA
+#define SHIFT_REGISTER_CLK_DDR      DDRA
+#define SHIFT_REGISTER_CLK_BIT      PA1
 
 
 //
