@@ -277,13 +277,6 @@ ISR(PUSHBUTTON_PCINT_VECT)
 
 static void setup_charge_pump()
 {
-    // Might be worth investigating the possibility of getting the chip to flip
-    // the ports automatically instead of using an interrupt. However, I couldn't
-    // figure out any way of getting it to output to two ports simultaneously via
-    // a counter. The following SO question may be helpful:
-    //
-    // http://electronics.stackexchange.com/questions/49852/need-help-understanding-avr-atmega-attiny-timer-mirrored-output
-
     DDRA |= (1 << PA6);
     DDRB |= (1 << PB3);
 
@@ -301,15 +294,6 @@ static void setup_charge_pump()
     OCR1A = 128;
     OCR1B = 128;
 }
-
-//ISR(TIM1_COMPA_vect)
-//{
-//    CHARGE_PUMP_CLOCK_PORT ^= (1 << CHARGE_PUMP_CLOCK1_BIT)
-//#ifdef CHARGE_PUMP_CLOCK2_BIT
-//                            | (1 << CHARGE_PUMP_CLOCK2_BIT)
-//#endif
-//    ;
-//}
 
 int main()
 {
