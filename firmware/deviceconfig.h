@@ -132,8 +132,7 @@
 
 
 //
-// Shift register output port. Note that the shift register shares a clock
-// with the charge pump.
+// Shift register output port.
 //
 #define SHIFT_REGISTER_OUTPUT_PORT  PORTA
 #define SHIFT_REGISTER_OUTPUT_DDR   DDRA
