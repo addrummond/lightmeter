@@ -6,6 +6,7 @@
 #include <assert.h>
 #include <bitmaps/bitmaps.h>
 #include <deviceconfig.h>
+#include <shiftregister.h>
 
 void display_write_byte(uint8_t d)
 {
@@ -16,7 +17,7 @@ void display_write_byte(uint8_t d)
             DISPLAY_DATA_PORT |= (1 << DISPLAY_DATA_BIT);
         else
             DISPLAY_DATA_PORT &= ~(1 << DISPLAY_DATA_BIT);
-        DISPLAY_CLK_PORT |= (1 << DISPLAY_CLK_BIT);  
+        DISPLAY_CLK_PORT |= (1 << DISPLAY_CLK_BIT);
     }
 }
 
@@ -48,14 +49,16 @@ void display_init()
     DISPLAY_CS_DDR |= (1 << DISPLAY_CS_BIT);
     DISPLAY_CLK_DDR |= (1 << DISPLAY_CLK_BIT);
     DISPLAY_DC_DDR |= (1 << DISPLAY_DC_BIT);
-    DISPLAY_RESET_DDR |= (1 << DISPLAY_RESET_BIT);
 
     // Trigger reset pin on screen.
-    DISPLAY_RESET_PORT |= (1 << DISPLAY_RESET_BIT);
+    or_shift_register_bits(1 << SHIFT_REGISTER_SCRRST_BIT);
+    set_shift_register_out();
     _delay_ms(1);
-    DISPLAY_RESET_PORT &= ~(1 << DISPLAY_RESET_BIT);
+    and_shift_register_bits(1 << SHIFT_REGISTER_SCRRST_BIT);
+    set_shift_register_out();
     _delay_ms(10);
-    DISPLAY_RESET_PORT |= (1 << DISPLAY_RESET_BIT);
+    or_shift_register_bits(1 << SHIFT_REGISTER_SCRRST_BIT);
+    set_shift_register_out();
 
     // Display initialization sequence. No idea what most of this does.
     display_command(DISPLAY_DISPLAYOFF);                    // 0xAE
@@ -66,6 +69,10 @@ void display_init()
     display_command(DISPLAY_SETDISPLAYOFFSET);              // 0xD3
     display_command(0x0);                                   // no offset
     display_command(DISPLAY_SETSTARTLINE | 0x0);            // line #0
+    //
+    // NOTE NOTE NOTE TODO. May need to change the following settings in
+    // production when we are not using internal charge pump.
+    //
     display_command(DISPLAY_CHARGEPUMP);                    // 0x8D
     display_command(0x14);
     display_command(DISPLAY_MEMORYMODE);                    // 0x20
@@ -104,7 +111,7 @@ void display_write_page_array(const uint8_t *pages, uint8_t ncols, uint8_t pages
         display_command(DISPLAY_SET_COL_START_LOW + col_start_low);
         display_command(DISPLAY_SET_COL_START_HIGH + col_start_high);
         display_command(DISPLAY_SET_PAGE_START + page_y + p);
-        
+
         DISPLAY_WRITE_DATA {
             uint8_t c;
             uint8_t cc;
@@ -155,7 +162,7 @@ void display_bwrite_12px_char(const uint8_t *char_grid, uint8_t *out, uint8_t pa
         // Bottom block.
         uint8_t rawbttmi = pgm_read_byte(&char_grid[(0/CHAR_12PX_BLOCK_SIZE)+i]);
         const uint8_t *bttm = CHAR_BLOCKS_12PX + ((rawbttmi >> 2) << 1);
-        
+
         // One loop for each column.
         uint8_t j;
         for (j = 0; j < CHAR_12PX_BLOCK_SIZE; ++j, out += pages_per_col) {
@@ -165,7 +172,7 @@ void display_bwrite_12px_char(const uint8_t *char_grid, uint8_t *out, uint8_t pa
             uint8_t flip_j = CHAR_12PX_BLOCK_SIZE-1-j;
             uint8_t flip_bi = flip_j >> 1;
             uint8_t flip_bm = ((flip_j & 1) ^ 1) << 2;
- 
+
 #define BI(x) (raw ## x ## i & 2 ? flip_bi : bi)
 #define BM(x) (raw ## x ## i & 2 ? flip_bm : bm)
             uint8_t top_bits = (pgm_read_byte(&top[BI(top)]) >> BM(top)) & 0x0F;

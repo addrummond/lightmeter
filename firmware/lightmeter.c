@@ -13,6 +13,7 @@
 #include <display.h>
 #include <ui.h>
 #include <mymemset.h>
+#include <shiftregister.h>
 
 #include <basic_serial/basic_serial.h>
 
@@ -167,39 +168,6 @@ static void led_test()
 #endif
 }
 
-static void setup_shift_register()
-{
-    SHIFT_REGISTER_OUTPUT_DDR |= (1 << SHIFT_REGISTER_OUTPUT_BIT);
-    SHIFT_REGISTER_CLK_DDR |= (1 << SHIFT_REGISTER_CLK_BIT);
-    SHIFT_REGISTER_CLK_PORT &= ~(1 << SHIFT_REGISTER_CLK_BIT);
-}
-
-// Low bit of 'out' is QA, high bit is QE.
-static volatile uint8_t shift_register_out = 0;
-static void set_shift_register_out()
-{
-    // Clear the register.
-    // Appears not to be necessary if we're not worried about having outputs
-    // in a weird state for a few moments.
-    //
-    //SHIFT_REGISTER_CLR_PORT &= ~(1 << SHIFT_REGISTER_CLR_BIT);
-    //SHIFT_REGISTER_CLR_PORT |= (1 << SHIFT_REGISTER_CLR_BIT);
-
-    uint8_t out = shift_register_out;
-    uint8_t j;
-    for (j = 0; j < 8; ++j) {
-        uint8_t bit = (out & 0b10000000) >> 7;
-        out <<= 1;
-        // Set the clock low.
-        SHIFT_REGISTER_CLK_PORT &= ~(1 << SHIFT_REGISTER_CLK_BIT);
-        // Output the bit.
-        SHIFT_REGISTER_OUTPUT_PORT &= ~(1 << SHIFT_REGISTER_OUTPUT_BIT);
-        SHIFT_REGISTER_OUTPUT_PORT |= (bit << SHIFT_REGISTER_OUTPUT_BIT);
-        // Set the clock high.
-        SHIFT_REGISTER_CLK_PORT |= (1 << SHIFT_REGISTER_CLK_BIT);
-    }
-}
-
 static void setup_pushbuttons()
 {
 #define SETUP(n) PUSHBUTTON ## n ## _DDR &= ~(1 << PUSHBUTTON ## n ## _BIT); \
@@ -214,11 +182,25 @@ static volatile uint8_t buttons_pressed = 0;
 static void process_button_press()
 {
     buttons_pressed = 0;
-#define IF(n)                                                      \
-    if (PUSHBUTTON ## n ## _PIN & (1 << PUSHBUTTON ## n ## _BIT))  \
+#define IF(n)                                                          \
+    if (! (PUSHBUTTON ## n ## _PIN & (1 << PUSHBUTTON ## n ## _BIT)))  \
         buttons_pressed |= (1 << (n-1));
     FOR_X_FROM_1_TO_N_PUSHBUTTONS_DO(IF)
 #undef IF
+
+#if DEBUG
+    tx_byte('P');
+    if (buttons_pressed == 1)
+        tx_byte('A');
+    else if (buttons_pressed == 2)
+        tx_byte('B');
+    else if (buttons_pressed == 4)
+        tx_byte('C');
+    else if (buttons_pressed == 8)
+        tx_byte('D');
+    else
+        tx_byte('M');
+#endif
 }
 
 #define DEF_ISR(pcint_n)           \

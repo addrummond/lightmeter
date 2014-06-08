@@ -126,6 +126,7 @@
 // Shift register outputs.
 //
 #define SHIFT_REGISTER_SCRPWR_BIT 0
+#define SHIFT_REGISTER_SCRRST_BIT 1
 #define SHIFT_REGISTER_STG1_BIT   4
 #define SHIFT_REGISTER_STG2_BIT   5
 #define SHIFT_REGISTER_STG3_BIT   6
