@@ -108,9 +108,6 @@
 #define FOR_X_FROM_1_TO_N_PUSHBUTTONS_DO(x) x(1) x(2) x(3)
 #define FOR_EACH_PUSHBUTTON_PCMSK_DO(x)     x(0) x(2)
 
-// Should not need to be edited.
-#define PUSHBUTTON_PCMSK(n)      PUSHBUTTON ## n ## _PCMSK_N
-
 
 //
 // Shift register outputs.
