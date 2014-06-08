@@ -178,28 +178,22 @@ static void setup_pushbuttons()
 #undef SETUP
 }
 
-static volatile uint8_t buttons_pressed = 0;
+static volatile uint8_t button_pressed = 0;
 static void process_button_press()
 {
-    buttons_pressed = 0;
+    button_pressed = 0;
 #define IF(n)                                                          \
     if (! (PUSHBUTTON ## n ## _PIN & (1 << PUSHBUTTON ## n ## _BIT)))  \
-        buttons_pressed |= (1 << (n-1));
+        button_pressed |= (1 << (n-1));
     FOR_X_FROM_1_TO_N_PUSHBUTTONS_DO(IF)
 #undef IF
 
 #if DEBUG
     tx_byte('P');
-    if (buttons_pressed == 1)
-        tx_byte('A');
-    else if (buttons_pressed == 2)
-        tx_byte('B');
-    else if (buttons_pressed == 4)
-        tx_byte('C');
-    else if (buttons_pressed == 8)
-        tx_byte('D');
+    if (button_pressed < 8)
+        tx_byte('A' + button_pressed - 1);
     else
-        tx_byte('M');
+        tx_byte('?');
 #endif
 }
 
