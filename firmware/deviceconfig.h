@@ -138,6 +138,7 @@
 #define UART_PORT        PORTA
 #define UART_PORT_NUMBER 5 // I.e. PA5
 
+
 //
 // Shift register output port. Note that the shift register shares a clock
 // with the charge pump.
