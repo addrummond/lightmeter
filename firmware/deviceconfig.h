@@ -112,6 +112,11 @@
 #define FOR_X_FROM_1_TO_N_PUSHBUTTONS_DO(x) x(1) x(2) x(3)
 #define FOR_EACH_PUSHBUTTON_PCMSK_DO(x)     x(0) x(2)
 
+#define BUTTON_METER  1
+#define BUTTON_MENU   2
+#define BUTTON_UP     4
+#define BUTTON_DOWN   6
+
 
 //
 // Shift register outputs.
