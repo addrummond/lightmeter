@@ -9,12 +9,16 @@
 
 
 //
+//  Currently we are leaving pins used for serial programming unattached to
+//  make in-circuit programming more reliable. In principle some of these pins
+//  could be re-used, but this seems to cause weird issues in practice, even
+//  when the programmer is disconnected.
 //
-//        Display data   |    ADC5/PB0 1---20 [MOSI]    | *********
-//        Display DC     |    ADC4/PA7 2---19 [MISO]    | *********
+//        Display data   |    ADC5/PB0 1---20 [MOSI]    | **********
+//        Display DC     |    ADC4/PA7 2---19 [MISO]    | **********
 //   Charge pump clock 1 |    ADC3/PA6 3---18 PB3/ADC8  | Charge pump clock 2
 //     Serial debug port |    ADC2/PA5 4---17 PC0/ADC9  | Op amp output
-//     Shift register A  |    ADC1/PA4 5---16 [USCK]    |
+//     Shift register A  |    ADC1/PA4 5---16 [USCK]    | **********
 //          Pushbutton 1 |    ADC0/PA3 6---15 PC2/ADC11 | Pushbutton 3
 //          Pushbutton 2 |         PA2 7---14 [RESET]   | **********
 //  Shift register clock |         PA1 8---13 PC4       | Display CS
