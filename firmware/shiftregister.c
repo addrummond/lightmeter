@@ -8,7 +8,7 @@ void setup_shift_register()
     SHIFT_REGISTER_CLK_PORT &= ~(1 << SHIFT_REGISTER_CLK_BIT);
 }
 
-// Low bit of 'out' is QA, high bit is QE.
+// Low bit of 'shift_register_out__' is QA, high bit is QE.
 volatile uint8_t shift_register_out__ = 0;
 void set_shift_register_out()
 {
