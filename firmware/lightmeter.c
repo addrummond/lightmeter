@@ -200,80 +200,40 @@ static void set_shift_register_out()
     }
 }
 
-static void setup_button_handler()
+static void setup_pushbuttons()
 {
-    PUSHBUTTON_DDR &= ~(1 << PUSHBUTTON_BIT);
-    GIMSK |= (1 << PCIE0);
-    PUSHBUTTON_PCMSK |= (1 << PUSHBUTTON_PCINT_BIT);
-    // Disable pullup resistor.
-    PUSHBUTTON_PUE &= ~(1 << PUSHBUTTON_BIT);
+#define SET_DDR(n)       PUSHBUTTON ## n ## _DDR &= ~(1 << PUSHBUTTON ## n ## _BIT);
+#define SET_GIMSK(n)     GIMSK |= (1 << PUSHBUTTON ## n ## _PCIE);
+#define SET_PCMSK(n)     PUSHBUTTON ## n ## _PCMSK |= (1 << PUSHBUTTON ## n ## _PCINT_BIT);
+#define ENABLE_PULLUP(n) PUSHBUTTON ## n ## _PUE |= (1 << PUSHBUTTON ## n ## _BIT);
+    FOR_X_FROM_1_TO_N_PUSHBUTTONS_DO(SET_DDR)
+    FOR_X_FROM_1_TO_N_PUSHBUTTONS_DO(SET_GIMSK)
+    FOR_X_FROM_1_TO_N_PUSHBUTTONS_DO(SET_PCMSK)
+    FOR_X_FROM_1_TO_N_PUSHBUTTONS_DO(ENABLE_PULLUP)
+#undef SET_DDR
+#undef SET_GIMSK
+#undef SET_PCMSK
+#undef ENABLE_PULLUP
 }
 
-static volatile bool in_handle_button_press = false;
-static void handle_button_press()
+static volatile uint8_t buttons_pressed = 0;
+static void process_button_press()
 {
-#ifdef DEBUG
-    tx_byte('B');
-#endif
-
-    // Set pin to output to drain cap.
-    PUSHBUTTON_DDR &= ~(1 << PUSHBUTTON_BIT);
-    PUSHBUTTON_PORT &= ~(1 << PUSHBUTTON_BIT);
-#ifdef DEBUG
-    tx_byte('K');
-#endif
-    // Wait for cap to drain.
-    _delay_us(600);
-
-#ifdef DEBUG
-    tx_byte('Q');
-#endif
-
-    // Set pin to input and disable this interrupt.
-    //GIMSK &= ~(1 << PCIE0);
-    PUSHBUTTON_DDR |= (1 << PUSHBUTTON_BIT);
-
-#ifdef DEBUG
-    tx_byte('4');
-#endif
-
-    // See how long it takes for cap to charge.
-    uint8_t i = 0;
-    while (! (PUSHBUTTON_PIN & (1 << PUSHBUTTON_BIT)) && i < 50)
-        ++i;
-
-#ifdef DEBUG
-    tx_byte('5');
-#endif
-
-    // Drain cap again.
-    PUSHBUTTON_DDR &= ~(1 << PUSHBUTTON_BIT);
-    PUSHBUTTON_PORT &= ~(1 << PUSHBUTTON_BIT);
-    _delay_us(600);
-
-    // Set pin back to input and re-enable interrupt.
-    PUSHBUTTON_DDR |= (1 << PUSHBUTTON_BIT);
-    //GIMSK |= (1 << PCIE0);
-
-#ifdef DEBUG
-    tx_byte('C');
-    tx_byte('N');
-    tx_byte(i);
-#endif
+    buttons_pressed = 0;
+#define IF(n)                                                      \
+    if (PUSHBUTTON ## n ## _PIN & (1 << PUSHBUTTON ## n ## _BIT))  \
+        buttons_pressed |= (1 << (n-1));
+    FOR_X_FROM_1_TO_N_PUSHBUTTONS_DO(IF)
+#undef IF
 }
 
-// Called when a pushbutton is pressed.
-ISR(PUSHBUTTON_PCINT_VECT)
-{
-#ifdef DEBUG
-    tx_byte('G');
-#endif
-    //if ((PUSHBUTTON_PIN & (1 << PUSHBUTTON_BIT)) && !in_handle_button_press) {
-        in_handle_button_press = true;
-        handle_button_press();
-        in_handle_button_press = false;
-    //}
-}
+#define DEF_ISR(pcint_n)           \
+    ISR(PCINT ## pcint_n ## _vect) \
+    {                              \
+        process_button_press();    \
+    }
+FOR_EACH_PUSHBUTTON_PCMSK_DO(DEF_ISR)
+#undef DEF_ISR
 
 static void setup_charge_pump()
 {
@@ -306,7 +266,7 @@ int main()
     tx_byte('I');
 #endif
 
-    setup_button_handler();
+    setup_pushbuttons();
     setup_ADC();
 
     set_op_amp_resistor_stage(2);

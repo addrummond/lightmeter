@@ -9,17 +9,13 @@
 
 
 //
-//  Currently we are leaving pins used for serial programming unattached to
-//  make in-circuit programming more reliable. With some care some of these pins
-//  could be re-used (e.g. if they are only used as output pins in the
-//  lightmeter app).
 //
-//        Display data   |    ADC5/PB0 1---20 [MOSI]    | **********
-//        Display DC     |    ADC4/PA7 2---19 [MISO]    | **********
+//        Display data   |    ADC5/PB0 1---20 [MOSI]    | Pushbutton 2
+//        Display DC     |    ADC4/PA7 2---19 [MISO]    | Pushbutton 3
 //   Charge pump clock 1 |    ADC3/PA6 3---18 PB3/ADC8  | Charge pump clock 2
 //     Serial debug port |    ADC2/PA5 4---17 PC0/ADC9  | Op amp output
 //     Shift register A  |    ADC1/PA4 5---16 [USCK]    | **********
-//     Pushbutton input  |    ADC0/PA3 6---15 PC2/ADC11 | Screen power MOSFET
+//          Pushbutton 1 |    ADC0/PA3 6---15 PC2/ADC11 | Pushbutton 4
 //         Display reset |         PA2 7---14 [RESET]   | **********
 //  Shift register clock |         PA1 8---13 PC4       | Display CS
 //              Test LED |         PA0 9---12 PC5       | Display CLK
@@ -77,16 +73,63 @@
 
 
 //
-// Pushbutton input port.
+// Pushbutton ports configuration.
 //
-#define PUSHBUTTON_PORT          PORTA
-#define PUSHBUTTON_PIN           PINA
-#define PUSHBUTTON_PUE           PUEA
-#define PUSHBUTTON_DDR           DDRA
-#define PUSHBUTTON_BIT           PA3
-#define PUSHBUTTON_PCMSK         PCMSK0
-#define PUSHBUTTON_PCINT_BIT     PCINT3
-#define PUSHBUTTON_PCINT_VECT    PCINT0_vect
+#define PUSHBUTTON1_PORT         PORTA
+#define PUSHBUTTON1_PIN          PINA
+#define PUSHBUTTON1_PUE          PUEA
+#define PUSHBUTTON1_DDR          DDRA
+#define PUSHBUTTON1_BIT          PA3
+#define PUSHBUTTON1_PCMSK        PCMSK0
+#define PUSHBUTTON1_PCIE         PCIE0
+#define PUSHBUTTON1_PCINT_BIT    PCINT3
+#define PUSHBUTTON1_PCINT_VECT   PCINT0_vect
+
+#define PUSHBUTTON2_PORT         PORTB
+#define PUSHBUTTON2_PIN          PINB
+#define PUSHBUTTON2_PUE          PUEB
+#define PUSHBUTTON2_DDR          DDRB
+#define PUSHBUTTON2_BIT          PB1
+#define PUSHBUTTON2_PCMSK        PCMSK1
+#define PUSHBUTTON2_PCIE         PCIE1
+#define PUSHBUTTON2_PCINT_BIT    PCINT9
+#define PUSHBUTTON2_PCINT_VECT   PCINT1_vect
+
+#define PUSHBUTTON3_PORT         PORTB
+#define PUSHBUTTON3_PIN          PINB
+#define PUSHBUTTON3_PUE          PUEB
+#define PUSHBUTTON3_DDR          DDRB
+#define PUSHBUTTON3_BIT          PB2
+#define PUSHBUTTON3_PCMSK        PCMSK1
+#define PUSHBUTTON3_PCIE         PCIE1
+#define PUSHBUTTON3_PCINT_BIT    PCINT10
+#define PUSHBUTTON3_PCINT_VECT   PCINT1_vect
+
+#define PUSHBUTTON4_PORT         PORTC
+#define PUSHBUTTON4_PIN          PINC
+#define PUSHBUTTON4_PUE          PUEC
+#define PUSHBUTTON4_DDR          DDRC
+#define PUSHBUTTON4_BIT          PC2
+#define PUSHBUTTON4_PCMSK        PCMSK2
+#define PUSHBUTTON4_PCIE         PCIE2
+#define PUSHBUTTON4_PCINT_BIT    PCINT14
+#define PUSHBUTTON4_PCINT_VECT   PCINT2_vect
+
+#define FOR_X_FROM_1_TO_N_PUSHBUTTONS_DO(x) x(1) x(2) x(3) x(4)
+#define FOR_EACH_PUSHBUTTON_PCMSK_DO(x)     x(0) x(1) x(2)
+
+// Should not need to be edited.
+#define PUSHBUTTON_PCMSK(n)      PUSHBUTTON ## n ## _PCMSK_N
+
+
+//
+// Shift register outputs.
+//
+#define SHIFT_REGISTER_SCRPWR_BIT 0
+#define SHIFT_REGISTER_STG1_BIT   4
+#define SHIFT_REGISTER_STG2_BIT   5
+#define SHIFT_REGISTER_STG3_BIT   6
+#define SHIFT_REGISTER_OAPWR_BIT  7
 
 
 //
