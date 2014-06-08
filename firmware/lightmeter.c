@@ -202,18 +202,12 @@ static void set_shift_register_out()
 
 static void setup_pushbuttons()
 {
-#define SET_DDR(n)       PUSHBUTTON ## n ## _DDR &= ~(1 << PUSHBUTTON ## n ## _BIT);
-#define SET_GIMSK(n)     GIMSK |= (1 << PUSHBUTTON ## n ## _PCIE);
-#define SET_PCMSK(n)     PUSHBUTTON ## n ## _PCMSK |= (1 << PUSHBUTTON ## n ## _PCINT_BIT);
-#define ENABLE_PULLUP(n) PUSHBUTTON ## n ## _PUE |= (1 << PUSHBUTTON ## n ## _BIT);
-    FOR_X_FROM_1_TO_N_PUSHBUTTONS_DO(SET_DDR)
-    FOR_X_FROM_1_TO_N_PUSHBUTTONS_DO(SET_GIMSK)
-    FOR_X_FROM_1_TO_N_PUSHBUTTONS_DO(SET_PCMSK)
-    FOR_X_FROM_1_TO_N_PUSHBUTTONS_DO(ENABLE_PULLUP)
-#undef SET_DDR
-#undef SET_GIMSK
-#undef SET_PCMSK
-#undef ENABLE_PULLUP
+#define SETUP(n) PUSHBUTTON ## n ## _DDR &= ~(1 << PUSHBUTTON ## n ## _BIT); \
+                 GIMSK |= (1 << PUSHBUTTON ## n ## _PCIE); \
+                 PUSHBUTTON ## n ## _PCMSK |= (1 << PUSHBUTTON ## n ## _PCINT_BIT); \
+                 PUSHBUTTON ## n ## _PUE |= (1 << PUSHBUTTON ## n ## _BIT);
+    FOR_X_FROM_1_TO_N_PUSHBUTTONS_DO(SETUP)
+#undef SETUP
 }
 
 static volatile uint8_t buttons_pressed = 0;
