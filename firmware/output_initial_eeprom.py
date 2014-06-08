@@ -14,7 +14,7 @@ eeprom = [
 
     0,                                                     # exp comp
 
-    1,                                                     # UI_MODE_MAIN_MENU
+    0,                                                     # UI_MODE_READING
     0,                                                     # ui_mode_state
 
     0,                                                     # METER_MODE_REFLECTIVE.

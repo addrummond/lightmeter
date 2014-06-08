@@ -152,6 +152,11 @@ void ui_show_interface()
     }
     return;*/
 
+    static uint8_t last_mode = 255;
+    if (last_mode != ms.ui_mode)
+        display_clear();
+    last_mode = ms.ui_mode;
+
     if (ms.ui_mode == UI_MODE_READING) {
         show_reading();
     }

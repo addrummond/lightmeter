@@ -225,6 +225,16 @@ static void setup_charge_pump()
     OCR1B = 128;
 }
 
+static void handle_button_press(uint8_t but)
+{
+    if (but == BUTTON_MENU) {
+        if (global_meter_state.ui_mode == UI_MODE_MAIN_MENU)
+            global_meter_state.ui_mode = UI_MODE_READING;
+        else
+            global_meter_state.ui_mode = UI_MODE_MAIN_MENU;
+    }
+}
+
 int main()
 {
     #ifdef TEST_LED_PORT
@@ -256,6 +266,10 @@ int main()
     // reading every so often.
     uint8_t cnt;
     for (cnt = 0;; ++cnt) {
+        if (button_pressed) {
+            handle_button_press(button_pressed);
+        }
+
         // Do lightmetery stuff.
         if (cnt == 0) {
             // Make the next ADC reading a temperature reading.
