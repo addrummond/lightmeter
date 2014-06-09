@@ -109,9 +109,9 @@ void setup_ADC()
 
 static void set_op_amp_resistor_stage(uint8_t op_amp_resistor_stage)
 {
-    // TODO: Code that actually switches the MOFSETs.
-
     global_transient_meter_state.op_amp_resistor_stage = op_amp_resistor_stage;
+    or_shift_register_bits(1 << (SHIFT_REGISTER_STG1_BIT + op_amp_resistor_stage));
+    set_shift_register_out();
 }
 
 static void led_test(void);

@@ -16,6 +16,7 @@
 #include <bcd.h>
 #include <readbyte.h>
 #include <tables.h>
+#include <deviceconfig.h>
 #ifdef TEST
 #include <stdio.h>
 #endif
@@ -37,25 +38,12 @@ ev_with_fracs_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t vo
                    ev_bitpatterns = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_BITPATTERNS, \
                    ev_tenths = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_TENTHS,           \
                    ev_thirds = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_THIRDS)
+#define CASE(n) case n: ASSIGN(n); break;
     switch (op_amp_resistor_stage) {
-    case 1: ASSIGN(1); break;
-#if NUM_OP_AMP_RESISTOR_STAGES > 1
-    case 2: ASSIGN(2); break;
-#if NUM_OP_AMP_RESISTOR_STAGES > 2
-    case 3: ASSIGN(3); break;
-#if NUM_OP_AMP_RESISTOR_STAGES > 3
-    case 4: ASSIGN(4); break;
-#if NUM_OP_AMP_RESISTOR_STAGES > 4
-    case 5: ASSIGN(5); break;
-#if NUM_OP_AMP_RESISTOR_STAGES > 5
-#error "Too many op amp stages"
-#endif
-#endif
-#endif
-#endif
-#endif
+FOR_EACH_OP_AMP_RESISTOR_STAGE(CASE)
     }
 #undef ASSIGN
+#undef CASE
 
     ev_with_fracs_t ret;
 
