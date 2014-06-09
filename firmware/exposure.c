@@ -24,10 +24,6 @@
 
 // See comments in calculate_tables.py for info on the way
 // temp/voltage are encoded.
-// This is explicitly implemented without using division or multiplcation,
-// since the attiny doesn't have hardware division or multiplication.
-// gcc would probably do most of these optimizations automatically, but since
-// this code really definitely needs to run quickly, I'm doing it explicitly here.
 //
 // 'voltage' is in 1/256ths of the reference voltage.
 ev_with_fracs_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage, uint8_t op_amp_resistor_stage)
