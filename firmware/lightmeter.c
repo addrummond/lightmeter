@@ -235,6 +235,20 @@ static void handle_button_press(uint8_t but)
     }
 }
 
+ISR(WDT_vect)
+{
+    ;
+}
+
+static void go_to_idle_mode()
+{
+    // Prescale to time out every 64ms.
+    WDTCSR &= ~((1 << WDP3) | (1 << WDP2) | (1 << WDP1) | (1 << WDP0));
+    WDTCSR |= ((1 << WDP3) | (0 << WDP2) | (0 << WDP1) | (1 << WDP0));
+    WDTCSR |= (1 << WDIE) | (1 << WDE);
+    MCUCR &= ~((1 << SM1) | (1 << SM0));
+}
+
 int main()
 {
     #ifdef TEST_LED_PORT
@@ -293,11 +307,12 @@ int main()
         handle_measurement();
         ui_show_interface();
 
-        _delay_ms(50);
-
 #ifdef DEBUG
     tx_byte('X');
 #endif
+
+        // Put device in idle mode for a bit.
+        go_to_idle_mode();
     }
 
     return 0;

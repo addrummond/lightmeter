@@ -5,7 +5,8 @@ import sys
 # Configuration values.
 ##########
 
-reference_voltage                = 2772.72  # mV
+reference_voltage = 2772.72  # mV
+op_amp_gain       = reference_voltage/1100.0
 op_amp_resistor_stages = [ # In (kOhm,gain) pairs
     # For BPW 34
     #(320.0,1), # Very low light
@@ -19,11 +20,14 @@ op_amp_resistor_stages = [ # In (kOhm,gain) pairs
     #(1.7,1)
     #(1,0.075)
 
-    # For BPW21R
-    (330,20), # Was 350; 330 is more common size.
-    (330,1),
-    (22,1),
-    (1.2,1)
+    # For BPW21R. The 1000.0 stage could be skipped in principle, but I've
+    # read that using >1M resistors with op amps is not a great idea, so we
+    # use the smaller resistor until it gets really bright.
+    (3300.0,op_amp_gain),
+    (1000.0,op_amp_gain),
+    (330.0,1),
+    (22.0,1),
+    (1.0,1)
 ]
 
 op_amp_normal_resistor = op_amp_resistor_stages[1][0] * op_amp_resistor_stages[1][1]
@@ -44,9 +48,6 @@ b_voltage_offset = int(round((voltage_offset/reference_voltage)*256))
 # So that we don't introduce any rounding error into calculations.
 voltage_offset = (b_voltage_offset/256.0)*reference_voltage
 
-
-for s in op_amp_resistor_stages:
-    assert s[1] == 1 or s[1] == 20
 
 #
 # EV table.

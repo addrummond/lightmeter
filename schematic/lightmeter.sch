@@ -10926,9 +10926,9 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <part name="U$4" library="microbuilder" deviceset="DISP_OLED_UG-2864HSWEG01" device="0.96&quot;"/>
 <part name="C7" library="rcl" deviceset="C-EU" device="C1206" value="2µ2"/>
 <part name="R9" library="microbuilder" deviceset="RESISTOR" device="1206" value="530k"/>
-<part name="R6" library="resistor" deviceset="R-EU_" device="R1206" value="350k"/>
-<part name="R7" library="resistor" deviceset="R-EU_" device="R1206" value="22k"/>
-<part name="R8" library="resistor" deviceset="R-EU_" device="R1206" value="1k2"/>
+<part name="R6" library="resistor" deviceset="R-EU_" device="R1206" value="1M"/>
+<part name="R7" library="resistor" deviceset="R-EU_" device="R1206" value="330k"/>
+<part name="R8" library="resistor" deviceset="R-EU_" device="R1206" value="22k"/>
 <part name="C6" library="rcl" deviceset="C-EU" device="C1206" value="4µ7"/>
 <part name="D1" library="diode" deviceset="1N4728" device=""/>
 <part name="IC$2" library="lightmeter" deviceset="SN74HC164" device="TSSOP-14" value="SN74HC164TSSOP-14"/>
@@ -10975,6 +10975,10 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <part name="D8" library="diode2" deviceset="DIODE-" device="SOD323-W"/>
 <part name="D6" library="diode2" deviceset="DIODE-" device="SOD323-W"/>
 <part name="D7" library="diode2" deviceset="DIODE-" device="SOD323-W"/>
+<part name="R5" library="resistor" deviceset="R-EU_" device="R1206" value="1k"/>
+<part name="Q6" library="transistor-small-signal" deviceset="BSS123" device=""/>
+<part name="R10" library="resistor" deviceset="R-EU_" device="R1206" value="3.3M"/>
+<part name="Q7" library="transistor-small-signal" deviceset="BSS123" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -10983,7 +10987,7 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <text x="66.04" y="33.02" size="1.778" layer="91">Battery (1.5V nominal)</text>
 <text x="137.16" y="93.98" size="1.778" layer="91">Charge pump</text>
 <text x="-40.64" y="91.44" size="1.778" layer="91">Boost regulator (outputs 2.77272 volts)</text>
-<text x="78.74" y="5.08" size="1.778" layer="91">Op amp and photodiode</text>
+<text x="55.88" y="12.7" size="1.778" layer="91">Op amp and photodiode</text>
 <text x="-68.58" y="-20.32" size="1.778" layer="91">Pushbuttons</text>
 <text x="-7.62" y="35.56" size="1.778" layer="91">Microcontroller (attiny1634)</text>
 <text x="213.36" y="60.96" size="1.778" layer="91">Screen</text>
@@ -10996,12 +11000,12 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <instance part="IC$3P" gate="B" x="63.5" y="-27.94"/>
 <instance part="IC$3P" gate="P" x="48.26" y="-10.16"/>
 <instance part="GND2" gate="1" x="48.26" y="-43.18"/>
-<instance part="Q3" gate="G$1" x="116.84" y="-27.94" rot="R270"/>
+<instance part="Q3" gate="G$1" x="116.84" y="-15.24" rot="R270"/>
 <instance part="GND6" gate="1" x="55.88" y="25.4" rot="R270"/>
 <instance part="P+3" gate="VCC" x="78.74" y="25.4" rot="R270"/>
 <instance part="C4" gate="G$1" x="43.18" y="-7.62"/>
-<instance part="Q2" gate="G$1" x="116.84" y="-15.24" rot="R270"/>
-<instance part="Q1" gate="G$1" x="116.84" y="-5.08" rot="R270"/>
+<instance part="Q2" gate="G$1" x="116.84" y="-5.08" rot="R270"/>
+<instance part="Q1" gate="G$1" x="116.84" y="5.08" rot="R270"/>
 <instance part="C8" gate="G$1" x="132.08" y="78.74"/>
 <instance part="C9" gate="G$1" x="147.32" y="78.74"/>
 <instance part="C10" gate="G$1" x="160.02" y="78.74"/>
@@ -11015,9 +11019,9 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <instance part="U$4" gate="G$1" x="228.6" y="17.78"/>
 <instance part="C7" gate="G$1" x="180.34" y="-12.7" rot="R270"/>
 <instance part="R9" gate="G$1" x="187.96" y="-10.16" rot="R180"/>
-<instance part="R6" gate="G$1" x="91.44" y="-5.08"/>
-<instance part="R7" gate="G$1" x="91.44" y="-15.24"/>
-<instance part="R8" gate="G$1" x="91.44" y="-27.94"/>
+<instance part="R6" gate="G$1" x="91.44" y="5.08"/>
+<instance part="R7" gate="G$1" x="91.44" y="-5.08"/>
+<instance part="R8" gate="G$1" x="91.44" y="-15.24"/>
 <instance part="C6" gate="G$1" x="93.98" y="-33.02" rot="R90"/>
 <instance part="D1" gate="1" x="68.58" y="-53.34" rot="R180"/>
 <instance part="IC$2" gate="G$1" x="66.04" y="71.12"/>
@@ -11046,16 +11050,16 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <instance part="GND5" gate="1" x="-53.34" y="40.64" rot="R270"/>
 <instance part="TCPOUT" gate="G$1" x="165.1" y="96.52"/>
 <instance part="TOAOUT" gate="G$1" x="96.52" y="-45.72"/>
-<instance part="Q4" gate="G$1" x="147.32" y="2.54" rot="R270"/>
-<instance part="GND17" gate="1" x="137.16" y="2.54" rot="R270"/>
+<instance part="Q4" gate="G$1" x="152.4" y="2.54" rot="R270"/>
+<instance part="GND17" gate="1" x="142.24" y="2.54" rot="R270"/>
 <instance part="BATT1" gate="G$1" x="68.58" y="25.4"/>
 <instance part="GND4" gate="1" x="7.62" y="104.14" rot="R180"/>
 <instance part="C3" gate="G$1" x="7.62" y="91.44" rot="R180"/>
 <instance part="C5" gate="G$1" x="43.18" y="50.8"/>
 <instance part="R3" gate="G$1" x="38.1" y="-22.86" rot="R90"/>
 <instance part="GND7" gate="1" x="38.1" y="-12.7" rot="R180"/>
-<instance part="R4" gate="G$1" x="137.16" y="10.16"/>
-<instance part="GND9" gate="1" x="127" y="10.16" rot="R270"/>
+<instance part="R4" gate="G$1" x="142.24" y="10.16"/>
+<instance part="GND9" gate="1" x="132.08" y="10.16" rot="R270"/>
 <instance part="TSDBG" gate="G$1" x="-55.88" y="-2.54" rot="R180"/>
 <instance part="GND8" gate="1" x="-73.66" y="-45.72" rot="R270"/>
 <instance part="S4" gate="G$1" x="12.7" y="-35.56" rot="R270"/>
@@ -11064,6 +11068,10 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <instance part="D8" gate="G$1" x="-55.88" y="-27.94" rot="R180"/>
 <instance part="D6" gate="G$1" x="2.54" y="-22.86"/>
 <instance part="D7" gate="G$1" x="2.54" y="-27.94"/>
+<instance part="R5" gate="G$1" x="91.44" y="-22.86"/>
+<instance part="Q6" gate="G$1" x="116.84" y="-22.86" rot="R270"/>
+<instance part="R10" gate="G$1" x="91.44" y="12.7"/>
+<instance part="Q7" gate="G$1" x="116.84" y="12.7" rot="R270"/>
 </instances>
 <busses>
 </busses>
@@ -11143,7 +11151,7 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <segment>
 <pinref part="Q4" gate="G$1" pin="S"/>
 <pinref part="GND17" gate="1" pin="GND"/>
-<wire x1="142.24" y1="2.54" x2="139.7" y2="2.54" width="0.1524" layer="91"/>
+<wire x1="147.32" y1="2.54" x2="144.78" y2="2.54" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="BATT1" gate="G$1" pin="-"/>
@@ -11163,7 +11171,7 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <segment>
 <pinref part="R4" gate="G$1" pin="1"/>
 <pinref part="GND9" gate="1" pin="GND"/>
-<wire x1="132.08" y1="10.16" x2="129.54" y2="10.16" width="0.1524" layer="91"/>
+<wire x1="137.16" y1="10.16" x2="134.62" y2="10.16" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="S1" gate="G$1" pin="2.1"/>
@@ -11215,21 +11223,7 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 </net>
 <net name="N$2" class="0">
 <segment>
-<wire x1="99.06" y1="-33.02" x2="124.46" y2="-33.02" width="0.1524" layer="91"/>
-<pinref part="Q3" gate="G$1" pin="D"/>
-<wire x1="121.92" y1="-27.94" x2="124.46" y2="-27.94" width="0.1524" layer="91"/>
-<wire x1="124.46" y1="-27.94" x2="127" y2="-27.94" width="0.1524" layer="91"/>
 <wire x1="127" y1="-38.1" x2="127" y2="-27.94" width="0.1524" layer="91"/>
-<wire x1="124.46" y1="-33.02" x2="124.46" y2="-27.94" width="0.1524" layer="91"/>
-<junction x="124.46" y="-27.94"/>
-<pinref part="Q2" gate="G$1" pin="D"/>
-<wire x1="121.92" y1="-15.24" x2="124.46" y2="-15.24" width="0.1524" layer="91"/>
-<wire x1="124.46" y1="-15.24" x2="124.46" y2="-27.94" width="0.1524" layer="91"/>
-<pinref part="Q1" gate="G$1" pin="D"/>
-<wire x1="121.92" y1="-5.08" x2="124.46" y2="-5.08" width="0.1524" layer="91"/>
-<wire x1="124.46" y1="-5.08" x2="124.46" y2="-15.24" width="0.1524" layer="91"/>
-<junction x="124.46" y="-15.24"/>
-<pinref part="C6" gate="G$1" pin="2"/>
 <pinref part="IC$3P" gate="B" pin="IN-"/>
 <wire x1="58.42" y1="-53.34" x2="58.42" y2="-38.1" width="0.1524" layer="91"/>
 <pinref part="D1" gate="1" pin="C"/>
@@ -11237,6 +11231,30 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <wire x1="66.04" y1="-53.34" x2="58.42" y2="-53.34" width="0.1524" layer="91"/>
 <wire x1="127" y1="-38.1" x2="58.42" y2="-38.1" width="0.1524" layer="91"/>
 <junction x="58.42" y="-38.1"/>
+<pinref part="Q3" gate="G$1" pin="D"/>
+<wire x1="121.92" y1="-15.24" x2="124.46" y2="-15.24" width="0.1524" layer="91"/>
+<junction x="124.46" y="-15.24"/>
+<pinref part="Q2" gate="G$1" pin="D"/>
+<wire x1="121.92" y1="-5.08" x2="124.46" y2="-5.08" width="0.1524" layer="91"/>
+<pinref part="Q1" gate="G$1" pin="D"/>
+<wire x1="121.92" y1="5.08" x2="124.46" y2="5.08" width="0.1524" layer="91"/>
+<wire x1="124.46" y1="5.08" x2="124.46" y2="-5.08" width="0.1524" layer="91"/>
+<junction x="124.46" y="-5.08"/>
+<wire x1="124.46" y1="-5.08" x2="124.46" y2="-15.24" width="0.1524" layer="91"/>
+<wire x1="124.46" y1="-33.02" x2="124.46" y2="-27.94" width="0.1524" layer="91"/>
+<wire x1="124.46" y1="-27.94" x2="124.46" y2="-22.86" width="0.1524" layer="91"/>
+<wire x1="124.46" y1="-22.86" x2="124.46" y2="-15.24" width="0.1524" layer="91"/>
+<wire x1="99.06" y1="-33.02" x2="124.46" y2="-33.02" width="0.1524" layer="91"/>
+<pinref part="C6" gate="G$1" pin="2"/>
+<wire x1="127" y1="-27.94" x2="124.46" y2="-27.94" width="0.1524" layer="91"/>
+<junction x="124.46" y="-27.94"/>
+<pinref part="Q6" gate="G$1" pin="D"/>
+<wire x1="121.92" y1="-22.86" x2="124.46" y2="-22.86" width="0.1524" layer="91"/>
+<junction x="124.46" y="-22.86"/>
+<pinref part="Q7" gate="G$1" pin="D"/>
+<wire x1="121.92" y1="12.7" x2="124.46" y2="12.7" width="0.1524" layer="91"/>
+<wire x1="124.46" y1="12.7" x2="124.46" y2="5.08" width="0.1524" layer="91"/>
+<junction x="124.46" y="5.08"/>
 </segment>
 </net>
 <net name="N$16" class="0">
@@ -11368,52 +11386,57 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <segment>
 <pinref part="R6" gate="G$1" pin="2"/>
 <pinref part="Q1" gate="G$1" pin="S"/>
-<wire x1="96.52" y1="-5.08" x2="111.76" y2="-5.08" width="0.1524" layer="91"/>
+<wire x1="96.52" y1="5.08" x2="111.76" y2="5.08" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$3" class="0">
 <segment>
 <pinref part="R7" gate="G$1" pin="2"/>
 <pinref part="Q2" gate="G$1" pin="S"/>
-<wire x1="96.52" y1="-15.24" x2="111.76" y2="-15.24" width="0.1524" layer="91"/>
+<wire x1="96.52" y1="-5.08" x2="111.76" y2="-5.08" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="X" class="0">
 <segment>
 <pinref part="R8" gate="G$1" pin="2"/>
 <pinref part="Q3" gate="G$1" pin="S"/>
-<wire x1="96.52" y1="-27.94" x2="111.76" y2="-27.94" width="0.1524" layer="91"/>
+<wire x1="96.52" y1="-15.24" x2="111.76" y2="-15.24" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="STG$1" class="0">
-<segment>
-<pinref part="Q1" gate="G$1" pin="G"/>
-<wire x1="114.3" y1="0" x2="111.76" y2="0" width="0.1524" layer="91"/>
-<label x="111.76" y="0" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
 <segment>
 <pinref part="IC$2" gate="G$1" pin="QH"/>
 <wire x1="83.82" y1="81.28" x2="86.36" y2="81.28" width="0.1524" layer="91"/>
 <label x="86.36" y="81.28" size="1.778" layer="95" xref="yes"/>
 </segment>
+<segment>
+<pinref part="Q7" gate="G$1" pin="G"/>
+<wire x1="114.3" y1="17.78" x2="111.76" y2="17.78" width="0.1524" layer="91"/>
+<label x="111.76" y="17.78" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
 </net>
 <net name="STG$2" class="0">
-<segment>
-<pinref part="Q2" gate="G$1" pin="G"/>
-<wire x1="114.3" y1="-10.16" x2="111.76" y2="-10.16" width="0.1524" layer="91"/>
-<label x="111.76" y="-10.16" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
 <segment>
 <pinref part="IC$2" gate="G$1" pin="QG"/>
 <wire x1="83.82" y1="76.2" x2="86.36" y2="76.2" width="0.1524" layer="91"/>
 <label x="86.36" y="76.2" size="1.778" layer="95" xref="yes"/>
 </segment>
+<segment>
+<pinref part="Q1" gate="G$1" pin="G"/>
+<wire x1="114.3" y1="10.16" x2="111.76" y2="10.16" width="0.1524" layer="91"/>
+<label x="111.76" y="10.16" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
 </net>
 <net name="STG$3" class="0">
 <segment>
-<pinref part="Q3" gate="G$1" pin="G"/>
-<wire x1="114.3" y1="-22.86" x2="111.76" y2="-22.86" width="0.1524" layer="91"/>
-<label x="111.76" y="-22.86" size="1.778" layer="95" rot="R180" xref="yes"/>
+<pinref part="IC$2" gate="G$1" pin="QF"/>
+<wire x1="83.82" y1="71.12" x2="86.36" y2="71.12" width="0.1524" layer="91"/>
+<label x="86.36" y="71.12" size="1.778" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="Q2" gate="G$1" pin="G"/>
+<wire x1="114.3" y1="0" x2="111.76" y2="0" width="0.1524" layer="91"/>
+<label x="111.76" y="0" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="SRCLK" class="0">
@@ -11426,13 +11449,6 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <pinref part="U$1" gate="G$1" pin="PA1/AIN0"/>
 <wire x1="-48.26" y1="12.7" x2="-50.8" y2="12.7" width="0.1524" layer="91"/>
 <label x="-50.8" y="12.7" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
-</net>
-<net name="STG3" class="0">
-<segment>
-<pinref part="IC$2" gate="G$1" pin="QF"/>
-<wire x1="83.82" y1="71.12" x2="86.36" y2="71.12" width="0.1524" layer="91"/>
-<label x="86.36" y="71.12" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="SRA" class="0">
@@ -11529,25 +11545,34 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <label x="96.52" y="-50.8" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 <segment>
-<pinref part="IC$3P" gate="B" pin="OUT"/>
-<wire x1="83.82" y1="-33.02" x2="83.82" y2="-27.94" width="0.1524" layer="91"/>
-<junction x="83.82" y="-27.94"/>
-<wire x1="83.82" y1="-5.08" x2="83.82" y2="-15.24" width="0.1524" layer="91"/>
-<wire x1="83.82" y1="-15.24" x2="83.82" y2="-27.94" width="0.1524" layer="91"/>
-<wire x1="83.82" y1="-27.94" x2="78.74" y2="-27.94" width="0.1524" layer="91"/>
-<wire x1="78.74" y1="-27.94" x2="73.66" y2="-27.94" width="0.1524" layer="91"/>
-<wire x1="78.74" y1="-27.94" x2="78.74" y2="-35.56" width="0.1524" layer="91"/>
-<junction x="78.74" y="-27.94"/>
-<pinref part="R6" gate="G$1" pin="1"/>
-<wire x1="86.36" y1="-5.08" x2="83.82" y2="-5.08" width="0.1524" layer="91"/>
-<pinref part="R7" gate="G$1" pin="1"/>
-<wire x1="86.36" y1="-15.24" x2="83.82" y2="-15.24" width="0.1524" layer="91"/>
+<wire x1="83.82" y1="-33.02" x2="83.82" y2="-22.86" width="0.1524" layer="91"/>
 <junction x="83.82" y="-15.24"/>
+<wire x1="83.82" y1="-22.86" x2="83.82" y2="-15.24" width="0.1524" layer="91"/>
+<wire x1="83.82" y1="-5.08" x2="83.82" y2="-15.24" width="0.1524" layer="91"/>
+<wire x1="83.82" y1="-15.24" x2="78.74" y2="-15.24" width="0.1524" layer="91"/>
+<wire x1="78.74" y1="-15.24" x2="78.74" y2="-27.94" width="0.1524" layer="91"/>
+<pinref part="R7" gate="G$1" pin="1"/>
+<wire x1="78.74" y1="-27.94" x2="78.74" y2="-35.56" width="0.1524" layer="91"/>
+<wire x1="86.36" y1="-5.08" x2="83.82" y2="-5.08" width="0.1524" layer="91"/>
+<junction x="83.82" y="-5.08"/>
 <pinref part="R8" gate="G$1" pin="1"/>
-<wire x1="86.36" y1="-27.94" x2="83.82" y2="-27.94" width="0.1524" layer="91"/>
+<wire x1="86.36" y1="-15.24" x2="83.82" y2="-15.24" width="0.1524" layer="91"/>
 <pinref part="C6" gate="G$1" pin="1"/>
 <wire x1="91.44" y1="-33.02" x2="83.82" y2="-33.02" width="0.1524" layer="91"/>
 <label x="78.74" y="-35.56" size="1.778" layer="95" rot="R180" xref="yes"/>
+<wire x1="83.82" y1="-5.08" x2="83.82" y2="5.08" width="0.1524" layer="91"/>
+<pinref part="R6" gate="G$1" pin="1"/>
+<wire x1="83.82" y1="5.08" x2="86.36" y2="5.08" width="0.1524" layer="91"/>
+<pinref part="IC$3P" gate="B" pin="OUT"/>
+<wire x1="78.74" y1="-27.94" x2="73.66" y2="-27.94" width="0.1524" layer="91"/>
+<junction x="78.74" y="-27.94"/>
+<pinref part="R5" gate="G$1" pin="1"/>
+<wire x1="83.82" y1="-22.86" x2="86.36" y2="-22.86" width="0.1524" layer="91"/>
+<junction x="83.82" y="-22.86"/>
+<wire x1="83.82" y1="5.08" x2="83.82" y2="12.7" width="0.1524" layer="91"/>
+<junction x="83.82" y="5.08"/>
+<pinref part="R10" gate="G$1" pin="1"/>
+<wire x1="83.82" y1="12.7" x2="86.36" y2="12.7" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="U$1" gate="G$1" pin="ADC9/OC0A/XCK0/PC0"/>
@@ -11570,11 +11595,11 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <net name="SCRPWR" class="0">
 <segment>
 <pinref part="Q4" gate="G$1" pin="G"/>
-<wire x1="144.78" y1="7.62" x2="144.78" y2="10.16" width="0.1524" layer="91"/>
-<label x="144.78" y="15.24" size="1.778" layer="95" rot="R90" xref="yes"/>
-<wire x1="144.78" y1="10.16" x2="144.78" y2="15.24" width="0.1524" layer="91"/>
-<wire x1="144.78" y1="10.16" x2="142.24" y2="10.16" width="0.1524" layer="91"/>
-<junction x="144.78" y="10.16"/>
+<wire x1="149.86" y1="7.62" x2="149.86" y2="10.16" width="0.1524" layer="91"/>
+<label x="149.86" y="15.24" size="1.778" layer="95" rot="R90" xref="yes"/>
+<wire x1="149.86" y1="10.16" x2="149.86" y2="15.24" width="0.1524" layer="91"/>
+<wire x1="149.86" y1="10.16" x2="147.32" y2="10.16" width="0.1524" layer="91"/>
+<junction x="149.86" y="10.16"/>
 <pinref part="R4" gate="G$1" pin="2"/>
 </segment>
 <segment>
@@ -11668,8 +11693,8 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 </net>
 <net name="SCRGRND" class="0">
 <segment>
-<wire x1="152.4" y1="2.54" x2="160.02" y2="2.54" width="0.1524" layer="91"/>
-<label x="160.02" y="2.54" size="1.778" layer="95" xref="yes"/>
+<wire x1="157.48" y1="2.54" x2="165.1" y2="2.54" width="0.1524" layer="91"/>
+<label x="165.1" y="2.54" size="1.778" layer="95" xref="yes"/>
 <pinref part="Q4" gate="G$1" pin="D"/>
 </segment>
 <segment>
@@ -11741,20 +11766,6 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <label x="142.24" y="55.88" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
-<net name="X2" class="0">
-<segment>
-<pinref part="IC$2" gate="G$1" pin="QC"/>
-<wire x1="48.26" y1="66.04" x2="43.18" y2="66.04" width="0.1524" layer="91"/>
-<label x="43.18" y="66.04" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
-</net>
-<net name="X3" class="0">
-<segment>
-<pinref part="IC$2" gate="G$1" pin="QD"/>
-<wire x1="48.26" y1="60.96" x2="43.18" y2="60.96" width="0.1524" layer="91"/>
-<label x="43.18" y="60.96" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
-</net>
 <net name="PBI$2" class="0">
 <segment>
 <pinref part="S2" gate="G$1" pin="1.1"/>
@@ -11823,6 +11834,44 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <pinref part="D8" gate="G$1" pin="C"/>
 <wire x1="-58.42" y1="-27.94" x2="-60.96" y2="-27.94" width="0.1524" layer="91"/>
 <junction x="-60.96" y="-27.94"/>
+</segment>
+</net>
+<net name="N$5" class="0">
+<segment>
+<pinref part="R5" gate="G$1" pin="2"/>
+<wire x1="96.52" y1="-22.86" x2="111.76" y2="-22.86" width="0.1524" layer="91"/>
+<pinref part="Q6" gate="G$1" pin="S"/>
+</segment>
+</net>
+<net name="STG$4" class="0">
+<segment>
+<pinref part="IC$2" gate="G$1" pin="QC"/>
+<wire x1="48.26" y1="66.04" x2="43.18" y2="66.04" width="0.1524" layer="91"/>
+<label x="43.18" y="66.04" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="Q3" gate="G$1" pin="G"/>
+<wire x1="114.3" y1="-10.16" x2="111.76" y2="-10.16" width="0.1524" layer="91"/>
+<label x="111.76" y="-10.16" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+</net>
+<net name="N$9" class="0">
+<segment>
+<pinref part="R10" gate="G$1" pin="2"/>
+<pinref part="Q7" gate="G$1" pin="S"/>
+<wire x1="96.52" y1="12.7" x2="111.76" y2="12.7" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="STG$5" class="0">
+<segment>
+<pinref part="Q6" gate="G$1" pin="G"/>
+<wire x1="114.3" y1="-17.78" x2="111.76" y2="-17.78" width="0.1524" layer="91"/>
+<label x="111.76" y="-17.78" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="IC$2" gate="G$1" pin="QD"/>
+<wire x1="48.26" y1="60.96" x2="43.18" y2="60.96" width="0.1524" layer="91"/>
+<label x="43.18" y="60.96" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 </nets>
