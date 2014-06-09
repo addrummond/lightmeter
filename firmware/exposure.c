@@ -545,6 +545,7 @@ ev_with_fracs_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_fracs_t
     evwf.ev = round_divide(r, 15);
     int16_t tenth_ev = r + given_ev_tenths_diff;
     int16_t third_ev = r + given_ev_thirds_diff;
+    // TODO: Think carefully about whether we should be using round_divide here.
     ev_with_fracs_set_tenths(evwf, (uint8_t)(tenth_ev/12)%10);
     ev_with_fracs_set_thirds(evwf, (uint8_t)(third_ev/40)%3);
 
