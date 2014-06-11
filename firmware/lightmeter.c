@@ -122,6 +122,12 @@ void handle_measurement()
     // Div by 4 because we're going from units of 1/1024 to units of 1/256.
     // (Could left adjust everything, but we might want the full 10 bits for temps.)
     uint8_t adc_light_nonvol_value = (uint8_t)(adc_light_value >> 2);
+#ifdef DEBUG
+    tx_byte('S');
+    tx_byte(global_transient_meter_state.op_amp_resistor_stage);
+    tx_byte('V');
+    tx_byte(adc_light_nonvol_value);
+#endif
 
     global_transient_meter_state.last_ev_with_fracs = get_ev100_at_temperature_voltage(
         current_temp,
@@ -151,12 +157,25 @@ void handle_measurement()
         );
     }
 
+    static uint8_t debounce = 0;
+
     // If we're too near the top or bottom of the range, change the gain next time.
+    uint8_t newr = 0; // Not a valid stage.
     if (adc_light_nonvol_value > 250 && global_transient_meter_state.op_amp_resistor_stage < NUM_OP_AMP_RESISTOR_STAGES) {
-        set_op_amp_resistor_stage(global_transient_meter_state.op_amp_resistor_stage + 1);
+        newr = global_transient_meter_state.op_amp_resistor_stage + 1;
     }
     else if (adc_light_nonvol_value <= VOLTAGE_TO_EV_ABS_OFFSET + 5 && global_transient_meter_state.op_amp_resistor_stage > 1) {
-        set_op_amp_resistor_stage(global_transient_meter_state.op_amp_resistor_stage - 1);
+        newr = global_transient_meter_state.op_amp_resistor_stage - 1;
+    }
+
+    if (newr) {
+        if (debounce > 0) {
+            --debounce;
+        }
+        else {
+            set_op_amp_resistor_stage(newr);
+            debounce = 8;
+        }
     }
 }
 
