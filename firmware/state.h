@@ -98,7 +98,7 @@ extern meter_state_t global_meter_state;
 
 void write_meter_state(const meter_state_t *ms);
 void read_meter_state(meter_state_t *ms);
-void initialize_global_meter_state();
+void initialize_global_meter_states();
 
 typedef struct transient_meter_state {
     ev_with_fracs_t last_ev_with_fracs;

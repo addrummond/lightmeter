@@ -22,7 +22,7 @@
 //          Pushbutton 1 |    ADC0/PA3 6---15 PC2/ADC11 | Pushbutton 3
 //          Pushbutton 2 |         PA2 7---14 [RESET]   | **********
 //  Shift register clock |         PA1 8---13 PC4       | Display CS
-//              Test LED |         PA0 9---12 PC5       | Display CLK
+// Test LED / screen RST |         PA0 9---12 PC5       | Display CLK
 //            ********** |       [GND] 10--11 [VCC]     | **********
 
 
@@ -47,7 +47,7 @@
 
 #define DISPLAY_RESET_PORT  PORTA
 #define DISPLAY_RESET_DDR   DDRA
-#define DISPLAY_RESET_BIT   PA2
+#define DISPLAY_RESET_BIT   PA0
 
 
 //
@@ -122,7 +122,6 @@
 // Shift register outputs.
 //
 #define SHIFT_REGISTER_SCRPWR_BIT 0
-#define SHIFT_REGISTER_SCRRST_BIT 1
 #define SHIFT_REGISTER_STG1_BIT   2
 #define SHIFT_REGISTER_OAPWR_BIT  7
 
@@ -149,12 +148,5 @@
 #define SHIFT_REGISTER_CLK_DDR      DDRA
 #define SHIFT_REGISTER_CLK_BIT      PA1
 
-
-//
-// Test LED
-//
-#define TEST_LED_PORT    PORTA
-#define TEST_LED_DDR     DDRA
-#define TEST_LED_BIT     PA0
 
 #endif

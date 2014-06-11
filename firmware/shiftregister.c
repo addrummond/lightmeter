@@ -12,14 +12,8 @@ void setup_shift_register()
 volatile uint8_t shift_register_out__ = 0;
 void set_shift_register_out()
 {
-    // Clear the register.
-    // Appears not to be necessary if we're not worried about having outputs
-    // in a weird state for a few moments.
-    //
-    //SHIFT_REGISTER_CLR_PORT &= ~(1 << SHIFT_REGISTER_CLR_BIT);
-    //SHIFT_REGISTER_CLR_PORT |= (1 << SHIFT_REGISTER_CLR_BIT);
-
-    uint8_t out = shift_register_out__;
+    uint8_t out = (shift_register_out__ << 1) | 1;
+    
     uint8_t j;
     for (j = 0; j < 8; ++j) {
         uint8_t bit = (out & 0b10000000) >> 7;

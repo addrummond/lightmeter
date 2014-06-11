@@ -42,6 +42,15 @@ void display_write_data_end()
     DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
 }
 
+void display_reset()
+{
+    DISPLAY_RESET_PORT |= (1 << DISPLAY_RESET_BIT);
+    _delay_ms(1);
+    DISPLAY_RESET_PORT &= ~(1 << DISPLAY_RESET_BIT);
+    _delay_ms(10);
+    DISPLAY_RESET_PORT |= (1 << DISPLAY_RESET_BIT);
+}
+
 void display_init()
 {
     // Setup output ports.
@@ -50,15 +59,7 @@ void display_init()
     DISPLAY_CLK_DDR |= (1 << DISPLAY_CLK_BIT);
     DISPLAY_DC_DDR |= (1 << DISPLAY_DC_BIT);
 
-    // Trigger reset pin on screen.
-    or_shift_register_bits(1 << SHIFT_REGISTER_SCRRST_BIT);
-    set_shift_register_out();
-    _delay_ms(1);
-    and_shift_register_bits(1 << SHIFT_REGISTER_SCRRST_BIT);
-    set_shift_register_out();
-    _delay_ms(10);
-    or_shift_register_bits(1 << SHIFT_REGISTER_SCRRST_BIT);
-    set_shift_register_out();
+    display_reset();
 
     // Display initialization sequence. No idea what most of this does.
     display_command(DISPLAY_DISPLAYOFF);                    // 0xAE

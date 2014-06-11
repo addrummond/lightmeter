@@ -15,9 +15,11 @@ void read_meter_state(meter_state_t *ms)
     eeprom_read_block(ms, STATE_BLOCK_START_ADDR, sizeof(meter_state_t));
 }
 
-void initialize_global_meter_state()
+void initialize_global_meter_states()
 {
     read_meter_state(&global_meter_state);
+
+    global_transient_meter_state.op_amp_resistor_stage = 2;
 }
 
 transient_meter_state_t global_transient_meter_state = {
@@ -29,4 +31,3 @@ transient_meter_state_t global_transient_meter_state = {
 
     1
 };
-

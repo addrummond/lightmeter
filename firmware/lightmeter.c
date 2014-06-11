@@ -109,9 +109,10 @@ void setup_ADC()
 
 static void set_op_amp_resistor_stage(uint8_t op_amp_resistor_stage)
 {
-    global_transient_meter_state.op_amp_resistor_stage = op_amp_resistor_stage;
-    or_shift_register_bits(1 << (SHIFT_REGISTER_STG1_BIT + op_amp_resistor_stage));
+    and_shift_register_bits(~(1 << (SHIFT_REGISTER_STG1_BIT + global_transient_meter_state.op_amp_resistor_stage - 1)));
+    or_shift_register_bits(1 << (SHIFT_REGISTER_STG1_BIT + op_amp_resistor_stage - 1));
     set_shift_register_out();
+    global_transient_meter_state.op_amp_resistor_stage = op_amp_resistor_stage;
 }
 
 static void led_test(void);
@@ -151,21 +152,12 @@ void handle_measurement()
     }
 
     // If we're too near the top or bottom of the range, change the gain next time.
-    //    if (adc_light_nonvol_value > 250 && global_meter_state.op_amp_resistor_stage < NUM_OP_AMP_RESISTOR_STAGES) {
-    //        set_op_amp_resistor_stage(global_meter_state.op_amp_resistor_stage + 1);
-    //    }
-    //    else if (adc_light_nonvol_value <= VOLTAGE_TO_EV_ABS_OFFSET + 5 && global_meter_state.op_amp_resistor_stage > 1) {
-    //        set_op_amp_resistor_stage(global_meter_state.op_amp_resistor_stage - 1);
-    //    }
-}
-
-static void led_test()
-{
-#ifdef TEST_LED_PORT
-    TEST_LED_PORT |= (1 << TEST_LED_BIT);
-    _delay_ms(250);
-    TEST_LED_PORT &= ~(1 << TEST_LED_BIT);
-#endif
+    if (adc_light_nonvol_value > 250 && global_transient_meter_state.op_amp_resistor_stage < NUM_OP_AMP_RESISTOR_STAGES) {
+        set_op_amp_resistor_stage(global_transient_meter_state.op_amp_resistor_stage + 1);
+    }
+    else if (adc_light_nonvol_value <= VOLTAGE_TO_EV_ABS_OFFSET + 5 && global_transient_meter_state.op_amp_resistor_stage > 1) {
+        set_op_amp_resistor_stage(global_transient_meter_state.op_amp_resistor_stage - 1);
+    }
 }
 
 static void setup_pushbuttons()
@@ -251,27 +243,19 @@ static void go_to_idle_mode()
 
 int main()
 {
-    #ifdef TEST_LED_PORT
-        TEST_LED_DDR      |= (1 << TEST_LED_BIT);
-        led_test();
-    #endif
-
 #ifdef DEBUG
     tx_byte('I');
 #endif
 
     setup_pushbuttons();
     setup_ADC();
-
-    set_op_amp_resistor_stage(2);
-    initialize_global_meter_state();
+    initialize_global_meter_states();
 
     setup_charge_pump();
     setup_shift_register();
+    set_shift_register_out();
 
     sei();
-
-    set_shift_register_out();
 
     display_init();
     display_clear();
@@ -307,12 +291,13 @@ int main()
         handle_measurement();
         ui_show_interface();
 
-#ifdef DEBUG
-    tx_byte('X');
-#endif
+//#ifdef DEBUG
+//    tx_byte('X');
+//#endif
 
         // Put device in idle mode for a bit.
-        go_to_idle_mode();
+        //go_to_idle_mode();
+        _delay_ms(50);
     }
 
     return 0;
