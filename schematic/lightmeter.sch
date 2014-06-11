@@ -10955,8 +10955,6 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <part name="TSCK" library="testpad" deviceset="TP" device="B1,27"/>
 <part name="TGND" library="testpad" deviceset="TP" device="B1,27"/>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
-<part name="TCPOUT" library="testpad" deviceset="TP" device="B1,27"/>
-<part name="TOAOUT" library="testpad" deviceset="TP" device="B1,27"/>
 <part name="Q4" library="transistor-small-signal" deviceset="BSS123" device=""/>
 <part name="GND17" library="supply1" deviceset="GND" device=""/>
 <part name="BATT1" library="adafruit" deviceset="AAA" device=""/>
@@ -10993,7 +10991,6 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <text x="213.36" y="60.96" size="1.778" layer="91">Screen</text>
 <text x="-71.12" y="76.2" size="1.778" layer="91">AVR programming pads</text>
 <text x="104.14" y="-48.26" size="1.778" layer="91">Test pad for op amp output</text>
-<text x="170.18" y="93.98" size="1.778" layer="91">Test pad for charge pump output</text>
 </plain>
 <instances>
 <instance part="IC$3P" gate="A" x="63.5" y="0"/>
@@ -11048,8 +11045,6 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <instance part="TSCK" gate="G$1" x="-55.88" y="60.96"/>
 <instance part="TGND" gate="G$1" x="-48.26" y="45.72"/>
 <instance part="GND5" gate="1" x="-53.34" y="40.64" rot="R270"/>
-<instance part="TCPOUT" gate="G$1" x="165.1" y="96.52"/>
-<instance part="TOAOUT" gate="G$1" x="96.52" y="-45.72"/>
 <instance part="Q4" gate="G$1" x="152.4" y="2.54" rot="R270"/>
 <instance part="GND17" gate="1" x="142.24" y="2.54" rot="R270"/>
 <instance part="BATT1" gate="G$1" x="68.58" y="25.4"/>
@@ -11354,13 +11349,9 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <pinref part="C10" gate="G$1" pin="1"/>
 <wire x1="154.94" y1="86.36" x2="160.02" y2="86.36" width="0.1524" layer="91"/>
 <wire x1="160.02" y1="86.36" x2="160.02" y2="81.28" width="0.1524" layer="91"/>
-<wire x1="160.02" y1="86.36" x2="165.1" y2="86.36" width="0.1524" layer="91"/>
+<wire x1="160.02" y1="86.36" x2="167.64" y2="86.36" width="0.1524" layer="91"/>
 <junction x="160.02" y="86.36"/>
 <label x="167.64" y="86.36" size="1.778" layer="95" xref="yes"/>
-<pinref part="TCPOUT" gate="G$1" pin="TP"/>
-<wire x1="165.1" y1="86.36" x2="167.64" y2="86.36" width="0.1524" layer="91"/>
-<wire x1="165.1" y1="93.98" x2="165.1" y2="86.36" width="0.1524" layer="91"/>
-<junction x="165.1" y="86.36"/>
 </segment>
 <segment>
 <pinref part="U$4" gate="G$1" pin="VCC"/>
@@ -11543,11 +11534,6 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 </segment>
 </net>
 <net name="OAOUT" class="0">
-<segment>
-<pinref part="TOAOUT" gate="G$1" pin="TP"/>
-<wire x1="96.52" y1="-48.26" x2="96.52" y2="-50.8" width="0.1524" layer="91"/>
-<label x="96.52" y="-50.8" size="1.778" layer="95" rot="R270" xref="yes"/>
-</segment>
 <segment>
 <wire x1="83.82" y1="-33.02" x2="83.82" y2="-22.86" width="0.1524" layer="91"/>
 <junction x="83.82" y="-15.24"/>
