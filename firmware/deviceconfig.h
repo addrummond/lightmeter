@@ -22,7 +22,7 @@
 //          Pushbutton 1 |    ADC0/PA3 6---15 PC2/ADC11 | Pushbutton 3
 //          Pushbutton 2 |         PA2 7---14 [RESET]   | **********
 //  Shift register clock |         PA1 8---13 PC4       | Display CS
-// Test LED / screen RST |         PA0 9---12 PC5       | Display CLK
+//           Display RST |         PA0 9---12 PC5       | Display CLK
 //            ********** |       [GND] 10--11 [VCC]     | **********
 
 
