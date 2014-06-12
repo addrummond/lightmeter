@@ -11491,10 +11491,6 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <label x="198.12" y="20.32" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<pinref part="IC$2" gate="G$1" pin="QB"/>
-<wire x1="48.26" y1="71.12" x2="43.18" y2="71.12" width="0.1524" layer="91"/>
-</segment>
-<segment>
 <pinref part="U$1" gate="G$1" pin="PA0/AREF"/>
 <wire x1="-48.26" y1="10.16" x2="-50.8" y2="10.16" width="0.1524" layer="91"/>
 <label x="-50.8" y="10.16" size="1.778" layer="95" rot="R180" xref="yes"/>
