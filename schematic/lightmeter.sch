@@ -11340,7 +11340,13 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <segment>
 <pinref part="C5" gate="G$1" pin="2"/>
 <wire x1="43.18" y1="45.72" x2="43.18" y2="40.64" width="0.1524" layer="91"/>
-<label x="43.18" y="40.64" size="1.778" layer="95" xref="yes"/>
+<wire x1="43.18" y1="40.64" x2="86.36" y2="40.64" width="0.1524" layer="91"/>
+<pinref part="IC$2" gate="G$1" pin="CLK"/>
+<wire x1="83.82" y1="55.88" x2="86.36" y2="55.88" width="0.1524" layer="91"/>
+<label x="91.44" y="55.88" size="1.778" layer="95" rot="R270" xref="yes"/>
+<wire x1="86.36" y1="55.88" x2="91.44" y2="55.88" width="0.1524" layer="91"/>
+<wire x1="86.36" y1="40.64" x2="86.36" y2="55.88" width="0.1524" layer="91"/>
+<junction x="86.36" y="55.88"/>
 </segment>
 </net>
 <net name="CPOUT" class="0">
@@ -11431,11 +11437,6 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 </segment>
 </net>
 <net name="SRCLK" class="0">
-<segment>
-<pinref part="IC$2" gate="G$1" pin="CLK"/>
-<wire x1="83.82" y1="55.88" x2="86.36" y2="55.88" width="0.1524" layer="91"/>
-<label x="86.36" y="55.88" size="1.778" layer="95" rot="R270" xref="yes"/>
-</segment>
 <segment>
 <pinref part="U$1" gate="G$1" pin="PA1/AIN0"/>
 <wire x1="-48.26" y1="12.7" x2="-50.8" y2="12.7" width="0.1524" layer="91"/>
