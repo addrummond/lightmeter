@@ -93,6 +93,7 @@ ev_with_fracs_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_fracs_t
 #define aperture_given_shutter_speed_iso_ev(a,b,c) x_given_y_iso_ev(a,b,c,0)
 #define shutter_speed_given_aperture_iso_ev(a,b,c) x_given_y_iso_ev(a,b,c,1)
 uint8_t iso_bcd_to_third_stops(uint8_t *digits, uint8_t length);
+uint8_t *iso_in_third_stops_into_bcd(uint8_t iso, uint8_t *digits, uint8_t length)
 
 ev_with_fracs_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage, uint8_t op_amp_resistor_stage);
 uint8_t convert_from_reference_voltage(uint16_t adc_out);

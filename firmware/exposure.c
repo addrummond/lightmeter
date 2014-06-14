@@ -323,7 +323,57 @@ static const uint8_t FULL_STOP_ISOS[] PROGMEM = {
     (1 << 4) | 6, 5,  // 1600000
 };
 
-static uint8_t *full_stop_iso_into_bcd(uint8_t byte1, uint8_t zeroes, uint8_t *digits, uint8_t length)
+static const uint8_t THIRD_STOP_ISOS[] PROGMEM = {
+    8, 0,             // 8
+    (1 << 4) | 0, 0,  // 10
+
+    (1 << 4) | 6, 0,  // 16
+    (2 << 4) | 0, 0,  // 20
+
+    (3 << 4) | 2, 0,  // 32
+    (3 << 4) | 0, 0,  // 40
+
+    (6 << 4) | 4, 0,  // 64
+    (8 << 4) | 0, 0,  // 80
+
+    (1 << 4) | 2, 1,  // 125 (specified as 120, must be special-cased).
+    (1 << 4) | 6, 1,  // 160
+
+    (2 << 4) | 5, 1,  // 250
+    (3 << 4) | 2, 1,  // 320
+
+    (5 << 4) | 0, 1,  // 500
+    (6 << 4) | 4, 1,  // 640
+
+    (1 << 4) | 0, 2,  // 1000
+    (1 << 4) | 2, 2,  // 1250 (specified as 1200, must be special-cased)
+
+    (2 << 4) | 0, 2,  // 2000
+    (2 << 4) | 5, 2,  // 2500
+
+    (4 << 4) | 0, 2,  // 4000
+    (5 << 4) | 0, 2,  // 5000
+
+    (8 << 4) | 0, 2,  // 8000
+    (1 << 4) | 0, 3,  // 10000
+
+    (1 << 4) | 6, 3,  // 16000
+    (2 << 4) | 0, 3,  // 20000
+
+    (3 << 4) | 2, 3,  // 32000
+    (4 << 4) | 0, 3,  // 40000
+
+    (6 << 4) | 4, 3,  // 64000
+    (8 << 4) | 0, 3,  // 80000
+
+    (1 << 4) | 2, 4,  // 125000 (specified as 125000, must be special-cased)
+    (1 << 4) | 6, 4,  // 160000
+
+    (2 << 4) | 5, 4,  // 250000
+    (3 << 4) | 2, 4,  // 320000
+};
+
+static uint8_t *iso_into_bcd(uint8_t byte1, uint8_t zeroes, uint8_t *digits, uint8_t length)
 {
     uint8_t i, z;
     for (i = length-1, z = 0; z < zeroes; --i, ++z) {
@@ -334,14 +384,33 @@ static uint8_t *full_stop_iso_into_bcd(uint8_t byte1, uint8_t zeroes, uint8_t *d
     if (byte1 & 0xF0) {
         --i;
         digits[i] = byte1 >> 4;
-        // Special case for 12500.
-        if (byte1 == ((1 << 4) | 2) && zeroes == 3)
-            digits[length-3] = 5;
+        // Special case for 125, 1250, 12500 and 125000
+        if (byte1 == ((1 << 4) | 2) && zeroes >= 1 && zeroes <= 4)
+            digits[2] = 5;
         return digits + length - zeroes - 2;
     }
     else {
         return digits + length - zeroes - 1;
     }
+}
+
+uint8_t *iso_in_third_stops_into_bcd(uint8_t iso, uint8_t *digits, uint8_t length)
+{
+    uint8_t byte1, zeroes, rem;
+    uint8_t i = iso/3*2;
+    uint8_t rem = iso % 3;
+    if (rem == 0) {
+        byte1 = pgm_read_byte(&FULL_STOP_ISOS[i]);
+        zeroes = pgm_read_byte(&FULL_STOP_ISOS[i+1]);
+    }
+    else {
+        i *= 2;
+        i += (rem - 1)*2;
+        byte1 = pgm_read_byte(&THIRD_STOP_ISOS[i]);
+        zeroes = pgm_read_byte(&THIRD_STOP_ISOS[i+1]);
+    }
+
+    return iso_into_bcd(byte1, zeroes, digits, length);
 }
 
 bool iso_is_full_stop(const uint8_t *digits, uint8_t length)
@@ -435,10 +504,10 @@ uint8_t iso_bcd_to_third_stops(uint8_t *digits, uint8_t length)
         uint8_t nextup_digits_[ISO_DECIMAL_MAX_DIGITS];
         uint8_t dcount = count << 1;
         //        printf("=====>>> COUNT %i b1 %i b2 %i\n", count, FULL_STOP_ISOS[dcount], FULL_STOP_ISOS[dcount+1]);
-        uint8_t *nextup_digits = full_stop_iso_into_bcd(pgm_read_byte(&FULL_STOP_ISOS[dcount]),
-                                                        pgm_read_byte(&FULL_STOP_ISOS[dcount + 1]),
-                                                        nextup_digits_,
-                                                        ISO_DECIMAL_MAX_DIGITS);
+        uint8_t *nextup_digits = iso_into_bcd(pgm_read_byte(&FULL_STOP_ISOS[dcount]),
+                                              pgm_read_byte(&FULL_STOP_ISOS[dcount + 1]),
+                                              nextup_digits_,
+                                              ISO_DECIMAL_MAX_DIGITS);
         uint8_t nextup_length = ISO_DECIMAL_MAX_DIGITS - (nextup_digits - nextup_digits_);
 
         //printf("NEXTUP ");
