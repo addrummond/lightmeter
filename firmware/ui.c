@@ -106,19 +106,25 @@ static void show_main_menu()
     // y coord of top of selected item is 27, so y coord of top of first item
     // is 2.
 
+    // Menu item 1. 1st and 2nd pages, 2px offset
+    //           2. 2nd and 3rd pages, 6px offset
+    //           3. 3rd and 4th pages, 2px offset
+    //           4. 4th and 5th pages, 6px offset
+    //           5. 5th and 6th pages, 2px offset
+
     uint8_t center_str[MENU_MAX_SHORT_STRING_LENGTH+1];
-    //uint8_t top1_str[MENU_MAX_SHORT_STRING_LENGTH+1];
-    //uint8_t top2_str[MENU_MAX_SHORT_STRING_LENGTH+1];
-    //uint8_t bttm1_str[MENU_MAX_SHORT_STRING_LENGTH+1];
-    //uint8_t bttm2_str[MENU_MAX_SHORT_STRING_LENGTH+1];
+    uint8_t top1_str[MENU_MAX_SHORT_STRING_LENGTH+1];
+    uint8_t top2_str[MENU_MAX_SHORT_STRING_LENGTH+1];
+    uint8_t bttm1_str[MENU_MAX_SHORT_STRING_LENGTH+1];
+    uint8_t bttm2_str[MENU_MAX_SHORT_STRING_LENGTH+1];
 
     // Write selected (center) item.
     menu_string_decode_short(MMS(ms.ui_mode_state.main_menu.item_index), center_str);
     // Write other items.
-    //menu_string_decode_short(MMS(down_from(NUM_MAIN_MENU_STRINGS, ms.ui_mode_state.main_menu.item_index, 1)), top1_str);
-    //menu_string_decode_short(MMS(down_from(NUM_MAIN_MENU_STRINGS, ms.ui_mode_state.main_menu.item_index, 2)), top2_str);
-    //menu_string_decode_short(MMS(up_from(NUM_MAIN_MENU_STRINGS, ms.ui_mode_state.main_menu.item_index, 1)), bttm1_str);
-    //menu_string_decode_short(MMS(up_from(NUM_MAIN_MENU_STRINGS, ms.ui_mode_state.main_menu.item_index, 2)), bttm2_str);
+    menu_string_decode_short(MMS(down_from(NUM_MAIN_MENU_STRINGS, ms.ui_mode_state.main_menu.item_index, 1)), top1_str);
+    menu_string_decode_short(MMS(down_from(NUM_MAIN_MENU_STRINGS, ms.ui_mode_state.main_menu.item_index, 2)), top2_str);
+    menu_string_decode_short(MMS(up_from(NUM_MAIN_MENU_STRINGS, ms.ui_mode_state.main_menu.item_index, 1)), bttm1_str);
+    menu_string_decode_short(MMS(up_from(NUM_MAIN_MENU_STRINGS, ms.ui_mode_state.main_menu.item_index, 2)), bttm2_str);
 
     uint8_t i;
     uint8_t buf[8*DISPLAY_NUM_PAGES];
@@ -126,8 +132,16 @@ static void show_main_menu()
     for (i = 0; i < DISPLAY_LCDWIDTH/8 && finished_mask != 0b11111; ++i) {
         memset8_zero(buf, sizeof(buf));
 
+        if (! (finished_mask & 0b1))
+            finished_mask |= menu_bwrite_12px_char(top1_str[i], buf, 2);
+        if (! (finished_mask & 0b10))
+            finished_mask |= (menu_bwrite_12px_char(top2_str[i], buf+1, 6) << 1);
         if (! (finished_mask & 0b100))
-            finished_mask |= (menu_bwrite_12px_char(center_str[i], buf+2, 0) << 2);
+            finished_mask |= (menu_bwrite_12px_char(center_str[i], buf+3, 2) << 2);
+        if (! (finished_mask & 0b1000))
+            finished_mask |= (menu_bwrite_12px_char(bttm1_str[i], buf+4, 6) << 3);
+        if (! (finished_mask & 0b10000))
+            finished_mask |= (menu_bwrite_12px_char(bttm2_str[i], buf+6, 2) << 4);
 
         display_write_page_array(buf, 8, DISPLAY_NUM_PAGES, i*8, 0);
     }
