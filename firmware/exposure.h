@@ -46,8 +46,14 @@ typedef struct aperture_string_output {
 typedef struct ev_with_fracs {
     // The ev value in 1/8 EV steps starting from -5EV.
     uint8_t ev;
-    // Low nibble of fracs + (ev/8)*3 gives EV in 1/3 stops starting from -5EV.
+    // Lowest two bits of fracs: 0 if in eighths, 1 if in thirds, 2 if in tenths.
+    // Third and fourth bits of fracs + (ev/8)*3 gives EV in 1/3 stops starting from -5EV.
     // High nibble of fracs + (ev/8)*10 gives EV in 1/10 stops starting from -5EV.
+    //
+    // (low) X X       |  X X   |  X X X X (high)
+    //       eighths/    thirds   tenths
+    //       thirds/
+    //       tenths
     uint8_t fracs;
 
     // Mini essay: Could we ever get 10/10 or 3/3?
@@ -78,22 +84,26 @@ typedef struct ev_with_fracs {
     // with correctly displaying values like x+10/10 x+3/3, which is nice.
 } ev_with_fracs_t;
 
-#define ev_with_fracs_init(evwf)          ((evwf).ev = 0, (evwf).fracs = 0)
-#define ev_with_fracs_set_ev8(evwf, ev8)  ((evwf).ev = (ev8))
-#define ev_with_fracs_get_thirds(evwf)    ((evwf).fracs & 0x0F)
-#define ev_with_fracs_set_thirds(evwf, v) ((evwf).fracs |= (v) & 0b111)
-#define ev_with_fracs_get_tenths(evwf)    ((evwf).fracs >> 4)
-#define ev_with_fracs_set_tenths(evwf, v) ((evwf).fracs |= (v) << 4)
-#define ev_with_fracs_is_whole(evwf)      ((evwf).fracs == 0)
-#define ev_with_fracs_zero_fracs(evwf)    ((evwf).fracs = 0)
+#define ev_with_fracs_init(evwf)              ((evwf).ev = 0, (evwf).fracs = 0)
+#define ev_with_fracs_set_ev8(evwf, ev8)      ((evwf).ev = (ev8))
+#define ev_with_fracs_get_thirds(evwf)        (((evwf).fracs & 0b1100) >> 2)
+#define ev_with_fracs_set_thirds(evwf, v)     ((evwf).fracs |= ((v) & 0b11) << 2)
+#define ev_with_fracs_get_eighths(evwf)       ((evwf).ev)
+#define ev_with_fracs_get_tenths(evwf)        ((evwf).fracs >> 4)
+#define ev_with_fracs_set_tenths(evwf, v)     ((evwf).fracs |= (v) << 4)
+#define ev_with_fracs_is_whole(evwf)          ((evwf).fracs == 0)
+#define ev_with_fracs_get_whole_eighths(evwf) ((evwf).ev & ~0b111)
+#define ev_with_fracs_zero_fracs(evwf)        ((evwf).fracs = 0)
+#define ev_with_fracs_get_nth(evwf)           (((evwf).fracs & 0b11) == 0 ? 8 : (((evwf).fracs & 0b11) == 1 ? 3 : 10))
+#define ev_with_fracs_set_nth(evwf, nth)      ((nth) == 8 ? (evwf).fracs |= 0 : ((nth) == 3 ? ((evwf).fracs |= 1) : ((evwf).fracs |= 2)))
 
 void shutter_speed_to_string(ev_with_fracs_t shutter_speed, shutter_string_output_t *eso, uint8_t precision_mode);
 void aperture_to_string(ev_with_fracs_t aperture, aperture_string_output_t *aso, uint8_t precision_mode);
-ev_with_fracs_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_fracs_t ev, uint8_t x);
-#define aperture_given_shutter_speed_iso_ev(a,b,c) x_given_y_iso_ev(a,b,c,0)
-#define shutter_speed_given_aperture_iso_ev(a,b,c) x_given_y_iso_ev(a,b,c,1)
+ev_with_fracs_t x_given_y_iso_ev(ev_with_fracs_t given_x, ev_with_fracs_t given_iso, ev_with_fracs_t evwf, uint8_t x);
+#define aperture_given_shutter_speed_iso_ev(a,b,c) x_given_y_iso_ev((a),(b),(c),0)
+#define shutter_speed_given_aperture_iso_ev(a,b,c) x_given_y_iso_ev((a),(b),(c),1)
 uint8_t iso_bcd_to_third_stops(uint8_t *digits, uint8_t length);
-uint8_t *iso_in_third_stops_into_bcd(uint8_t iso, uint8_t *digits, uint8_t length)
+uint8_t *iso_in_third_stops_into_bcd(uint8_t iso, uint8_t *digits, uint8_t length);
 
 ev_with_fracs_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage, uint8_t op_amp_resistor_stage);
 uint8_t convert_from_reference_voltage(uint16_t adc_out);

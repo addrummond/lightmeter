@@ -396,7 +396,7 @@ static uint8_t *iso_into_bcd(uint8_t byte1, uint8_t zeroes, uint8_t *digits, uin
 
 uint8_t *iso_in_third_stops_into_bcd(uint8_t iso, uint8_t *digits, uint8_t length)
 {
-    uint8_t byte1, zeroes, rem;
+    uint8_t byte1, zeroes;
     uint8_t i = iso/3*2;
     uint8_t rem = iso % 3;
     if (rem == 0) {
@@ -555,11 +555,36 @@ uint8_t iso_bcd_to_third_stops(uint8_t *digits, uint8_t length)
     return stops;
 }
 
+// Convert ev_with_fracs_t into a 16-bit value in 1/120 EV steps.
+// Second argument specifies whether fractional component is to be calculated
+// according to thirds, eighths or tenths. (120 is a multiple of 3, 8 and 10).
+static int16_t ev_with_fracs_to_120th(ev_with_fracs_t evwf)
+{
+    uint8_t nth = ev_with_fracs_get_nth(evwf);
+
+    if (nth == 8) {
+        return evwf.ev * 15;
+    }
+
+    uint8_t whole = ev_with_fracs_get_whole_eighths(evwf) * 15;
+    uint8_t rest;
+    if (nth == 3) {
+        rest = ev_with_fracs_get_thirds(evwf) * 40;
+    }
+    else if (nth == 10) {
+        rest = ev_with_fracs_get_thirds(evwf) * 12;
+    }
+    else {
+        assert(false);
+    }
+    return whole + rest;
+}
+
 // This is called by the following macros defined in exposure.h:
 //
 //     aperture_given_shutter_speed_iso_ev(shutter_speed,iso,ev)
 //     shutter_speed_given_aperture_iso_ev(aperture,iso,ev)
-ev_with_fracs_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_fracs_t evwf, uint8_t x) // x=0: aperture, x=1: shutter_speed
+ev_with_fracs_t x_given_y_iso_ev(ev_with_fracs_t given_x_, ev_with_fracs_t given_iso_, ev_with_fracs_t evwf, uint8_t x) // x=0: aperture, x=1: shutter_speed
 {
     // We use an internal represenation of values in 1/120 EV steps. This permits
     // exact division by 8, 10 and 3.
@@ -571,8 +596,8 @@ ev_with_fracs_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_fracs_t
     const int16_t the_ev = (3+5)*120;   // 3 EV
     const int16_t the_iso = 4*120;      // 100 ISO
 
-    int16_t given_x = (int16_t)(given_x_ * 15);
-    int16_t given_iso = (int16_t)(iso_ * 40);
+    int16_t given_x = ev_with_fracs_to_120th(given_x_);
+    int16_t given_iso = ev_with_fracs_to_120th(given_iso_);
     int16_t given_ev = (int16_t)(evwf.ev * 15);
     int16_t whole_given_ev = (int16_t)((evwf.ev & 0b111) * 15);
     // We do the main calculation using the 1/120EV value derived from the 1/8 EV value.
@@ -615,6 +640,7 @@ ev_with_fracs_t x_given_y_iso_ev(uint8_t given_x_, uint8_t iso_, ev_with_fracs_t
     int16_t tenth_ev = r + given_ev_tenths_diff;
     int16_t third_ev = r + given_ev_thirds_diff;
     // TODO: Think carefully about whether we should be using round_divide here.
+    ev_with_fracs_zero_fracs(evwf);
     ev_with_fracs_set_tenths(evwf, (uint8_t)(tenth_ev/12)%10);
     ev_with_fracs_set_thirds(evwf, (uint8_t)(third_ev/40)%3);
 

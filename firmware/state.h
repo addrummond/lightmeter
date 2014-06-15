@@ -61,7 +61,7 @@ typedef uint8_t precision_mode_t;
 typedef struct meter_state {
     uint8_t bcd_iso_digits[ISO_DECIMAL_MAX_DIGITS];
     uint8_t bcd_iso_length;
-    uint8_t stops_iso;
+    ev_with_fracs_t stops_iso;
 
     priority_t priority;
 
@@ -73,10 +73,8 @@ typedef struct meter_state {
     meter_mode_t meter_mode;
     precision_mode_t precision_mode;
 
-    // We currently assume that no-one will want to set priority apertures/shutter speeds
-    // at a resolution of more than 1/2 stop. Thus, we do not store tenths here, just eighths.
-    uint8_t priority_aperture;
-    uint8_t priority_shutter_speed;
+    ev_with_fracs_t priority_aperture;
+    ev_with_fracs_t priority_shutter_speed;
 } meter_state_t;
 
 #ifdef __AVR__

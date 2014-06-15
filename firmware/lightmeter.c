@@ -136,24 +136,19 @@ void handle_measurement()
     );
 
     if (global_meter_state.priority == SHUTTER_PRIORITY) {
-        global_transient_meter_state.shutter_speed.ev = global_meter_state.priority_shutter_speed;
-        ev_with_fracs_set_tenths(global_transient_meter_state.shutter_speed, tenth_below_eighth(global_meter_state.priority_shutter_speed));
-        ev_with_fracs_set_thirds(global_transient_meter_state.shutter_speed, third_below_eighth(global_meter_state.priority_shutter_speed));
-            global_transient_meter_state.aperture = aperture_given_shutter_speed_iso_ev(
-            global_transient_meter_state.shutter_speed.ev,
+        global_transient_meter_state.shutter_speed = global_meter_state.priority_shutter_speed;
+        global_transient_meter_state.aperture = aperture_given_shutter_speed_iso_ev(
+            global_transient_meter_state.shutter_speed,
             global_meter_state.stops_iso,
             global_transient_meter_state.last_ev_with_fracs
         );
     }
     else { //if (global_meter_state.priority == APERTURE_PRIORITY) {
-        global_transient_meter_state.aperture.ev = global_meter_state.priority_aperture;
-        ev_with_fracs_set_tenths(global_transient_meter_state.shutter_speed, tenth_below_eighth(global_meter_state.priority_aperture));
-        ev_with_fracs_set_thirds(global_transient_meter_state.shutter_speed, third_below_eighth(global_meter_state.priority_aperture));
-        global_transient_meter_state.shutter_speed =
-            shutter_speed_given_aperture_iso_ev(
-                global_transient_meter_state.aperture.ev,
-                global_meter_state.stops_iso,
-                global_transient_meter_state.last_ev_with_fracs
+        global_transient_meter_state.aperture = global_meter_state.priority_aperture;
+        global_transient_meter_state.shutter_speed = shutter_speed_given_aperture_iso_ev(
+            global_transient_meter_state.aperture,
+            global_meter_state.stops_iso,
+            global_transient_meter_state.last_ev_with_fracs
         );
     }
 

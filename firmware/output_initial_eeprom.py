@@ -8,7 +8,8 @@ eeprom = [
 
     1, 0, 0, 0, 0, 0, 0,                                   # bcd_iso
     3,                                                     # bcd_iso_length
-    12,                                                    # iso 100
+
+    12, 0,                                                 # iso 100
 
     1,                                                     # shutter_priority
 
@@ -20,8 +21,8 @@ eeprom = [
     0,                                                     # METER_MODE_REFLECTIVE.
     10,                                                    # PRECISION_MODE_TENTH
 
-    48,                                                    # priority_aperture = f8
-    64                                                     # priority_shutter_speed = 1/4
+    48, 0,                                                 # priority_aperture = f8
+    64, 0                                                  # priority_shutter_speed = 1/4
 ]
 
 ih = IntelHex()
