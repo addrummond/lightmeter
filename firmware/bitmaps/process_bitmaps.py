@@ -53,12 +53,16 @@ def get_unique_blocks(image, offset, width=12, height=12, blocks=None):
                 for bli in xrange(len(blocks)):
                     flipv = list(reversed(blocks[bli]))
                     fliph = [list(reversed(aa)) for aa in blocks[bli]]
+                    #neg = [[0 if y else 1 for y in x] for x in blocks[bli]]
                     if flipv == block:
                         index = ('flipv', bli)
                         break
                     elif fliph == block:
                         index = ('fliph', bli)
                         break
+                    #elif neg == block:
+                    #    index = ('neg', bli)
+                    #    break
             if index is None:
                 blocks.append(block)
                 index = ('original', len(blocks)-1)
@@ -71,10 +75,13 @@ def get_unique_blocks(image, offset, width=12, height=12, blocks=None):
 
 def rgba_to_mono(pixels, width):
     pixels2 = [[0 if y else 1 for y in x] for x in pixels]
+    if len(pixels[0]) == width:
+        return pixels2
     if len(pixels[0]) == width*3:
         return [[row[i] for i in xrange(0, len(row), 3)] for row in pixels2] # RGB -> monochrome
     if len(pixels[0]) == width*4:
         return [[row[i] for i in xrange(0, len(row), 4)] for row in pixels2] # RGBA -> monochrome
+    return None
 
 def get_12px_chars():
      blocks = [ ]
@@ -83,20 +90,27 @@ def get_12px_chars():
      max_blocks_per_char = 0
      for name in os.listdir("./"):
          if name.startswith("12px_") and name.endswith(".png"):
+             #print "Reading %s..." % name
              bitmap_count += 1
              r = png.Reader(file=open(name))
              img = r.read()
              width = img[0]
              height = img[1]
-             pixels = rgba_to_mono(list(img[2]), 12)
-             # Drop first and last two columns for 12x8.
-             pixels = [x[2:-2] for x in pixels]
-#             for row in pixels:
-#                 for p in row:
-#                     sys.stdout.write("%i " % p)
-#                 print
-#             print pixels
-             blocks, block_grid, num_blocks = get_unique_blocks(pixels, 0, width-4, height, blocks)
+
+             # Bit of a mess. Old chars had 12x12 png files even though they were 8x12.
+             # Now we need to allow 8x12 files too.
+             pixels = None
+             li = list(img[2])
+             pixels = rgba_to_mono(li, 12)
+             if pixels is not None:
+                 pixels = rgba_to_mono(li, 12)
+                 # Drop first and last two columns for 8x12.
+                 pixels = [x[2:-2] for x in pixels]
+             else:
+                 pixels = rgba_to_mono(li, 8)
+             assert pixels is not None
+
+             blocks, block_grid, num_blocks = get_unique_blocks(pixels, 0, 8, height, blocks)
              name_to_block_grid[name] = block_grid
              max_blocks_per_char = max(max_blocks_per_char, num_blocks)
 
@@ -138,21 +152,17 @@ def get_stats():
 def print_test_chars():
     blocks_array, bitmap_count, name_to_block_grid, max_blocks_per_char = get_12px_chars()
 
+    print "%i blocks:\n" % len(blocks_array)
+    for bl in blocks_array:
+        for y in xrange(BLOCK_SIZE):
+            for x in xrange(BLOCK_SIZE):
+                v = bl[x][y]
+                sys.stdout.write("%i " % v)
+            sys.stdout.write("\n")
+        sys.stdout.write("\n\n")
+
     for name, grid in name_to_block_grid.iteritems():
         print "Drawing %s:\n" % name
-
-#
-#        [prints individual blocks first]
-#
-#        for gg in grid:
-#            for b in gg:
-#                bl = blocks_array[b]
-#                for y in xrange(BLOCK_SIZE):
-#                    for x in xrange(BLOCK_SIZE):
-#                        v = bl[x][y]
-#                        sys.stdout.write("%i " % v)
-#                    sys.stdout.write("\n")
-#                sys.stdout.write("\n\n")
 
         for line in xrange(11, -1, -1):
             for col in xrange(8):
