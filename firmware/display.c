@@ -159,7 +159,7 @@ void display_bwrite_12px_char(const uint8_t *char_grid, uint8_t *out, uint8_t pa
         uint8_t bttmi = pgm_read_byte(&char_grid[(0/CHAR_12PX_BLOCK_SIZE)+i]);
         const uint8_t *bttm = CHAR_BLOCKS_12PX + (bttmi << 1);
 
-        // One loop for each column.
+        // One loop iteration for each column.
         uint8_t j;
         for (j = 0; j < CHAR_12PX_BLOCK_SIZE; ++j, out += pages_per_col) {
             uint8_t bi = j >> 1;
