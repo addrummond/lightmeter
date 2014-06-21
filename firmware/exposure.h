@@ -116,7 +116,7 @@ uint8_t convert_from_reference_voltage(uint16_t adc_out);
 #define thirds_from_tenths(e)  ((e) > 6 ? 2 : ((e) > 2 ? 1 : 0))
 #define thirds_from_eighths(e) ((e) > 4 ? 2 : ((e) > 1 ? 1 : 0))
 #define tenths_from_thirds(e)  ((e) == 0 ? 0 : ((e) == 1 ? 3 : 7))
-#define eighths_from_thirds(e) ((e) < 2 ? 0 : ((e) < 5 ? 1 : 2))
+#define eighths_from_thirds(e) ((e) == 2 ? 5 : ((e) == 1 ? 3 : 0))
 
 // Integer divide with rounding.
 #define round_divide(n, by)    (((n)/(by)) + (((n) % (by) > ((by)+1)/2) ? 1 : 0))

@@ -570,8 +570,8 @@ static int16_t ev_with_fracs_to_120th(ev_with_fracs_t evwf)
         return evwf.ev * 15;
     }
 
-    uint8_t whole = ev_with_fracs_get_whole_eighths(evwf) * 15;
-    uint8_t rest;
+    int16_t whole = ev_with_fracs_get_whole_eighths(evwf) * 15;
+    int16_t rest;
     if (nth == 3) {
         rest = ev_with_fracs_get_thirds(evwf) * 40;
     }
@@ -602,8 +602,8 @@ ev_with_fracs_t x_given_y_iso_ev(ev_with_fracs_t given_x_, ev_with_fracs_t given
 
     int16_t given_x = ev_with_fracs_to_120th(given_x_);
     int16_t given_iso = ev_with_fracs_to_120th(given_iso_);
-    int16_t given_ev = (int16_t)(evwf.ev * 15);
-    int16_t whole_given_ev = (int16_t)((evwf.ev & 0b111) * 15);
+    int16_t given_ev = (int16_t)(ev_with_fracs_get_eighths(evwf) * 15);
+    int16_t whole_given_ev = (int16_t)((ev_with_fracs_get_eighths(evwf) & ~0b111) * 15);
     // We do the main calculation using the 1/120EV value derived from the 1/8 EV value.
     // We now make a note of the small difference in the EV value which we get if
     // we calculate it from the 1/10 or 1/3 EV value. We add this difference
@@ -640,11 +640,11 @@ ev_with_fracs_t x_given_y_iso_ev(ev_with_fracs_t given_x_, ev_with_fracs_t given
     // Note that we're relying on the property discussed in exposure.h, i.e.,
     // that calculations in eighths/thirds/tenths always yield the same whole
     // EV values.
-    evwf.ev = round_divide(r, 15);
+    ev_with_fracs_init(evwf);
+    ev_with_fracs_set_ev8(evwf, round_divide(r, 15));
     int16_t tenth_ev = r + given_ev_tenths_diff;
     int16_t third_ev = r + given_ev_thirds_diff;
     // TODO: Think carefully about whether we should be using round_divide here.
-    ev_with_fracs_zero_fracs(evwf);
     ev_with_fracs_set_tenths(evwf, (uint8_t)(round_divide(tenth_ev,12))%10);
     ev_with_fracs_set_thirds(evwf, (uint8_t)(round_divide(third_ev,40))%3);
 
@@ -749,7 +749,7 @@ int main()
 
     printf("\nTesting aperture_given_shutter_speed_iso_ev\n");
     uint8_t is, ss, ev, ap;
-    for (is = ISO_MIN; is <= ISO_MAX; ++is) {
+    for (is = ISO_MIN/8*3; is <= ISO_MAX/8*3; ++is) {
         ss = 8*8;//12*8; // 1/60
         ev = 10*8;//15*8; // 10 EV
         ev_with_fracs_t evwf;
@@ -757,7 +757,12 @@ int main()
         ev_with_fracs_set_ev8(evwf, ev);
         ev_with_fracs_t isoevwf;
         ev_with_fracs_init(isoevwf);
-        ev_with_fracs_set_ev8(isoevwf, is);
+        ev_with_fracs_set_ev8(isoevwf, ((is/3)*8) + eighths_from_thirds(is % 3));
+        ev_with_fracs_set_thirds(isoevwf, is%3);
+        ev_with_fracs_set_tenths(isoevwf, tenths_from_thirds(is%3));
+        ev_with_fracs_set_nth(isoevwf, 3);
+        //printf("ISO EV %i (%i,%i)*****\n", ev_with_fracs_get_eighths(isoevwf), ((is/3)*8) + eighths_from_thirds(is%3), is);
+        //printf("ISO third %i *****\n", ev_with_fracs_get_thirds(isoevwf));
         ev_with_fracs_t ssevwf;
         ev_with_fracs_init(ssevwf);
         ev_with_fracs_set_ev8(ssevwf, ss);
@@ -773,7 +778,7 @@ int main()
     }
 
     printf("\nTesting shutter_speed_given_aperture_iso_ev\n");
-    for (is = ISO_MIN; is <= ISO_MAX; ++is) {
+    for (is = ISO_MIN/8*3; is <= ISO_MAX/8*3; ++is) {
         ap = 6*8; // f8
         ev = 15*8; // 10 EV
         ev_with_fracs_t evwf;
@@ -784,7 +789,10 @@ int main()
         ev_with_fracs_set_ev8(apevwf, ap);
         ev_with_fracs_t isoevwf;
         ev_with_fracs_init(isoevwf);
-        ev_with_fracs_set_ev8(isoevwf, is);
+        ev_with_fracs_set_ev8(isoevwf, ((is/3)*8) + eighths_from_thirds(is % 3));
+        ev_with_fracs_set_thirds(isoevwf, is%3);
+        ev_with_fracs_set_tenths(isoevwf, tenths_from_thirds(is%3));
+        ev_with_fracs_set_nth(isoevwf, 3);
         evwf = shutter_speed_given_aperture_iso_ev(apevwf, isoevwf, evwf);
         shutter_speed_to_string(evwf, &sso, PRECISION_MODE_EIGHTH);
         ev_with_fracs_t evwf2;
