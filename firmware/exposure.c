@@ -386,7 +386,7 @@ static uint8_t *iso_into_bcd(uint8_t byte1, uint8_t zeroes, uint8_t *digits, uin
         digits[i] = byte1 >> 4;
         // Special case for 125, 1250, 12500 and 125000
         if (byte1 == ((1 << 4) | 2) && zeroes >= 1 && zeroes <= 4)
-            digits[2] = 5;
+            digits[length - zeroes + 1] = 5;
         return digits + length - zeroes - 2;
     }
     else {
@@ -501,6 +501,10 @@ uint8_t iso_bcd_to_third_stops(uint8_t *digits, uint8_t length)
     // to be 1/0.7. We implement this as subtraction of 1/5 + 1/10 of
     // the original.
     if (! iso_is_full_stop(digits, length)) {
+        //printf("ISO INIT ");
+        //debug_print_bcd(digits, length);
+        //printf("\n");
+
         uint8_t nextup_digits_[ISO_DECIMAL_MAX_DIGITS];
         uint8_t dcount = count << 1;
         //        printf("=====>>> COUNT %i b1 %i b2 %i\n", count, FULL_STOP_ISOS[dcount], FULL_STOP_ISOS[dcount+1]);
@@ -646,6 +650,18 @@ ev_with_fracs_t x_given_y_iso_ev(ev_with_fracs_t given_x_, ev_with_fracs_t given
 
     return evwf;
 }
+
+// Convert a shutter speed specified as fps + shutter angle to a normal shutter speed.
+// Frames per second is specified in units of 1/128 second.
+// Shutter angle is specified in units of 1/128 degrees.
+/*ev_with_fracs_t fps_and_angle_to_shutter_speed(uint16_t fps, uint16_t angle)
+{
+    uint32_t fp32 = fps * 360;
+    fp32 *= 128;
+    fp32 /= angle; // not bothering to round because units are so tiny.
+    // fp32 is now the "effective" frames per second (i.e. fps if shutter angle were 360).
+    // Now we have to take the log of the reciprocal to get the shutter speed in EV.
+}*/
 
 
 #ifdef TEST
