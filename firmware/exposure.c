@@ -798,9 +798,9 @@ int main()
         ev_with_fracs_t evwf2;
         ev_with_fracs_init(evwf2);
         ev_with_fracs_set_ev8(evwf, ap);
-        aperture_to_string(evwf2, &aso, PRECISION_MODE_EIGHTH);
+        aperture_to_string(apevwf, &aso, PRECISION_MODE_EIGHTH);
         printf("ISO %f stops from 6,  %s  %s (EV = %.2f)   [%i, %i, %i : %i]\n",
-               ((float)is) / 8.0,
+               ((float)is) / 3.0,
                SHUTTER_STRING_OUTPUT_STRING(sso),
                APERTURE_STRING_OUTPUT_STRING(aso),
                ((float)(((int16_t)(ev))-(5*8)))/8.0,
