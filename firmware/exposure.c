@@ -560,15 +560,13 @@ uint8_t iso_bcd_to_third_stops(uint8_t *digits, uint8_t length)
 }
 
 // Convert ev_with_fracs_t into a 16-bit value in 1/120 EV steps.
-// Second argument specifies whether fractional component is to be calculated
-// according to thirds, eighths or tenths. (120 is a multiple of 3, 8 and 10).
+// (120 is a multiple of 3, 8 and 10).
 static int16_t ev_with_fracs_to_120th(ev_with_fracs_t evwf)
 {
     uint8_t nth = ev_with_fracs_get_nth(evwf);
 
-    if (nth == 8) {
+    if (nth == 8)
         return evwf.ev * 15;
-    }
 
     int16_t whole = ev_with_fracs_get_whole_eighths(evwf) * 15;
     int16_t rest;
@@ -651,17 +649,29 @@ ev_with_fracs_t x_given_y_iso_ev(ev_with_fracs_t given_x_, ev_with_fracs_t given
     return evwf;
 }
 
+static uint32_t log2(uint32_t v)
+{
+    // See http://graphics.stanford.edu/~seander/bithacks.html#IntegerLogObvious
+    uint16_t r = 0;
+    while (v >>= 1)
+        ++r;
+    return r;
+}
+
 // Convert a shutter speed specified as fps + shutter angle to a normal shutter speed.
 // Frames per second is specified in units of 1/128 second.
 // Shutter angle is specified in units of 1/128 degrees.
-/*ev_with_fracs_t fps_and_angle_to_shutter_speed(uint16_t fps, uint16_t angle)
+ev_with_fracs_t fps_and_angle_to_shutter_speed(uint16_t fps, uint16_t angle)
 {
     uint32_t fp32 = fps * 360;
     fp32 *= 128;
     fp32 /= angle; // not bothering to round because units are so tiny.
     // fp32 is now the "effective" frames per second (i.e. fps if shutter angle were 360).
-    // Now we have to take the log of the reciprocal to get the shutter speed in EV.
-}*/
+    // Now we have to take the log to get the shutter speed in EV.
+    uint8_t ev = (log2_uint32(fp32);
+    // Divide by 128 (because we're using units of 1/128 degrees).
+    fp32 -= 7;
+}
 
 
 #ifdef TEST
