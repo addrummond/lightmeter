@@ -652,7 +652,7 @@ ev_with_fracs_t x_given_y_iso_ev(ev_with_fracs_t given_x_, ev_with_fracs_t given
 // Log base 2 (fixed point).
 // See http://stackoverflow.com/a/14884853/376854 and https://github.com/dmoulding/log2fix
 #define LOG2_PRECISION 6
-static int32_t log2(uint32_t x, size_t precision)
+static int32_t log2(uint32_t x)
 {
     // This implementation is based on Clay. S. Turner's fast binary logarithm
     // algorithm[1].
@@ -749,12 +749,16 @@ int main()
     ev_with_fracs_init(iso100);
     ev_with_fracs_set_ev8(iso100, 4*8);
 
-    printf("fps_and_angle_to_shutter_speed");
-    uint16_t fps = 60*128;
-    uint16_t angle = 180;
-    ev_with_fracs_t shutspeed = fps_and_angle_to_shutter_speed(fps, angle);
-    shutter_speed_to_string(evwf, &sso, PRECISION_MODE_TENTH);
-    printf("From fps = 60, angle = 180 -> %s\n", SHUTTER_STRING_OUTPUT_STRING(sso));
+    printf("fps_and_angle_to_shutter_speed\n");
+    uint16_t fps;
+    for (fps = 0; fps < 200; ++fps) {
+        uint16_t angle = 180;
+        ev_with_fracs_t shutspeed = fps_and_angle_to_shutter_speed(fps*10, angle);
+        shutter_speed_to_string(shutspeed, &sso, PRECISION_MODE_TENTH);
+        printf("From fps = %i, angle = 180 -> %s\n", fps, SHUTTER_STRING_OUTPUT_STRING(sso));
+    }
+
+    printf("\n");
 
     printf("Shutter speeds in eighths:\n");
     uint8_t s;
