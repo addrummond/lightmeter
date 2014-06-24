@@ -751,7 +751,7 @@ int main()
 
     printf("fps_and_angle_to_shutter_speed\n");
     uint16_t fps;
-    for (fps = 0; fps < 200; ++fps) {
+    for (fps = 1; fps < 200; ++fps) {
         uint16_t angle = 180;
         ev_with_fracs_t shutspeed = fps_and_angle_to_shutter_speed(fps*10, angle);
         shutter_speed_to_string(shutspeed, &sso, PRECISION_MODE_TENTH);
