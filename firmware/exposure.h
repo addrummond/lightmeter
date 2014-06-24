@@ -30,6 +30,9 @@
 #define EV_MIN      0
 #define EV_MAX      254
 
+#define FPS_MIN     1
+#define FPS_MAX     500
+
 
 typedef struct shutter_string_output {
     uint8_t chars[9];
