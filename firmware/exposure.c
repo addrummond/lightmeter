@@ -708,7 +708,7 @@ ev_with_fracs_t fps_and_angle_to_shutter_speed(uint16_t fps, uint16_t angle)
     // fp32 is now the "effective" frames per second (i.e. fps if shutter angle were 360).
     // Now we have to take the log to get the shutter speed in EV.
     int16_t ev = (int16_t)log2(fp32);
-    // Divide by 10 (because we're using units of 1/120 frames).
+    // Divide by 10 (because we're using units of 1/10 frames).
 #if LOG2_PRECISION == 6
     ev -= 0b11010101; // 11.010101 = 3.322 = log2(10) with 6 precision bits.
 #else
