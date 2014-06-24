@@ -715,8 +715,8 @@ ev_with_fracs_t fps_and_angle_to_shutter_speed(uint16_t fps, uint16_t angle)
 #error "Bad LOG2_PRECISION value"
 #endif
 
-    // Add magic number to get shutter speed EV (+ 6EV).
-    ev += 6 * (1 << LOG2_PRECISION);
+    // Add magic number to get shutter speed EV (+ 12EV).
+    ev += 12 * (1 << LOG2_PRECISION);
 
     if (ev > SHUTTER_SPEED_MAX * (1 << LOG2_PRECISION))
         ev = SHUTTER_SPEED_MAX * (1 << LOG2_PRECISION);
