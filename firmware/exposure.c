@@ -574,7 +574,7 @@ static int16_t ev_with_fracs_to_120th(ev_with_fracs_t evwf)
         rest = ev_with_fracs_get_thirds(evwf) * 40;
     }
     else if (nth == 10) {
-        rest = ev_with_fracs_get_thirds(evwf) * 12;
+        rest = ev_with_fracs_get_tenths(evwf) * 12;
     }
     else {
         assert(false);
