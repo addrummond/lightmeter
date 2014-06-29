@@ -91,10 +91,12 @@ def log_rlc_to_log_lux(rlc):
 # See http://stackoverflow.com/questions/5401738/how-to-convert-between-lux-and-exposure-value
 # http://en.wikipedia.org/wiki/Exposure_value#EV_as_a_measure_of_luminance_and_illuminance
 # This is (implicitly) using C=250.
+LOG10_2_5 = math.log(2.5, 10)
+LOG2_10 = math.log(2,10)
 def log_illuminance_to_ev_at_100(log_lux):
-    # TODO: Could probably do this all in log space for greater accuracy.
-    lux = math.pow(10, log_lux)
-    ev = math.log(lux/2.5, 2)
+    ev = log_lux - LOG10_2_5
+    # Convert from log10 to log2.
+    ev /= LOG2_10
     return ev
 
 # Implicitly using the Sekonic calibration constant of 12.5.
