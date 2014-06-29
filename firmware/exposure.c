@@ -559,27 +559,43 @@ uint8_t iso_bcd_to_third_stops(uint8_t *digits, uint8_t length)
     return stops;
 }
 
-// Convert ev_with_fracs_t into a 16-bit value in 1/120 EV steps.
-// (120 is a multiple of 3, 8 and 10).
-static int16_t ev_with_fracs_to_120th(ev_with_fracs_t evwf)
+// Not putting this in PROGMEM as it's very small.
+static const uint8_t ev_wtih_fracs_to_xth_consts[] = {
+    // 120
+    15, 40, 12,
+    // 100
+    13, 33, 10
+};
+#define consts ev_wtih_fracs_to_xth_consts
+static int16_t ev_with_fracs_to_xth(ev_with_fracs_t evwf, uint8_t const_offset)
 {
     uint8_t nth = ev_with_fracs_get_nth(evwf);
 
     if (nth == 8)
-        return evwf.ev * 15;
+        return evwf.ev * consts[const_offset + 0];
 
-    int16_t whole = ev_with_fracs_get_whole_eighths(evwf) * 15;
+    int16_t whole = ev_with_fracs_get_whole_eighths(evwf) * consts[const_offset + 0];
     int16_t rest;
     if (nth == 3) {
-        rest = ev_with_fracs_get_thirds(evwf) * 40;
+        rest = ev_with_fracs_get_thirds(evwf) * consts[const_offset + 1];
     }
     else if (nth == 10) {
-        rest = ev_with_fracs_get_tenths(evwf) * 12;
+        rest = ev_with_fracs_get_tenths(evwf) * consts[const_offset + 2];
     }
     else {
         assert(false);
     }
     return whole + rest;
+}
+#undef consts
+#define ev_with_fracs_to_120th(x) ev_with_fracs_to_xth((x), 0)
+#define ev_with_fracs_to_100th(x) ev_with_fracs_to_xth((x), 3)
+
+static int16_t ev_with_fracs_to_100th(ev_with_fracs_t evwf)
+{
+    uint8_t nth = ev_with_fracs_get_nth(evwf);
+    if (nth == 8)
+        return evwf *
 }
 
 // This is called by the following macros defined in exposure.h:
@@ -736,16 +752,23 @@ ev_with_fracs_t fps_and_angle_to_shutter_speed(uint16_t fps, uint16_t angle)
     return ret;
 }
 
-#define LOG10_2_5__120 ((uint16_t)(0.3979400086720376*120.0))
-#define LOG10_2_RECIP  ((uint16_t)(3.321928094887363*120.0))
+#define LOG10_2_5__100   ((uint16_t)(0.3979400086720376*100.0))
+#define LOG10_2__100 ((uint16_t)(3.321928094887363*100.0))
 void ev_at_100_to_bcd_lux(ev_with_fracs_t evwf)
 {
-    uint16_t ev120 = ev_with_fracs_to_120th(evwf);
+    uint32_t ev100 = ev_with_fracs_to_100th(evwf);
     // Convert from log2 to log10.
-    // To do this, we need to multiply by 1/log10(2).
-    ev120 *= LOG10_2_RECIP;
+    // To do this, we need to divide by log10(2).
+    ev100 *= 100;
+    ev100 /= LOG10_2_RECIP__100;
     // Multiply by 2.5.
-    ev120 += LOG10_2_5__120;
+    ev100 += LOG10_2_5__10000;
+    // We now have log10 lux in 100ths.
+    // The resulting number cannot be bigger than four digits.
+    // Following exponention 11 digits is the max.
+    uint8_t digits[11];
+    uint32_to_bcd(ev120, digits+sizeof(digits)-4, sizeof(digits));
+    bcd_exp(digits+sizeof(digits)-4, sizeof(digits), 10, 2/* number of digits following decimal point*/);
 }
 #undef LOG10_2_5__120
 #undef LOG10_2_RECIP
