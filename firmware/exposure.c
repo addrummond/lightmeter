@@ -736,6 +736,20 @@ ev_with_fracs_t fps_and_angle_to_shutter_speed(uint16_t fps, uint16_t angle)
     return ret;
 }
 
+#define LOG10_2_5__120 ((uint16_t)(0.3979400086720376*120.0))
+#define LOG10_2_RECIP  ((uint16_t)(3.321928094887363*120.0))
+void ev_at_100_to_bcd_lux(ev_with_fracs_t evwf)
+{
+    uint16_t ev120 = ev_with_fracs_to_120th(evwf);
+    // Convert from log2 to log10.
+    // To do this, we need to multiply by 1/log10(2).
+    ev120 *= LOG10_2_RECIP;
+    // Multiply by 2.5.
+    ev120 += LOG10_2_5__120;
+}
+#undef LOG10_2_5__120
+#undef LOG10_2_RECIP
+
 
 #ifdef TEST
 
