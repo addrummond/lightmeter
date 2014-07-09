@@ -65,33 +65,6 @@ uint8_t *bcd_add_(uint8_t *digits1, uint8_t digits1_length,
     return digits1;
 }
 
-void bcd_to_string(uint8_t *digits, uint8_t length)
-{
-    uint8_t i;
-    for (i = 0; i < length; ++i)
-        digits[i] += 48;
-}
-
-void string_to_bcd(uint8_t *digits, uint8_t length)
-{
-    uint8_t i;
-    for (i = 0; i < length; ++i)
-        digits[i] -= 48;
-}
-
-#if !defined(__AVR__)
-void debug_print_bcd(uint8_t *digits, uint8_t length)
-{
-    uint8_t digits2[length + 1];
-    uint8_t i;
-    for (i = 0; i < length; ++i)
-        digits2[i] = digits[i];
-    digits2[length] = 0;
-    bcd_to_string(digits2, length);
-    printf("%s", digits2);
-}
-#endif
-
 // Save some code space by implementing <, <=, >, >=, = in one function.
 // This function is called by macros bcd_lt, bcd_gteq, etc.
 bool bcd_cmp(const uint8_t *digits1, uint8_t length1, const uint8_t *digits2, uint8_t length2,
@@ -252,6 +225,34 @@ uint8_t *uint8_to_bcd(uint8_t n, uint8_t *digits, uint8_t length)
 
     return digits + i;
 }
+
+void bcd_to_string(uint8_t *digits, uint8_t length)
+{
+    uint8_t i;
+    for (i = 0; i < length; ++i)
+        digits[i] += 48;
+}
+
+void string_to_bcd(uint8_t *digits, uint8_t length)
+{
+    uint8_t i;
+    for (i = 0; i < length; ++i)
+        digits[i] -= 48;
+}
+
+#if !defined(__AVR__)
+void debug_print_bcd(uint8_t *digits, uint8_t length)
+{
+    uint8_t digits2[length + 1];
+    uint8_t i;
+    for (i = 0; i < length; ++i)
+        digits2[i] = digits[i];
+    digits2[length] = 0;
+    bcd_to_string(digits2, length);
+    printf("%s", digits2);
+}
+#endif
+
 
 #ifdef TEST
 
