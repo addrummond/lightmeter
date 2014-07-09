@@ -20,7 +20,7 @@
 // This is used to implement both bcd_add and bcd_sub (which are now macros).
 uint8_t *bcd_add_(uint8_t *digits1, uint8_t digits1_length,
                   uint8_t *digits2, uint8_t digits2_length,
-                  uint8_t neg)
+                  uint8_t xoradd)
 {
     uint8_t end1 = digits1_length - 1;
     uint8_t end2 = digits2_length - 1;
@@ -29,9 +29,7 @@ uint8_t *bcd_add_(uint8_t *digits1, uint8_t digits1_length,
 
     uint8_t i = end1, j = end2;
     do {
-        uint8_t y = digits2[j];
-        if (neg)
-            y *= -1;
+        int8_t y = (int8_t)(digits2[j] ^ xoradd) + (xoradd & 1);
         int8_t r = (int8_t)(digits1[i]) + y + carry;
         if (r < 0) {
             digits1[i] = r + 10;
