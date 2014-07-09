@@ -14,7 +14,7 @@
 #include <string.h>
 #endif
 
-// Assumes that there are sufficient available bytes at digits1[-1].
+// Assumes that there are sufficient available bytes at digits1[-1] onwards.
 // Stores result in digits1.
 // Returns either digits1 or (digits1-1).
 // This is used to implement both bcd_add and bcd_sub (which are now macros).
