@@ -54,8 +54,7 @@ uint8_t *bcd_add(uint8_t *digits1, uint8_t digits1_length,
 
     // Strip leading zeroes.
     i = 0;
-    for (; *digits1 == 0 && i < digits1_length; ++digits1, ++i)
-        printf("STRIP\n");
+    for (; *digits1 == 0 && i < digits1_length; ++digits1, ++i);
 
     return digits1;
 }
@@ -85,8 +84,8 @@ uint8_t *bcd_sub(uint8_t *digits1, uint8_t digits1_length, uint8_t *digits2, uin
     }
 
     // Strip leading zeroes.
-    // TODO BUG won't work if all 0.
-    //for (; *digits1 == 0; ++digits1);
+    i = 0;
+    for (; *digits1 == 0 && i < digits1_length; ++digits1, ++i);
 
     return digits1;
 }
@@ -191,14 +190,10 @@ uint8_t *bcd_mul(uint8_t *digits1, uint8_t length1, const uint8_t *digits2, uint
     uint8_t result_digits_length = l;
     uint8_t *mulres_start = tmp1 + l - 1;
     do {
-        printf("OUT LOOP\n");
         uint8_t carry = 0;
         uint8_t i = length1-1;
         do {
-            printf("IN LOOP\n");
             uint8_t r = (digits1[i] * digits2[j]) + carry;
-            printf("R %i\n", r);
-            printf("I %i\n", i + length1);
             *(mulres_start--) = r % 10;
             carry = r / 10;
         } while (i-- > 0);
@@ -207,29 +202,17 @@ uint8_t *bcd_mul(uint8_t *digits1, uint8_t length1, const uint8_t *digits2, uint
         }
 
         uint8_t mulres_length = l - (mulres_start - tmp1);
-            printf("ADDING ");
-            uint8_t k;
-            for (k = 0; k < result_digits_length; ++k)
-                printf("%i", result_digits[k]);
-            printf(" TO ");
-            for (k = 0; k < mulres_length; ++k)
-                printf("%i", mulres_start[k]);
-            printf("\n");
         // Add to total.
         uint8_t *result_digits_ = bcd_add(result_digits, result_digits_length, mulres_start, mulres_length);
-        printf("PTR %p %p\n", result_digits, result_digits_);
         result_digits_length = bcd_length_after_op(result_digits, result_digits_length, result_digits_);
         result_digits = result_digits_;
-        printf("RDL %i\n", result_digits_length);
     } while (j-- > 0);
 
     uint8_t *start = digits1 + length1;
     --result_digits_length;
     do {
-        *(start--) = result_digits[result_digits_length];
+        *(--start) = result_digits[result_digits_length];
     } while (result_digits_length-- > 0);
-
-    printf("PTRD %p %p\n", digits1, start);
 
     return start;
 }
@@ -261,7 +244,8 @@ uint8_t *bcd_div_by_lt10(uint8_t *digits, uint8_t length, uint8_t by)
     }
 
     // Strip leading zeroes.
-    for (; digits < (digits + length) && *digits == 0; ++digits);
+    outi = 0;
+    for (; *digits == 0 && outi < length; ++digits, ++outi);
 
     return digits;
 }
@@ -316,13 +300,13 @@ static void uint8_to_bcd_test()
 
 static void mul_test1()
 {
-    uint8_t digits1[] = { 0, 0, 0, 1, 2, 3, '\0' };
+    uint8_t digits1[] = { 0, 0, 0, 1, 9, 3, '\0' };
     uint8_t digits2[] = { 2, '\0' };
 
     uint8_t *r = bcd_mul(digits1+3, 3, digits2, 1);
     bcd_to_string(r, bcd_length_after_op(digits1+3, 3, r));
-    printf("[%i] 123 * 456 = %s\n", bcd_length_after_op(digits1+3, 3, r), r);
-    assert(!strcmp((char *)r, "56088"));
+    printf("193 * 2 = %s\n", r);
+    assert(!strcmp((char *)r, "386"));
 }
 
 static void add_test1()
