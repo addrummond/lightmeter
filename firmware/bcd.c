@@ -17,18 +17,26 @@
 // Assumes that there are sufficient available bytes at digits1[-1].
 // Stores result in digits1.
 // Returns either digits1 or (digits1-1).
-uint8_t *bcd_add(uint8_t *digits1, uint8_t digits1_length,
-                 uint8_t *digits2, uint8_t digits2_length)
+uint8_t *bcd_add_(uint8_t *digits1, uint8_t digits1_length,
+                  uint8_t *digits2, uint8_t digits2_length,
+                  uint8_t neg)
 {
     uint8_t end1 = digits1_length - 1;
     uint8_t end2 = digits2_length - 1;
 
-    uint8_t carry = 0;
+    int8_t carry = 0;
 
     uint8_t i, j;
     for (i = end1+1, j = end2+1; j > 0; --i, --j) {
-        uint8_t r = digits1[i-1] + digits2[j-1] + carry;
-        if (r > 9) {
+        uint8_t y = digits2[j-1];
+        if (neg)
+            y *= -1;
+        int8_t r = (int8_t)(digits1[i-1]) + y + carry;
+        if (r < 0) {
+            digits1[i-1] = r + 10;
+            carry = -1;
+        }
+        else if (r > 9) {
             digits1[i-1] = r - 10;
             carry = 1;
         }
@@ -38,46 +46,12 @@ uint8_t *bcd_add(uint8_t *digits1, uint8_t digits1_length,
         }
     }
 
-    if (carry == 1) {
+    if (carry != 0) {
+        digits1[i-1] += carry;
         if (i == 0) {
             --digits1;
-            *digits1 = 1;
             ++digits1_length;
         }
-        else {
-            digits1[i-1] = 1;
-        }
-    }
-
-    // Strip leading zeroes.
-    i = 0;
-    for (; *digits1 == 0 && i < digits1_length; ++digits1, ++i);
-
-    return digits1;
-}
-
-uint8_t *bcd_sub(uint8_t *digits1, uint8_t digits1_length, uint8_t *digits2, uint8_t digits2_length)
-{
-    assert(digits1_length >= digits2_length);
-
-    uint8_t i_, j_, i, j;
-    for (i_ = digits1_length, j_ = digits2_length; j_ > 0; --i_, --j_) {
-        i = i_-1;
-        j = j_-1;
-
-        if (digits1[i] < digits2[j]) {
-            // Borrow
-            assert(i > 0);
-
-            uint8_t k, l;
-            for (k = i - 1; digits1[k] == 0; --k); // Given that digits1 >= digits2 we must find a non-zero eventually.
-            for (l = k; l < i; ++l) {
-                --digits1[l];
-                digits1[l+1] += 10;
-            }
-        }
-
-        digits1[i] -= digits2[j];
     }
 
     // Strip leading zeroes.
