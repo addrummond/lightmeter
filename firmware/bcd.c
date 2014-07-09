@@ -372,7 +372,7 @@ static void sub_test3()
     uint8_t digits1[] = { '\0', 1, 5, 0, '\0' };
     uint8_t digits2[] = {       1, 0, 0, '\0' };
 
-    uint8_t *r = bcd_sub(digits1+1, 3, digits2, 2);
+    uint8_t *r = bcd_sub(digits1+1, 3, digits2, 3);
     bcd_to_string(r, bcd_length_after_op(digits1+1, 3, r));
     printf("150 - 100 = %s\n", r);
     assert(!strcmp((char *)r, "50"));
