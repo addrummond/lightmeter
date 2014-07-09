@@ -210,6 +210,7 @@ static uint8_t first_nonzero_index(uint8_t *digits, uint8_t length)
     return i;
 }
 
+#if BCD_EXP10_PRECISION == 3
 static const uint8_t TEN_5[] PROGMEM       = { 1,0,0,0,0,0,  0,0,0 };
 static const uint8_t TEN_2[] PROGMEM       = { 0,0,0,1,0,0,  0,0,0 };
 static const uint8_t TEN_1[] PROGMEM       = { 0,0,0,0,0,1,  0,0,0 };
@@ -217,6 +218,9 @@ static const uint8_t TEN_0_PT_5[] PROGMEM  = { 0,0,0,0,0,3,  1,6,2 };
 static const uint8_t TEN_0_PT_1[] PROGMEM  = { 0,0,0,0,0,1,  2,5,9 };
 static const uint8_t TEN_0_PT_05[] PROGMEM = { 0,0,0,0,0,1,  1,2,2 };
 static const uint8_t TEN_0_PT_01[] PROGMEM = { 0,0,0,0,0,0,  1,0,2 };
+#else
+#error "Bad value for BCD_EXP10_PRECISION"
+#endif
 // n!=10 condition is added to make it easy for GCC to optimize out the check following the && in this case.
 #define GTEQ(n,l,gteq,fnzi,i,j,x) ((l) >= (gteq) && ((fnzi) <= (l)-(i) || ((n) != 10 && (n)[(l)-(j)] >= (x))))
 #define GTEQ_100(n,l,fnzi)        GTEQ((n), (l), BCD_EXP10_PRECISION+3, (fnzi), BCD_EXP10_PRECISION+4, BCD_EXP10_PRECISION+3, 10)
@@ -227,41 +231,81 @@ static const uint8_t TEN_0_PT_01[] PROGMEM = { 0,0,0,0,0,0,  1,0,2 };
 #define GTEQ_0_PT_1(n,l,fnzi)     GTEQ((n), (l), BCD_EXP10_PRECISION+0, (fnzi), BCD_EXP_PRECISION+1, BCD_EXP10_PRECISION+1, 1)
 #define GTEQ_0_PT_05(n,l,fnzi)    GTEQ((n), (l), BCD_EXP10_PRECISION-1, (fnzi), BCD_EXP_PRECISION+0, BCD_EXP10_PRECISION+0, 5)
 #define GTEQ_0_PT_01(n,l,fnzi)    GTEQ((n), (l), BCD_EXP10_PRECISION-1, (fnzi), BCD_EXP_PRECISION+0, BCD_EXP10_PRECISION+0, 1)
+#define N_DIGITS((sizeof(TEN_5)/sizeof(uint8_t))
+#define N_WHOLE_DIGITS(((sizeof(TEN_5)/sizeof(uint8_t))) - BCD_EXP10_PRECISION)
 uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
 {
 #ifdef TEST
     assert(!GTEQ_100(digits, length, first_nonzero_index(digits, length)));
 #endif
 
-    uint8_t log_digits[length];
+    uint8_t log_digits_[length];
+    uint8_t *log_digits = log_digits_;
     uint8_t i;
     for (i = 0; i < length; ++i)
         log_digits[i] = digits[i];
 
+    uint8_t sub_digits[length];
+
+    uint8_t result_length = length;
+    bool first_loop = true;
     uint8_t fnzi;
     while (fnzi = first_nonzero_index(log_digits), GTEQ_0_PT_01(log_digits, length, fnzi)) {
-        if (GTEQ_5(log_digits, length, fnzi)) {
+        memset_zero(sub_digits, sizeof(sub_digits));
 
+        uint8_t *mulby_digits;
+        if (GTEQ_5(log_digits, length, fnzi)) {
+            sub_digits[length-BCD_EXP10_PRECISION-1] = 5;
+            mulby_digits = TEN_5;
         }
         else if (GTEQ_2(log_digits, length, fnzi)) {
-
+            sub_digits[length-BCD_EXP10_PRECISION-1] = 2;
+            mulby_digits = TEN_2;
         }
         else if (GTEQ_1(log_digits, length, fnzi)) {
-
+            sub_digits[length-BCD_EXP10_PRECISION-1] = 1;
+            mulby_digits = TEN_1;
         }
         else if (GTEQ_0_PT_5(log_digits, length, fnzi)) {
-
+            sub_digits[length-BCD_EXP10_PRECISION] = 5;
+            mulby_digits = TEN_0_PT_5;
         }
         else if (GTEQ_0_PT_1(log_digits, length, fnzi)) {
-
+            sub_digits[length-BCD_EXP10_PRECISION] = 1;
+            mulby_digits = TEN_0_PT_1;
         }
         else if (GTEQ_0_PT_05(log_digits, length, fnzi)) {
-
+            sub_digits[length-BCD_EXP10_PRECISION+1] = 5;
+            mulby_digits = TEN_0_PT_05;
         }
-        else if (GTEQ_0_PT_01(log_digits, length, fnzi)) {
-
+        else //if (GTEQ_0_PT_01(log_digits, length, fnzi)) {
+            sub_digits[length-BCD_EXP10_PRECISION+1] = 1;
+            mulby_digits = TEN_0_PT_01;
         }
+
+        if (first_loop) {
+            digits -= N_DIGITS - result_length;
+            for (i = 0; i < N_DIGITS; ++i)
+                digits[i] = mulby_digits[i];
+        }
+        else {
+            uint8_t *digits_n = bcd_mul(digits, result_length, mulby_digits, N_DIGITS);
+            result_length = bcd_length_after_op(digits, result_length, digits_n);
+            digits = digits_n;
+        }
+
+        uint8_t *log_digits_n = bcd_sub(log_digits, sub_digits);
+        length = bcd_length_after_op(log_digits, length, log_digits_n);
+        log_digits = log_digits_n;
+
+        first_loop = false;
     }
+
+    if (first_loop) {
+        // TODO: The number was very small. Set appopriate approx result.
+    }
+
+    return digits;
 }
 #undef GTEQ
 #undef GTEQ_100
@@ -272,6 +316,8 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
 #undef GTEQ_0_PT_1
 #undef GTEQ_0_PT_05
 #undef GTEQ_0_PT_01
+#undef N_DIGITS
+#undef N_WHOLE_DIGITS
 
 uint8_t *uint8_to_bcd(uint8_t n, uint8_t *digits, uint8_t length)
 {
