@@ -16,7 +16,7 @@
 
 // Assumes that there are sufficient available bytes at digits1[-1] onwards.
 // Stores result in digits1.
-// Returns either digits1 or (digits1-1).
+// Returns a pointer which may be equal to, less than or greater than digits1.
 // This is used to implement both bcd_add and bcd_sub (which are now macros).
 uint8_t *bcd_add_(uint8_t *digits1, uint8_t digits1_length,
                   uint8_t *digits2, uint8_t digits2_length,
