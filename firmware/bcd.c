@@ -57,8 +57,8 @@ uint8_t *bcd_add_(uint8_t *digits1, uint8_t digits1_length,
     }
 
     // Strip leading zeroes.
-    i = 0;
-    for (; *digits1 == 0 && i < digits1_length; ++digits1, ++i);
+    for (i = 0; digits1[i] == 0 && i < digits1_length; ++i);
+    digits1 += i;
 
     return digits1;
 }
