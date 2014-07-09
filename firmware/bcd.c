@@ -197,8 +197,8 @@ uint8_t *bcd_div_by_lt10(uint8_t *digits, uint8_t length, uint8_t by)
     }
 
     // Strip leading zeroes.
-    outi = 0;
-    for (; *digits == 0 && outi < length; ++digits, ++outi);
+    for (outi = 0; digits[outi] == 0 && outi < length; ++outi);
+    digits += outi;
 
     return digits;
 }
