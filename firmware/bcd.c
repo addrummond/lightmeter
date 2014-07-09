@@ -367,6 +367,17 @@ static void sub_test2()
     assert(!strcmp((char *)r, "140"));
 }
 
+static void sub_test3()
+{
+    uint8_t digits1[] = { '\0', 1, 5, 0, '\0' };
+    uint8_t digits2[] = {       1, 0, 0, '\0' };
+
+    uint8_t *r = bcd_sub(digits1+1, 3, digits2, 2);
+    bcd_to_string(r, bcd_length_after_op(digits1+1, 3, r));
+    printf("150 - 100 = %s\n", r);
+    assert(!strcmp((char *)r, "50"));
+}
+
 static void gt_test1()
 {
     uint8_t digits1[] = { 9, 7, 8, '\0' };
@@ -468,6 +479,7 @@ int main()
 
     sub_test1();
     sub_test2();
+    sub_test3();
 
     gt_test1();
     gt_test2();
