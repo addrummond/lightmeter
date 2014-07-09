@@ -17,6 +17,7 @@
 // Assumes that there are sufficient available bytes at digits1[-1].
 // Stores result in digits1.
 // Returns either digits1 or (digits1-1).
+// This is used to implement both bcd_add and bcd_sub (which are now macros).
 uint8_t *bcd_add_(uint8_t *digits1, uint8_t digits1_length,
                   uint8_t *digits2, uint8_t digits2_length,
                   uint8_t neg)
@@ -26,31 +27,34 @@ uint8_t *bcd_add_(uint8_t *digits1, uint8_t digits1_length,
 
     int8_t carry = 0;
 
-    uint8_t i, j;
-    for (i = end1+1, j = end2+1; j > 0; --i, --j) {
-        uint8_t y = digits2[j-1];
+    uint8_t i = end1, j = end2;
+    do {
+        uint8_t y = digits2[j];
         if (neg)
             y *= -1;
-        int8_t r = (int8_t)(digits1[i-1]) + y + carry;
+        int8_t r = (int8_t)(digits1[i]) + y + carry;
         if (r < 0) {
-            digits1[i-1] = r + 10;
+            digits1[i] = r + 10;
             carry = -1;
         }
         else if (r > 9) {
-            digits1[i-1] = r - 10;
+            digits1[i] = r - 10;
             carry = 1;
         }
         else {
             carry = 0;
-            digits1[i-1] = r;
+            digits1[i] = r;
         }
-    }
+    } while (--i, (j-- > 0));
 
     if (carry != 0) {
-        digits1[i-1] += carry;
-        if (i == 0) {
+        if (i == 255) {
             --digits1;
             ++digits1_length;
+            *digits1 = carry;
+        }
+        else {
+            digits1[i] += carry;
         }
     }
 
