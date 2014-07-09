@@ -203,6 +203,76 @@ uint8_t *bcd_div_by_lt10(uint8_t *digits, uint8_t length, uint8_t by)
     return digits;
 }
 
+static uint8_t first_nonzero_index(uint8_t *digits, uint8_t length)
+{
+    uint8_t i;
+    for (i = 0; i < length && digits[i] == 0; ++i);
+    return i;
+}
+
+static const uint8_t TEN_5[] PROGMEM       = { 1,0,0,0,0,0,  0,0,0 };
+static const uint8_t TEN_2[] PROGMEM       = { 0,0,0,1,0,0,  0,0,0 };
+static const uint8_t TEN_1[] PROGMEM       = { 0,0,0,0,0,1,  0,0,0 };
+static const uint8_t TEN_0_PT_5[] PROGMEM  = { 0,0,0,0,0,3,  1,6,2 };
+static const uint8_t TEN_0_PT_1[] PROGMEM  = { 0,0,0,0,0,1,  2,5,9 };
+static const uint8_t TEN_0_PT_05[] PROGMEM = { 0,0,0,0,0,1,  1,2,2 };
+static const uint8_t TEN_0_PT_01[] PROGMEM = { 0,0,0,0,0,0,  1,0,2 };
+// n!=10 condition is added to make it easy for GCC to optimize out the check following the && in this case.
+#define GTEQ(n,l,gteq,fnzi,i,j,x) ((l) >= (gteq) && ((fnzi) <= (l)-(i) || ((n) != 10 && (n)[(l)-(j)] >= (x))))
+#define GTEQ_100(n,l,fnzi)        GTEQ((n), (l), BCD_EXP10_PRECISION+3, (fnzi), BCD_EXP10_PRECISION+4, BCD_EXP10_PRECISION+3, 10)
+#define GTEQ_5(n,l,fnzi)          GTEQ((n), (l), BCD_EXP10_PRECISION+1, (fnzi), BCD_EXP10_PRECISION+3, BCD_EXP10_PRECISION+2, 5)
+#define GTEQ_2(n,l,fnzi)          GTEQ((n), (l), BCD_EXP10_PRECISION+1, (fnzi), BCD_EXP10_PRECISION+3, BCD_EXP10_PRECISION+2, 2)
+#define GTEQ_1(n,l,fnzi)          GTEQ((n), (l), BCD_EXP10_PRECISION+1, (fnzi), BCD_EXP10_PRECISION+3, BCD_EXP10_PRECISION+2, 1)
+#define GTEQ_0_PT_5(n,l,fnzi)     GTEQ((n), (l), BCD_EXP10_PRECISION+0, (fnzi), BCD_EXP_PRECISION+1, BCD_EXP10_PRECISION+1, 5)
+#define GTEQ_0_PT_1(n,l,fnzi)     GTEQ((n), (l), BCD_EXP10_PRECISION+0, (fnzi), BCD_EXP_PRECISION+1, BCD_EXP10_PRECISION+1, 1)
+#define GTEQ_0_PT_05(n,l,fnzi)    GTEQ((n), (l), BCD_EXP10_PRECISION-1, (fnzi), BCD_EXP_PRECISION+0, BCD_EXP10_PRECISION+0, 5)
+#define GTEQ_0_PT_01(n,l,fnzi)    GTEQ((n), (l), BCD_EXP10_PRECISION-1, (fnzi), BCD_EXP_PRECISION+0, BCD_EXP10_PRECISION+0, 1)
+uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
+{
+#ifdef TEST
+    assert(!GTEQ_100(digits, length, first_nonzero_index(digits, length)));
+#endif
+
+    uint8_t log_digits[length];
+    uint8_t i;
+    for (i = 0; i < length; ++i)
+        log_digits[i] = digits[i];
+
+    uint8_t fnzi;
+    while (fnzi = first_nonzero_index(log_digits), GTEQ_0_PT_01(log_digits, length, fnzi)) {
+        if (GTEQ_5(log_digits, length, fnzi)) {
+
+        }
+        else if (GTEQ_2(log_digits, length, fnzi)) {
+
+        }
+        else if (GTEQ_1(log_digits, length, fnzi)) {
+
+        }
+        else if (GTEQ_0_PT_5(log_digits, length, fnzi)) {
+
+        }
+        else if (GTEQ_0_PT_1(log_digits, length, fnzi)) {
+
+        }
+        else if (GTEQ_0_PT_05(log_digits, length, fnzi)) {
+
+        }
+        else if (GTEQ_0_PT_01(log_digits, length, fnzi)) {
+
+        }
+    }
+}
+#undef GTEQ
+#undef GTEQ_100
+#undef GTEQ_5
+#undef GTEQ_2
+#undef GTEQ_1
+#undef GTEQ_0_PT_5
+#undef GTEQ_0_PT_1
+#undef GTEQ_0_PT_05
+#undef GTEQ_0_PT_01
+
 uint8_t *uint8_to_bcd(uint8_t n, uint8_t *digits, uint8_t length)
 {
     uint8_t i = length-1;
