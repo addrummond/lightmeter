@@ -292,6 +292,8 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
             uint8_t *digits_n = bcd_mul(digits, result_length, mulby_digits, N_DIGITS);
             result_length = bcd_length_after_op(digits, result_length, digits_n);
             digits = digits_n;
+
+            // TODO: Remove digits from end to get back to BCD_EXP10_PRECISION.
         }
 
         uint8_t *log_digits_n = bcd_sub(log_digits, sub_digits);
