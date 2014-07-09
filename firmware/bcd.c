@@ -14,15 +14,12 @@
 #include <string.h>
 #endif
 
-// First number must have at least as many digits as second.
-// Assumes that there is an available byte at digits1[-1].
+// Assumes that there are sufficient available bytes at digits1[-1].
 // Stores result in digits1.
 // Returns either digits1 or (digits1-1).
 uint8_t *bcd_add(uint8_t *digits1, uint8_t digits1_length,
                  uint8_t *digits2, uint8_t digits2_length)
 {
-    assert(digits1_length >= digits2_length);
-
     uint8_t end1 = digits1_length - 1;
     uint8_t end2 = digits2_length - 1;
 
@@ -188,8 +185,15 @@ uint8_t *bcd_mul(uint8_t *digits1, uint8_t length1, const uint8_t *digits2, uint
     // Multiply by each digit separately.
     uint8_t j = length2-1;
     uint8_t result_digits_length = l;
-    uint8_t *mulres_start = tmp1 + l - 1;
+    uint8_t zeroes = 0;
     do {
+        uint8_t *mulres_start = tmp1 + l - 1;
+        // Add trailing zeroes as appropriate.
+        uint8_t z;
+        for (z = 0; z < zeroes; ++z)
+            *(mulres_start--) = 0;
+        ++zeroes;
+
         uint8_t carry = 0;
         uint8_t i = length1-1;
         do {
@@ -307,6 +311,17 @@ static void mul_test1()
     bcd_to_string(r, bcd_length_after_op(digits1+3, 3, r));
     printf("193 * 2 = %s\n", r);
     assert(!strcmp((char *)r, "386"));
+}
+
+static void mul_test2()
+{
+    uint8_t digits1[] = { 0, 0, 0, 1, 9, 3, '\0' };
+    uint8_t digits2[] = { 2, 8, '\0' };
+
+    uint8_t *r = bcd_mul(digits1+3, 3, digits2, 2);
+    bcd_to_string(r, bcd_length_after_op(digits1+3, 3, r));
+    printf("193 * 28 = %s\n", r);
+    assert(!strcmp((char *)r, "5404"));
 }
 
 static void add_test1()
@@ -467,6 +482,7 @@ int main()
     uint8_to_bcd_test();
 
     mul_test1();
+    mul_test2();
 
     add_test1();
     add_test2();
