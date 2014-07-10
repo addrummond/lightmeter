@@ -225,26 +225,29 @@ static uint8_t first_nonzero_index(uint8_t *digits, uint8_t length)
 #else
 #error "Bad value for BCD_EXP10_PRECISION"
 #endif
-static const uint8_t TEN_5[] PROGMEM       = { 1,0,0,0,0,0  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
-static const uint8_t TEN_2[] PROGMEM       = { 0,0,0,1,0,0  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
-static const uint8_t TEN_1[] PROGMEM       = { 0,0,0,0,0,1  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
-static const uint8_t TEN_0_PT_5[] PROGMEM  = { 0,0,0,0,0,3  DIGITS(1,2, 6,6, 2,2, 2,3, 7,8, 8) };
-static const uint8_t TEN_0_PT_1[] PROGMEM  = { 0,0,0,0,0,1  DIGITS(2,3, 5,6, 8,9, 9,9, 2,3, 5) };
-static const uint8_t TEN_0_PT_05[] PROGMEM = { 0,0,0,0,0,1  DIGITS(1,1, 2,2, 2,2, 0,0, 1,2, 8) };
-static const uint8_t TEN_0_PT_01[] PROGMEM = { 0,0,0,0,0,0  DIGITS(0,0, 2,2, 3,3, 2,3, 9,9, 3) };
+// First element is number of trailing zeroes.
+static const uint8_t TEN_5[] PROGMEM       = { 0,  1,0,0,0,0,0  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
+static const uint8_t TEN_2[] PROGMEM       = { 3,  0,0,0,1,0,0  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
+static const uint8_t TEN_1[] PROGMEM       = { 5,  0,0,0,0,0,1  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
+static const uint8_t TEN_0_PT_5[] PROGMEM  = { 5,  0,0,0,0,0,3  DIGITS(1,2, 6,6, 2,2, 2,3, 7,8, 8) };
+static const uint8_t TEN_0_PT_1[] PROGMEM  = { 5,  0,0,0,0,0,1  DIGITS(2,3, 5,6, 8,9, 9,9, 2,3, 5) };
+static const uint8_t TEN_0_PT_05[] PROGMEM = { 5,  0,0,0,0,0,1  DIGITS(1,1, 2,2, 2,2, 0,0, 1,2, 8) };
+static const uint8_t TEN_0_PT_01[] PROGMEM = { 6,  0,0,0,0,0,0  DIGITS(0,0, 2,2, 3,3, 2,3, 9,9, 3) };
 #undef DIGITS
 // x!=10 condition is added to make it easy for GCC to optimize out the check following the && in this case.
-#define GTEQ(n,l,gteq,fnzi,i,j,x) ((l) >= (gteq) && ((fnzi) <= (l)-(i) || ((x) != 10 && (n)[(l)-(j)] >= (x))))
-#define GTEQ_100(n,l,fnzi)        GTEQ((n), (l), BCD_EXP10_PRECISION+3, (fnzi), BCD_EXP10_PRECISION+4, BCD_EXP10_PRECISION+3, 10)
-#define GTEQ_5(n,l,fnzi)          GTEQ((n), (l), BCD_EXP10_PRECISION+1, (fnzi), BCD_EXP10_PRECISION+3, BCD_EXP10_PRECISION+2, 5)
-#define GTEQ_2(n,l,fnzi)          GTEQ((n), (l), BCD_EXP10_PRECISION+1, (fnzi), BCD_EXP10_PRECISION+3, BCD_EXP10_PRECISION+2, 2)
-#define GTEQ_1(n,l,fnzi)          GTEQ((n), (l), BCD_EXP10_PRECISION+1, (fnzi), BCD_EXP10_PRECISION+3, BCD_EXP10_PRECISION+2, 1)
-#define GTEQ_0_PT_5(n,l,fnzi)     GTEQ((n), (l), BCD_EXP10_PRECISION+0, (fnzi), BCD_EXP10_PRECISION+1, BCD_EXP10_PRECISION+1, 5)
-#define GTEQ_0_PT_1(n,l,fnzi)     GTEQ((n), (l), BCD_EXP10_PRECISION+0, (fnzi), BCD_EXP10_PRECISION+1, BCD_EXP10_PRECISION+1, 1)
-#define GTEQ_0_PT_05(n,l,fnzi)    GTEQ((n), (l), BCD_EXP10_PRECISION-1, (fnzi), BCD_EXP10_PRECISION+0, BCD_EXP10_PRECISION+0, 5)
-#define GTEQ_0_PT_01(n,l,fnzi)    GTEQ((n), (l), BCD_EXP10_PRECISION-1, (fnzi), BCD_EXP10_PRECISION+0, BCD_EXP10_PRECISION+0, 1)
-#define N_DIGITS                  (sizeof(TEN_5)/sizeof(uint8_t))
-#define N_WHOLE_DIGITS            ((sizeof(TEN_5)/sizeof(uint8_t)) - BCD_EXP10_PRECISION)
+#define GTEQ(n,l,minlen,fnzi,i,j,x) ((l) >= BCD_EXP10_PRECISION+(minlen) &&                       \
+                                     ((fnzi) <= (l)-BCD_EXP10_PRECISION-1+(i) ||                  \
+                                      ((x) != 10 && (n)[(l)-BCD_EXP10_PRECISION-1+(j)] >= (x))))
+#define GTEQ_100(n,l,fnzi)        GTEQ((n), (l),  3, (fnzi), -2, -1, 10)
+#define GTEQ_5(n,l,fnzi)          GTEQ((n), (l),  1, (fnzi), -1,  0,  5)
+#define GTEQ_2(n,l,fnzi)          GTEQ((n), (l),  1, (fnzi), -1,  0,  2)
+#define GTEQ_1(n,l,fnzi)          GTEQ((n), (l),  1, (fnzi),  0,  0,  1)
+#define GTEQ_0_PT_5(n,l,fnzi)     GTEQ((n), (l),  0, (fnzi),  0,  1,  5)
+#define GTEQ_0_PT_1(n,l,fnzi)     GTEQ((n), (l),  0, (fnzi),  0,  1,  1)
+#define GTEQ_0_PT_05(n,l,fnzi)    GTEQ((n), (l), -1, (fnzi),  1,  2,  5)
+#define GTEQ_0_PT_01(n,l,fnzi)    GTEQ((n), (l), -1, (fnzi),  1,  2,  1)
+#define N_DIGITS                  ((sizeof(TEN_5)/sizeof(uint8_t)) - 1)
+#define N_WHOLE_DIGITS            ((sizeof(TEN_5)/sizeof(uint8_t)) - BCD_EXP10_PRECISION - 1)
 uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
 {
 #ifdef TEST
@@ -295,15 +298,21 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
             mulby_digits = TEN_0_PT_01;
         }
 
+        uint8_t trailing_zeroes = pgm_read_byte(&mulby_digits[0]);
+        ++mulby_digits;
+
         if (first_loop) {
-            digits -= N_DIGITS - result_length;
-            for (i = 0; i < N_DIGITS; ++i)
-                digits[i] = mulby_digits[i];
+            i = N_DIGITS-1;
+            digits += result_length;
+            result_length = 0;
+            do {
+                *(--digits) = pgm_read_byte(&mulby_digits[i]);
+                ++result_length;
+            } while (i-- > trailing_zeroes);
         }
         else {
             uint8_t *digits_n = bcd_mul(digits, result_length, mulby_digits, N_DIGITS);
             result_length = bcd_length_after_op(digits, result_length, digits_n);
-            digits = digits_n;
 
             // Round and remove digits from end to get back to BCD_EXP10_PRECISION.
             // Lazy rounding -- we don't bother propagating.
