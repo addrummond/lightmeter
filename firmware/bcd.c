@@ -122,8 +122,6 @@ bool bcd_cmp(const uint8_t *digits1, uint8_t length1, const uint8_t *digits2, ui
 
 uint8_t *bcd_mul(uint8_t *digits1, uint8_t length1, const uint8_t *digits2, uint8_t length2)
 {
-    assert(length1 >= length2);
-
     uint8_t l = length1 + length2;
     uint8_t tmp1[l], tmp2[l];
     memset8_zero(tmp1, l);
@@ -210,17 +208,31 @@ static uint8_t first_nonzero_index(uint8_t *digits, uint8_t length)
     return i;
 }
 
-#if BCD_EXP10_PRECISION == 3
-static const uint8_t TEN_5[] PROGMEM       = { 1,0,0,0,0,0,  0,0,0 };
-static const uint8_t TEN_2[] PROGMEM       = { 0,0,0,1,0,0,  0,0,0 };
-static const uint8_t TEN_1[] PROGMEM       = { 0,0,0,0,0,1,  0,0,0 };
-static const uint8_t TEN_0_PT_5[] PROGMEM  = { 0,0,0,0,0,3,  1,6,2 };
-static const uint8_t TEN_0_PT_1[] PROGMEM  = { 0,0,0,0,0,1,  2,5,9 };
-static const uint8_t TEN_0_PT_05[] PROGMEM = { 0,0,0,0,0,1,  1,2,2 };
-static const uint8_t TEN_0_PT_01[] PROGMEM = { 0,0,0,0,0,0,  1,0,2 };
+#if BCD_EXP10_PRECISION == 0
+#define DIGITS(d1,d1l,d2,d2l,d3,d3l,d4,d4l,d5,d5l,d6)
+#elif BCD_EXP10_PRECISION == 1
+#define DIGITS(d1,d1l,d2,d2l,d3,d3l,d4,d4l,d5,d5l,d6) ,d1l
+#elif BCD_EXP10_PRECISION == 2
+#define DIGITS(d1,d1l,d2,d2l,d3,d3l,d4,d4l,d5,d5l,d6) ,d1,d2l
+#elif BCD_EXP10_PRECISION == 3
+#define DIGITS(d1,d1l,d2,d2l,d3,d3l,d4,d4l,d5,d5l,d6) ,d1,d2,d3l
+#elif BCD_EXP10_PRECISION == 4
+#define DIGITS(d1,d1l,d2,d2l,d3,d3l,d4,d4l,d5,d5l,d6) ,d1,d2,d3,d4l
+#elif BCD_EXP10_PRECISION == 5
+#define DIGITS(d1,d1l,d2,d2l,d3,d3l,d4,d4l,d5,d5l,d6) ,d1,d2,d3,d4,d5l
+#elif BCD_EXP10_PRECISION == 6
+#define DIGITS(d1,d1l,d2,d2l,d3,d3l,d4,d4l,d5,d5l,d6) ,d1,d2,d3,d4,d5,d6
 #else
 #error "Bad value for BCD_EXP10_PRECISION"
 #endif
+static const uint8_t TEN_5[] PROGMEM       = { 1,0,0,0,0,0  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
+static const uint8_t TEN_2[] PROGMEM       = { 0,0,0,1,0,0  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
+static const uint8_t TEN_1[] PROGMEM       = { 0,0,0,0,0,1  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
+static const uint8_t TEN_0_PT_5[] PROGMEM  = { 0,0,0,0,0,3  DIGITS(1,2, 6,6, 2,2, 2,3, 7,8, 8) };
+static const uint8_t TEN_0_PT_1[] PROGMEM  = { 0,0,0,0,0,1  DIGITS(2,3, 5,6, 8,9, 9,9, 2,3, 5) };
+static const uint8_t TEN_0_PT_05[] PROGMEM = { 0,0,0,0,0,1  DIGITS(1,1, 2,2, 2,2, 0,0, 1,2, 8) };
+static const uint8_t TEN_0_PT_01[] PROGMEM = { 0,0,0,0,0,0  DIGITS(0,0, 2,2, 3,3, 2,3, 9,9, 3) };
+#undef DIGITS
 // x!=10 condition is added to make it easy for GCC to optimize out the check following the && in this case.
 #define GTEQ(n,l,gteq,fnzi,i,j,x) ((l) >= (gteq) && ((fnzi) <= (l)-(i) || ((x) != 10 && (n)[(l)-(j)] >= (x))))
 #define GTEQ_100(n,l,fnzi)        GTEQ((n), (l), BCD_EXP10_PRECISION+3, (fnzi), BCD_EXP10_PRECISION+4, BCD_EXP10_PRECISION+3, 10)
@@ -407,6 +419,14 @@ static void uint8_to_bcd_test()
     uint8_to_bcd_test_(26);
     uint8_to_bcd_test_(27);
     printf("\n");
+}
+
+static void exp10_test1()
+{
+    uint8_t digits[] = { 0, 1, 0, 0, 0, '\0' };
+    uint8_t *r = bcd_exp10(digits+1, 4);
+    bcd_to_string(r, bcd_length_after_op(digits+1, 4, r));
+    printf("1^10 = %s\n", r);
 }
 
 static void mul_test1()
@@ -598,6 +618,9 @@ static void div_by_test4()
 int main()
 {
     uint8_to_bcd_test();
+
+    exp10_test1();
+    return 0;
 
     mul_test1();
     mul_test2();
