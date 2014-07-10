@@ -435,7 +435,7 @@ static void exp10_test1()
     uint8_t digits[] = { 0, 1, 0, 0, 0, '\0' };
     uint8_t *r = bcd_exp10(digits+1, 4);
     bcd_to_string(r, bcd_length_after_op(digits+1, 4, r));
-    printf("1^10 = %s\n", r);
+    printf("1^10 = %s/100\n", r);
 }
 
 static void mul_test1()
