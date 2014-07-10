@@ -221,18 +221,18 @@ static const uint8_t TEN_0_PT_01[] PROGMEM = { 0,0,0,0,0,0,  1,0,2 };
 #else
 #error "Bad value for BCD_EXP10_PRECISION"
 #endif
-// n!=10 condition is added to make it easy for GCC to optimize out the check following the && in this case.
-#define GTEQ(n,l,gteq,fnzi,i,j,x) ((l) >= (gteq) && ((fnzi) <= (l)-(i) || ((n) != 10 && (n)[(l)-(j)] >= (x))))
+// x!=10 condition is added to make it easy for GCC to optimize out the check following the && in this case.
+#define GTEQ(n,l,gteq,fnzi,i,j,x) ((l) >= (gteq) && ((fnzi) <= (l)-(i) || ((x) != 10 && (n)[(l)-(j)] >= (x))))
 #define GTEQ_100(n,l,fnzi)        GTEQ((n), (l), BCD_EXP10_PRECISION+3, (fnzi), BCD_EXP10_PRECISION+4, BCD_EXP10_PRECISION+3, 10)
 #define GTEQ_5(n,l,fnzi)          GTEQ((n), (l), BCD_EXP10_PRECISION+1, (fnzi), BCD_EXP10_PRECISION+3, BCD_EXP10_PRECISION+2, 5)
 #define GTEQ_2(n,l,fnzi)          GTEQ((n), (l), BCD_EXP10_PRECISION+1, (fnzi), BCD_EXP10_PRECISION+3, BCD_EXP10_PRECISION+2, 2)
 #define GTEQ_1(n,l,fnzi)          GTEQ((n), (l), BCD_EXP10_PRECISION+1, (fnzi), BCD_EXP10_PRECISION+3, BCD_EXP10_PRECISION+2, 1)
-#define GTEQ_0_PT_5(n,l,fnzi)     GTEQ((n), (l), BCD_EXP10_PRECISION+0, (fnzi), BCD_EXP_PRECISION+1, BCD_EXP10_PRECISION+1, 5)
-#define GTEQ_0_PT_1(n,l,fnzi)     GTEQ((n), (l), BCD_EXP10_PRECISION+0, (fnzi), BCD_EXP_PRECISION+1, BCD_EXP10_PRECISION+1, 1)
-#define GTEQ_0_PT_05(n,l,fnzi)    GTEQ((n), (l), BCD_EXP10_PRECISION-1, (fnzi), BCD_EXP_PRECISION+0, BCD_EXP10_PRECISION+0, 5)
-#define GTEQ_0_PT_01(n,l,fnzi)    GTEQ((n), (l), BCD_EXP10_PRECISION-1, (fnzi), BCD_EXP_PRECISION+0, BCD_EXP10_PRECISION+0, 1)
-#define N_DIGITS((sizeof(TEN_5)/sizeof(uint8_t))
-#define N_WHOLE_DIGITS(((sizeof(TEN_5)/sizeof(uint8_t))) - BCD_EXP10_PRECISION)
+#define GTEQ_0_PT_5(n,l,fnzi)     GTEQ((n), (l), BCD_EXP10_PRECISION+0, (fnzi), BCD_EXP10_PRECISION+1, BCD_EXP10_PRECISION+1, 5)
+#define GTEQ_0_PT_1(n,l,fnzi)     GTEQ((n), (l), BCD_EXP10_PRECISION+0, (fnzi), BCD_EXP10_PRECISION+1, BCD_EXP10_PRECISION+1, 1)
+#define GTEQ_0_PT_05(n,l,fnzi)    GTEQ((n), (l), BCD_EXP10_PRECISION-1, (fnzi), BCD_EXP10_PRECISION+0, BCD_EXP10_PRECISION+0, 5)
+#define GTEQ_0_PT_01(n,l,fnzi)    GTEQ((n), (l), BCD_EXP10_PRECISION-1, (fnzi), BCD_EXP10_PRECISION+0, BCD_EXP10_PRECISION+0, 1)
+#define N_DIGITS                  (sizeof(TEN_5)/sizeof(uint8_t))
+#define N_WHOLE_DIGITS            ((sizeof(TEN_5)/sizeof(uint8_t)) - BCD_EXP10_PRECISION)
 uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
 {
 #ifdef TEST
@@ -250,10 +250,10 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
     uint8_t result_length = length;
     bool first_loop = true;
     uint8_t fnzi;
-    while (fnzi = first_nonzero_index(log_digits), GTEQ_0_PT_01(log_digits, length, fnzi)) {
-        memset_zero(sub_digits, sizeof(sub_digits));
+    while (fnzi = first_nonzero_index(log_digits, length), GTEQ_0_PT_01(log_digits, length, fnzi)) {
+        memset8_zero(sub_digits, sizeof(sub_digits));
 
-        uint8_t *mulby_digits;
+        const uint8_t *mulby_digits;
         if (GTEQ_5(log_digits, length, fnzi)) {
             sub_digits[length-BCD_EXP10_PRECISION-1] = 5;
             mulby_digits = TEN_5;
@@ -278,7 +278,7 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
             sub_digits[length-BCD_EXP10_PRECISION+1] = 5;
             mulby_digits = TEN_0_PT_05;
         }
-        else //if (GTEQ_0_PT_01(log_digits, length, fnzi)) {
+        else { //if (GTEQ_0_PT_01(log_digits, length, fnzi)) {
             sub_digits[length-BCD_EXP10_PRECISION+1] = 1;
             mulby_digits = TEN_0_PT_01;
         }
@@ -293,10 +293,19 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
             result_length = bcd_length_after_op(digits, result_length, digits_n);
             digits = digits_n;
 
-            // TODO: Remove digits from end to get back to BCD_EXP10_PRECISION.
+            // Round and remove digits from end to get back to BCD_EXP10_PRECISION.
+            // Lazy rounding -- we don't bother propagating.
+            if (digits[result_length-BCD_EXP10_PRECISION] >= 5 && digits[result_length-BCD_EXP10_PRECISION-1] < 9)
+                ++digits[result_length-BCD_EXP10_PRECISION-1];
+            i = result_length - 1;
+            uint8_t j = result_length - 1 - BCD_EXP10_PRECISION;
+            do {
+                digits[i] = digits[j];
+            } while (--i, j-- > 0);
+            result_length -= BCD_EXP10_PRECISION;
         }
 
-        uint8_t *log_digits_n = bcd_sub(log_digits, sub_digits);
+        uint8_t *log_digits_n = bcd_sub(log_digits, length, sub_digits, sizeof(sub_digits));
         length = bcd_length_after_op(log_digits, length, log_digits_n);
         log_digits = log_digits_n;
 
@@ -304,7 +313,10 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
     }
 
     if (first_loop) {
-        // TODO: The number was very small. Set appopriate approx result.
+        // The number was very small. Set appopriate approx result (0).
+        digits += result_length - 1;
+        *digits = 0;
+        return digits;
     }
 
     return digits;
