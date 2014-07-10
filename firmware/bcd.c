@@ -438,6 +438,14 @@ static void exp10_test1()
     printf("1^10 = %s/100\n", r);
 }
 
+static void exp10_test2()
+{
+    uint8_t digits[] = { 0, 0, 1, 0, 0, 0, 0, '\0' };
+    uint8_t *r = bcd_exp10(digits+2, 4);
+    bcd_to_string(r, bcd_length_after_op(digits+1, 4, r));
+    printf("10^10 = %s/100\n", r);
+}
+
 static void mul_test1()
 {
     uint8_t digits1[] = { 0, 0, 0, 1, 9, 3, '\0' };
@@ -629,6 +637,7 @@ int main()
     uint8_to_bcd_test();
 
     exp10_test1();
+    exp10_test2();
     return 0;
 
     mul_test1();
