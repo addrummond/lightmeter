@@ -265,7 +265,9 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
     uint8_t result_length = length;
     bool first_loop = true;
     uint8_t fnzi;
-    while (fnzi = first_nonzero_index(log_digits, length), GTEQ_0_PT_01(log_digits, length, fnzi)) {
+    for (first_loop = true;
+         fnzi = first_nonzero_index(log_digits, length), GTEQ_0_PT_01(log_digits, length, fnzi);
+         first_loop = false) {
         memset8_zero(sub_digits, sizeof(sub_digits));
 
         const uint8_t *mulby_digits;
@@ -336,8 +338,6 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
         uint8_t *log_digits_n = bcd_sub(log_digits, length, sub_digits, sizeof(sub_digits));
         length = bcd_length_after_op(log_digits, length, log_digits_n);
         log_digits = log_digits_n;
-
-        first_loop = false;
     }
 
     if (first_loop) {
