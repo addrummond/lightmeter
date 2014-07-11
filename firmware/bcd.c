@@ -57,7 +57,7 @@ uint8_t *bcd_add_(uint8_t *digits1, uint8_t digits1_length,
     }
 
     // Strip leading zeroes.
-    for (i = 0; digits1[i] == 0 && i < digits1_length; ++i);
+    for (i = 0; digits1[i] == 0 && i < digits1_length - 1; ++i);
     digits1 += i;
 
     return digits1;
@@ -195,7 +195,7 @@ uint8_t *bcd_div_by_lt10(uint8_t *digits, uint8_t length, uint8_t by)
     }
 
     // Strip leading zeroes.
-    for (outi = 0; digits[outi] == 0 && outi < length; ++outi);
+    for (outi = 0; digits[outi] == 0 && outi < length-1; ++outi);
     digits += outi;
 
     return digits;
@@ -335,9 +335,25 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
             result_length -= BCD_EXP10_PRECISION;
         }
 
-        uint8_t *log_digits_n = bcd_sub(log_digits, length, sub_digits, sizeof(sub_digits));
+        //printf("SUB DIGITS\n");
+        //uint8_t ii;
+        //for (ii = 0; ii < length; ++ii)
+        //    printf("%c\n", sub_digits[ii] + '0');
+        //printf("\n");
+
+        //printf("B4 SUB\n");
+        //for (ii = 0; ii < length; ++ii)
+        //    printf("%c\n", log_digits[ii] + '0');
+        //printf("\n");
+
+        uint8_t *log_digits_n = bcd_sub(log_digits, length, sub_digits, length);
         length = bcd_length_after_op(log_digits, length, log_digits_n);
         log_digits = log_digits_n;
+
+        //printf("AFTER SUB\n");
+        //for (ii = 0; ii < length; ++ii)
+        //    printf("%c\n", log_digits[ii] + '0');
+        //printf("\n");
     }
 
     if (first_loop) {
@@ -562,6 +578,28 @@ static void sub_test3()
     assert(!strcmp((char *)r, "50"));
 }
 
+static void sub_test4()
+{
+    uint8_t digits1[] = { '\0', 1, 5, 0, '\0' };
+    uint8_t digits2[] = {       1, 5, 0, '\0' };
+
+    uint8_t *r = bcd_sub(digits1+1, 3, digits2, 3);
+    bcd_to_string(r, bcd_length_after_op(digits1+1, 3, r));
+    printf("150 - 150 = %s\n", r);
+    assert(!strcmp((char *)r, "0"));
+}
+
+static void sub_test5()
+{
+    uint8_t digits1[] = { '\0', 5, 0, 0, '\0' };
+    uint8_t digits2[] = {       5, 0, 0, '\0' };
+
+    uint8_t *r = bcd_sub(digits1+1, 3, digits2, 3);
+    bcd_to_string(r, bcd_length_after_op(digits1+1, 3, r));
+    printf("500 - 500 = %s\n", r);
+    assert(!strcmp((char *)r, "0"));
+}
+
 static void gt_test1()
 {
     uint8_t digits1[] = { 9, 7, 8, '\0' };
@@ -656,7 +694,6 @@ int main()
     exp10_test1();
     exp10_test2();
     exp10_test3();
-    return 0;
 
     mul_test1();
     mul_test2();
@@ -669,6 +706,8 @@ int main()
     sub_test1();
     sub_test2();
     sub_test3();
+    sub_test4();
+    sub_test5();
 
     gt_test1();
     gt_test2();
