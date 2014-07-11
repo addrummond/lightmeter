@@ -226,13 +226,13 @@ static uint8_t first_nonzero_index(uint8_t *digits, uint8_t length)
 #error "Bad value for BCD_EXP10_PRECISION"
 #endif
 // First element is number of trailing zeroes.
-static const uint8_t TEN_5[] PROGMEM       = { 0,  1,0,0,0,0,0  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
-static const uint8_t TEN_2[] PROGMEM       = { 3,  0,0,0,1,0,0  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
-static const uint8_t TEN_1[] PROGMEM       = { 5,  0,0,0,0,0,1  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
-static const uint8_t TEN_0_PT_5[] PROGMEM  = { 5,  0,0,0,0,0,3  DIGITS(1,2, 6,6, 2,2, 2,3, 7,8, 8) };
-static const uint8_t TEN_0_PT_1[] PROGMEM  = { 5,  0,0,0,0,0,1  DIGITS(2,3, 5,6, 8,9, 9,9, 2,3, 5) };
-static const uint8_t TEN_0_PT_05[] PROGMEM = { 5,  0,0,0,0,0,1  DIGITS(1,1, 2,2, 2,2, 0,0, 1,2, 8) };
-static const uint8_t TEN_0_PT_01[] PROGMEM = { 6,  0,0,0,0,0,0  DIGITS(0,0, 2,2, 3,3, 2,3, 9,9, 3) };
+static const uint8_t TEN_5[]       = { 0,  1,0,0,0,0,0  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
+static const uint8_t TEN_2[]       = { 3,  0,0,0,1,0,0  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
+static const uint8_t TEN_1[]       = { 5,  0,0,0,0,0,1  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
+static const uint8_t TEN_0_PT_5[]  = { 5,  0,0,0,0,0,3  DIGITS(1,2, 6,6, 2,2, 2,3, 7,8, 8) };
+static const uint8_t TEN_0_PT_1[]  = { 5,  0,0,0,0,0,1  DIGITS(2,3, 5,6, 8,9, 9,9, 2,3, 5) };
+static const uint8_t TEN_0_PT_05[] = { 5,  0,0,0,0,0,1  DIGITS(1,1, 2,2, 2,2, 0,0, 1,2, 8) };
+static const uint8_t TEN_0_PT_01[] = { 6,  0,0,0,0,0,0  DIGITS(0,0, 2,2, 3,3, 2,3, 9,9, 3) };
 #undef DIGITS
 // x!=10 condition is added to make it easy for GCC to optimize out the check following the && in this case.
 #define GTEQ(n,l,minlen,fnzi,i,j,x) ((l) >= BCD_EXP10_PRECISION+(minlen) &&                       \
@@ -305,7 +305,7 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
             mulby_digits = TEN_0_PT_01;
         }
 
-        uint8_t trailing_zeroes = pgm_read_byte(&mulby_digits[0]);
+        uint8_t trailing_zeroes = mulby_digits[0];
         ++mulby_digits;
 
         if (first_loop) {
@@ -313,12 +313,11 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
             digits += result_length;
             result_length = 0;
             do {
-                *(--digits) = pgm_read_byte(&mulby_digits[i]);
+                *(--digits) = mulby_digits[i];
                 ++result_length;
             } while (i-- > trailing_zeroes);
         }
         else {
-            // TODO TODO: Impossible because mulby_digits is in prog memory.
             uint8_t *digits_n = bcd_mul(digits, result_length, mulby_digits, N_DIGITS);
             result_length = bcd_length_after_op(digits, result_length, digits_n);
 
