@@ -270,30 +270,37 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
 
         const uint8_t *mulby_digits;
         if (GTEQ_5(log_digits, length, fnzi)) {
+            //printf("MB 5\n");
             sub_digits[length-BCD_EXP10_PRECISION-1] = 5;
             mulby_digits = TEN_5;
         }
         else if (GTEQ_2(log_digits, length, fnzi)) {
+            //printf("MB 2\n");
             sub_digits[length-BCD_EXP10_PRECISION-1] = 2;
             mulby_digits = TEN_2;
         }
         else if (GTEQ_1(log_digits, length, fnzi)) {
+            //printf("MB 1\n");
             sub_digits[length-BCD_EXP10_PRECISION-1] = 1;
             mulby_digits = TEN_1;
         }
         else if (GTEQ_0_PT_5(log_digits, length, fnzi)) {
+            //printf("MB 0.5\n");
             sub_digits[length-BCD_EXP10_PRECISION] = 5;
             mulby_digits = TEN_0_PT_5;
         }
         else if (GTEQ_0_PT_1(log_digits, length, fnzi)) {
+            //printf("MB 0.1\n");
             sub_digits[length-BCD_EXP10_PRECISION] = 1;
             mulby_digits = TEN_0_PT_1;
         }
         else if (GTEQ_0_PT_05(log_digits, length, fnzi)) {
+            //printf("MB 0.05\n");
             sub_digits[length-BCD_EXP10_PRECISION+1] = 5;
             mulby_digits = TEN_0_PT_05;
         }
         else { //if (GTEQ_0_PT_01(log_digits, length, fnzi)) {
+            //printf("MB 0.01\n");
             sub_digits[length-BCD_EXP10_PRECISION+1] = 1;
             mulby_digits = TEN_0_PT_01;
         }
@@ -311,6 +318,7 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
             } while (i-- > trailing_zeroes);
         }
         else {
+            // TODO TODO: Impossible because mulby_digits is in prog memory.
             uint8_t *digits_n = bcd_mul(digits, result_length, mulby_digits, N_DIGITS);
             result_length = bcd_length_after_op(digits, result_length, digits_n);
 
@@ -435,15 +443,16 @@ static void exp10_test1()
     uint8_t digits[] = { 0, 1, 0, 0, 0, '\0' };
     uint8_t *r = bcd_exp10(digits+1, 4);
     bcd_to_string(r, bcd_length_after_op(digits+1, 4, r));
-    printf("1^10 = %s/100\n", r);
+    printf("1^10 = %s/1000\n", r);
 }
 
 static void exp10_test2()
 {
-    uint8_t digits[] = { 0, 0, 1, 0, 0, 0, 0, '\0' };
-    uint8_t *r = bcd_exp10(digits+2, 4);
-    bcd_to_string(r, bcd_length_after_op(digits+1, 4, r));
-    printf("10^10 = %s/100\n", r);
+    uint8_t digits[] = { 0, 0, 0, 2, 0, 0, 0, '\0' };
+    uint8_t *r = bcd_exp10(digits+2, 5);
+    bcd_to_string(r, bcd_length_after_op(digits+2, 5
+    , r));
+    printf("10^2 = %s/1000\n", r);
 }
 
 static void mul_test1()
