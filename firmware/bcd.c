@@ -454,6 +454,15 @@ static void exp10_test2()
     printf("10^2 = %s/1000\n", r);
 }
 
+static void exp10_test3()
+{
+    uint8_t digits[] = { 0, 0, 0, 1, 5, 0, 0, '\0' };
+    uint8_t *r = bcd_exp10(digits+2, 5);
+    bcd_to_string(r, bcd_length_after_op(digits+2, 5
+    , r));
+    printf("10^1.5 = %s/1000\n", r);
+}
+
 static void mul_test1()
 {
     uint8_t digits1[] = { 0, 0, 0, 1, 9, 3, '\0' };
@@ -646,6 +655,7 @@ int main()
 
     exp10_test1();
     exp10_test2();
+    exp10_test3();
     return 0;
 
     mul_test1();
