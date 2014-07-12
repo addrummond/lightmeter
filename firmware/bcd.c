@@ -272,37 +272,37 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
 
         const uint8_t *mulby_digits;
         if (GTEQ_5(log_digits, length, fnzi)) {
-            //printf("MB 5\n");
+            printf("MB 5\n");
             sub_digits[length-BCD_EXP10_PRECISION-1] = 5;
             mulby_digits = TEN_5;
         }
         else if (GTEQ_2(log_digits, length, fnzi)) {
-            //printf("MB 2\n");
+            printf("MB 2\n");
             sub_digits[length-BCD_EXP10_PRECISION-1] = 2;
             mulby_digits = TEN_2;
         }
         else if (GTEQ_1(log_digits, length, fnzi)) {
-            //printf("MB 1\n");
+            printf("MB 1\n");
             sub_digits[length-BCD_EXP10_PRECISION-1] = 1;
             mulby_digits = TEN_1;
         }
         else if (GTEQ_0_PT_5(log_digits, length, fnzi)) {
-            //printf("MB 0.5\n");
+            printf("MB 0.5\n");
             sub_digits[length-BCD_EXP10_PRECISION] = 5;
             mulby_digits = TEN_0_PT_5;
         }
         else if (GTEQ_0_PT_1(log_digits, length, fnzi)) {
-            //printf("MB 0.1\n");
+            printf("MB 0.1\n");
             sub_digits[length-BCD_EXP10_PRECISION] = 1;
             mulby_digits = TEN_0_PT_1;
         }
         else if (GTEQ_0_PT_05(log_digits, length, fnzi)) {
-            //printf("MB 0.05\n");
+            printf("MB 0.05\n");
             sub_digits[length-BCD_EXP10_PRECISION+1] = 5;
             mulby_digits = TEN_0_PT_05;
         }
         else { //if (GTEQ_0_PT_01(log_digits, length, fnzi)) {
-            //printf("MB 0.01\n");
+            printf("MB 0.01\n");
             sub_digits[length-BCD_EXP10_PRECISION+1] = 1;
             mulby_digits = TEN_0_PT_01;
         }
@@ -320,19 +320,33 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
             } while (i-- > trailing_zeroes);
         }
         else {
+            printf("MUL \n");
+            uint8_t ii;
+            for (ii = 0; ii < result_length; ++ii)
+                printf("%c", digits[ii] + '0');
+            printf(" BY ");
+            for (ii = 0; ii < N_DIGITS; ++ii)
+                printf("%c", mulby_digits[ii] + '0');
+            printf("\n");
+
             uint8_t *digits_n = bcd_mul(digits, result_length, mulby_digits, N_DIGITS);
             result_length = bcd_length_after_op(digits, result_length, digits_n);
 
+            printf("RES = ");
+            for (ii = 0; ii < result_length; ++ii)
+                printf("%c", digits_n[ii] + '0');
+            printf("\n");
+
             // Round and remove digits from end to get back to BCD_EXP10_PRECISION.
             // Lazy rounding -- we don't bother propagating.
-            if (digits[result_length-BCD_EXP10_PRECISION] >= 5 && digits[result_length-BCD_EXP10_PRECISION-1] < 9)
+            /*if (digits[result_length-BCD_EXP10_PRECISION] >= 5 && digits[result_length-BCD_EXP10_PRECISION-1] < 9)
                 ++digits[result_length-BCD_EXP10_PRECISION-1];
             i = result_length - 1;
             uint8_t j = result_length - 1 - BCD_EXP10_PRECISION;
             do {
                 digits[i] = digits[j];
             } while (--i, j-- > 0);
-            result_length -= BCD_EXP10_PRECISION;
+            result_length -= BCD_EXP10_PRECISION;*/
         }
 
         //printf("SUB DIGITS\n");
@@ -499,6 +513,17 @@ static void mul_test2()
     bcd_to_string(r, bcd_length_after_op(digits1+3, 3, r));
     printf("193 * 28 = %s\n", r);
     assert(!strcmp((char *)r, "5404"));
+}
+
+static void mul_test3()
+{
+    uint8_t digits1[] = { 0, 0, 0, 1, 0, 0, 0, '\0' };
+    uint8_t digits2[] = { 0, 0, 0, 0, 0, 3, 1, 6, 2, '\0' };
+
+    uint8_t *r = bcd_mul(digits1+3, 4, digits2+5, 4);
+    bcd_to_string(r, bcd_length_after_op(digits1+3, 4, r));
+    printf("1000 * 000003162 = %s\n", r);
+    assert(!strcmp((char *)r, "3162000"));
 }
 
 static void add_test1()
@@ -689,14 +714,15 @@ static void div_by_test4()
 
 int main()
 {
-    uint8_to_bcd_test();
+    //uint8_to_bcd_test();
 
-    exp10_test1();
-    exp10_test2();
-    exp10_test3();
+    //exp10_test1();
+    //exp10_test2();
+    //exp10_test3();
 
     mul_test1();
     mul_test2();
+    mul_test3();
 
     add_test1();
     add_test2();
