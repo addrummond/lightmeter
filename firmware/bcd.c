@@ -237,7 +237,7 @@ static uint8_t first_nonzero_index(uint8_t *digits, uint8_t length)
 // First element is number of trailing zeroes.
 static const uint8_t TEN_5[]       = { 0,  1,0,0,0,0,0  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
 static const uint8_t TEN_2[]       = { 3,  0,0,0,1,0,0  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
-static const uint8_t TEN_1[]       = { 5,  0,0,0,0,0,1  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
+static const uint8_t TEN_1[]       = { 4,  0,0,0,0,1,0  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
 static const uint8_t TEN_0_PT_5[]  = { 5,  0,0,0,0,0,3  DIGITS(1,2, 6,6, 2,2, 2,3, 7,8, 8) };
 static const uint8_t TEN_0_PT_1[]  = { 5,  0,0,0,0,0,1  DIGITS(2,3, 5,6, 8,9, 9,9, 2,3, 5) };
 static const uint8_t TEN_0_PT_05[] = { 5,  0,0,0,0,0,1  DIGITS(1,1, 2,2, 2,2, 0,0, 1,2, 8) };
@@ -329,19 +329,31 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
             } while (i-- > trailing_zeroes);
         }
         else {
+            //printf("MULTIPLYING ");
+            //uint8_t x;
+            //for (x = 0; x < result_length; ++x)
+            //    printf("%c", digits[x] + '0');
+            //printf(" * ");
+            //for (x = 0; x < N_DIGITS; ++x)
+            //    printf("%c", mulby_digits[x] + '0');
             uint8_t *digits_n = bcd_mul(digits, result_length, mulby_digits, N_DIGITS);
             result_length = bcd_length_after_op(digits, result_length, digits_n);
+            digits = digits_n;
+            //printf(" = ");
+            //for (x = 0; x < result_length; ++x)
+            //    printf("%c", digits[x] + '0');
+            //printf("\n");
 
             // Round and remove digits from end to get back to BCD_EXP10_PRECISION.
             // Lazy rounding -- we don't bother propagating.
-            /*if (digits[result_length-BCD_EXP10_PRECISION] >= 5 && digits[result_length-BCD_EXP10_PRECISION-1] < 9)
+            if (digits[result_length-BCD_EXP10_PRECISION] >= 5 && digits[result_length-BCD_EXP10_PRECISION-1] < 9)
                 ++digits[result_length-BCD_EXP10_PRECISION-1];
             i = result_length - 1;
             uint8_t j = result_length - 1 - BCD_EXP10_PRECISION;
             do {
                 digits[i] = digits[j];
             } while (--i, j-- > 0);
-            result_length -= BCD_EXP10_PRECISION;*/
+            digits += BCD_EXP10_PRECISION;
         }
 
         uint8_t *log_digits_n = bcd_sub(log_digits, length, sub_digits, length);
@@ -452,6 +464,7 @@ static void exp10_test1()
     uint8_t *r = bcd_exp10(digits+1, 4);
     bcd_to_string(r, bcd_length_after_op(digits+1, 4, r));
     printf("1^10 = %s/1000\n", r);
+    assert(!strcmp("10000", (char *)r));
 }
 
 static void exp10_test2()
@@ -461,6 +474,7 @@ static void exp10_test2()
     bcd_to_string(r, bcd_length_after_op(digits+2, 5
     , r));
     printf("10^2 = %s/1000\n", r);
+    assert(!strcmp("100000", (char *)r));
 }
 
 static void exp10_test3()
@@ -470,6 +484,7 @@ static void exp10_test3()
     bcd_to_string(r, bcd_length_after_op(digits+2, 5
     , r));
     printf("10^1.5 = %s/1000\n", r);
+    assert(!strcmp("31620", (char *)r));
 }
 
 static void mul_test1()
