@@ -591,13 +591,6 @@ static int16_t ev_with_fracs_to_xth(ev_with_fracs_t evwf, uint8_t const_offset)
 #define ev_with_fracs_to_120th(x) ev_with_fracs_to_xth((x), 0)
 #define ev_with_fracs_to_100th(x) ev_with_fracs_to_xth((x), 3)
 
-static int16_t ev_with_fracs_to_100th(ev_with_fracs_t evwf)
-{
-    uint8_t nth = ev_with_fracs_get_nth(evwf);
-    if (nth == 8)
-        return evwf *
-}
-
 // This is called by the following macros defined in exposure.h:
 //
 //     aperture_given_shutter_speed_iso_ev(shutter_speed,iso,ev)
@@ -668,7 +661,7 @@ ev_with_fracs_t x_given_y_iso_ev(ev_with_fracs_t given_x_, ev_with_fracs_t given
 // Log base 2 (fixed point).
 // See http://stackoverflow.com/a/14884853/376854 and https://github.com/dmoulding/log2fix
 #define LOG2_PRECISION 6
-static int32_t log2(uint32_t x)
+static int32_t log_base2(uint32_t x)
 {
     // This implementation is based on Clay. S. Turner's fast binary logarithm
     // algorithm[1].
@@ -723,7 +716,7 @@ ev_with_fracs_t fps_and_angle_to_shutter_speed(uint16_t fps, uint16_t angle)
     fp32 = round_divide(fp32, angle);
     // fp32 is now the "effective" frames per second (i.e. fps if shutter angle were 360).
     // Now we have to take the log to get the shutter speed in EV.
-    int16_t ev = (int16_t)log2(fp32);
+    int16_t ev = (int16_t)log_base2(fp32);
     // Divide by 10 (because we're using units of 1/10 frames).
 #if LOG2_PRECISION == 6
     ev -= 0b11010101; // 11.010101 = 3.322 = log2(10) with 6 precision bits.
@@ -756,19 +749,21 @@ ev_with_fracs_t fps_and_angle_to_shutter_speed(uint16_t fps, uint16_t angle)
 #define LOG10_2__100 ((uint16_t)(3.321928094887363*100.0))
 void ev_at_100_to_bcd_lux(ev_with_fracs_t evwf)
 {
+#if 0
     uint32_t ev100 = ev_with_fracs_to_100th(evwf);
     // Convert from log2 to log10.
     // To do this, we need to divide by log10(2).
     ev100 *= 100;
-    ev100 /= LOG10_2_RECIP__100;
+    ev100 /= LOG10_2__100;
     // Multiply by 2.5.
-    ev100 += LOG10_2_5__10000;
+    ev100 += LOG10_2_5__100;
     // We now have log10 lux in 100ths.
     // The resulting number cannot be bigger than four digits.
     // Following exponention 11 digits is the max.
     uint8_t digits[11];
     uint32_to_bcd(ev120, digits+sizeof(digits)-4, sizeof(digits));
     bcd_exp(digits+sizeof(digits)-4, sizeof(digits), 10, 2/* number of digits following decimal point*/);
+#endif
 }
 #undef LOG10_2_5__120
 #undef LOG10_2_RECIP
