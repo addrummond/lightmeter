@@ -27,10 +27,16 @@ uint8_t *bcd_add_(uint8_t *digits1, uint8_t digits1_length,
 
     int8_t carry = 0;
 
-    uint8_t i = end1, j = end2;
+    int8_t i = end1, j = end2;
     do {
-        int8_t y = (int8_t)(digits2[j] ^ xoradd) + (xoradd & 1);
-        int8_t r = (int8_t)(digits1[i]) + y + carry;
+        int8_t x = 0;
+        if (j >= 0)
+            x = digits2[j];
+        int8_t y = 0;
+        if (i >= 0)
+            y = digits1[i];
+        x = (x ^ xoradd) + (xoradd & 1);
+        int8_t r = x + y + carry;
         if (r < 0) {
             digits1[i] = r + 10;
             carry = -1;
@@ -43,21 +49,24 @@ uint8_t *bcd_add_(uint8_t *digits1, uint8_t digits1_length,
             carry = 0;
             digits1[i] = r;
         }
-    } while (--i, (j-- > 0));
+    } while (j-- + i-- > 0);
+
+    ++i;
+    if (carry != 0)
+        --i;
+
+    if (i < 0)
+        digits1 += i;
 
     if (carry != 0) {
-        if (i == 255) {
-            --digits1;
-            ++digits1_length;
+        if (i < 0)
             *digits1 = carry;
-        }
-        else {
+        else
             digits1[i] += carry;
-        }
     }
 
     // Strip leading zeroes.
-    for (i = 0; digits1[i] == 0 && i < digits1_length - 1; ++i);
+    for (i = 0; digits1[i] == 0 && i < digits1_length-1; ++i);
     digits1 += i;
 
     return digits1;
@@ -272,37 +281,37 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
 
         const uint8_t *mulby_digits;
         if (GTEQ_5(log_digits, length, fnzi)) {
-            printf("MB 5\n");
+            //printf("MB 5\n");
             sub_digits[length-BCD_EXP10_PRECISION-1] = 5;
             mulby_digits = TEN_5;
         }
         else if (GTEQ_2(log_digits, length, fnzi)) {
-            printf("MB 2\n");
+            //printf("MB 2\n");
             sub_digits[length-BCD_EXP10_PRECISION-1] = 2;
             mulby_digits = TEN_2;
         }
         else if (GTEQ_1(log_digits, length, fnzi)) {
-            printf("MB 1\n");
+            //printf("MB 1\n");
             sub_digits[length-BCD_EXP10_PRECISION-1] = 1;
             mulby_digits = TEN_1;
         }
         else if (GTEQ_0_PT_5(log_digits, length, fnzi)) {
-            printf("MB 0.5\n");
+            //printf("MB 0.5\n");
             sub_digits[length-BCD_EXP10_PRECISION] = 5;
             mulby_digits = TEN_0_PT_5;
         }
         else if (GTEQ_0_PT_1(log_digits, length, fnzi)) {
-            printf("MB 0.1\n");
+            //printf("MB 0.1\n");
             sub_digits[length-BCD_EXP10_PRECISION] = 1;
             mulby_digits = TEN_0_PT_1;
         }
         else if (GTEQ_0_PT_05(log_digits, length, fnzi)) {
-            printf("MB 0.05\n");
+            //printf("MB 0.05\n");
             sub_digits[length-BCD_EXP10_PRECISION+1] = 5;
             mulby_digits = TEN_0_PT_05;
         }
         else { //if (GTEQ_0_PT_01(log_digits, length, fnzi)) {
-            printf("MB 0.01\n");
+            //printf("MB 0.01\n");
             sub_digits[length-BCD_EXP10_PRECISION+1] = 1;
             mulby_digits = TEN_0_PT_01;
         }
@@ -320,22 +329,8 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
             } while (i-- > trailing_zeroes);
         }
         else {
-            printf("MUL \n");
-            uint8_t ii;
-            for (ii = 0; ii < result_length; ++ii)
-                printf("%c", digits[ii] + '0');
-            printf(" BY ");
-            for (ii = 0; ii < N_DIGITS; ++ii)
-                printf("%c", mulby_digits[ii] + '0');
-            printf("\n");
-
             uint8_t *digits_n = bcd_mul(digits, result_length, mulby_digits, N_DIGITS);
             result_length = bcd_length_after_op(digits, result_length, digits_n);
-
-            printf("RES = ");
-            for (ii = 0; ii < result_length; ++ii)
-                printf("%c", digits_n[ii] + '0');
-            printf("\n");
 
             // Round and remove digits from end to get back to BCD_EXP10_PRECISION.
             // Lazy rounding -- we don't bother propagating.
@@ -349,25 +344,9 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
             result_length -= BCD_EXP10_PRECISION;*/
         }
 
-        //printf("SUB DIGITS\n");
-        //uint8_t ii;
-        //for (ii = 0; ii < length; ++ii)
-        //    printf("%c\n", sub_digits[ii] + '0');
-        //printf("\n");
-
-        //printf("B4 SUB\n");
-        //for (ii = 0; ii < length; ++ii)
-        //    printf("%c\n", log_digits[ii] + '0');
-        //printf("\n");
-
         uint8_t *log_digits_n = bcd_sub(log_digits, length, sub_digits, length);
         length = bcd_length_after_op(log_digits, length, log_digits_n);
         log_digits = log_digits_n;
-
-        //printf("AFTER SUB\n");
-        //for (ii = 0; ii < length; ++ii)
-        //    printf("%c\n", log_digits[ii] + '0');
-        //printf("\n");
     }
 
     if (first_loop) {
@@ -714,11 +693,11 @@ static void div_by_test4()
 
 int main()
 {
-    //uint8_to_bcd_test();
+    uint8_to_bcd_test();
 
-    //exp10_test1();
-    //exp10_test2();
-    //exp10_test3();
+    exp10_test1();
+    exp10_test2();
+    exp10_test3();
 
     mul_test1();
     mul_test2();
@@ -745,6 +724,8 @@ int main()
     div_by_test2();
     div_by_test3();
     div_by_test4();
+
+    return 0;
 }
 
 #endif
