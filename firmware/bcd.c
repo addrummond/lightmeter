@@ -241,7 +241,7 @@ static const uint8_t TEN_1[]       = { 4,  0,0,0,0,1,0  DIGITS(0,0, 0,0, 0,0, 0,
 static const uint8_t TEN_0_PT_5[]  = { 5,  0,0,0,0,0,3  DIGITS(1,2, 6,6, 2,2, 2,3, 7,8, 8) };
 static const uint8_t TEN_0_PT_1[]  = { 5,  0,0,0,0,0,1  DIGITS(2,3, 5,6, 8,9, 9,9, 2,3, 5) };
 static const uint8_t TEN_0_PT_05[] = { 5,  0,0,0,0,0,1  DIGITS(1,1, 2,2, 2,2, 0,0, 1,2, 8) };
-static const uint8_t TEN_0_PT_01[] = { 6,  0,0,0,0,0,1  DIGITS(0,0, 2,2, 3,3, 2,3, 9,9, 3) };
+static const uint8_t TEN_0_PT_01[] = { 5,  0,0,0,0,0,1  DIGITS(0,0, 2,2, 3,3, 2,3, 9,9, 3) };
 #undef DIGITS
 // x!=10 condition is added to make it easy for GCC to optimize out the check following the && in this case.
 #define GTEQ(n,l,minlen,fnzi,i,j,x) ((l) >= BCD_EXP10_PRECISION+(minlen) &&                       \
