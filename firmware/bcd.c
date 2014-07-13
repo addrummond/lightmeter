@@ -383,7 +383,7 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
 #undef N_DIGITS
 #undef N_WHOLE_DIGITS
 
-uint8_t *uint8_to_bcd(uint8_t n, uint8_t *digits, uint8_t length)
+uint8_t *uint32_to_bcd(uint32_t n, uint8_t *digits, uint8_t length)
 {
     uint8_t i = length-1;
     while (n >= 10) {
@@ -434,28 +434,29 @@ void debug_print_bcd(uint8_t *digits, uint8_t length)
 
 #ifdef TEST
 
-static void uint8_to_bcd_test_(uint8_t val)
+static void uint32_to_bcd_test_(uint32_t val)
 {
-    uint8_t digits[4];
-    digits[3] = '\0';
-    uint8_t *digits_ = uint8_to_bcd(val, digits, 3);
+    uint8_t digits[8];
+    digits[7] = '\0';
+    uint8_t *digits_ = uint32_to_bcd(val, digits, 7);
     uint8_t i;
-    for (i = 0; i < 3 - (digits_ - digits); ++i)
+    for (i = 0; i < 7 - (digits_ - digits); ++i)
         digits_[i] += '0';
-    printf("%i -> '%s' (%i)\n", val, digits_, (int)bcd_length_after_op(digits, 3, digits_));
+    printf("%i -> '%s' (%i)\n", val, digits_, (int)bcd_length_after_op(digits, 7, digits_));
 }
 
-static void uint8_to_bcd_test()
+static void uint32_to_bcd_test()
 {
-    uint8_to_bcd_test_(1);
-    uint8_to_bcd_test_(10);
-    uint8_to_bcd_test_(100);
-    uint8_to_bcd_test_(0);
-    uint8_to_bcd_test_(124);
-    uint8_to_bcd_test_(12);
-    uint8_to_bcd_test_(255);
-    uint8_to_bcd_test_(26);
-    uint8_to_bcd_test_(27);
+    uint32_to_bcd_test_(1);
+    uint32_to_bcd_test_(10);
+    uint32_to_bcd_test_(100);
+    uint32_to_bcd_test_(0);
+    uint32_to_bcd_test_(124);
+    uint32_to_bcd_test_(12);
+    uint32_to_bcd_test_(255);
+    uint32_to_bcd_test_(26);
+    uint32_to_bcd_test_(27);
+    uint32_to_bcd_test_(65536);
     printf("\n");
 }
 
@@ -725,7 +726,7 @@ static void div_by_test4()
 
 int main()
 {
-    uint8_to_bcd_test();
+    uint32_to_bcd_test();
 
     exp10_test1();
     exp10_test2();
