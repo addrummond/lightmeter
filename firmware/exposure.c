@@ -749,7 +749,6 @@ ev_with_fracs_t fps_and_angle_to_shutter_speed(uint16_t fps, uint16_t angle)
 #define LOG10_2__100 ((uint16_t)(3.321928094887363*100.0))
 void ev_at_100_to_bcd_lux(ev_with_fracs_t evwf)
 {
-#if 0
     uint32_t ev100 = ev_with_fracs_to_100th(evwf);
     // Convert from log2 to log10.
     // To do this, we need to divide by log10(2).
@@ -760,10 +759,16 @@ void ev_at_100_to_bcd_lux(ev_with_fracs_t evwf)
     // We now have log10 lux in 100ths.
     // The resulting number cannot be bigger than four digits.
     // Following exponention 11 digits is the max.
-    uint8_t digits[11];
-    uint32_to_bcd(ev120, digits+sizeof(digits)-4, sizeof(digits));
-    bcd_exp(digits+sizeof(digits)-4, sizeof(digits), 10, 2/* number of digits following decimal point*/);
+    // We leave extra space at the end if BCD_EXP10_PRECISION is > 2.
+#if BCD_EXP10_PRECISION < 2
+#error "Bad value for BCD_EXP10_PRECISION in ev_at_100_to_bcd_lux in exposure.c"
 #endif
+    uint8_t digits[11+BCD_EXP10_PRECISION-2];
+    memset8_zero(digits, sizeof(digits));
+    uint8_t *digits_p = uint32_to_bcd(ev100, digits, (sizeof(digits)-((BCD_EXP10_PRECISION-2)*sizeof(uint8_t))));
+    digits_p = bcd_exp10(digits_p, bcd_length_after_op(digits, sizeof(digits)/sizeof(uint8_t), digits_p));
+
+    // digits_p now contains the lux value in decimal.
 }
 #undef LOG10_2_5__120
 #undef LOG10_2_RECIP
