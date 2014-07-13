@@ -396,7 +396,7 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
             //func_state->ev_chars[0] = CHAR_8PX_7_O;
             //func_state->ev_chars[1] = CHAR_8PX_8_O;
             //func_state->ev_chars_ = func_state->ev_chars;
-            func_state->ev_chars_ = uint8_to_bcd((ev >> 3) - 5, func_state->ev_chars, 3);
+            func_state->ev_chars_ = uint32_to_bcd((ev >> 3) - 5, func_state->ev_chars, 3);
             func_state->ev_length = bcd_length_after_op(func_state->ev_chars, 3, func_state->ev_chars_);
             uint8_t i;
             for (i = 0; i < func_state->ev_length; ++i)
