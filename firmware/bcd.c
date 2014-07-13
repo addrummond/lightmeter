@@ -387,9 +387,9 @@ uint8_t *uint32_to_bcd(uint32_t n, uint8_t *digits, uint8_t length)
 {
     uint8_t i = length-1;
     while (n >= 10) {
-        uint8_t v = n/10;
+        uint32_t v = n/10;
         //printf("  %i/%i = %i\n", n, 10, v);
-        uint8_t rem = n - (v << 3) - (v << 1);
+        uint8_t rem = n - (v*10);
         //printf("  %i%%%i = %i\n", n, 10, rem);
         n = v;
 
