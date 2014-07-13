@@ -354,6 +354,7 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
                 digits[i] = digits[j];
             } while (--i, j-- > 0);
             digits += BCD_EXP10_PRECISION;
+            result_length -= BCD_EXP10_PRECISION;
         }
 
         uint8_t *log_digits_n = bcd_sub(log_digits, length, sub_digits, length);
@@ -470,9 +471,8 @@ static void exp10_test1()
 static void exp10_test2()
 {
     uint8_t digits[] = { 0, 0, 0, 2, 0, 0, 0, '\0' };
-    uint8_t *r = bcd_exp10(digits+2, 5);
-    bcd_to_string(r, bcd_length_after_op(digits+2, 5
-    , r));
+    uint8_t *r = bcd_exp10(digits+3, 4);
+    bcd_to_string(r, bcd_length_after_op(digits+3, 4, r));
     printf("10^2 = %s/1000\n", r);
     assert(!strcmp("100000", (char *)r));
 }
@@ -480,11 +480,28 @@ static void exp10_test2()
 static void exp10_test3()
 {
     uint8_t digits[] = { 0, 0, 0, 1, 5, 0, 0, '\0' };
-    uint8_t *r = bcd_exp10(digits+2, 5);
-    bcd_to_string(r, bcd_length_after_op(digits+2, 5
-    , r));
-    printf("10^1.5 = %s/1000\n", r);
+    uint8_t *r = bcd_exp10(digits+3, 4);
+    bcd_to_string(r, bcd_length_after_op(digits+3, 4, r));
+    printf("[%i], 10^1.5 = %s/1000\n", bcd_length_after_op(digits+3, 4, r), r);
     assert(!strcmp("31620", (char *)r));
+}
+
+static void exp10_test4()
+{
+    uint8_t digits[] = { 0, 0, 0, 1, 6, 0, 0, '\0' };
+    uint8_t *r = bcd_exp10(digits+3, 4);
+    bcd_to_string(r, bcd_length_after_op(digits+3, 4, r));
+    printf("[%i], 10^1.6 = %s/1000\n", bcd_length_after_op(digits+3, 4, r), r);
+    assert(!strcmp("39809", (char *)r));
+}
+
+static void exp10_test5()
+{
+    uint8_t digits[] = { 0, 0, 0, 1, 6, 1, 0, '\0' };
+    uint8_t *r = bcd_exp10(digits+3, 4);
+    bcd_to_string(r, bcd_length_after_op(digits+3, 4, r));
+    printf("[%i], 10^1.61 = %s/1000\n", bcd_length_after_op(digits+3, 4, r), r);
+    assert(!strcmp("39809", (char *)r));
 }
 
 static void mul_test1()
@@ -713,6 +730,8 @@ int main()
     exp10_test1();
     exp10_test2();
     exp10_test3();
+    exp10_test4();
+    exp10_test5();
 
     mul_test1();
     mul_test2();
