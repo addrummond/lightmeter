@@ -746,8 +746,8 @@ ev_with_fracs_t fps_and_angle_to_shutter_speed(uint16_t fps, uint16_t angle)
     return ret;
 }
 
-#define LOG10_2_5__100   ((uint16_t)(0.3979400086720376*100.0))
-#define LOG10_2__100 ((uint16_t)(3.321928094887363*100.0))
+#define LOG10_2_5__100   40  // 0.3979400086720376
+#define LOG10_2__100     332 // 3.321928094887363
 uint8_t *ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits)
 {
     int32_t ev100 = ev_with_fracs_to_100th(evwf) - 500;
@@ -758,11 +758,13 @@ uint8_t *ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits)
     ev100 /= LOG10_2__100;
     // Multiply by 2.5.
     ev100 += LOG10_2_5__100;
+    // Subtract 7 (not sure why this is necessary).
+    ev100 -= 7;
     // We now have log10 lux in 100ths.
     // The resulting number cannot be bigger than four digits.
     // Following exponention 11 digits is the max.
     // We leave extra space at the end if BCD_EXP10_PRECISION is > 2.
-    printf("LOG10 ev = %i/100\n", ev100);
+    //printf("LOG10 ev = %i/100\n", ev100);
 #if BCD_EXP10_PRECISION < 2
 #error "Bad value for BCD_EXP10_PRECISION in ev_at_100_to_bcd_lux in exposure.c"
 #endif
