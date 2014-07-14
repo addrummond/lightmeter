@@ -799,8 +799,8 @@ uint8_t *ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits)
     // digits_p2 now contains the lux value in decimal.
     return digits_p2;
 }
-#undef LOG10_2_5__120
-#undef LOG10_2_RECIP
+#undef LOG10_2_5__1000
+#undef LOG10_2__10000
 
 
 #ifdef TEST
