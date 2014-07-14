@@ -49,7 +49,7 @@ uint8_t *bcd_add_(uint8_t *digits1, uint8_t digits1_length,
             carry = 0;
             digits1[i] = r;
         }
-    } while (j-- + i-- > 0);
+    } while (--j, --i, i >= 0 || j >= 0);
 
     ++i;
     if (carry != 0)
@@ -161,11 +161,26 @@ uint8_t *bcd_mul(uint8_t *digits1, uint8_t length1, const uint8_t *digits2, uint
             *mulres_start = carry;
         }
 
+
         uint8_t mulres_length = l - (mulres_start - tmp1);
+
+        //printf("(M) ADDING ");
+        //uint8_t x;
+        //for (x = 0; x < result_digits_length; ++x)
+        //    printf("%c", result_digits[x] + '0');
+        //printf(" TO ");
+        //for (x = 0; x < mulres_length; ++x)
+        //    printf("%c", mulres_start[x] + '0');
+
         // Add to total.
         uint8_t *result_digits_ = bcd_add(result_digits, result_digits_length, mulres_start, mulres_length);
         result_digits_length = bcd_length_after_op(result_digits, result_digits_length, result_digits_);
         result_digits = result_digits_;
+
+        //printf(" = ");
+        //for (x = 0; x < result_digits_length; ++x)
+        //    printf("%c", result_digits[x] + '0');
+        //printf("\n");
     } while (j-- > 0);
 
     uint8_t *start = digits1 + length1;
@@ -336,9 +351,11 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
             //printf(" * ");
             //for (x = 0; x < N_DIGITS; ++x)
             //    printf("%c", mulby_digits[x] + '0');
+
             uint8_t *digits_n = bcd_mul(digits, result_length, mulby_digits, N_DIGITS);
             result_length = bcd_length_after_op(digits, result_length, digits_n);
             digits = digits_n;
+
             //printf(" = ");
             //for (x = 0; x < result_length; ++x)
             //    printf("%c", digits[x] + '0');

@@ -1,7 +1,7 @@
 #!/bin/sh
 
-gcc -I./ -c bcd.c -o bcd.testout
-gcc -I./ -DTEST -c exposure.c -o exposure.testout
-gcc -I./ -DTEST -c tables.c -o tables.testout
+gcc -I./ -c bcd.c -o bcd.o
+gcc -I./ -DTEST -c exposure.c -o exposure.o
+gcc -I./ -DTEST -c tables.c -o tables.o
 gcc -I./ -DTEST -c mymemset.c -o mymemset.o
-gcc bcd.testout exposure.testout tables.testout mymemset.o -o testexposure
+gcc bcd.o exposure.o tables.o mymemset.o -o testexposure

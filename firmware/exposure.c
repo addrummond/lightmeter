@@ -766,7 +766,13 @@ uint8_t *ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits)
 #endif
     memset8_zero(digits, EV_AT_100_TO_BCD_LUX_BCD_LENGTH*sizeof(uint8_t));
     uint8_t *digits_p = uint32_to_bcd(ev100, digits, (EV_AT_100_TO_BCD_LUX_BCD_LENGTH-(BCD_EXP10_PRECISION-2))*sizeof(uint8_t));
-    digits_p = bcd_exp10(digits_p, bcd_length_after_op(digits, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, digits_p));
+
+    //uint8_t x;
+    //printf("digits_p = ");
+    //for (x = 0; x < bcd_length_after_op(digits, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, digits_p); ++x)
+    //    printf("%c", digits_p[x] + '0');
+    //printf("\n");
+    //digits_p = bcd_exp10(digits_p, bcd_length_after_op(digits, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, digits_p));
 
     // digits_p now contains the lux value in decimal.
     return digits_p;
@@ -788,16 +794,19 @@ int main()
     ev_with_fracs_set_ev8(iso100, 4*8);
 
     printf("ev_at_100_to_bcd_lux\n");
-    ev_with_fracs_t ev5;
-    ev_with_fracs_init(ev5);
-    ev_with_fracs_set_ev8(ev5, (5+5)*8);
-    uint8_t lux_digits_[EV_AT_100_TO_BCD_LUX_BCD_LENGTH];
-    uint8_t *lux_digits = ev_at_100_to_bcd_lux(ev5, lux_digits_);
-    printf("EV@100 5 =");
-    uint8_t x;
-    for (x = 0; x < bcd_length_after_op(lux_digits_, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, lux_digits); ++x)
-        printf("%c", lux_digits[x] + '0');
-    printf("\n");
+    ev_with_fracs_t evat100;
+    uint8_t ev8;
+    for (ev8 = 0; ev8 < 80; ++ ev8) {
+        ev_with_fracs_init(evat100);
+        ev_with_fracs_set_ev8(evat100, ev8);
+        uint8_t lux_digits_[EV_AT_100_TO_BCD_LUX_BCD_LENGTH];
+        uint8_t *lux_digits = ev_at_100_to_bcd_lux(evat100, lux_digits_);
+        printf("EV@100 %f = ", (((float)ev_with_fracs_get_eighths(evat100))/8.0)+5.0);
+        uint8_t x;
+        for (x = 0; x < bcd_length_after_op(lux_digits_, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, lux_digits); ++x)
+            printf("%c", lux_digits[x] + '0');
+        printf("\n");
+    }
 
     printf("fps_and_angle_to_shutter_speed\n");
     uint16_t fps;
