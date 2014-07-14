@@ -1,6 +1,8 @@
 #ifndef EXPOSURE_H
 #define EXPOSURE_H
 
+#include <bcd.h>
+
 #define SS_1M       0
 #define SS_8S       24
 #define SS_1S       48
@@ -110,6 +112,10 @@ uint8_t *iso_in_third_stops_into_bcd(uint8_t iso, uint8_t *digits, uint8_t lengt
 
 ev_with_fracs_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage, uint8_t op_amp_resistor_stage);
 uint8_t convert_from_reference_voltage(uint16_t adc_out);
+
+void ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits);
+#define EV_AT_100_TO_BCD_LUX_RESULT_PRECISION BCD_EXP10_PRECISION
+#define EV_AT_100_TO_BCD_LUX_BCD_LENGTH       (11+BCD_EXP10_PRECISION-2)
 
 // Note that these give the tenth/third immediately <= the nearest eighth
 // (i.e. they don't round up).

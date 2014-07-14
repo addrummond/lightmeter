@@ -17,6 +17,7 @@
 #include <readbyte.h>
 #include <tables.h>
 #include <deviceconfig.h>
+#include <mymemset.h>
 #ifdef TEST
 #include <stdio.h>
 #endif
@@ -747,7 +748,7 @@ ev_with_fracs_t fps_and_angle_to_shutter_speed(uint16_t fps, uint16_t angle)
 
 #define LOG10_2_5__100   ((uint16_t)(0.3979400086720376*100.0))
 #define LOG10_2__100 ((uint16_t)(3.321928094887363*100.0))
-void ev_at_100_to_bcd_lux(ev_with_fracs_t evwf)
+void ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits)
 {
     uint32_t ev100 = ev_with_fracs_to_100th(evwf);
     // Convert from log2 to log10.
@@ -763,12 +764,12 @@ void ev_at_100_to_bcd_lux(ev_with_fracs_t evwf)
 #if BCD_EXP10_PRECISION < 2
 #error "Bad value for BCD_EXP10_PRECISION in ev_at_100_to_bcd_lux in exposure.c"
 #endif
-    uint8_t digits[11+BCD_EXP10_PRECISION-2];
-    memset8_zero(digits, sizeof(digits));
-    uint8_t *digits_p = uint32_to_bcd(ev100, digits, (sizeof(digits)-((BCD_EXP10_PRECISION-2)*sizeof(uint8_t))));
-    digits_p = bcd_exp10(digits_p, bcd_length_after_op(digits, sizeof(digits)/sizeof(uint8_t), digits_p));
+    memset8_zero(digits, EV_AT_100_TO_BCD_LUX_BCD_LENGTH*sizeof(uint8_t));
+    uint8_t *digits_p = uint32_to_bcd(ev100, digits, (EV_AT_100_TO_BCD_LUX_BCD_LENGTH-(BCD_EXP10_PRECISION-2))*sizeof(uint8_t));
+    digits_p = bcd_exp10(digits_p, bcd_length_after_op(digits, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, digits_p));
 
     // digits_p now contains the lux value in decimal.
+    return digits_p;
 }
 #undef LOG10_2_5__120
 #undef LOG10_2_RECIP
