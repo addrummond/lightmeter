@@ -750,24 +750,24 @@ ev_with_fracs_t fps_and_angle_to_shutter_speed(uint16_t fps, uint16_t angle)
 #define LOG10_2__10000    33219 // 3.321928094887363
 uint8_t *ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits)
 {
-    int32_t ev100 = (ev_with_fracs_to_100th(evwf) - 500) * 10;
+    int32_t ev = (ev_with_fracs_to_100th(evwf) - 500) * 10;
 
     // This magic value is used to add some magic compensation later on.
     int8_t comp = -(((ev_with_fracs_get_eighths(evwf)-(5*8))/8 - 1)*12);
     //printf("COMP %i\n", comp);
 
-    assert(ev100 > 0);
+    assert(ev > 0);
     // Convert from log2 to log10.
     // To do this, we need to divide by log10(2).
-    ev100 *= 10000;
-    ev100 /= LOG10_2__10000;
+    ev *= 10000;
+    ev /= LOG10_2__10000;
     // Multiply by 2.5.
-    ev100 += LOG10_2_5__1000;
+    ev += LOG10_2_5__1000;
     // Subtract 64 (not sure why this is necessary).
-    ev100 -= 64;
+    ev -= 64;
     // Add magic compensation.
-    ev100 += comp;
-    //printf("LOG10 ev = %i/1000\n", ev100);
+    ev += comp;
+    //printf("LOG10 ev = %i/1000\n", ev);
 
     // The resulting number cannot be bigger than five digits.
     // Following exponention 12 digits is the max.
@@ -776,7 +776,7 @@ uint8_t *ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits)
 #error "Bad value for BCD_EXP10_PRECISION in ev_at_100_to_bcd_lux in exposure.c"
 #endif
     memset8_zero(digits, EV_AT_100_TO_BCD_LUX_BCD_LENGTH*sizeof(uint8_t));
-    uint8_t *digits_p = uint32_to_bcd(ev100, digits, (EV_AT_100_TO_BCD_LUX_BCD_LENGTH-(BCD_EXP10_PRECISION-3))*sizeof(uint8_t));
+    uint8_t *digits_p = uint32_to_bcd(ev, digits, (EV_AT_100_TO_BCD_LUX_BCD_LENGTH-(BCD_EXP10_PRECISION-3))*sizeof(uint8_t));
 
     //uint8_t x;
     //printf("digits_p = ");
