@@ -761,6 +761,7 @@ uint8_t *ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits)
     // The resulting number cannot be bigger than four digits.
     // Following exponention 11 digits is the max.
     // We leave extra space at the end if BCD_EXP10_PRECISION is > 2.
+    //printf("LOG10 ev = %i/100\n", ev100);
 #if BCD_EXP10_PRECISION < 2
 #error "Bad value for BCD_EXP10_PRECISION in ev_at_100_to_bcd_lux in exposure.c"
 #endif
@@ -772,7 +773,8 @@ uint8_t *ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits)
     //for (x = 0; x < bcd_length_after_op(digits, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, digits_p); ++x)
     //    printf("%c", digits_p[x] + '0');
     //printf("\n");
-    //digits_p = bcd_exp10(digits_p, bcd_length_after_op(digits, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, digits_p));
+
+    digits_p = bcd_exp10(digits_p, bcd_length_after_op(digits, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, digits_p));
 
     // digits_p now contains the lux value in decimal.
     return digits_p;
