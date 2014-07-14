@@ -750,7 +750,8 @@ ev_with_fracs_t fps_and_angle_to_shutter_speed(uint16_t fps, uint16_t angle)
 #define LOG10_2__100 ((uint16_t)(3.321928094887363*100.0))
 uint8_t *ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits)
 {
-    uint32_t ev100 = ev_with_fracs_to_100th(evwf);
+    int32_t ev100 = ev_with_fracs_to_100th(evwf) - 500;
+    assert(ev100 > 0);
     // Convert from log2 to log10.
     // To do this, we need to divide by log10(2).
     ev100 *= 100;
@@ -798,7 +799,7 @@ int main()
     printf("ev_at_100_to_bcd_lux\n");
     ev_with_fracs_t evat100;
     uint8_t ev8;
-    for (ev8 = 0; ev8 < 80; ++ ev8) {
+    for (ev8 = 6*8; ev8 < 160; ++ev8) {
         ev_with_fracs_init(evat100);
         ev_with_fracs_set_ev8(evat100, ev8);
         uint8_t lux_digits_[EV_AT_100_TO_BCD_LUX_BCD_LENGTH];
