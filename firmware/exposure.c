@@ -746,11 +746,6 @@ ev_with_fracs_t fps_and_angle_to_shutter_speed(uint16_t fps, uint16_t angle)
     return ret;
 }
 
-// Errors:
-// 1 -- 0
-// 2 -- 12
-// 3 -- 24
-// 4 -- 36
 #define LOG10_2_5__1000   398   // 0.3979400086720376
 #define LOG10_2__10000    33219 // 3.321928094887363
 uint8_t *ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits)
