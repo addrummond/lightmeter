@@ -803,7 +803,7 @@ int main()
         ev_with_fracs_set_ev8(evat100, ev8);
         uint8_t lux_digits_[EV_AT_100_TO_BCD_LUX_BCD_LENGTH];
         uint8_t *lux_digits = ev_at_100_to_bcd_lux(evat100, lux_digits_);
-        printf("EV@100 %f = ", (((float)ev_with_fracs_get_eighths(evat100))/8.0)+5.0);
+        printf("EV@100 %f = ", (((float)ev_with_fracs_get_eighths(evat100))/8.0)-5.0);
         uint8_t x;
         for (x = 0; x < bcd_length_after_op(lux_digits_, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, lux_digits); ++x)
             printf("%c", lux_digits[x] + '0');
