@@ -250,6 +250,7 @@ static uint8_t first_nonzero_index(uint8_t *digits, uint8_t length)
 #error "Bad value for BCD_EXP10_PRECISION"
 #endif
 // First element is number of trailing zeroes.
+// TODO: Might make more sense to have first element give length of array.
 static const uint8_t TEN_5[]       = { 0,  1,0,0,0,0,0  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
 static const uint8_t TEN_2[]       = { 3,  0,0,0,1,0,0  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
 static const uint8_t TEN_1[]       = { 4,  0,0,0,0,1,0  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
