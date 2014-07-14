@@ -746,31 +746,42 @@ ev_with_fracs_t fps_and_angle_to_shutter_speed(uint16_t fps, uint16_t angle)
     return ret;
 }
 
-#define LOG10_2_5__1000   398  // 0.3979400086720376
-#define LOG10_2__1000     3322 // 3.321928094887363
+// Errors:
+// 1 -- 0
+// 2 -- 12
+// 3 -- 24
+// 4 -- 36
+#define LOG10_2_5__1000   398   // 0.3979400086720376
+#define LOG10_2__10000    33219 // 3.321928094887363
 uint8_t *ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits)
 {
     int32_t ev100 = (ev_with_fracs_to_100th(evwf) - 500) * 10;
+
+    // This magic value is used to add some magic compensation later on.
+    int8_t comp = -(((ev_with_fracs_get_eighths(evwf)-(5*8))/8 - 1)*12);
+    //printf("COMP %i\n", comp);
+
     assert(ev100 > 0);
     // Convert from log2 to log10.
     // To do this, we need to divide by log10(2).
-    ev100 *= 1000;
-    ev100 /= LOG10_2__1000;
+    ev100 *= 10000;
+    ev100 /= LOG10_2__10000;
     // Multiply by 2.5.
     ev100 += LOG10_2_5__1000;
-    // Subtract 70 (not sure why this is necessary).
-    ev100 -= 70;
-    // We now have log10 lux in 1000ths. Round divide by 10 to get it in 100ths.
-    ev100 = round_divide(ev100, 10);
-    // The resulting number cannot be bigger than four digits.
-    // Following exponention 11 digits is the max.
+    // Subtract 64 (not sure why this is necessary).
+    ev100 -= 64;
+    // Add magic compensation.
+    ev100 += comp;
+    //printf("LOG10 ev = %i/1000\n", ev100);
+
+    // The resulting number cannot be bigger than five digits.
+    // Following exponention 12 digits is the max.
     // We leave extra space at the end if BCD_EXP10_PRECISION is > 2.
-    printf("LOG10 ev = %i/1000\n", ev100);
 #if BCD_EXP10_PRECISION < 2
 #error "Bad value for BCD_EXP10_PRECISION in ev_at_100_to_bcd_lux in exposure.c"
 #endif
     memset8_zero(digits, EV_AT_100_TO_BCD_LUX_BCD_LENGTH*sizeof(uint8_t));
-    uint8_t *digits_p = uint32_to_bcd(ev100, digits, (EV_AT_100_TO_BCD_LUX_BCD_LENGTH-(BCD_EXP10_PRECISION-2))*sizeof(uint8_t));
+    uint8_t *digits_p = uint32_to_bcd(ev100, digits, (EV_AT_100_TO_BCD_LUX_BCD_LENGTH-(BCD_EXP10_PRECISION-3))*sizeof(uint8_t));
 
     //uint8_t x;
     //printf("digits_p = ");

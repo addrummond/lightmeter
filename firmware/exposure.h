@@ -115,7 +115,7 @@ uint8_t convert_from_reference_voltage(uint16_t adc_out);
 
 uint8_t *ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits);
 #define EV_AT_100_TO_BCD_LUX_RESULT_PRECISION BCD_EXP10_PRECISION
-#define EV_AT_100_TO_BCD_LUX_BCD_LENGTH       (11+BCD_EXP10_PRECISION-2)
+#define EV_AT_100_TO_BCD_LUX_BCD_LENGTH       (11+BCD_EXP10_PRECISION-3)
 
 // Note that these give the tenth/third immediately <= the nearest eighth
 // (i.e. they don't round up).
