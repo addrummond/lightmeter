@@ -808,6 +808,43 @@ uint8_t *ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits)
 #include <stdio.h>
 extern const uint8_t TEST_VOLTAGE_TO_EV[];
 
+static void print_bcd(uint8_t *digits, uint8_t length, uint8_t sigfigs, uint8_t precision)
+{
+    uint8_t i;
+    for (i = 0; i < length && digits[i] == 0; ++i);
+    if (i == length) {
+        printf("0");
+        return;
+    }
+
+    uint8_t n = i + sigfigs;
+    if (n > length)
+        n = length;
+    for (; i < n; ++i) {
+        if (i == length - precision)
+            printf(".");
+        uint8_t val = digits[i];
+        if (i + 1 < length && digits[i+1] >= 5) {
+            uint8_t j = i;
+            for (;;) {
+                ++digits[j];
+
+                // Rounding logic. TODO: Buggy.
+                if (digits[j] > 9) {
+                    digits[j] = digits[j] % 10;
+                    --j;
+                }
+                else {
+                    break;
+                }
+            }
+        }
+        printf("%c", digits[i] + '0');
+    }
+    for (; i < length - precision; ++i)
+        printf("0");
+}
+
 int main()
 {
     shutter_string_output_t sso;
@@ -825,9 +862,11 @@ int main()
         uint8_t *lux_digits = ev_at_100_to_bcd_lux(evat100, lux_digits_);
         printf("EV@100 %f = ", (((float)ev_with_fracs_get_eighths(evat100))/8.0)-5.0);
         uint8_t x;
-        for (x = 0; x < bcd_length_after_op(lux_digits_, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, lux_digits); ++x)
-            printf("%c", lux_digits[x] + '0');
+        print_bcd(lux_digits, bcd_length_after_op(lux_digits_, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, lux_digits), 2, 3);
         printf("\n");
+        //for (x = 0; x < bcd_length_after_op(lux_digits_, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, lux_digits); ++x)
+        //    printf("%c", lux_digits[x] + '0');
+        //printf("\n");
     }
 
     printf("fps_and_angle_to_shutter_speed\n");
