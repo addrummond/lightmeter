@@ -249,7 +249,7 @@ static uint8_t first_nonzero_index(uint8_t *digits, uint8_t length)
 #else
 #error "Bad value for BCD_EXP10_PRECISION"
 #endif
-// First element is number of trailing zeroes.
+// First element is number of leading zeroes.
 // TODO: Might make more sense to have first element give length of array.
 static const uint8_t TEN_5[]       = { 0,  1,0,0,0,0,0  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
 static const uint8_t TEN_2[]       = { 3,  0,0,0,1,0,0  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
@@ -288,7 +288,7 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
     uint8_t sub_digits[length];
 
     uint8_t result_length = length;
-    bool first_loop = true;
+    bool first_loop;
     uint8_t fnzi;
     for (first_loop = true;
          fnzi = first_nonzero_index(log_digits, length), GTEQ_0_PT_01(log_digits, length, fnzi);
@@ -384,7 +384,6 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
         // The number was very small. Set appopriate approx result (0).
         digits += result_length - 1;
         *digits = 0;
-        return digits;
     }
 
     return digits;
