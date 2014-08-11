@@ -14,8 +14,8 @@ bool bcd_cmp(const uint8_t *digits1, uint8_t length1, const uint8_t *digits2, ui
 uint8_t *bcd_div_by_lt10(uint8_t *digits, uint8_t length, uint8_t by);
 uint8_t *uint32_to_bcd(uint32_t n, uint8_t *digits, uint8_t length);
 
-#define BCD_EXP10_PRECISION 3
-uint8_t *bcd_exp10(uint8_t *digits, uint8_t length);
+#define BCD_EXP2_PRECISION 3
+uint8_t *bcd_exp2(uint8_t *digits, uint8_t length);
 
 #define bcd_length_after_op(oldptr, oldlength, newptr) (((oldptr) - (newptr)) + (oldlength))
 

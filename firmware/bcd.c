@@ -232,51 +232,51 @@ static uint8_t first_nonzero_index(uint8_t *digits, uint8_t length)
     return i;
 }
 
-#if BCD_EXP10_PRECISION == 0
+#if BCD_EXP2_PRECISION == 0
 #define DIGITS(d1,d1l,d2,d2l,d3,d3l,d4,d4l,d5,d5l,d6)
-#elif BCD_EXP10_PRECISION == 1
+#elif BCD_EXP2_PRECISION == 1
 #define DIGITS(d1,d1l,d2,d2l,d3,d3l,d4,d4l,d5,d5l,d6) ,d1l
-#elif BCD_EXP10_PRECISION == 2
+#elif BCD_EXP2_PRECISION == 2
 #define DIGITS(d1,d1l,d2,d2l,d3,d3l,d4,d4l,d5,d5l,d6) ,d1,d2l
-#elif BCD_EXP10_PRECISION == 3
+#elif BCD_EXP2_PRECISION == 3
 #define DIGITS(d1,d1l,d2,d2l,d3,d3l,d4,d4l,d5,d5l,d6) ,d1,d2,d3l
-#elif BCD_EXP10_PRECISION == 4
+#elif BCD_EXP2_PRECISION == 4
 #define DIGITS(d1,d1l,d2,d2l,d3,d3l,d4,d4l,d5,d5l,d6) ,d1,d2,d3,d4l
-#elif BCD_EXP10_PRECISION == 5
+#elif BCD_EXP2_PRECISION == 5
 #define DIGITS(d1,d1l,d2,d2l,d3,d3l,d4,d4l,d5,d5l,d6) ,d1,d2,d3,d4,d5l
-#elif BCD_EXP10_PRECISION == 6
+#elif BCD_EXP2_PRECISION == 6
 #define DIGITS(d1,d1l,d2,d2l,d3,d3l,d4,d4l,d5,d5l,d6) ,d1,d2,d3,d4,d5,d6
 #else
-#error "Bad value for BCD_EXP10_PRECISION"
+#error "Bad value for BCD_EXP2_PRECISION"
 #endif
 // First element is number of leading zeroes.
 // TODO: Might make more sense to have first element give length of array.
-static const uint8_t TEN_5[]       = { 0,  1,0,0,0,0,0  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
-static const uint8_t TEN_2[]       = { 3,  0,0,0,1,0,0  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
-static const uint8_t TEN_1[]       = { 4,  0,0,0,0,1,0  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
-static const uint8_t TEN_0_PT_5[]  = { 5,  0,0,0,0,0,3  DIGITS(1,2, 6,6, 2,2, 2,3, 7,8, 8) };
-static const uint8_t TEN_0_PT_1[]  = { 5,  0,0,0,0,0,1  DIGITS(2,3, 5,6, 8,9, 9,9, 2,3, 5) };
-static const uint8_t TEN_0_PT_05[] = { 5,  0,0,0,0,0,1  DIGITS(1,1, 2,2, 2,2, 0,0, 1,2, 8) };
-static const uint8_t TEN_0_PT_01[] = { 5,  0,0,0,0,0,1  DIGITS(0,0, 2,2, 3,3, 2,3, 9,9, 3) };
+static const uint8_t TWO_10[]      = { 2,  0,0,1,0,2,4  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
+static const uint8_t TWO_4[]       = { 4,  0,0,0,0,1,6  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
+static const uint8_t TWO_1[]       = { 5,  0,0,0,0,0,2  DIGITS(0,0, 0,0, 0,0, 0,0, 0,0, 0) };
+static const uint8_t TWO_0_PT_5[]  = { 5,  0,0,0,0,0,1  DIGITS(4,4, 1,1, 4,4, 2,2, 1,1, 4) };
+static const uint8_t TWO_0_PT_1[]  = { 5,  0,0,0,0,0,1  DIGITS(0,1, 7,7, 1,2, 7,8, 7,7, 3) };
+static const uint8_t TWO_0_PT_05[] = { 5,  0,0,0,0,0,1  DIGITS(0,0, 3,4, 5,5, 2,3, 6,6, 5) };
+static const uint8_t TWO_0_PT_01[] = { 5,  0,0,0,0,0,1  DIGITS(0,0, 0,1, 6,7, 9,9, 5,6, 5) };
 #undef DIGITS
 // x!=10 condition is added to make it easy for GCC to optimize out the check following the && in this case.
-#define GTEQ(n,l,minlen,fnzi,i,j,x) ((l) >= BCD_EXP10_PRECISION+(minlen) &&                       \
-                                     ((fnzi) <= (l)-BCD_EXP10_PRECISION-1+(i) ||                  \
-                                      ((x) != 10 && (n)[(l)-BCD_EXP10_PRECISION-1+(j)] >= (x))))
-#define GTEQ_100(n,l,fnzi)        GTEQ((n), (l),  3, (fnzi), -2, -1, 10)
-#define GTEQ_5(n,l,fnzi)          GTEQ((n), (l),  1, (fnzi), -1,  0,  5)
-#define GTEQ_2(n,l,fnzi)          GTEQ((n), (l),  1, (fnzi), -1,  0,  2)
+#define GTEQ(n,l,minlen,fnzi,i,j,x) ((l) >= BCD_EXP2_PRECISION+(minlen) &&                       \
+                                     ((fnzi) <= (l)-BCD_EXP2_PRECISION-1+(i) ||                  \
+                                      ((x) != 10 && (n)[(l)-BCD_EXP2_PRECISION-1+(j)] >= (x))))
+#define GTEQ_30(n,l,fnzi)         GTEQ((n), (l),  1, (fnzi), -2,  -1, 3)
+#define GTEQ_10(n,l,fnzi)         GTEQ((n), (l),  1, (fnzi), -1,  0,  10)
+#define GTEQ_4(n,l,fnzi)          GTEQ((n), (l),  1, (fnzi), -1,  0,  4)
 #define GTEQ_1(n,l,fnzi)          GTEQ((n), (l),  1, (fnzi),  0,  0,  1)
 #define GTEQ_0_PT_5(n,l,fnzi)     GTEQ((n), (l),  0, (fnzi),  0,  1,  5)
 #define GTEQ_0_PT_1(n,l,fnzi)     GTEQ((n), (l),  0, (fnzi),  0,  1,  1)
 #define GTEQ_0_PT_05(n,l,fnzi)    GTEQ((n), (l), -1, (fnzi),  1,  2,  5)
 #define GTEQ_0_PT_01(n,l,fnzi)    GTEQ((n), (l), -1, (fnzi),  1,  2,  1)
-#define N_DIGITS                  ((sizeof(TEN_5)/sizeof(uint8_t)) - 1)
-#define N_WHOLE_DIGITS            ((sizeof(TEN_5)/sizeof(uint8_t)) - BCD_EXP10_PRECISION - 1)
-uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
+#define N_DIGITS                  ((sizeof(TWO_4)/sizeof(uint8_t)) - 1)
+#define N_WHOLE_DIGITS            ((sizeof(TWO_4)/sizeof(uint8_t)) - BCD_EXP2_PRECISION - 1)
+uint8_t *bcd_exp2(uint8_t *digits, uint8_t length)
 {
 #ifdef TEST
-    assert(!GTEQ_100(digits, length, first_nonzero_index(digits, length)));
+    assert(!GTEQ_30(digits, length, first_nonzero_index(digits, length)));
 #endif
 
     uint8_t log_digits_[length];
@@ -295,41 +295,47 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
          first_loop = false) {
         memset8_zero(sub_digits, sizeof(sub_digits));
 
+        //printf("RDIGS ");
+        //uint8_t x;
+        //for (x = 0; x < length; ++x)
+        //    printf("%c", log_digits[x] + '0');
+        //printf("\n");
+
         const uint8_t *mulby_digits;
-        if (GTEQ_5(log_digits, length, fnzi)) {
-            //printf("MB 5\n");
-            sub_digits[length-BCD_EXP10_PRECISION-1] = 5;
-            mulby_digits = TEN_5;
+        if (GTEQ_10(log_digits, length, fnzi)) {
+            //printf("MB 10\n");
+            sub_digits[length-BCD_EXP2_PRECISION-2] = 1;
+            mulby_digits = TWO_10;
         }
-        else if (GTEQ_2(log_digits, length, fnzi)) {
-            //printf("MB 2\n");
-            sub_digits[length-BCD_EXP10_PRECISION-1] = 2;
-            mulby_digits = TEN_2;
+        else if (GTEQ_4(log_digits, length, fnzi)) {
+            //printf("MB 4\n");
+            sub_digits[length-BCD_EXP2_PRECISION-1] = 4;
+            mulby_digits = TWO_4;
         }
         else if (GTEQ_1(log_digits, length, fnzi)) {
             //printf("MB 1\n");
-            sub_digits[length-BCD_EXP10_PRECISION-1] = 1;
-            mulby_digits = TEN_1;
+            sub_digits[length-BCD_EXP2_PRECISION-1] = 1;
+            mulby_digits = TWO_1;
         }
         else if (GTEQ_0_PT_5(log_digits, length, fnzi)) {
             //printf("MB 0.5\n");
-            sub_digits[length-BCD_EXP10_PRECISION] = 5;
-            mulby_digits = TEN_0_PT_5;
+            sub_digits[length-BCD_EXP2_PRECISION] = 5;
+            mulby_digits = TWO_0_PT_5;
         }
         else if (GTEQ_0_PT_1(log_digits, length, fnzi)) {
             //printf("MB 0.1\n");
-            sub_digits[length-BCD_EXP10_PRECISION] = 1;
-            mulby_digits = TEN_0_PT_1;
+            sub_digits[length-BCD_EXP2_PRECISION] = 1;
+            mulby_digits = TWO_0_PT_1;
         }
         else if (GTEQ_0_PT_05(log_digits, length, fnzi)) {
             //printf("MB 0.05\n");
-            sub_digits[length-BCD_EXP10_PRECISION+1] = 5;
-            mulby_digits = TEN_0_PT_05;
+            sub_digits[length-BCD_EXP2_PRECISION+1] = 5;
+            mulby_digits = TWO_0_PT_05;
         }
         else { //if (GTEQ_0_PT_01(log_digits, length, fnzi)) {
             //printf("MB 0.01\n");
-            sub_digits[length-BCD_EXP10_PRECISION+1] = 1;
-            mulby_digits = TEN_0_PT_01;
+            sub_digits[length-BCD_EXP2_PRECISION+1] = 1;
+            mulby_digits = TWO_0_PT_01;
         }
 
         uint8_t trailing_zeroes = mulby_digits[0];
@@ -362,17 +368,17 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
             //    printf("%c", digits[x] + '0');
             //printf("\n");
 
-            // Round and remove digits from end to get back to BCD_EXP10_PRECISION.
+            // Round and remove digits from end to get back to BCD_EXP2_PRECISION.
             // Lazy rounding -- we don't bother propagating.
-            if (digits[result_length-BCD_EXP10_PRECISION] >= 5 && digits[result_length-BCD_EXP10_PRECISION-1] < 9)
-                ++digits[result_length-BCD_EXP10_PRECISION-1];
+            if (digits[result_length-BCD_EXP2_PRECISION] >= 5 && digits[result_length-BCD_EXP2_PRECISION-1] < 9)
+                ++digits[result_length-BCD_EXP2_PRECISION-1];
             i = result_length - 1;
-            uint8_t j = result_length - 1 - BCD_EXP10_PRECISION;
+            uint8_t j = result_length - 1 - BCD_EXP2_PRECISION;
             do {
                 digits[i] = digits[j];
             } while (--i, j-- > 0);
-            digits += BCD_EXP10_PRECISION;
-            result_length -= BCD_EXP10_PRECISION;
+            digits += BCD_EXP2_PRECISION;
+            result_length -= BCD_EXP2_PRECISION;
         }
 
         uint8_t *log_digits_n = bcd_sub(log_digits, length, sub_digits, length);
@@ -389,9 +395,8 @@ uint8_t *bcd_exp10(uint8_t *digits, uint8_t length)
     return digits;
 }
 #undef GTEQ
-#undef GTEQ_100
-#undef GTEQ_5
-#undef GTEQ_2
+#undef GTEQ_10
+#undef GTEQ_4
 #undef GTEQ_1
 #undef GTEQ_0_PT_5
 #undef GTEQ_0_PT_1
@@ -477,49 +482,58 @@ static void uint32_to_bcd_test()
     printf("\n");
 }
 
-static void exp10_test1()
+static void exp2_test1()
 {
     uint8_t digits[] = { 0, 1, 0, 0, 0, '\0' };
-    uint8_t *r = bcd_exp10(digits+1, 4);
+    uint8_t *r = bcd_exp2(digits+1, 4);
     bcd_to_string(r, bcd_length_after_op(digits+1, 4, r));
-    printf("1^10 = %s/1000\n", r);
-    assert(!strcmp("10000", (char *)r));
+    printf("1^2 = %s/1000\n", r);
+    assert(!strcmp("2000", (char *)r));
 }
 
-static void exp10_test2()
+static void exp2_test2()
 {
     uint8_t digits[] = { 0, 0, 0, 2, 0, 0, 0, '\0' };
-    uint8_t *r = bcd_exp10(digits+3, 4);
+    uint8_t *r = bcd_exp2(digits+3, 4);
     bcd_to_string(r, bcd_length_after_op(digits+3, 4, r));
-    printf("10^2 = %s/1000\n", r);
-    assert(!strcmp("100000", (char *)r));
+    printf("2^2 = %s/1000\n", r);
+    assert(!strcmp("4000", (char *)r));
 }
 
-static void exp10_test3()
+static void exp2_test3()
 {
     uint8_t digits[] = { 0, 0, 0, 1, 5, 0, 0, '\0' };
-    uint8_t *r = bcd_exp10(digits+3, 4);
+    uint8_t *r = bcd_exp2(digits+3, 4);
     bcd_to_string(r, bcd_length_after_op(digits+3, 4, r));
-    printf("[%i], 10^1.5 = %s/1000\n", bcd_length_after_op(digits+3, 4, r), r);
-    assert(!strcmp("31620", (char *)r));
+    printf("[%i], 2^1.5 = %s/1000\n", bcd_length_after_op(digits+3, 4, r), r);
+    assert(!strcmp("2828", (char *)r));
 }
 
-static void exp10_test4()
+static void exp2_test4()
 {
     uint8_t digits[] = { 0, 0, 0, 1, 6, 0, 0, '\0' };
-    uint8_t *r = bcd_exp10(digits+3, 4);
+    uint8_t *r = bcd_exp2(digits+3, 4);
     bcd_to_string(r, bcd_length_after_op(digits+3, 4, r));
-    printf("[%i], 10^1.6 = %s/1000\n", bcd_length_after_op(digits+3, 4, r), r);
-    assert(!strcmp("39809", (char *)r));
+    printf("[%i], 2^1.6 = %s/1000\n", bcd_length_after_op(digits+3, 4, r), r);
+    assert(!strcmp("3032", (char *)r));
 }
 
-static void exp10_test5()
+static void exp2_test5()
 {
     uint8_t digits[] = { 0, 0, 0, 1, 6, 1, 0, '\0' };
-    uint8_t *r = bcd_exp10(digits+3, 4);
+    uint8_t *r = bcd_exp2(digits+3, 4);
     bcd_to_string(r, bcd_length_after_op(digits+3, 4, r));
-    printf("[%i], 10^1.61 = %s/1000\n", bcd_length_after_op(digits+3, 4, r), r);
-    assert(!strcmp("40725", (char *)r));
+    printf("[%i], 2^1.61 = %s/1000\n", bcd_length_after_op(digits+3, 4, r), r);
+    assert(!strcmp("3053", (char *)r));
+}
+
+static void exp2_test6()
+{
+    uint8_t digits[] = { 0, 0, 0, 0, 1, 5, 6, 1, 0, '\0' };
+    uint8_t *r = bcd_exp2(digits+4, 5);
+    bcd_to_string(r, bcd_length_after_op(digits+4, 5, r));
+    printf("[%i], 2^15.61 = %s/1000\n", bcd_length_after_op(digits+4, 5, r), r);
+    assert(!strcmp("50017687", (char *)r));
 }
 
 static void mul_test1()
@@ -745,11 +759,12 @@ int main()
 {
     uint32_to_bcd_test();
 
-    exp10_test1();
-    exp10_test2();
-    exp10_test3();
-    exp10_test4();
-    exp10_test5();
+    exp2_test1();
+    exp2_test2();
+    exp2_test3();
+    exp2_test4();
+    exp2_test5();
+    exp2_test6();
 
     mul_test1();
     mul_test2();
