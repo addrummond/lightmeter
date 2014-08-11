@@ -91,13 +91,14 @@ typedef struct ev_with_fracs {
 
 #define ev_with_fracs_init(evwf)              ((evwf).ev = 0, (evwf).fracs = 0)
 #define ev_with_fracs_set_ev8(evwf, ev8)      ((evwf).ev = (ev8))
+#define ev_with_fracs_get_ev8(evwf)           ((evwf).ev)
 #define ev_with_fracs_get_thirds(evwf)        (((evwf).fracs & 0b1100) >> 2)
 #define ev_with_fracs_set_thirds(evwf, v)     ((evwf).fracs |= ((v) & 0b11) << 2)
-#define ev_with_fracs_get_eighths(evwf)       ((evwf).ev)
+#define ev_with_fracs_get_eighths(evwf)       ((evwf).ev & 0b111)
 #define ev_with_fracs_get_tenths(evwf)        ((evwf).fracs >> 4)
 #define ev_with_fracs_set_tenths(evwf, v)     ((evwf).fracs |= (v) << 4)
 #define ev_with_fracs_is_whole(evwf)          ((evwf).fracs == 0)
-#define ev_with_fracs_get_whole_eighths(evwf) ((evwf).ev & ~0b111)
+#define ev_with_fracs_get_wholes(evwf)         ((evwf).ev >> 3)
 #define ev_with_fracs_zero_fracs(evwf)        ((evwf).fracs = 0)
 #define ev_with_fracs_get_nth(evwf)           (((evwf).fracs & 0b11) == 0 ? 8 : (((evwf).fracs & 0b11) == 1 ? 3 : 10))
 #define ev_with_fracs_set_nth(evwf, nth)      ((nth) == 8 ? (evwf).fracs |= 0 : ((nth) == 3 ? ((evwf).fracs |= 1) : ((evwf).fracs |= 2)))
@@ -114,8 +115,8 @@ ev_with_fracs_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t vo
 uint8_t convert_from_reference_voltage(uint16_t adc_out);
 
 uint8_t *ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits);
-#define EV_AT_100_TO_BCD_LUX_RESULT_PRECISION BCD_EXP10_PRECISION
-#define EV_AT_100_TO_BCD_LUX_BCD_LENGTH       (11+BCD_EXP10_PRECISION-3)
+#define EV_AT_100_TO_BCD_LUX_RESULT_PRECISION BCD_EXP2_PRECISION
+#define EV_AT_100_TO_BCD_LUX_BCD_LENGTH       (12+BCD_EXP2_PRECISION-3)
 
 // Note that these give the tenth/third immediately <= the nearest eighth
 // (i.e. they don't round up).

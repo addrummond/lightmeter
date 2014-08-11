@@ -536,6 +536,15 @@ static void exp2_test6()
     assert(!strcmp("50017687", (char *)r));
 }
 
+static void exp2_test7()
+{
+    uint8_t digits[] = { 0, 0, 0, 0, 0, 6, 0, 0, 0, '\0' };
+    uint8_t *r = bcd_exp2(digits+5, 4);
+    bcd_to_string(r, bcd_length_after_op(digits+5, 4, r));
+    printf("[%i], 2^6 = %s/1000\n", bcd_length_after_op(digits+5, 4, r), r);
+    assert(!strcmp("64000", (char *)r));
+}
+
 static void mul_test1()
 {
     uint8_t digits1[] = { 0, 0, 0, 1, 9, 3, '\0' };
@@ -567,6 +576,17 @@ static void mul_test3()
     bcd_to_string(r, bcd_length_after_op(digits1+3, 4, r));
     printf("1000 * 000003162 = %s\n", r);
     assert(!strcmp((char *)r, "3162000"));
+}
+
+static void mul_test4()
+{
+    uint8_t digits1[] = { 0, 0, 0, 6, 0, 2, 7, 3, '\0' };
+    uint8_t digits2[] = { 2, 5, '\0' };
+
+    uint8_t *r = bcd_mul(digits1+3, 5, digits2, 2);
+    bcd_to_string(r, bcd_length_after_op(digits1+3, 5, r));
+    printf("60273 * 25 = %s\n", r);
+    assert(!strcmp((char *)r, "1506825"));
 }
 
 static void add_test1()
@@ -765,10 +785,12 @@ int main()
     exp2_test4();
     exp2_test5();
     exp2_test6();
+    exp2_test7();
 
     mul_test1();
     mul_test2();
     mul_test3();
+    mul_test4();
 
     add_test1();
     add_test2();

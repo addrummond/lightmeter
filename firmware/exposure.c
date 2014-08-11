@@ -563,34 +563,31 @@ uint8_t iso_bcd_to_third_stops(uint8_t *digits, uint8_t length)
 // Not putting this in PROGMEM as it's very small.
 static const uint8_t ev_wtih_fracs_to_xth_consts[] = {
     // 120
-    15, 40, 12,
+    120, 40, 15, 12,
     // 100
-    13, 33, 10
+    100, 33, 13, 10
 };
 #define consts ev_wtih_fracs_to_xth_consts
 static int16_t ev_with_fracs_to_xth(ev_with_fracs_t evwf, uint8_t const_offset)
 {
     uint8_t nth = ev_with_fracs_get_nth(evwf);
 
-    if (nth == 8)
-        return evwf.ev * consts[const_offset + 0];
-
-    int16_t whole = ev_with_fracs_get_whole_eighths(evwf) * consts[const_offset + 0];
+    int16_t whole = ev_with_fracs_get_wholes(evwf) * consts[const_offset+0];
     int16_t rest;
-    if (nth == 3) {
-        rest = ev_with_fracs_get_thirds(evwf) * consts[const_offset + 1];
-    }
-    else if (nth == 10) {
-        rest = ev_with_fracs_get_tenths(evwf) * consts[const_offset + 2];
-    }
-    else {
+    if (nth == 3)
+        rest = ev_with_fracs_get_thirds(evwf) * consts[const_offset+1];
+    else if (nth == 8)
+        rest = ev_with_fracs_get_eighths(evwf) * consts[const_offset+2];
+    else if (nth == 10)
+        rest = ev_with_fracs_get_tenths(evwf) * consts[const_offset+3];
+    else
         assert(false);
-    }
+
     return whole + rest;
 }
 #undef consts
 #define ev_with_fracs_to_120th(x) ev_with_fracs_to_xth((x), 0)
-#define ev_with_fracs_to_100th(x) ev_with_fracs_to_xth((x), 3)
+#define ev_with_fracs_to_100th(x) ev_with_fracs_to_xth((x), 4)
 
 // This is called by the following macros defined in exposure.h:
 //
@@ -610,8 +607,8 @@ ev_with_fracs_t x_given_y_iso_ev(ev_with_fracs_t given_x_, ev_with_fracs_t given
 
     int16_t given_x = ev_with_fracs_to_120th(given_x_);
     int16_t given_iso = ev_with_fracs_to_120th(given_iso_);
-    int16_t given_ev = (int16_t)(ev_with_fracs_get_eighths(evwf) * 15);
-    int16_t whole_given_ev = (int16_t)((ev_with_fracs_get_eighths(evwf) & ~0b111) * 15);
+    int16_t given_ev = (int16_t)(ev_with_fracs_get_ev8(evwf) * 15);
+    int16_t whole_given_ev = (int16_t)((ev_with_fracs_get_ev8(evwf) & ~0b111) * 15);
     // We do the main calculation using the 1/120EV value derived from the 1/8 EV value.
     // We now make a note of the small difference in the EV value which we get if
     // we calculate it from the 1/10 or 1/3 EV value. We add this difference
@@ -746,58 +743,47 @@ ev_with_fracs_t fps_and_angle_to_shutter_speed(uint16_t fps, uint16_t angle)
     return ret;
 }
 
-#define LOG10_2_5__1000   398   // 0.3979400086720376
-#define LOG10_2__10000    33219 // 3.321928094887363
+// Gets lux as BCD with 4 decimal places.
 uint8_t *ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits)
 {
+    //printf("ORIG = %i 100th = %i\n", ev_with_fracs_get_ev8(evwf), ev_with_fracs_to_100th(evwf));
     int32_t ev = (ev_with_fracs_to_100th(evwf) - 500) * 10;
 
-    // This magic value is used to add some magic compensation later on.
-    int8_t comp = -(((ev_with_fracs_get_eighths(evwf)-(5*8))/8 - 1)*12);
-    //printf("COMP %i\n", comp);
+    //printf("EV %i (%i)\n", ev, ev_with_fracs_get_ev8(evwf));
+    assert(ev >= 0 && ev <= 25000);
 
-    assert(ev > 0);
-    // Convert from log2 to log10.
-    // To do this, we need to divide by log10(2).
-    ev *= 10000;
-    ev /= LOG10_2__10000;
-    // Multiply by 2.5.
-    ev += LOG10_2_5__1000;
-    // Subtract 64 (not sure why this is necessary).
-    ev -= 64;
-    // Add magic compensation.
-    ev += comp;
-    //printf("LOG10 ev = %i/1000\n", ev);
-
-    // The resulting number cannot be bigger than five digits.
-    // Following exponention 12 digits is the max.
-    // We leave extra space at the end if BCD_EXP10_PRECISION is > 2.
-#if BCD_EXP10_PRECISION < 2
-#error "Bad value for BCD_EXP10_PRECISION in ev_at_100_to_bcd_lux in exposure.c"
+    // The resulting number cannot be bigger than six digits.
+    // Following exponention and multiplication 12 digits is the max,
+    // assuming convervative max EV of 25.
+    // We leave extra space at the end if BCD_EXP2_PRECISION is > 2.
+#if BCD_EXP2_PRECISION < 2
+#error "Bad value for BCD_EXP2_PRECISION in ev_at_100_to_bcd_lux in exposure.c"
 #endif
-    memset8_zero(digits, EV_AT_100_TO_BCD_LUX_BCD_LENGTH*sizeof(uint8_t));
-    uint8_t *digits_p = uint32_to_bcd(ev, digits, (EV_AT_100_TO_BCD_LUX_BCD_LENGTH-(BCD_EXP10_PRECISION-3))*sizeof(uint8_t));
+    memset8_zero(digits, (EV_AT_100_TO_BCD_LUX_BCD_LENGTH)*sizeof(uint8_t));
+    uint8_t *digits_p = uint32_to_bcd(ev, digits, (EV_AT_100_TO_BCD_LUX_BCD_LENGTH-(BCD_EXP2_PRECISION-3))*sizeof(uint8_t));
 
     //uint8_t x;
-    //printf("digits_p = ");
+    //printf("[%i], digits_p = ", ev);
     //for (x = 0; x < bcd_length_after_op(digits, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, digits_p); ++x)
     //    printf("%c", digits_p[x] + '0');
     //printf("\n");
 
     uint8_t rlen = bcd_length_after_op(digits, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, digits_p);
-    uint8_t *digits_p2 = bcd_exp10(digits_p, rlen);
+    uint8_t *digits_p2 = bcd_exp2(digits_p, rlen);
 
-    // Code for subtracting a constant offset, should this prove necessary.
-    //
-    //rlen = bcd_length_after_op(digits_p, rlen, digits_p2);
-    //uint8_t sub[3];
-    //sub[0] = 7;
-    //sub[1] = 5;
-    //sub[2] = 0;
-    //digits_p2 = bcd_sub(digits_p2, rlen, sub, 3);
+    //uint8_t x;
+    //printf("digits_p = ");
+    //for (x = 0; x < bcd_length_after_op(digits_p1, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, digits_p2); ++x)
+    //    printf("%c", digits_p2[x] + '0');
+    //printf("\n");
 
-    // digits_p2 now contains the lux value in decimal.
-    return digits_p2;
+    static uint8_t TWO_FIVE[] = { 2, 5 };
+    uint8_t rlen2 = bcd_length_after_op(digits_p, rlen, digits_p2);
+    uint8_t *digits_p3 = bcd_mul(digits_p2, rlen2, TWO_FIVE, sizeof(TWO_FIVE)/sizeof(uint8_t));
+    //uint8_t rlen3 = bcd_length_after_op(digits_p2, rlen2, digits_p3);
+
+    // digits_p3 now contains the lux value in decimal.
+    return digits_p3;
 }
 #undef LOG10_2_5__1000
 #undef LOG10_2__10000
@@ -824,12 +810,12 @@ static void print_bcd(uint8_t *digits, uint8_t length, uint8_t sigfigs, uint8_t 
         if (i == length - precision)
             printf(".");
         uint8_t val = digits[i];
-        if (i + 1 < length && digits[i+1] >= 5) {
+        // Rounding logic. TODO: Buggy.
+        /*if (i + 1 < length && digits[i+1] >= 5) {
             uint8_t j = i;
             for (;;) {
                 ++digits[j];
 
-                // Rounding logic. TODO: Buggy.
                 if (digits[j] > 9) {
                     digits[j] = digits[j] % 10;
                     --j;
@@ -838,7 +824,7 @@ static void print_bcd(uint8_t *digits, uint8_t length, uint8_t sigfigs, uint8_t 
                     break;
                 }
             }
-        }
+        }*/
         printf("%c", digits[i] + '0');
     }
     for (; i < length - precision; ++i)
@@ -855,19 +841,21 @@ int main()
     printf("ev_at_100_to_bcd_lux\n");
     ev_with_fracs_t evat100;
     uint8_t ev8;
-    for (ev8 = 6*8; ev8 < 160; ++ev8) {
+    for (ev8 = 8*5; ev8 < 160; ++ev8) {
         ev_with_fracs_init(evat100);
         ev_with_fracs_set_ev8(evat100, ev8);
         uint8_t lux_digits_[EV_AT_100_TO_BCD_LUX_BCD_LENGTH];
         uint8_t *lux_digits = ev_at_100_to_bcd_lux(evat100, lux_digits_);
-        printf("EV@100 %f = ", (((float)ev_with_fracs_get_eighths(evat100))/8.0)-5.0);
+        printf("EV@100 %f = ", (((float)ev_with_fracs_get_ev8(evat100))/8.0)-5.0);
         uint8_t x;
-        print_bcd(lux_digits, bcd_length_after_op(lux_digits_, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, lux_digits), 2, 3);
+        print_bcd(lux_digits, bcd_length_after_op(lux_digits_, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, lux_digits), 3, 4);
         printf("\n");
         //for (x = 0; x < bcd_length_after_op(lux_digits_, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, lux_digits); ++x)
         //    printf("%c", lux_digits[x] + '0');
         //printf("\n");
     }
+
+    return 0;
 
     printf("fps_and_angle_to_shutter_speed\n");
     uint16_t fps;
@@ -965,7 +953,7 @@ int main()
         ev_with_fracs_set_thirds(isoevwf, is%3);
         ev_with_fracs_set_tenths(isoevwf, tenths_from_thirds(is%3));
         ev_with_fracs_set_nth(isoevwf, 3);
-        //printf("ISO EV %i (%i,%i)*****\n", ev_with_fracs_get_eighths(isoevwf), ((is/3)*8) + eighths_from_thirds(is%3), is);
+        //printf("ISO EV %i (%i,%i)*****\n", ev_with_fracs_get_ev8(isoevwf), ((is/3)*8) + eighths_from_thirds(is%3), is);
         //printf("ISO third %i *****\n", ev_with_fracs_get_thirds(isoevwf));
         ev_with_fracs_t ssevwf;
         ev_with_fracs_init(ssevwf);
