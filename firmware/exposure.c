@@ -794,41 +794,11 @@ uint8_t *ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits)
 #include <stdio.h>
 extern const uint8_t TEST_VOLTAGE_TO_EV[];
 
-static void print_bcd(uint8_t *digits, uint8_t length, uint8_t sigfigs, uint8_t precision)
+static void print_bcd(uint8_t *digits, uint8_t length, uint8_t sigfigs, uint8_t dps)
 {
-    uint8_t i;
-    for (i = 0; i < length && digits[i] == 0; ++i);
-    if (i == length) {
-        printf("0");
-        return;
-    }
-
-    uint8_t n = i + sigfigs;
-    if (n > length)
-        n = length;
-    for (; i < n; ++i) {
-        if (i == length - precision)
-            printf(".");
-        uint8_t val = digits[i];
-        // Rounding logic. TODO: Buggy.
-        /*if (i + 1 < length && digits[i+1] >= 5) {
-            uint8_t j = i;
-            for (;;) {
-                ++digits[j];
-
-                if (digits[j] > 9) {
-                    digits[j] = digits[j] % 10;
-                    --j;
-                }
-                else {
-                    break;
-                }
-            }
-        }*/
-        printf("%c", digits[i] + '0');
-    }
-    for (; i < length - precision; ++i)
-        printf("0");
+    uint8_t buf[length+2];
+    bcd_to_string_fp(digits, length, buf, sigfigs, dps);
+    printf("%s", buf);
 }
 
 int main()
