@@ -749,6 +749,12 @@ uint8_t *ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits)
     //printf("ORIG = %i 100th = %i\n", ev_with_fracs_get_ev8(evwf), ev_with_fracs_to_100th(evwf));
     int32_t ev = (ev_with_fracs_to_100th(evwf) - 500) * 10;
 
+    // Magic compensation. This corrects somewhat for the imprecision of the
+    // bcd_exp2 function, which gets worse the further we go from whole EV
+    // values.
+    uint8_t eighths = ev_with_fracs_get_eighths(evwf);
+    ev -= (eighths * 4);
+
     //printf("EV %i (%i)\n", ev, ev_with_fracs_get_ev8(evwf));
     assert(ev >= 0 && ev <= 25000);
 
@@ -792,6 +798,7 @@ uint8_t *ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits)
 #ifdef TEST
 
 #include <stdio.h>
+#include <math.h>
 extern const uint8_t TEST_VOLTAGE_TO_EV[];
 
 static void print_bcd(uint8_t *digits, uint8_t length, uint8_t sigfigs, uint8_t dps)
@@ -812,14 +819,16 @@ int main()
     ev_with_fracs_t evat100;
     uint8_t ev8;
     for (ev8 = 8*5; ev8 < 160; ++ev8) {
+        float fev = ((float)ev8 - 40.0) / 8.0;
+        float flux = pow(2.0, fev) * 2.5;
         ev_with_fracs_init(evat100);
         ev_with_fracs_set_ev8(evat100, ev8);
         uint8_t lux_digits_[EV_AT_100_TO_BCD_LUX_BCD_LENGTH];
         uint8_t *lux_digits = ev_at_100_to_bcd_lux(evat100, lux_digits_);
-        printf("EV@100 %f = ", (((float)ev_with_fracs_get_ev8(evat100))/8.0)-5.0);
+        printf("EV@100 %f =,", (((float)ev_with_fracs_get_ev8(evat100))/8.0)-5.0);
         uint8_t x;
         print_bcd(lux_digits, bcd_length_after_op(lux_digits_, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, lux_digits), 3, 4);
-        printf("\n");
+        printf(",%f\n", flux);
         //for (x = 0; x < bcd_length_after_op(lux_digits_, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, lux_digits); ++x)
         //    printf("%c", lux_digits[x] + '0');
         //printf("\n");
