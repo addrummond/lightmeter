@@ -8,8 +8,8 @@ uint8_t *bcd_add_(uint8_t *digits1, uint8_t digits1_length, uint8_t *digits2, ui
 #define bcd_add(a,b,c,d) bcd_add_((a), (b), (c), (d), 0)
 #define bcd_sub(a,b,c,d) bcd_add_((a), (b), (c), (d), 0xFF)
 uint8_t *bcd_mul(uint8_t *digits1, uint8_t length1, const uint8_t *digits2, uint8_t length2);
-void bcd_to_string(uint8_t *digits, uint8_t length);
-void string_to_bcd(uint8_t *digits, uint8_t length);
+uint8_t bcd_to_string_fp(uint8_t *digits, uint8_t length, uint8_t *dest, uint8_t sigfigs, uint8_t dps);
+#define bcd_to_string(digits, length) bcd_to_string_fp((digits), (length), (digits), 255, 255)
 bool bcd_cmp(const uint8_t *digits1, uint8_t length1, const uint8_t *digits2, uint8_t length2, uint8_t which);
 uint8_t *bcd_div_by_lt10(uint8_t *digits, uint8_t length, uint8_t by);
 uint8_t *uint32_to_bcd(uint32_t n, uint8_t *digits, uint8_t length);

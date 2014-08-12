@@ -426,18 +426,57 @@ uint8_t *uint32_to_bcd(uint32_t n, uint8_t *digits, uint8_t length)
     return digits + i;
 }
 
-void bcd_to_string(uint8_t *digits, uint8_t length)
+// 'digits' and 'test' may point to same buffer.
+uint8_t bcd_to_string_fp(uint8_t *digits, uint8_t length, uint8_t *dest, uint8_t sigfigs, uint8_t dps)
 {
     uint8_t i;
-    for (i = 0; i < length; ++i)
-        digits[i] += 48;
-}
+    for (i = 0; i < length && digits[i] == 0; ++i);
+    if (i == length) {
+        dest[0] = '0';
+        dest[1] = '\0';
+        return 1;
+    }
 
-void string_to_bcd(uint8_t *digits, uint8_t length)
-{
-    uint8_t i;
-    for (i = 0; i < length; ++i)
-        digits[i] -= 48;
+    uint8_t dot = 0;
+
+    uint8_t j;
+    for (j = 0; i < length && j < sigfigs; ++i, ++j) {
+        if (length - i == dps)
+            dot = j++;
+        dest[j] = '0' + digits[i];
+    }
+
+    if (i > length - 1)
+        return j;
+
+    // Rounding
+    if (digits[i] >= 5) {
+        uint8_t k = j-1;
+        do {
+            if (dest[k] == '.')
+                continue;
+
+            ++dest[k];
+            if (dest[k] < '0' + 10)
+                break;
+            else
+                dest[k] = '0';
+        } while (--k > 0);
+    }
+
+    // Trailing zeroes if any.
+    for (; length - i > dps; ++i, ++j) {
+        if (length - i == dps)
+            dot = j++;
+        dest[j] = '0';
+    }
+
+    if (dot != 0)
+        dest[dot] = '.';
+
+    dest[j] = '\0';
+
+    return j;
 }
 
 #if !defined(__AVR__)
@@ -480,6 +519,16 @@ static void uint32_to_bcd_test()
     uint32_to_bcd_test_(27);
     uint32_to_bcd_test_(65536);
     printf("\n");
+}
+
+static void bcd_to_string_fp_test()
+{
+    uint8_t digits[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0  };
+    uint8_t dest[sizeof(digits)/sizeof(uint8_t) + 1 /* point */ + 1 /* zero terminator */];
+
+    bcd_to_string_fp(digits, (sizeof(digits)/sizeof(uint8_t))-2, digits, 7, 3);
+
+    printf("bcd_to_string_fp: %s\n", digits);
 }
 
 static void exp2_test1()
@@ -778,6 +827,8 @@ static void div_by_test4()
 int main()
 {
     uint32_to_bcd_test();
+
+    bcd_to_string_fp_test();
 
     exp2_test1();
     exp2_test2();
