@@ -11216,6 +11216,58 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pad name="+" x="22.5" y="0" drill="1" diameter="2.54"/>
 <text x="-5.08" y="-1.27" size="2.54" layer="25" font="vector">&gt;NAME</text>
 </package>
+<package name="AVRISP">
+<wire x1="-2.54" y1="3.048" x2="-1.778" y2="3.81" width="0.127" layer="21"/>
+<wire x1="-1.778" y1="3.81" x2="1.778" y2="3.81" width="0.127" layer="21"/>
+<wire x1="1.778" y1="3.81" x2="2.54" y2="3.048" width="0.127" layer="21"/>
+<wire x1="2.54" y1="3.048" x2="2.54" y2="1.778" width="0.127" layer="21"/>
+<wire x1="2.54" y1="1.778" x2="2.032" y2="1.27" width="0.127" layer="21"/>
+<wire x1="2.032" y1="1.27" x2="2.54" y2="0.762" width="0.127" layer="21"/>
+<wire x1="2.54" y1="0.762" x2="2.54" y2="-0.762" width="0.127" layer="21"/>
+<wire x1="2.54" y1="-0.762" x2="2.032" y2="-1.27" width="0.127" layer="21"/>
+<wire x1="2.032" y1="-1.27" x2="2.54" y2="-1.778" width="0.127" layer="21"/>
+<wire x1="2.54" y1="-1.778" x2="2.54" y2="-3.048" width="0.127" layer="21"/>
+<wire x1="2.54" y1="-3.048" x2="1.778" y2="-3.81" width="0.127" layer="21"/>
+<wire x1="1.778" y1="-3.81" x2="-1.778" y2="-3.81" width="0.127" layer="21"/>
+<wire x1="-1.778" y1="-3.81" x2="-2.54" y2="-3.048" width="0.127" layer="21"/>
+<wire x1="-2.54" y1="-3.048" x2="-2.54" y2="-1.778" width="0.127" layer="21"/>
+<wire x1="-2.54" y1="-1.778" x2="-2.032" y2="-1.27" width="0.127" layer="21"/>
+<wire x1="-2.032" y1="-1.27" x2="-2.54" y2="-0.762" width="0.127" layer="21"/>
+<wire x1="-2.54" y1="-0.762" x2="-2.54" y2="0.762" width="0.127" layer="21"/>
+<wire x1="-2.54" y1="0.762" x2="-2.032" y2="1.27" width="0.127" layer="21"/>
+<wire x1="-2.032" y1="1.27" x2="-2.54" y2="1.778" width="0.127" layer="21"/>
+<wire x1="-2.54" y1="1.778" x2="-2.54" y2="3.048" width="0.127" layer="21"/>
+<pad name="3" x="-1.27" y="0" drill="0.9" diameter="1.6256"/>
+<pad name="4" x="1.27" y="0" drill="0.9" diameter="1.6256"/>
+<pad name="2" x="1.27" y="2.54" drill="0.9" diameter="1.6256"/>
+<pad name="1" x="-1.27" y="2.54" drill="0.9" diameter="1.6256"/>
+<pad name="5" x="-1.27" y="-2.54" drill="0.9" diameter="1.6256"/>
+<pad name="6" x="1.27" y="-2.54" drill="0.9" diameter="1.6256"/>
+<text x="-3.048" y="-3.048" size="1.27" layer="25" rot="R90">&gt;NAME</text>
+<text x="-3.048" y="3.556" size="1.016" layer="21" font="vector">1</text>
+</package>
+<package name="AVRISP-BOX">
+<pad name="3" x="-1.143" y="0" drill="0.9" diameter="1.6256"/>
+<pad name="4" x="1.143" y="0" drill="0.9" diameter="1.6256"/>
+<pad name="2" x="1.397" y="2.54" drill="0.9" diameter="1.6256"/>
+<pad name="1" x="-1.397" y="2.54" drill="0.9" diameter="1.6256"/>
+<pad name="5" x="-1.397" y="-2.54" drill="0.9" diameter="1.6256"/>
+<pad name="6" x="1.397" y="-2.54" drill="0.9" diameter="1.6256"/>
+<text x="-6.048" y="-2.948" size="1.27" layer="25" rot="R90">&gt;NAME</text>
+<wire x1="-4.4" y1="7.6" x2="4.4" y2="7.6" width="0.127" layer="21"/>
+<wire x1="4.4" y1="7.6" x2="4.4" y2="-7.6" width="0.127" layer="21"/>
+<wire x1="4.4" y1="-7.6" x2="-4.4" y2="-7.6" width="0.127" layer="21"/>
+<wire x1="-4.4" y1="-7.6" x2="-4.4" y2="-1.5" width="0.127" layer="21"/>
+<wire x1="-4.4" y1="-1.5" x2="-4.4" y2="1.5" width="0.127" layer="21"/>
+<wire x1="-4.4" y1="1.5" x2="-4.4" y2="7.6" width="0.127" layer="21"/>
+<wire x1="-4.4" y1="1.5" x2="-3.3" y2="1.5" width="0.127" layer="21"/>
+<wire x1="-3.3" y1="1.5" x2="-3.3" y2="-1.5" width="0.127" layer="21"/>
+<wire x1="-3.3" y1="-1.5" x2="-4.4" y2="-1.5" width="0.127" layer="21"/>
+<wire x1="-3.2" y1="6.5" x2="3.2" y2="6.5" width="0.127" layer="21"/>
+<wire x1="3.2" y1="6.5" x2="3.2" y2="-6.5" width="0.127" layer="21"/>
+<wire x1="3.2" y1="-6.5" x2="-3.2" y2="-6.5" width="0.127" layer="21"/>
+<wire x1="-3.2" y1="-6.5" x2="-3.2" y2="6.5" width="0.127" layer="21"/>
+</package>
 </packages>
 <symbols>
 <symbol name="AAA">
@@ -11224,6 +11276,19 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <text x="-7.62" y="5.08" size="1.778" layer="95" font="vector">&gt;NAME</text>
 <pin name="-" x="-7.62" y="0" visible="off" length="middle"/>
 <pin name="+" x="5.08" y="0" visible="off" length="middle" rot="R180"/>
+</symbol>
+<symbol name="AVRISP">
+<wire x1="-7.62" y1="5.08" x2="10.16" y2="5.08" width="0.254" layer="94"/>
+<wire x1="10.16" y1="5.08" x2="10.16" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="10.16" y1="-5.08" x2="-7.62" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="-7.62" y1="-5.08" x2="-7.62" y2="5.08" width="0.254" layer="94"/>
+<text x="-2.54" y="-7.62" size="1.778" layer="95">&gt;NAME</text>
+<pin name="MISO" x="-12.7" y="2.54" length="middle" direction="in"/>
+<pin name="SCK" x="-12.7" y="0" length="middle" direction="out"/>
+<pin name="RST" x="-12.7" y="-2.54" length="middle" direction="out"/>
+<pin name="GND" x="15.24" y="-2.54" length="middle" direction="pwr" rot="R180"/>
+<pin name="MOSI" x="15.24" y="0" length="middle" direction="out" rot="R180"/>
+<pin name="VCC" x="15.24" y="2.54" length="middle" direction="pwr" rot="R180"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -11240,6 +11305,42 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <connects>
 <connect gate="G$1" pin="+" pad="+"/>
 <connect gate="G$1" pin="-" pad="-"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="AVRISP" prefix="ISP">
+<description>&lt;b&gt;AVR ISP HEADER&lt;/b&gt;
+&lt;br&gt;
+Standard 6 pin header for AVR programming</description>
+<gates>
+<gate name="G$1" symbol="AVRISP" x="-2.54" y="0"/>
+</gates>
+<devices>
+<device name="-6" package="AVRISP">
+<connects>
+<connect gate="G$1" pin="GND" pad="6"/>
+<connect gate="G$1" pin="MISO" pad="1"/>
+<connect gate="G$1" pin="MOSI" pad="4"/>
+<connect gate="G$1" pin="RST" pad="5"/>
+<connect gate="G$1" pin="SCK" pad="3"/>
+<connect gate="G$1" pin="VCC" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="-BOX" package="AVRISP-BOX">
+<connects>
+<connect gate="G$1" pin="GND" pad="6"/>
+<connect gate="G$1" pin="MISO" pad="1"/>
+<connect gate="G$1" pin="MOSI" pad="4"/>
+<connect gate="G$1" pin="RST" pad="5"/>
+<connect gate="G$1" pin="SCK" pad="3"/>
+<connect gate="G$1" pin="VCC" pad="2"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -11301,13 +11402,6 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <part name="GND16" library="supply1" deviceset="GND" device=""/>
 <part name="C2" library="rcl" deviceset="C-EU" device="C1206" value="4µ7"/>
 <part name="Q2" library="transistor-small-signal" deviceset="BSS123" device=""/>
-<part name="TMISO" library="testpad" deviceset="TP" device="B1,27"/>
-<part name="TMOSI" library="testpad" deviceset="TP" device="B1,27"/>
-<part name="TRST" library="testpad" deviceset="TP" device="B1,27"/>
-<part name="TVTG" library="testpad" deviceset="TP" device="B1,27"/>
-<part name="TSCK" library="testpad" deviceset="TP" device="B1,27"/>
-<part name="TGND" library="testpad" deviceset="TP" device="B1,27"/>
-<part name="GND5" library="supply1" deviceset="GND" device=""/>
 <part name="Q1" library="transistor-small-signal" deviceset="BSS123" device=""/>
 <part name="GND17" library="supply1" deviceset="GND" device=""/>
 <part name="BATT1" library="adafruit" deviceset="AAA" device=""/>
@@ -11334,6 +11428,8 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <part name="Q3" library="transistor-small-signal" deviceset="BSS84" device=""/>
 <part name="Q7.1" library="transistor-small-signal" deviceset="BSS123" device=""/>
 <part name="L1" library="microbuilder" deviceset="INDUCTOR" device="0603" value="4µ7"/>
+<part name="ISP1" library="adafruit" deviceset="AVRISP" device="-6"/>
+<part name="GND10" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -11341,12 +11437,12 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <text x="63.5" y="91.44" size="1.778" layer="91">Shift Register</text>
 <text x="66.04" y="33.02" size="1.778" layer="91">Battery (1.5V nominal)</text>
 <text x="137.16" y="93.98" size="1.778" layer="91">Charge pump</text>
-<text x="-40.64" y="91.44" size="1.778" layer="91">Boost regulator (outputs 2.77272 volts)</text>
+<text x="-43.18" y="88.9" size="1.778" layer="91">Boost regulator (outputs 2.77272 volts)</text>
 <text x="55.88" y="12.7" size="1.778" layer="91">Op amp and photodiode</text>
 <text x="-68.58" y="-20.32" size="1.778" layer="91">Pushbuttons</text>
 <text x="-7.62" y="35.56" size="1.778" layer="91">Microcontroller (attiny1634)</text>
 <text x="213.36" y="60.96" size="1.778" layer="91">Screen</text>
-<text x="-71.12" y="76.2" size="1.778" layer="91">AVR programming pads</text>
+<text x="-83.82" y="71.12" size="1.778" layer="91">AVR programming header</text>
 </plain>
 <instances>
 <instance part="IC$3P" gate="A" x="63.5" y="0"/>
@@ -11393,13 +11489,6 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <instance part="GND16" gate="1" x="-25.4" y="58.42" rot="R270"/>
 <instance part="C2" gate="G$1" x="-30.48" y="68.58" rot="R180"/>
 <instance part="Q2" gate="G$1" x="48.26" y="-30.48"/>
-<instance part="TMISO" gate="G$1" x="-55.88" y="71.12"/>
-<instance part="TMOSI" gate="G$1" x="-48.26" y="55.88"/>
-<instance part="TRST" gate="G$1" x="-55.88" y="50.8"/>
-<instance part="TVTG" gate="G$1" x="-48.26" y="66.04"/>
-<instance part="TSCK" gate="G$1" x="-55.88" y="60.96"/>
-<instance part="TGND" gate="G$1" x="-48.26" y="45.72"/>
-<instance part="GND5" gate="1" x="-53.34" y="40.64" rot="R270"/>
 <instance part="Q1" gate="G$1" x="152.4" y="2.54" rot="R270"/>
 <instance part="GND17" gate="1" x="142.24" y="2.54" rot="R270"/>
 <instance part="BATT1" gate="G$1" x="68.58" y="25.4"/>
@@ -11426,6 +11515,8 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <instance part="Q3" gate="G$1" x="78.74" y="-45.72" rot="R270"/>
 <instance part="Q7.1" gate="G$1" x="78.74" y="-53.34" rot="R90"/>
 <instance part="L1" gate="G$1" x="-30.48" y="81.28"/>
+<instance part="ISP1" gate="G$1" x="-71.381828125" y="61.73238125"/>
+<instance part="GND10" gate="1" x="-53.34" y="53.34"/>
 </instances>
 <busses>
 </busses>
@@ -11503,12 +11594,6 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <wire x1="48.26" y1="-35.56" x2="48.26" y2="-40.64" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="TGND" gate="G$1" pin="TP"/>
-<wire x1="-48.26" y1="43.18" x2="-48.26" y2="40.64" width="0.1524" layer="91"/>
-<pinref part="GND5" gate="1" pin="GND"/>
-<wire x1="-48.26" y1="40.64" x2="-50.8" y2="40.64" width="0.1524" layer="91"/>
-</segment>
-<segment>
 <pinref part="Q1" gate="G$1" pin="S"/>
 <pinref part="GND17" gate="1" pin="GND"/>
 <wire x1="147.32" y1="2.54" x2="144.78" y2="2.54" width="0.1524" layer="91"/>
@@ -11554,6 +11639,11 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <pinref part="S5" gate="G$1" pin="2.1"/>
 <wire x1="-60.96" y1="-43.18" x2="-60.96" y2="-45.72" width="0.1524" layer="91"/>
 <junction x="-60.96" y="-45.72"/>
+</segment>
+<segment>
+<pinref part="GND10" gate="1" pin="GND"/>
+<wire x1="-56.388" y1="59.182" x2="-53.34" y2="59.182" width="0.1524" layer="91"/>
+<wire x1="-53.34" y1="59.182" x2="-53.34" y2="55.88" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="VCC" class="0">
@@ -11709,9 +11799,8 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <label x="116.84" y="86.36" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<pinref part="TVTG" gate="G$1" pin="TP"/>
-<wire x1="-48.26" y1="63.5" x2="-48.26" y2="60.96" width="0.1524" layer="91"/>
-<label x="-48.26" y="60.96" size="1.778" layer="95" xref="yes"/>
+<wire x1="-56.388" y1="64.262" x2="-54.102" y2="64.262" width="0.1524" layer="91"/>
+<label x="-54.356" y="64.262" size="1.4224" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="CPOUT" class="0">
@@ -11878,26 +11967,24 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 </net>
 <net name="AVRMOSI" class="0">
 <segment>
-<pinref part="TMOSI" gate="G$1" pin="TP"/>
-<wire x1="-48.26" y1="53.34" x2="-48.26" y2="50.8" width="0.1524" layer="91"/>
-<label x="-48.26" y="50.8" size="1.778" layer="95" xref="yes"/>
-</segment>
-<segment>
 <pinref part="U$1" gate="G$1" pin="RXD1/ADC6/DI/SDA/MOSI/PB1"/>
 <wire x1="22.86" y1="30.48" x2="27.94" y2="30.48" width="0.1524" layer="91"/>
 <label x="27.94" y="30.48" size="1.778" layer="95" xref="yes"/>
 </segment>
+<segment>
+<wire x1="-56.388" y1="61.722" x2="-54.102" y2="61.722" width="0.1524" layer="91"/>
+<label x="-54.356" y="61.722" size="1.4224" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="AVRMISO" class="0">
-<segment>
-<pinref part="TMISO" gate="G$1" pin="TP"/>
-<wire x1="-55.88" y1="68.58" x2="-55.88" y2="66.04" width="0.1524" layer="91"/>
-<label x="-55.88" y="66.04" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
 <segment>
 <pinref part="U$1" gate="G$1" pin="ADC7/MISO/TXD1/DO/PB2"/>
 <wire x1="22.86" y1="27.94" x2="27.94" y2="27.94" width="0.1524" layer="91"/>
 <label x="27.94" y="27.94" size="1.778" layer="95" xref="yes"/>
+</segment>
+<segment>
+<wire x1="-84.074" y1="64.262" x2="-85.598" y2="64.262" width="0.1524" layer="91"/>
+<label x="-85.598" y="64.262" size="1.4224" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="OAOUT" class="0">
@@ -11944,9 +12031,8 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <label x="27.94" y="20.32" size="1.778" layer="95" xref="yes"/>
 </segment>
 <segment>
-<pinref part="TSCK" gate="G$1" pin="TP"/>
-<wire x1="-55.88" y1="58.42" x2="-55.88" y2="55.88" width="0.1524" layer="91"/>
-<label x="-55.88" y="55.88" size="1.778" layer="95" rot="R180" xref="yes"/>
+<wire x1="-84.074" y1="61.722" x2="-85.598" y2="61.722" width="0.1524" layer="91"/>
+<label x="-85.598" y="61.722" size="1.4224" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="SCRPWR" class="0">
@@ -11972,9 +12058,8 @@ Mouser part #12BH412 - but pretty much any 1x AAA battery holder should be the s
 <label x="27.94" y="15.24" size="1.778" layer="95" xref="yes"/>
 </segment>
 <segment>
-<pinref part="TRST" gate="G$1" pin="TP"/>
-<wire x1="-55.88" y1="48.26" x2="-55.88" y2="45.72" width="0.1524" layer="91"/>
-<label x="-55.88" y="45.72" size="1.778" layer="95" rot="R180" xref="yes"/>
+<wire x1="-84.074" y1="59.182" x2="-85.598" y2="59.182" width="0.1524" layer="91"/>
+<label x="-85.598" y="59.182" size="1.4224" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="SCRCS" class="0">
