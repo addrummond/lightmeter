@@ -11365,12 +11365,12 @@ Standard 6 pin header for AVR programming</description>
 <part name="Q4.7" library="transistor-small-signal" deviceset="BSS123" device=""/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
 <part name="P+3" library="supply1" deviceset="VCC" device=""/>
-<part name="C4" library="rcl" deviceset="C-EU" device="C1206" value="µ1"/>
+<part name="C4" library="rcl" deviceset="C-EU" device="C0603" value="µ1"/>
 <part name="Q5.8" library="transistor-small-signal" deviceset="BSS123" device=""/>
 <part name="Q6.9" library="transistor-small-signal" deviceset="BSS123" device=""/>
-<part name="C8" library="rcl" deviceset="C-EU" device="C1206" value="2µ"/>
-<part name="C9" library="rcl" deviceset="C-EU" device="C1206" value="2µ"/>
-<part name="C10" library="rcl" deviceset="C-EU" device="C1206" value="µ1"/>
+<part name="C8" library="rcl" deviceset="C-EU" device="C0603" value="2µ"/>
+<part name="C9" library="rcl" deviceset="C-EU" device="C0603" value="2µ"/>
+<part name="C10" library="rcl" deviceset="C-EU" device="C0603" value="µ1"/>
 <part name="D2" library="diode2" deviceset="DIODE-" device="SOD323-W"/>
 <part name="D3" library="diode2" deviceset="DIODE-" device="SOD323-W"/>
 <part name="D4" library="diode2" deviceset="DIODE-" device="SOD323-W"/>
@@ -11379,7 +11379,7 @@ Standard 6 pin header for AVR programming</description>
 <part name="S2" library="switch" deviceset="SKHMP*E010" device="" technology="S"/>
 <part name="S3" library="switch" deviceset="SKHMP*E010" device="" technology="S"/>
 <part name="U$4" library="microbuilder" deviceset="DISP_OLED_UG-2864HSWEG01" device="0.96&quot;"/>
-<part name="C7" library="rcl" deviceset="C-EU" device="C1206" value="2µ2"/>
+<part name="C7" library="rcl" deviceset="C-EU" device="C0603" value="2µ2"/>
 <part name="R5" library="microbuilder" deviceset="RESISTOR" device="1206" value="530k"/>
 <part name="R9" library="resistor" deviceset="R-EU_" device="R0603" value="1M"/>
 <part name="R8" library="resistor" deviceset="R-EU_" device="R0603" value="330k"/>
@@ -11400,14 +11400,14 @@ Standard 6 pin header for AVR programming</description>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
 <part name="P+1" library="supply1" deviceset="VCC" device=""/>
 <part name="GND16" library="supply1" deviceset="GND" device=""/>
-<part name="C2" library="rcl" deviceset="C-EU" device="C1206" value="4µ7"/>
+<part name="C2" library="rcl" deviceset="C-EU" device="C0603" value="4µ7"/>
 <part name="Q2" library="transistor-small-signal" deviceset="BSS123" device=""/>
 <part name="Q1" library="transistor-small-signal" deviceset="BSS123" device=""/>
 <part name="GND17" library="supply1" deviceset="GND" device=""/>
 <part name="BATT1" library="adafruit" deviceset="AAA" device=""/>
 <part name="GND4" library="supply1" deviceset="GND" device=""/>
-<part name="C3" library="rcl" deviceset="C-EU" device="C1206" value="4µ7"/>
-<part name="C5" library="rcl" deviceset="C-EU" device="C1206" value="µ1"/>
+<part name="C3" library="rcl" deviceset="C-EU" device="C0603" value="4µ7"/>
+<part name="C5" library="rcl" deviceset="C-EU" device="C0603" value="µ1"/>
 <part name="R3" library="resistor" deviceset="R-EU_" device="R0603" value="10k"/>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
 <part name="R4" library="resistor" deviceset="R-EU_" device="R0603" value="10k"/>
