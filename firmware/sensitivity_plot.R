@@ -1,6 +1,6 @@
 require("ggplot2")
 
-plot_graph <- function () {
+plot_sensitivity_graph <- function () {
     d <- read.csv("sensitivity_curves.csv");
 
     # Normalize for relative spectral sensitivity of 1.0 at wavelength=550

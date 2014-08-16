@@ -24,11 +24,14 @@ op_amp_resistor_stages = [ # In (kOhm,gain) pairs
     # For BPW21R. The 1000.0 stage could be skipped in principle, but I've
     # read that using >1M resistors with op amps is not a great idea, so we
     # use the smaller resistor until it gets really bright.
-    (3300.0,op_amp_gain),
-    (1000.0,op_amp_gain),
-    (330.0,1),
-    (22.0,1),
-    (1.0,1)
+    #
+    # Resistor value (kOhm)  Gain           Stops subtracted by ND filter (should be >= 0)
+    ( 1000.0,                op_amp_gain,   0.0                                       ),
+    ( 200.0,                 1,             0.0                                       ),
+    ( 20.0,                  1,             0.0                                       ),
+    ( 70.0,                  1,             5.0                                       ),
+    ( 8.0,                   1,             5.0                                       ),
+    ( 1.2,                   1,             5.0                                       )
 ]
 
 op_amp_normal_resistor = op_amp_resistor_stages[1][0] * op_amp_resistor_stages[1][1]
@@ -121,14 +124,27 @@ def output_sensitivity_curves():
     f.close()
 output_sensitivity_curves()
 
-# VEMD2503X01
-#def irrad_to_illum(irrad):
-
+irrad_to_illum_constant = None
+# VEMD2503X01 with QB12 filter.
+def irrad_to_illum(irrad):
+    global irrad_to_illum_constant
+    # Assuming white light.
+    if irrad_to_illum_constant is None:
+        area = 0.0
+        for i in xrange(0, 900):
+            lum = luminosity_func(i)
+            qb12 = qb12_spectral_sensitivity_func(i)
+            area += lum * qb12
+        irrad_to_illum_constant = (683.002 * area) / 900.0
+    return irrad * irrad_to_illum_constant
 
 
 #
 # EV table.
 #
+
+# Useful link for calculating equations from lines (I *always* mess this up doing it by hand):
+# http://www.mathportal.org/calculators/analytic-geometry/two-point-form-calculator.php
 
 bv_to_voltage = ((1/256.0) * reference_voltage)
 
@@ -141,14 +157,17 @@ bv_to_voltage = ((1/256.0) * reference_voltage)
 #    return (temp*slope) + k
 #
 # For BPW21
+#def temp_to_rrlc(temp):
+#    return ((19/022500.0)*temp) + (97.0/100.0)
+#
+# For VEMD2503X01. See p. 2 Fig 2 of datasheet.
+# TODO: Break up into several lines because it's quite significantly curved.
 def temp_to_rrlc(temp):
-    return ((19/022500.0)*temp) + (97.0/100.0)
+    return (1.0/1250.0)*temp + (49.0/50.0)
 
 
 # Log10 reverse light current microamps to log10 lux.
 # http://www.vishay.com/docs/81521/bpw34.pdf, p. 3 Fig 4
-# Useful link for calculating equations from lines (I *always* mess this up doing it by hand):
-# http://www.mathportal.org/calculators/analytic-geometry/two-point-form-calculator.php
 # For BPW34
 #def rlc_to_lux(rlc):
 #    k = -1.254
@@ -161,8 +180,21 @@ def temp_to_rrlc(temp):
 #    return math.log(10.763910417,10) + rlc
 #
 # For BPW21R. See Fig 3 of PDF datasheet included in git repo.
+#def log_rlc_to_log_lux(rlc):
+#    return (rlc + 1.756) / 0.806
+
+#
+# For VEMD2503X01 with QB12 filter.
+# See p. 2 Fig 3 of datasheet.
+# Note that irradience is given in the odd unit of mW/cm^2, which is W/m^2
+# multiplied by 10.
+def log_rlc_to_log_irrad(rlc):
+    # Log10 reverse light current microamps to log10 irradience (W/m^2).
+    return (12.0/13.0)*rlc + (8.0/65.0)
 def log_rlc_to_log_lux(rlc):
-    return (rlc + 1.756) / 0.806
+    irrad = log_rlc_to_log_irrad(rlc)
+    # TODO: Bit ugly to go out of log space.
+    return math.log(irrad_to_illum(math.pow(10,irrad)),10)
 
 # Convert log10 lux to EV at ISO 100.
 # See http://stackoverflow.com/questions/5401738/how-to-convert-between-lux-and-exposure-value
@@ -424,6 +456,7 @@ def output_sanity_graph():
         bins = [ ]
         for stage in xrange(len(op_amp_resistor_stages)):
             ev = voltage_and_oa_resistor_to_ev(voltage, op_amp_resistor_stages[stage][0] * op_amp_resistor_stages[stage][1])
+            ev +=  op_amp_resistor_stages[stage][2]
             ev8 = int(round((ev + 5.0) * 8.0))
             bins.append(ev8)
             f.write(",%f" % ev)
