@@ -1,5 +1,6 @@
 import math
 import sys
+import re
 
 ##########
 # Configuration values.
@@ -38,8 +39,8 @@ op_amp_normal_resistor = op_amp_resistor_stages[1][0] * op_amp_resistor_stages[1
 # in EV values which the table compression mechanism can't handle.
 voltage_offset                   = 250.0   # mV
 
-# For BPW34
-reference_temperature            = 30.0    # C
+#reference_temperature           = 30.0    # BPW34, C
+reference_temperature            = 25.0    # VEMD2503X01
 
 ##########
 
@@ -47,6 +48,66 @@ reference_temperature            = 30.0    # C
 b_voltage_offset = int(round((voltage_offset/reference_voltage)*256))
 # So that we don't introduce any rounding error into calculations.
 voltage_offset = (b_voltage_offset/256.0)*reference_voltage
+
+def get_function_from_function_table(filename):
+    f = open(filename)
+    lines = f.read().split("\n")
+    # Skip column headers if any
+    try:
+        float(lines[0][0])
+        float(lines[0][1])
+    except:
+        lines = lines[1:]
+    min = 10000
+    max = 0
+    function = { }
+    for l in lines:
+        if re.match(r"^\s*$", l):
+            continue
+        fields = l.split(",")
+        v = int(fields[0])
+        frac = float(fields[1])
+        if v < min:
+            min = v
+        elif v > max:
+            max = v
+        function[v] = frac
+    f.close()
+    def f(x):
+        if x < min:
+            return function[min]
+        elif x > max:
+            return function[max]
+        else:
+            iup = x
+            while not function.has_key(iup):
+                iup += 1
+            idown = x
+            while not function.has_key(idown):
+                idown -= 1
+            diff = iup-idown
+            r = None
+            if diff == 0:
+                r = function[iup]
+            else:
+                downweight = ((iup-x)*1.0)/diff
+                upweight = ((x-idown)*1.0)/diff
+                r = function[iup]*upweight + function[idown]*downweight
+            return r
+    return f
+
+luminosity_function = get_function_from_function_table("tables/luminosity_function.csv")
+vemd2503x01_spectral_sensitivity_func = get_function_from_function_table("tables/vemd2503x01_spectral_sensitivity.csv")
+qb11_spectral_sensitivity_func = get_function_from_function_table("tables/qb11_spectral_sensitivity.csv")
+
+
+#
+# Luminosity calculations.
+#
+
+# VEMD2503X01
+#def irrad_to_illum(irrad):
+
 
 
 #
