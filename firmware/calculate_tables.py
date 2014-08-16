@@ -96,14 +96,30 @@ def get_function_from_function_table(filename):
             return r
     return f
 
-luminosity_function = get_function_from_function_table("tables/luminosity_function.csv")
+luminosity_func = get_function_from_function_table("tables/luminosity_function.csv")
 vemd2503x01_spectral_sensitivity_func = get_function_from_function_table("tables/vemd2503x01_spectral_sensitivity.csv")
 qb11_spectral_sensitivity_func = get_function_from_function_table("tables/qb11_spectral_sensitivity.csv")
+qb12_spectral_sensitivity_func = get_function_from_function_table("tables/qb12_spectral_sensitivity.csv")
 
 
 #
 # Luminosity calculations.
 #
+
+# VEMD2503X01
+def output_sensitivity_curves():
+    f = open("sensitivity_curves.csv", "w")
+    f.write("wavelength,diode relative spectral sensitivity,qb12 relative spectral sensitivity,qb11 relative spectral sensitivity,luminosity func\n")
+    for i in xrange(0,900):
+        lum = luminosity_func(i)
+        diode = vemd2503x01_spectral_sensitivity_func(i)
+        qb12 = qb12_spectral_sensitivity_func(i)
+        qb11 = qb11_spectral_sensitivity_func(i)
+        product12 = lum * qb12
+        product11 = lum * qb11
+        f.write("%i,%f,%f,%f,%f\n" % (i, diode, product12, product11, lum))
+    f.close()
+output_sensitivity_curves()
 
 # VEMD2503X01
 #def irrad_to_illum(irrad):
