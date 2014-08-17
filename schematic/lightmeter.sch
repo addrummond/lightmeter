@@ -11586,16 +11586,16 @@ Standard 6 pin header for AVR programming</description>
 <sheet>
 <plain>
 <text x="63.5" y="101.6" size="1.778" layer="91">Shift Register</text>
-<text x="40.64" y="43.18" size="1.778" layer="91">Battery (1.5V nominal)</text>
+<text x="45.72" y="25.4" size="1.778" layer="91">Battery (1.5V nominal)</text>
 <text x="144.78" y="104.14" size="1.778" layer="91">Charge pump</text>
 <text x="-43.18" y="101.6" size="1.778" layer="91">Boost regulator TLV61220DBVR (outputs 2.77272 volts)</text>
-<text x="53.34" y="15.24" size="1.778" layer="91">Op amp (AD8546ARMZ)</text>
+<text x="55.88" y="0" size="1.778" layer="91">Op amp (AD8546ARMZ)</text>
 <text x="-73.66" y="-15.24" size="1.778" layer="91">Pushbuttons (1571634-2)</text>
 <text x="-7.62" y="35.56" size="1.778" layer="91">Microcontroller (attiny1634)</text>
 <text x="213.36" y="60.96" size="1.778" layer="91">Screen</text>
 <text x="-83.82" y="71.12" size="1.778" layer="91">AVR programming header</text>
-<text x="53.594" y="11.684" size="1.778" layer="91"> and photodiode </text>
-<text x="53.594" y="7.62" size="1.778" layer="91">(VEMD2523SLX01)</text>
+<text x="56.134" y="-3.556" size="1.778" layer="91"> and photodiode </text>
+<text x="56.134" y="-7.62" size="1.778" layer="91">(VEMD2523SLX01)</text>
 <text x="160.02" y="-53.34" size="1.778" layer="91">Unused second op amp in IC</text>
 <text x="25.4" y="-63.5" size="1.778" layer="91">Op amp power</text>
 </plain>
@@ -11604,8 +11604,8 @@ Standard 6 pin header for AVR programming</description>
 <instance part="IC$3P" gate="B" x="63.5" y="-27.94"/>
 <instance part="IC$3P" gate="P" x="38.1" y="-20.32"/>
 <instance part="GND2" gate="1" x="38.1" y="-53.34"/>
-<instance part="GND6" gate="1" x="50.8" y="35.56" rot="R270"/>
-<instance part="P+3" gate="VCC" x="73.66" y="35.56" rot="R270"/>
+<instance part="GND6" gate="1" x="55.88" y="17.78" rot="R270"/>
+<instance part="P+3" gate="VCC" x="78.74" y="17.78" rot="R270"/>
 <instance part="C4" gate="G$1" x="33.02" y="-17.78"/>
 <instance part="C8" gate="G$1" x="139.7" y="88.9"/>
 <instance part="C9" gate="G$1" x="154.94" y="88.9"/>
@@ -11641,7 +11641,7 @@ Standard 6 pin header for AVR programming</description>
 <instance part="Q2" gate="G$1" x="38.1" y="-40.64" rot="R180"/>
 <instance part="Q1" gate="G$1" x="152.4" y="2.54" rot="R270"/>
 <instance part="GND17" gate="1" x="142.24" y="2.54" rot="R270"/>
-<instance part="BATT1" gate="G$1" x="63.5" y="35.56"/>
+<instance part="BATT1" gate="G$1" x="68.58" y="17.78"/>
 <instance part="GND4" gate="1" x="15.24" y="96.52" rot="R90"/>
 <instance part="C3" gate="G$1" x="7.62" y="91.44" rot="R180"/>
 <instance part="C5" gate="G$1" x="43.18" y="60.96"/>
@@ -11662,7 +11662,7 @@ Standard 6 pin header for AVR programming</description>
 <instance part="L1" gate="G$1" x="-30.48" y="81.28"/>
 <instance part="ISP1" gate="G$1" x="-71.381828125" y="61.73238125"/>
 <instance part="GND10" gate="1" x="-53.34" y="53.34"/>
-<instance part="C12" gate="G$1" x="96.52" y="-12.7" rot="R90"/>
+<instance part="C12" gate="G$1" x="96.52" y="-10.16" rot="R90"/>
 <instance part="C13" gate="G$1" x="96.52" y="7.62" rot="R90"/>
 <instance part="C14" gate="G$1" x="96.52" y="25.4" rot="R90"/>
 <instance part="D10" gate="1" x="99.06" y="-63.5" rot="R180"/>
@@ -11744,7 +11744,7 @@ Standard 6 pin header for AVR programming</description>
 <segment>
 <pinref part="BATT1" gate="G$1" pin="-"/>
 <pinref part="GND6" gate="1" pin="GND"/>
-<wire x1="55.88" y1="35.56" x2="53.34" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="60.96" y1="17.78" x2="58.42" y2="17.78" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="C3" gate="G$1" pin="2"/>
@@ -11843,7 +11843,7 @@ Standard 6 pin header for AVR programming</description>
 <segment>
 <pinref part="BATT1" gate="G$1" pin="+"/>
 <pinref part="P+3" gate="VCC" pin="VCC"/>
-<wire x1="68.58" y1="35.56" x2="71.12" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="73.66" y1="17.78" x2="76.2" y2="17.78" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$16" class="0">
@@ -12105,8 +12105,8 @@ Standard 6 pin header for AVR programming</description>
 <pinref part="C12" gate="G$1" pin="1"/>
 <pinref part="R8" gate="G$1" pin="1"/>
 <wire x1="93.98" y1="0" x2="88.9" y2="0" width="0.1524" layer="91"/>
-<wire x1="88.9" y1="0" x2="88.9" y2="-12.7" width="0.1524" layer="91"/>
-<wire x1="88.9" y1="-12.7" x2="93.98" y2="-12.7" width="0.1524" layer="91"/>
+<wire x1="88.9" y1="0" x2="88.9" y2="-10.16" width="0.1524" layer="91"/>
+<wire x1="88.9" y1="-10.16" x2="93.98" y2="-10.16" width="0.1524" layer="91"/>
 <pinref part="R9" gate="G$1" pin="1"/>
 <wire x1="88.9" y1="17.78" x2="93.98" y2="17.78" width="0.1524" layer="91"/>
 <wire x1="88.9" y1="7.62" x2="88.9" y2="17.78" width="0.1524" layer="91"/>
@@ -12442,8 +12442,8 @@ Standard 6 pin header for AVR programming</description>
 <pinref part="R8" gate="G$1" pin="2"/>
 <pinref part="C12" gate="G$1" pin="2"/>
 <wire x1="106.68" y1="0" x2="104.14" y2="0" width="0.1524" layer="91"/>
-<wire x1="101.6" y1="-12.7" x2="106.68" y2="-12.7" width="0.1524" layer="91"/>
-<wire x1="106.68" y1="-12.7" x2="106.68" y2="0" width="0.1524" layer="91"/>
+<wire x1="101.6" y1="-10.16" x2="106.68" y2="-10.16" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="-10.16" x2="106.68" y2="0" width="0.1524" layer="91"/>
 <pinref part="Q7.4" gate="G$1" pin="S"/>
 <wire x1="106.68" y1="0" x2="111.76" y2="0" width="0.1524" layer="91"/>
 <junction x="106.68" y="0"/>
