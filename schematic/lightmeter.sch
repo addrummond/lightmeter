@@ -12128,9 +12128,19 @@ Standard 6 pin header for AVR programming</description>
 <net name="OAOUT" class="0">
 <segment>
 <pinref part="IC$3P" gate="B" pin="OUT"/>
-<wire x1="78.74" y1="-27.94" x2="73.66" y2="-27.94" width="0.1524" layer="91"/>
+<wire x1="78.74" y1="-27.94" x2="76.2" y2="-27.94" width="0.1524" layer="91"/>
+<wire x1="76.2" y1="-27.94" x2="73.66" y2="-27.94" width="0.1524" layer="91"/>
 <wire x1="78.74" y1="-27.94" x2="78.74" y2="-35.56" width="0.1524" layer="91"/>
 <label x="78.74" y="-35.56" size="1.778" layer="95" rot="R180" xref="yes"/>
+<pinref part="Q9" gate="G$1" pin="D"/>
+<wire x1="81.28" y1="-17.78" x2="81.28" y2="-20.32" width="0.1524" layer="91"/>
+<pinref part="Q7.4" gate="G$1" pin="S"/>
+<wire x1="71.12" y1="-17.78" x2="71.12" y2="-20.32" width="0.1524" layer="91"/>
+<wire x1="71.12" y1="-20.32" x2="76.2" y2="-20.32" width="0.1524" layer="91"/>
+<wire x1="76.2" y1="-20.32" x2="81.28" y2="-20.32" width="0.1524" layer="91"/>
+<wire x1="76.2" y1="-20.32" x2="76.2" y2="-27.94" width="0.1524" layer="91"/>
+<junction x="76.2" y="-20.32"/>
+<junction x="76.2" y="-27.94"/>
 </segment>
 <segment>
 <pinref part="U$1" gate="G$1" pin="ADC9/OC0A/XCK0/PC0"/>
@@ -12478,8 +12488,7 @@ Standard 6 pin header for AVR programming</description>
 <pinref part="IC$3P" gate="B" pin="IN-"/>
 <wire x1="58.42" y1="-38.1" x2="58.42" y2="-30.48" width="0.1524" layer="91"/>
 <junction x="58.42" y="-38.1"/>
-<wire x1="124.46" y1="-38.1" x2="81.28" y2="-38.1" width="0.1524" layer="91"/>
-<wire x1="81.28" y1="-38.1" x2="58.42" y2="-38.1" width="0.1524" layer="91"/>
+<wire x1="124.46" y1="-38.1" x2="58.42" y2="-38.1" width="0.1524" layer="91"/>
 <wire x1="124.46" y1="40.64" x2="124.46" y2="27.94" width="0.1524" layer="91"/>
 <pinref part="Q4.4" gate="G$1" pin="D"/>
 <wire x1="124.46" y1="27.94" x2="124.46" y2="15.24" width="0.1524" layer="91"/>
@@ -12493,14 +12502,6 @@ Standard 6 pin header for AVR programming</description>
 <junction x="58.42" y="-48.26"/>
 <pinref part="Q6" gate="G$1" pin="S"/>
 <wire x1="66.04" y1="-68.58" x2="58.42" y2="-68.58" width="0.1524" layer="91"/>
-<pinref part="Q9" gate="G$1" pin="D"/>
-<wire x1="81.28" y1="-17.78" x2="81.28" y2="-20.32" width="0.1524" layer="91"/>
-<junction x="81.28" y="-38.1"/>
-<pinref part="Q7.4" gate="G$1" pin="S"/>
-<wire x1="81.28" y1="-20.32" x2="81.28" y2="-38.1" width="0.1524" layer="91"/>
-<wire x1="71.12" y1="-17.78" x2="71.12" y2="-20.32" width="0.1524" layer="91"/>
-<wire x1="71.12" y1="-20.32" x2="81.28" y2="-20.32" width="0.1524" layer="91"/>
-<junction x="81.28" y="-20.32"/>
 <pinref part="Q7.1" gate="G$1" pin="D"/>
 <wire x1="121.92" y1="40.64" x2="124.46" y2="40.64" width="0.1524" layer="91"/>
 <pinref part="Q8" gate="G$1" pin="S"/>
