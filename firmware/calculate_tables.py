@@ -10,28 +10,36 @@ reference_voltage = 2772.72  # mV
 op_amp_gain       = reference_voltage/1100.0
 op_amp_resistor_stages = [ # In (kOhm,gain) pairs
     # For BPW 34
-    #(320.0,1), # Very low light
-    #(12.0,1)  # Fairly low light (brightish rooms, that kind of thing)
-    #(0.50,1)  # Bright light (goes up to a bright sunny day)
-    #(0.05,1),  # Extremely bright light
+    #(320.0,1,0.0), # Very low light
+    #(12.0,1,0.0)   # Fairly low light (brightish rooms, that kind of thing)
+    #(0.50,1,0.0)   # Bright light (goes up to a bright sunny day)
+    #(0.05,1,0.0),  # Extremely bright light
 
     # For VTB8440,8441
-    #(258,1),
-    #(42,1),
-    #(1.7,1)
-    #(1,0.075)
+    #(258,1,0.0),
+    #(42,1,0.0),
+    #(1.7,1,0.0)
+    #(1,0.075,0.0)
 
     # For BPW21R. The 1000.0 stage could be skipped in principle, but I've
     # read that using >1M resistors with op amps is not a great idea, so we
     # use the smaller resistor until it gets really bright.
-    #
+    #(3300.0,op_amp_gain,0.0),
+    #(1000.0,op_amp_gain,0.0),
+    #(330.0,1,0.0),
+    #(22.0,1,0.0),
+    #(1.0,1,0.0)
+
+    # For VEMD2503X01.
+    # Uses 5 distinct resistor values.
     # Resistor value (kOhm)  Gain           Stops subtracted by ND filter (should be >= 0)
-    ( 1000.0,                op_amp_gain,   0.0                                       ),
-    ( 200.0,                 1,             0.0                                       ),
-    ( 20.0,                  1,             0.0                                       ),
-    ( 70.0,                  1,             5.0                                       ),
-    ( 8.0,                   1,             5.0                                       ),
-    ( 1.2,                   1,             5.0                                       )
+    ( 3000.0,                op_amp_gain,   0.0                                       ),
+    ( 390.0,                 op_amp_gain,   0.0                                       ),
+    ( 150.0,                 1,             0.0                                       ),
+    ( 16.0,                  1,             0.0                                       ),
+    ( 390.0,                 op_amp_gain,   8.0                                       ),
+    ( 120.0,                 1,             8.0                                       ),
+    ( 16,                    1,             8.0                                       )
 ]
 
 op_amp_normal_resistor = op_amp_resistor_stages[1][0] * op_amp_resistor_stages[1][1]
