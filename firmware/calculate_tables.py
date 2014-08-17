@@ -31,14 +31,14 @@ op_amp_resistor_stages = [ # In (kOhm,gain) pairs
     #(1.0,1,0.0)
 
     # For VEMD2503X01.
-    # Uses 5 distinct resistor values.
+    # Uses 4 distinct resistor values.
     # Resistor value (kOhm)  Gain           Stops subtracted by ND filter (should be >= 0)
     ( 3000.0,                op_amp_gain,   0.0                                       ),
     ( 390.0,                 op_amp_gain,   0.0                                       ),
-    ( 150.0,                 1,             0.0                                       ),
+    ( 130.0,                 1,             0.0                                       ),
     ( 16.0,                  1,             0.0                                       ),
     ( 390.0,                 op_amp_gain,   8.0                                       ),
-    ( 120.0,                 1,             8.0                                       ),
+    ( 130.0,                 1,             8.0                                       ),
     ( 16,                    1,             8.0                                       )
 ]
 
