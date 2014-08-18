@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="6.6.0">
+<eagle version="7.1.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.05" unitdist="inch" unit="inch" style="lines" multiple="1" display="yes" altdistance="0.025" altunitdist="inch" altunit="inch"/>
+<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="yes" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="yes"/>
@@ -53,6 +53,7 @@
 <layer number="96" name="Values" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="97" name="Info" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="98" name="Guide" color="6" fill="1" visible="yes" active="yes"/>
+<layer number="99" name="SpiceOrder" color="5" fill="1" visible="yes" active="yes"/>
 </layers>
 <library>
 <packages>
@@ -168,6 +169,74 @@ MAX3223-MAX3243.pdf</description>
 <rectangle x1="-1.4016" y1="2.2828" x2="-1.1984" y2="3.121" layer="51"/>
 <rectangle x1="-2.0516" y1="2.2828" x2="-1.8484" y2="3.121" layer="51"/>
 </package>
+<package name="S6058">
+<description>&lt;b&gt;Si PIN Quadrant photodiode&lt;/b&gt;&lt;p&gt;
+Source: http://sales.hamamatsu.com/assets/pdf/parts_S/S7379-01_etc.pdf</description>
+<wire x1="-2" y1="2.35" x2="2" y2="2.35" width="0.1016" layer="21"/>
+<wire x1="2" y1="2.35" x2="2" y2="-2.35" width="0.1016" layer="21"/>
+<wire x1="2" y1="-2.35" x2="-2" y2="-2.35" width="0.1016" layer="21"/>
+<wire x1="-2" y1="-2.35" x2="-2" y2="2.35" width="0.1016" layer="21"/>
+<wire x1="-0.3" y1="-0.6" x2="-0.3" y2="-0.075" width="0.1016" layer="21"/>
+<wire x1="-0.3" y1="-0.075" x2="-0.075" y2="-0.075" width="0.1016" layer="21"/>
+<wire x1="-0.075" y1="-0.075" x2="-0.075" y2="-0.6" width="0.1016" layer="21"/>
+<wire x1="-0.075" y1="-0.6" x2="-0.3" y2="-0.6" width="0.1016" layer="21"/>
+<wire x1="0.3" y1="0.6" x2="0.3" y2="0.075" width="0.1016" layer="21"/>
+<wire x1="0.3" y1="0.075" x2="0.075" y2="0.075" width="0.1016" layer="21"/>
+<wire x1="0.075" y1="0.075" x2="0.075" y2="0.6" width="0.1016" layer="21"/>
+<wire x1="0.075" y1="0.6" x2="0.3" y2="0.6" width="0.1016" layer="21"/>
+<wire x1="0.075" y1="-0.6" x2="0.075" y2="-0.075" width="0.1016" layer="21"/>
+<wire x1="0.075" y1="-0.075" x2="0.3" y2="-0.075" width="0.1016" layer="21"/>
+<wire x1="0.3" y1="-0.075" x2="0.3" y2="-0.6" width="0.1016" layer="21"/>
+<wire x1="0.3" y1="-0.6" x2="0.075" y2="-0.6" width="0.1016" layer="21"/>
+<wire x1="-0.075" y1="0.6" x2="-0.075" y2="0.075" width="0.1016" layer="21"/>
+<wire x1="-0.075" y1="0.075" x2="-0.3" y2="0.075" width="0.1016" layer="21"/>
+<wire x1="-0.3" y1="0.075" x2="-0.3" y2="0.6" width="0.1016" layer="21"/>
+<wire x1="-0.3" y1="0.6" x2="-0.075" y2="0.6" width="0.1016" layer="21"/>
+<smd name="1" x="-4.805" y="1.905" dx="1.4" dy="0.6" layer="1"/>
+<smd name="2" x="-4.805" y="0.635" dx="1.4" dy="0.6" layer="1"/>
+<smd name="3" x="-4.805" y="-0.635" dx="1.4" dy="0.6" layer="1"/>
+<smd name="4" x="-4.805" y="-1.905" dx="1.4" dy="0.6" layer="1"/>
+<smd name="5" x="4.805" y="-1.905" dx="1.4" dy="0.6" layer="1" rot="R180"/>
+<smd name="6" x="4.805" y="-0.635" dx="1.4" dy="0.6" layer="1" rot="R180"/>
+<smd name="7" x="4.805" y="0.635" dx="1.4" dy="0.6" layer="1" rot="R180"/>
+<smd name="8" x="4.805" y="1.905" dx="1.4" dy="0.6" layer="1" rot="R180"/>
+<text x="-0.725" y="0.225" size="0.3048" layer="21">a</text>
+<text x="-0.725" y="-0.475" size="0.3048" layer="21">b</text>
+<text x="0.425" y="-0.475" size="0.3048" layer="21">c</text>
+<text x="0.425" y="0.225" size="0.3048" layer="21">d</text>
+<text x="-1.905" y="2.54" size="1.27" layer="25">&gt;NAME</text>
+<text x="-1.905" y="-3.81" size="1.27" layer="27">&gt;VALUE</text>
+<rectangle x1="-4.1" y1="1.65" x2="-3.3" y2="2.15" layer="51"/>
+<rectangle x1="-3.3" y1="1.7" x2="-2" y2="2.1" layer="21"/>
+<rectangle x1="-5.45" y1="1.7" x2="-4.1" y2="2.1" layer="51"/>
+<rectangle x1="-4.1" y1="0.38" x2="-3.3" y2="0.88" layer="51"/>
+<rectangle x1="-3.3" y1="0.43" x2="-2" y2="0.83" layer="21"/>
+<rectangle x1="-5.45" y1="0.43" x2="-4.1" y2="0.83" layer="51"/>
+<rectangle x1="-4.1" y1="-0.89" x2="-3.3" y2="-0.39" layer="51"/>
+<rectangle x1="-3.3" y1="-0.84" x2="-2" y2="-0.44" layer="21"/>
+<rectangle x1="-5.45" y1="-0.84" x2="-4.1" y2="-0.44" layer="51"/>
+<rectangle x1="-4.1" y1="-2.16" x2="-3.3" y2="-1.66" layer="51"/>
+<rectangle x1="-3.3" y1="-2.11" x2="-2" y2="-1.71" layer="21"/>
+<rectangle x1="-5.45" y1="-2.11" x2="-4.1" y2="-1.71" layer="51"/>
+<rectangle x1="3.3" y1="-2.15" x2="4.1" y2="-1.65" layer="51" rot="R180"/>
+<rectangle x1="2" y1="-2.1" x2="3.3" y2="-1.7" layer="21" rot="R180"/>
+<rectangle x1="4.1" y1="-2.1" x2="5.45" y2="-1.7" layer="51" rot="R180"/>
+<rectangle x1="3.3" y1="-0.88" x2="4.1" y2="-0.38" layer="51" rot="R180"/>
+<rectangle x1="2" y1="-0.83" x2="3.3" y2="-0.43" layer="21" rot="R180"/>
+<rectangle x1="4.1" y1="-0.83" x2="5.45" y2="-0.43" layer="51" rot="R180"/>
+<rectangle x1="3.3" y1="0.39" x2="4.1" y2="0.89" layer="51" rot="R180"/>
+<rectangle x1="2" y1="0.44" x2="3.3" y2="0.84" layer="21" rot="R180"/>
+<rectangle x1="4.1" y1="0.44" x2="5.45" y2="0.84" layer="51" rot="R180"/>
+<rectangle x1="3.3" y1="1.66" x2="4.1" y2="2.16" layer="51" rot="R180"/>
+<rectangle x1="2" y1="1.71" x2="3.3" y2="2.11" layer="21" rot="R180"/>
+<rectangle x1="4.1" y1="1.71" x2="5.45" y2="2.11" layer="51" rot="R180"/>
+</package>
+<package name="VEMD2523SLX01">
+<smd name="P$1" x="-3.81" y="3.81" dx="0.889" dy="1.397" layer="1"/>
+<smd name="P$2" x="-1.016" y="3.81" dx="0.889" dy="1.397" layer="1"/>
+<wire x1="-2.54" y1="5.08" x2="-1.27" y2="5.08" width="0.127" layer="21"/>
+<wire x1="-2.54" y1="5.08" x2="-3.81" y2="5.08" width="0.127" layer="21"/>
+</package>
 </packages>
 <symbols>
 <symbol name="74HC164">
@@ -227,6 +296,18 @@ MAX3223-MAX3243.pdf</description>
 <pin name="VCC" x="17.78" y="15.24" length="middle" rot="R180"/>
 <text x="-9.398" y="19.05" size="1.778" layer="95">&gt;NAME</text>
 <text x="-10.16" y="-21.082" size="1.778" layer="96">&gt;VALUE</text>
+</symbol>
+<symbol name="VEMD2523SLX01">
+<wire x1="-2.54" y1="0" x2="-2.54" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="-2.54" y1="0" x2="2.54" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="2.54" y1="-2.54" x2="-2.54" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="2.54" y1="2.54" x2="0" y2="0" width="0.254" layer="94"/>
+<wire x1="0" y1="0" x2="0" y2="1.524" width="0.254" layer="94"/>
+<pin name="P$1" x="-7.62" y="-2.54" length="middle"/>
+<pin name="P$2" x="7.62" y="-2.54" length="middle" rot="R180"/>
+<wire x1="2.54" y1="-5.08" x2="2.54" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="2.54" y1="-2.54" x2="2.54" y2="0" width="0.254" layer="94"/>
+<wire x1="0" y1="0" x2="1.524" y2="0" width="0.254" layer="94"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -300,6 +381,35 @@ MAX3223-MAX3243.pdf</description>
 <connect gate="G$1" pin="QG" pad="12"/>
 <connect gate="G$1" pin="QH" pad="13"/>
 <connect gate="G$1" pin="VCC" pad="14"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="S6058" prefix="D">
+<description>&lt;b&gt;Si PIN Quadrant photodiode&lt;/b&gt;&lt;p&gt;
+Source: http://sales.hamamatsu.com/assets/pdf/parts_S/S7379-01_etc.pdf</description>
+<gates>
+</gates>
+<devices>
+<device name="">
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="VEMD2523SLX01">
+<gates>
+<gate name="G$1" symbol="VEMD2523SLX01" x="-2.54" y="2.54"/>
+</gates>
+<devices>
+<device name="" package="VEMD2523SLX01">
+<connects>
+<connect gate="G$1" pin="P$1" pad="P$1"/>
+<connect gate="G$1" pin="P$2" pad="P$2"/>
 </connects>
 <technologies>
 <technology name=""/>
