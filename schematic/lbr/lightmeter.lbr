@@ -236,6 +236,7 @@ Source: http://sales.hamamatsu.com/assets/pdf/parts_S/S7379-01_etc.pdf</descript
 <smd name="P$2" x="-1.016" y="3.81" dx="0.889" dy="1.397" layer="1"/>
 <wire x1="-1.27" y1="5.715" x2="-3.81" y2="5.715" width="0.127" layer="21"/>
 <wire x1="-1.905" y1="2.54" x2="-3.175" y2="2.54" width="0.127" layer="21"/>
+<text x="-3.81" y="6.35" size="1.27" layer="26">&gt;NAME</text>
 </package>
 </packages>
 <symbols>

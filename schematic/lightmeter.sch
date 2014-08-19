@@ -9906,8 +9906,9 @@ MAX3223-MAX3243.pdf</description>
 <package name="VEMD2523SLX01">
 <smd name="P$1" x="-3.81" y="3.81" dx="0.889" dy="1.397" layer="1"/>
 <smd name="P$2" x="-1.016" y="3.81" dx="0.889" dy="1.397" layer="1"/>
-<wire x1="-2.54" y1="5.08" x2="-1.27" y2="5.08" width="0.127" layer="21"/>
-<wire x1="-2.54" y1="5.08" x2="-3.81" y2="5.08" width="0.127" layer="21"/>
+<wire x1="-1.27" y1="5.715" x2="-3.81" y2="5.715" width="0.127" layer="21"/>
+<wire x1="-1.905" y1="2.54" x2="-3.175" y2="2.54" width="0.127" layer="21"/>
+<text x="-3.81" y="6.35" size="1.27" layer="26">&gt;NAME</text>
 </package>
 </packages>
 <symbols>
@@ -11168,7 +11169,7 @@ Standard 6 pin header for AVR programming</description>
 <part name="GND14" library="supply1" deviceset="GND" device=""/>
 <part name="GND15" library="supply1" deviceset="GND" device=""/>
 <part name="IC$1" library="custom" deviceset="TI-TLV61220" device=""/>
-<part name="R1" library="resistor" deviceset="R-EU_" device="R0603" value="1M"/>
+<part name="R1" library="resistor" deviceset="R-EU_" device="R2012" value="1M"/>
 <part name="R2" library="resistor" deviceset="R-EU_" device="R2012" value="220k"/>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
 <part name="P+1" library="supply1" deviceset="VCC" device=""/>
@@ -11458,7 +11459,8 @@ Standard 6 pin header for AVR programming</description>
 </segment>
 <segment>
 <pinref part="GND20" gate="1" pin="GND"/>
-<wire x1="106.68" y1="-73.66" x2="111.76" y2="-73.66" width="0.1524" layer="91"/>
+<pinref part="D11" gate="G$1" pin="P$1"/>
+<wire x1="111.76" y1="-73.66" x2="109.22" y2="-73.66" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="VCC" class="0">
@@ -12213,17 +12215,18 @@ Standard 6 pin header for AVR programming</description>
 <wire x1="93.98" y1="-43.18" x2="91.44" y2="-43.18" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$5" class="0">
-<segment>
-<pinref part="Q5" gate="G$1" pin="D"/>
-<wire x1="96.52" y1="-53.34" x2="91.44" y2="-53.34" width="0.1524" layer="91"/>
-</segment>
-</net>
 <net name="N$9" class="0">
 <segment>
 <pinref part="D10" gate="G$1" pin="P$2"/>
 <pinref part="Q4" gate="G$1" pin="D"/>
 <wire x1="93.98" y1="-63.5" x2="91.44" y2="-63.5" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$1" class="0">
+<segment>
+<pinref part="IC$1" gate="G$1" pin="SW"/>
+<pinref part="L1" gate="G$1" pin="2"/>
+<wire x1="-22.86" y1="81.28" x2="-25.4" y2="81.28" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$11" class="0">
@@ -12233,11 +12236,11 @@ Standard 6 pin header for AVR programming</description>
 <wire x1="93.98" y1="-73.66" x2="91.44" y2="-73.66" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$1" class="0">
+<net name="N$5" class="0">
 <segment>
-<pinref part="IC$1" gate="G$1" pin="SW"/>
-<pinref part="L1" gate="G$1" pin="2"/>
-<wire x1="-22.86" y1="81.28" x2="-25.4" y2="81.28" width="0.1524" layer="91"/>
+<pinref part="D9" gate="G$1" pin="P$2"/>
+<pinref part="Q5" gate="G$1" pin="D"/>
+<wire x1="93.98" y1="-53.34" x2="91.44" y2="-53.34" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
