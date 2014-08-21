@@ -23,7 +23,7 @@ op_amp_resistor_stages = [ # In (kOhm,gain) pairs
 
     # For BPW21R. The 1000.0 stage could be skipped in principle, but I've
     # read that using >1M resistors with op amps is not a great idea, so we
-    # use the smaller resistor until it gets really bright.
+    # use the smaller resistor until it gets really dark.
     #(3300.0,op_amp_gain,0.0),
     #(1000.0,op_amp_gain,0.0),
     #(330.0,1,0.0),
