@@ -11223,7 +11223,7 @@ Standard 6 pin header for AVR programming</description>
 <part name="Q5" library="transistor-small-signal" deviceset="BSS123" device=""/>
 <part name="Q4" library="transistor-small-signal" deviceset="BSS123" device=""/>
 <part name="Q3" library="transistor-small-signal" deviceset="BSS123" device=""/>
-<part name="R5" library="resistor" deviceset="R-EU_" device="R2012" value="536k"/>
+<part name="R5" library="resistor" deviceset="R-EU_" device="R0402" value="536k"/>
 </parts>
 <sheets>
 <sheet>
