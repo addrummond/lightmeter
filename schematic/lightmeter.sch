@@ -11279,7 +11279,7 @@ Standard 6 pin header for AVR programming</description>
 <instance part="P+1" gate="VCC" x="-43.18" y="76.2" rot="R90"/>
 <instance part="GND16" gate="1" x="-25.4" y="58.42" rot="R270"/>
 <instance part="C2" gate="G$1" x="-30.48" y="68.58" rot="R180"/>
-<instance part="Q2" gate="G$1" x="38.1" y="-40.64" rot="R180"/>
+<instance part="Q2" gate="G$1" x="38.1" y="-40.64"/>
 <instance part="Q1" gate="G$1" x="160.02" y="2.54" rot="R270"/>
 <instance part="GND17" gate="1" x="149.86" y="2.54" rot="R270"/>
 <instance part="BATT1" gate="G$1" x="68.58" y="17.78"/>
@@ -11427,11 +11427,6 @@ Standard 6 pin header for AVR programming</description>
 <wire x1="-53.34" y1="59.182" x2="-53.34" y2="55.88" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="Q2" gate="G$1" pin="D"/>
-<pinref part="GND2" gate="1" pin="GND"/>
-<wire x1="38.1" y1="-45.72" x2="38.1" y2="-50.8" width="0.1524" layer="91"/>
-</segment>
-<segment>
 <pinref part="IC$3P" gate="B" pin="IN+"/>
 <wire x1="58.42" y1="-25.4" x2="55.88" y2="-25.4" width="0.1524" layer="91"/>
 <pinref part="GND5" gate="1" pin="GND"/>
@@ -11461,6 +11456,11 @@ Standard 6 pin header for AVR programming</description>
 <pinref part="GND20" gate="1" pin="GND"/>
 <pinref part="D11" gate="G$1" pin="P$1"/>
 <wire x1="111.76" y1="-73.66" x2="109.22" y2="-73.66" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="GND2" gate="1" pin="GND"/>
+<pinref part="Q2" gate="G$1" pin="S"/>
+<wire x1="38.1" y1="-50.8" x2="38.1" y2="-45.72" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="VCC" class="0">
@@ -11892,28 +11892,25 @@ Standard 6 pin header for AVR programming</description>
 <pinref part="C4" gate="G$1" pin="2"/>
 <wire x1="33.02" y1="-22.86" x2="33.02" y2="-27.94" width="0.1524" layer="91"/>
 <wire x1="33.02" y1="-27.94" x2="38.1" y2="-27.94" width="0.1524" layer="91"/>
-<pinref part="Q2" gate="G$1" pin="S"/>
+<pinref part="Q2" gate="G$1" pin="D"/>
 <wire x1="38.1" y1="-35.56" x2="38.1" y2="-27.94" width="0.1524" layer="91"/>
 <junction x="38.1" y="-27.94"/>
 </segment>
 </net>
 <net name="OAPWR" class="0">
 <segment>
-<label x="25.4" y="-43.18" size="1.778" layer="95" rot="R270" xref="yes"/>
-<wire x1="27.94" y1="-43.18" x2="25.4" y2="-43.18" width="0.1524" layer="91"/>
-<wire x1="27.94" y1="-43.18" x2="27.94" y2="-38.1" width="0.1524" layer="91"/>
-<pinref part="R3" gate="G$1" pin="1"/>
-<pinref part="Q2" gate="G$1" pin="G"/>
-<wire x1="43.18" y1="-38.1" x2="43.18" y2="-58.42" width="0.1524" layer="91"/>
-<wire x1="43.18" y1="-58.42" x2="30.48" y2="-58.42" width="0.1524" layer="91"/>
-<wire x1="30.48" y1="-58.42" x2="30.48" y2="-43.18" width="0.1524" layer="91"/>
-<wire x1="30.48" y1="-43.18" x2="27.94" y2="-43.18" width="0.1524" layer="91"/>
-<junction x="27.94" y="-43.18"/>
-</segment>
-<segment>
 <pinref part="IC$2" gate="G$1" pin="QE"/>
 <wire x1="83.82" y1="76.2" x2="86.36" y2="76.2" width="0.1524" layer="91"/>
 <label x="86.36" y="76.2" size="1.778" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="R3" gate="G$1" pin="1"/>
+<wire x1="27.94" y1="-43.18" x2="25.4" y2="-43.18" width="0.1524" layer="91"/>
+<wire x1="27.94" y1="-43.18" x2="27.94" y2="-38.1" width="0.1524" layer="91"/>
+<junction x="27.94" y="-43.18"/>
+<pinref part="Q2" gate="G$1" pin="G"/>
+<wire x1="33.02" y1="-43.18" x2="27.94" y2="-43.18" width="0.1524" layer="91"/>
+<label x="25.4" y="-43.18" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 <net name="SCRGRND" class="0">
