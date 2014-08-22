@@ -505,12 +505,14 @@ def test_get_tenth_bit():
 #
 
 #
-# Shutter speeds are represented using 13 characters: 0-9, '/', '.' and 'S'.
+# Shutter speeds are represented using 13 characters: 0-9, ''.', 'S' and 'X'.
+#
 # E.g.:
 #
-#     18    One eigth of a second
+#     8      One eighth of a second
 #     5s     Five seconds
-#     1s+14 One and one quarter seconds.
+#     1.25   One and one quarter seconds
+#     16X0   1/16000 of a second
 #
 # We want a way to represent each character using 4 bits. There are max 5
 # characters per speed, so we have a total of (168*20)/8 = 420 bytes.
