@@ -11215,7 +11215,7 @@ Standard 6 pin header for AVR programming</description>
 <part name="Q3" library="transistor-small-signal" deviceset="BSS123" device=""/>
 <part name="R5" library="resistor" deviceset="R-EU_" device="R0402" value="390k"/>
 <part name="C6" library="rcl" deviceset="C-EU" device="C2012" value="1µ"/>
-<part name="C11" library="rcl" deviceset="C-EU" device="C2012" value="1µ"/>
+<part name="C11" library="rcl" deviceset="C-EU" device="C0402" value="1µ"/>
 <part name="GND17" library="supply1" deviceset="GND" device=""/>
 <part name="GND21" library="supply1" deviceset="GND" device=""/>
 <part name="GND22" library="supply1" deviceset="GND" device=""/>
