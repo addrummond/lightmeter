@@ -11219,8 +11219,8 @@ Standard 6 pin header for AVR programming</description>
 <part name="GND17" library="supply1" deviceset="GND" device=""/>
 <part name="GND21" library="supply1" deviceset="GND" device=""/>
 <part name="GND22" library="supply1" deviceset="GND" device=""/>
-<part name="C16" library="rcl" deviceset="C-EU" device="C2012" value="4µ7"/>
-<part name="C17" library="rcl" deviceset="C-EU" device="C2012" value="2µ2"/>
+<part name="C16" library="rcl" deviceset="C-EU" device="C0402" value="4µ7"/>
+<part name="C17" library="rcl" deviceset="C-EU" device="C0402" value="2µ2"/>
 <part name="C8" library="rcl" deviceset="C-EU" device="C2012" value="1µ"/>
 <part name="C9" library="rcl" deviceset="C-EU" device="C2012" value="1µ"/>
 <part name="GND3" library="supply1" deviceset="GND" device=""/>
