@@ -11713,16 +11713,18 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 <label x="38.1" y="-7.62" size="1.778" layer="95" rot="R90" xref="yes"/>
 </segment>
 <segment>
-<pinref part="IC$2" gate="G$1" pin="VCC"/>
-<wire x1="83.82" y1="96.52" x2="86.36" y2="96.52" width="0.1524" layer="91"/>
-<label x="86.36" y="96.52" size="1.778" layer="95" xref="yes"/>
-</segment>
-<segment>
 <pinref part="C5" gate="G$1" pin="2"/>
 <wire x1="43.18" y1="55.88" x2="43.18" y2="53.34" width="0.1524" layer="91"/>
 <wire x1="43.18" y1="53.34" x2="66.04" y2="53.34" width="0.1524" layer="91"/>
-<wire x1="66.04" y1="53.34" x2="66.04" y2="96.52" width="0.1524" layer="91"/>
-<wire x1="66.04" y1="96.52" x2="81.28" y2="96.52" width="0.1524" layer="91"/>
+<wire x1="66.04" y1="53.34" x2="66.04" y2="100.838" width="0.1524" layer="91"/>
+<wire x1="66.04" y1="100.838" x2="84.836" y2="100.838" width="0.1524" layer="91"/>
+<wire x1="84.836" y1="100.838" x2="84.836" y2="96.774" width="0.1524" layer="91"/>
+<pinref part="IC$2" gate="G$1" pin="VCC"/>
+<wire x1="83.82" y1="96.52" x2="86.36" y2="96.52" width="0.1524" layer="91"/>
+<label x="86.36" y="96.52" size="1.778" layer="95" xref="yes"/>
+<wire x1="84.836" y1="96.774" x2="83.82" y2="96.774" width="0.1524" layer="91"/>
+<wire x1="83.82" y1="96.774" x2="83.82" y2="96.52" width="0.1524" layer="91"/>
+<junction x="83.82" y="96.52"/>
 </segment>
 <segment>
 <pinref part="IC$1" gate="G$1" pin="VOUT"/>
