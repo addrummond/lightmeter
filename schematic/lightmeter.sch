@@ -12361,11 +12361,6 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 <wire x1="165.1" y1="12.7" x2="170.18" y2="12.7" width="0.1524" layer="91"/>
 <label x="170.18" y="12.7" size="1.778" layer="95" xref="yes"/>
 </segment>
-<segment>
-<pinref part="U$4" gate="G$1" pin="NC"/>
-<label x="195.58" y="38.1" size="1.778" layer="95" rot="R180" xref="yes"/>
-<wire x1="203.2" y1="38.1" x2="195.58" y2="38.1" width="0.1524" layer="91"/>
-</segment>
 </net>
 <net name="N$24" class="0">
 <segment>
