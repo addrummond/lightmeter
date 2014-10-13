@@ -9212,10 +9212,6 @@ Source: http://www3.alps.co.jp/WebObjects/catalog.woa/PDF/E/Switch/Tact/SKHM/SKH
 <hole x="8" y="-4.45" drill="0.4"/>
 </package>
 <package name="UG-2864HSWEG01_0.96IN_WRAPAROUND">
-<wire x1="-13.353" y1="14.36" x2="13.35" y2="14.36" width="0.2032" layer="21"/>
-<wire x1="13.35" y1="14.36" x2="13.35" y2="-4.9" width="0.2032" layer="21"/>
-<wire x1="13.35" y1="-4.9" x2="-13.35" y2="-4.9" width="0.2032" layer="21"/>
-<wire x1="-13.35" y1="-4.9" x2="-13.353" y2="14.36" width="0.2032" layer="21"/>
 <wire x1="-10.872" y1="12.26" x2="10.872" y2="12.26" width="0.2032" layer="51" style="shortdash"/>
 <wire x1="10.872" y1="12.26" x2="10.872" y2="1.396" width="0.2032" layer="51" style="shortdash"/>
 <wire x1="10.872" y1="1.396" x2="-10.872" y2="1.396" width="0.2032" layer="51" style="shortdash"/>
