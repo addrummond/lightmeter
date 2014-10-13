@@ -12402,13 +12402,6 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 <pinref part="C9" gate="G$1" pin="2"/>
 </segment>
 </net>
-<net name="N$12" class="0">
-<segment>
-<pinref part="U$4" gate="G$1" pin="VCOMH"/>
-<wire x1="203.2" y1="-12.7" x2="167.64" y2="-12.7" width="0.1524" layer="91"/>
-<pinref part="C16" gate="G$1" pin="2"/>
-</segment>
-</net>
 <net name="N$25" class="0">
 <segment>
 <pinref part="U$4" gate="G$1" pin="VCC"/>
@@ -12483,6 +12476,13 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 <wire x1="-73.66" y1="20.32" x2="-73.66" y2="25.4" width="0.1524" layer="91"/>
 <pinref part="U$1" gate="G$1" pin="PA6/ADC3/OC1B"/>
 <wire x1="-73.66" y1="25.4" x2="-48.26" y2="25.4" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$12" class="0">
+<segment>
+<pinref part="U$4" gate="G$1" pin="VCOMH"/>
+<pinref part="C16" gate="G$1" pin="2"/>
+<wire x1="203.2" y1="-12.7" x2="167.64" y2="-12.7" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
