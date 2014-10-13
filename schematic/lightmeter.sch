@@ -9212,10 +9212,6 @@ Source: http://www3.alps.co.jp/WebObjects/catalog.woa/PDF/E/Switch/Tact/SKHM/SKH
 <hole x="8" y="-4.45" drill="0.4"/>
 </package>
 <package name="UG-2864HSWEG01_0.96IN_WRAPAROUND">
-<wire x1="-10.872" y1="12.26" x2="10.872" y2="12.26" width="0.2032" layer="51" style="shortdash"/>
-<wire x1="10.872" y1="12.26" x2="10.872" y2="1.396" width="0.2032" layer="51" style="shortdash"/>
-<wire x1="10.872" y1="1.396" x2="-10.872" y2="1.396" width="0.2032" layer="51" style="shortdash"/>
-<wire x1="-10.872" y1="1.396" x2="-10.872" y2="12.26" width="0.2032" layer="51" style="shortdash"/>
 <smd name="1" x="-10.15" y="-1.2" dx="2.2" dy="0.35" layer="16" rot="R90"/>
 <smd name="2" x="-9.45" y="-1.2" dx="2.2" dy="0.35" layer="16" rot="R90"/>
 <smd name="3" x="-8.75" y="-1.2" dx="2.2" dy="0.35" layer="16" rot="R90"/>
@@ -9250,12 +9246,8 @@ Source: http://www3.alps.co.jp/WebObjects/catalog.woa/PDF/E/Switch/Tact/SKHM/SKH
 <text x="-3.65" y="0.412" size="0.8128" layer="52" font="vector" rot="R90">10</text>
 <text x="3.3" y="0.412" size="0.8128" layer="52" font="vector" rot="R90">20</text>
 <text x="10.45" y="0.412" size="0.8128" layer="52" font="vector" rot="R90">30</text>
-<text x="-13.09" y="15.69" size="0.8128" layer="25" ratio="18">&gt;NAME</text>
-<text x="-13.09" y="-9.1" size="0.4064" layer="27" ratio="10">&gt;VALUE</text>
-<text x="-5.2" y="-7" size="0.8128" layer="51">PCB EDGE (1.6mm)</text>
-<hole x="-8" y="-5.45" drill="0.4"/>
-<hole x="8" y="-5.45" drill="0.4"/>
-<wire x1="13.35" y1="-7.5" x2="-13.35" y2="-7.5" width="0.2032" layer="51" style="shortdash"/>
+<text x="2.15" y="-4.63" size="0.8128" layer="25" ratio="18">&gt;NAME</text>
+<text x="-2.93" y="-5.29" size="0.4064" layer="27" ratio="10">&gt;VALUE</text>
 </package>
 <package name="0805">
 <description>0805 (2012 Metric)</description>
