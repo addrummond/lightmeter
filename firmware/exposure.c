@@ -367,7 +367,7 @@ static const uint8_t THIRD_STOP_ISOS[] PROGMEM = {
     (6 << 4) | 4, 3,  // 64000
     (8 << 4) | 0, 3,  // 80000
 
-    (1 << 4) | 2, 4,  // 125000 (specified as 125000, must be special-cased)
+    (1 << 4) | 2, 4,  // 125000 (specified as 120000, must be special-cased)
     (1 << 4) | 6, 4,  // 160000
 
     (2 << 4) | 5, 4,  // 250000
