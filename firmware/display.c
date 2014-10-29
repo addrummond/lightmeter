@@ -58,6 +58,7 @@ void display_init()
     DISPLAY_CS_DDR |= (1 << DISPLAY_CS_BIT);
     DISPLAY_CLK_DDR |= (1 << DISPLAY_CLK_BIT);
     DISPLAY_DC_DDR |= (1 << DISPLAY_DC_BIT);
+    DISPLAY_RESET_DDR |= (1 << DISPLAY_RESET_BIT);
 
     display_reset();
 
