@@ -7,6 +7,9 @@
 #include <bitmaps/bitmaps.h>
 #include <deviceconfig.h>
 #include <shiftregister.h>
+#ifdef DEBUG
+#include <basic_serial/basic_serial.h>
+#endif
 
 void display_write_byte(uint8_t d)
 {
