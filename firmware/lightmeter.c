@@ -15,7 +15,9 @@
 #include <mymemset.h>
 #include <shiftregister.h>
 
+#ifdef DEBUG
 #include <basic_serial/basic_serial.h>
+#endif
 
 // Save result of ADC on interrupt.
 volatile static uint16_t adc_light_value = 0;
