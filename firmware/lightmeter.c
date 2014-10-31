@@ -219,25 +219,6 @@ static void process_button_press()
 FOR_EACH_PUSHBUTTON_PCMSK_DO(DEF_ISR)
 #undef DEF_ISR
 
-static void setup_charge_pump()
-{
-    DDRA |= (1 << PA6);
-    DDRB |= (1 << PB3);
-
-    // Enable fast 8-bit PWM mode with TOP=0xFF.
-    TCCR1B = ((0 << WGM13) | (1 << WGM12));
-    TCCR1A = ((0 << WGM11) | (1 << WGM10));
-
-    // Set output pins out of phase.
-    TCCR1A |= (1 << COM1A1);
-    TCCR1A &= ~(1 << COM1A0);
-    TCCR1A |= (1 << COM1B1) | (1 << COM1B0);
-
-    // Prescale clock by 1/1.
-    TCCR1B |= (0 << CS12) | (0 << CS11) | (1 << CS10);
-    OCR1A = 128;
-    OCR1B = 128;
-}
 
 static void handle_button_press(uint8_t but)
 {
