@@ -257,6 +257,7 @@ int main()
     setup_shift_register();
     set_shift_register_out();
 
+    // Enable interrupts.
     sei();
 
     turn_on_display();
