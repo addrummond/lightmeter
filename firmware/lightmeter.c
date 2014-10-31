@@ -117,6 +117,12 @@ static void set_op_amp_resistor_stage(uint8_t op_amp_resistor_stage)
     global_transient_meter_state.op_amp_resistor_stage = op_amp_resistor_stage;
 }
 
+static void turn_on_display()
+{
+    or_shift_register_bits(1 << SHIFT_REGISTER_SCRPWR_BIT);
+    set_shift_register_out();
+}
+
 static void led_test(void);
 void handle_measurement()
 {
@@ -273,6 +279,7 @@ int main()
 
     sei();
 
+    turn_on_display();
     display_init();
     display_clear();
 
