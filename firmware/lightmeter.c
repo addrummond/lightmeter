@@ -263,6 +263,22 @@ int main()
     display_init();
     display_clear();
 
+    // The following code is useful for testing that all pins are connected.
+    // It sets all pins to output mode and switches them from low to high
+    // every half second.
+    /*DDRA = 0xFF;
+    DDRB = 0xFF;
+    DDRC = 0xFF;
+    PORTA |= 0xFF;
+    PORTB |= 0xFF;
+    PORTC |= 0xFF;
+    for (;;) {
+        PORTA ^= 0xFF;
+        PORTB ^= 0xFF;
+        PORTC ^= 0xFF;
+        _delay_ms(500);
+    }*/
+
     // The main loop. This looks at the latest exposure
     // reading every so often.
     uint8_t cnt;
