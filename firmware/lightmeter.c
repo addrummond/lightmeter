@@ -254,7 +254,6 @@ int main()
     setup_ADC();
     initialize_global_meter_states();
 
-    setup_charge_pump();
     setup_shift_register();
     set_shift_register_out();
 
