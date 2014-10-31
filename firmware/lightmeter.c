@@ -195,7 +195,7 @@ static void setup_pushbuttons()
 static volatile uint8_t button_pressed = 0;
 static void process_button_press()
 {
-    button_pressed = 0;
+    uint8_t button_pressed = 0;
 #define IF(n)                                                          \
     if (! (PUSHBUTTON ## n ## _PIN & (1 << PUSHBUTTON ## n ## _BIT)))  \
         button_pressed |= (1 << (n-1));
@@ -203,11 +203,27 @@ static void process_button_press()
 #undef IF
 
 #if DEBUG
+    // Decode for button arrangement on protoboard, buttons numbered 1-5
+    // from left-right / top-bottom.
     tx_byte('P');
-    if (button_pressed < 8)
-        tx_byte('A' + button_pressed - 1);
-    else
+    if (button_pressed == 1) {
+        tx_byte('1');
+    }
+    else if (button_pressed == 2) {
+        tx_byte('2');
+    }
+    else if (button_pressed == 4) {
+        tx_byte('3');
+    }
+    else if (button_pressed == 6) {
+        tx_byte('4');
+    }
+    else if (button_pressed == 3) {
+        tx_byte('5');
+    }
+    else {
         tx_byte('?');
+    }
 #endif
 }
 
