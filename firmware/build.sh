@@ -9,6 +9,11 @@ then
     echo "Building in debug mode"
     CFLAGS="$CFLAGS -DDEBUG"
 fi
+if [ "$1" == "pdebug" ]
+then
+    echo "Building in protohack debug mode"
+    CFLAGS="$CFLAGS -DDEBUG -DPDEBUG"
+fi
 
 python output_initial_eeprom.py
 

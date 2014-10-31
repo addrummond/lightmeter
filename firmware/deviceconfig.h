@@ -16,7 +16,7 @@
 //
 //        Display data   |    ADC5/PB0 1---20 [MOSI]    | **********
 //        Display DC     |    ADC4/PA7 2---19 [MISO]    | **********
-//   Charge pump clock 1 |    ADC3/PA6 3---18 PB3/ADC8  | Charge pump clock 2
+//   Temp sensor         |    ADC3/PA6 3---18 PB3/ADC8  |
 //     Serial debug port |    ADC2/PA5 4---17 PC0/ADC9  | Op amp output
 //     Shift register A  |    ADC1/PA4 5---16 [USCK]    | **********
 //          Pushbutton 1 |    ADC0/PA3 6---15 PC2/ADC11 | Pushbutton 3
@@ -44,6 +44,16 @@
 #define DISPLAY_DC_PORT     PORTA
 #define DISPLAY_DC_DDR      DDRA
 #define DISPLAY_DC_BIT      PA7
+
+// Override ordinary display DC port due to solder failure in prototype board.
+#ifdef PDEBUG
+#undef DISPLAY_DC_PORT
+#undef DISPLAY_DC_DDR
+#undef DISPLAY_DC_BIT
+#define DISPLAY_DC_PORT     PORTB
+#define DISPLAY_DC_DDR      DDRB
+#define DISPLAY_DC_BIT      PB3
+#endif
 
 #define DISPLAY_RESET_PORT  PORTA
 #define DISPLAY_RESET_DDR   DDRA
