@@ -8,34 +8,34 @@
 </settings>
 <grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
-<layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
-<layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
-<layer number="3" name="Route3" color="4" fill="3" visible="no" active="no"/>
-<layer number="4" name="Route4" color="1" fill="4" visible="no" active="no"/>
-<layer number="5" name="Route5" color="4" fill="4" visible="no" active="no"/>
-<layer number="6" name="Route6" color="1" fill="8" visible="no" active="no"/>
-<layer number="7" name="Route7" color="4" fill="8" visible="no" active="no"/>
-<layer number="8" name="Route8" color="1" fill="2" visible="no" active="no"/>
-<layer number="9" name="Route9" color="4" fill="2" visible="no" active="no"/>
-<layer number="10" name="Route10" color="1" fill="7" visible="no" active="no"/>
-<layer number="11" name="Route11" color="4" fill="7" visible="no" active="no"/>
-<layer number="12" name="Route12" color="1" fill="5" visible="no" active="no"/>
-<layer number="13" name="Route13" color="4" fill="5" visible="no" active="no"/>
-<layer number="14" name="Route14" color="1" fill="6" visible="no" active="no"/>
-<layer number="15" name="Route15" color="4" fill="6" visible="no" active="no"/>
-<layer number="16" name="Bottom" color="1" fill="1" visible="no" active="no"/>
-<layer number="17" name="Pads" color="2" fill="1" visible="no" active="no"/>
-<layer number="18" name="Vias" color="2" fill="1" visible="no" active="no"/>
-<layer number="19" name="Unrouted" color="6" fill="1" visible="no" active="no"/>
-<layer number="20" name="Dimension" color="15" fill="1" visible="no" active="no"/>
-<layer number="21" name="tPlace" color="7" fill="1" visible="no" active="no"/>
-<layer number="22" name="bPlace" color="7" fill="1" visible="no" active="no"/>
-<layer number="23" name="tOrigins" color="15" fill="1" visible="no" active="no"/>
-<layer number="24" name="bOrigins" color="15" fill="1" visible="no" active="no"/>
-<layer number="25" name="tNames" color="7" fill="1" visible="no" active="no"/>
-<layer number="26" name="bNames" color="7" fill="1" visible="no" active="no"/>
-<layer number="27" name="tValues" color="7" fill="1" visible="no" active="no"/>
-<layer number="28" name="bValues" color="7" fill="1" visible="no" active="no"/>
+<layer number="1" name="Top" color="4" fill="1" visible="yes" active="no"/>
+<layer number="2" name="Route2" color="1" fill="3" visible="yes" active="no"/>
+<layer number="3" name="Route3" color="4" fill="3" visible="yes" active="no"/>
+<layer number="4" name="Route4" color="1" fill="4" visible="yes" active="no"/>
+<layer number="5" name="Route5" color="4" fill="4" visible="yes" active="no"/>
+<layer number="6" name="Route6" color="1" fill="8" visible="yes" active="no"/>
+<layer number="7" name="Route7" color="4" fill="8" visible="yes" active="no"/>
+<layer number="8" name="Route8" color="1" fill="2" visible="yes" active="no"/>
+<layer number="9" name="Route9" color="4" fill="2" visible="yes" active="no"/>
+<layer number="10" name="Route10" color="1" fill="7" visible="yes" active="no"/>
+<layer number="11" name="Route11" color="4" fill="7" visible="yes" active="no"/>
+<layer number="12" name="Route12" color="1" fill="5" visible="yes" active="no"/>
+<layer number="13" name="Route13" color="4" fill="5" visible="yes" active="no"/>
+<layer number="14" name="Route14" color="1" fill="6" visible="yes" active="no"/>
+<layer number="15" name="Route15" color="4" fill="6" visible="yes" active="no"/>
+<layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="no"/>
+<layer number="17" name="Pads" color="2" fill="1" visible="yes" active="no"/>
+<layer number="18" name="Vias" color="2" fill="1" visible="yes" active="no"/>
+<layer number="19" name="Unrouted" color="6" fill="1" visible="yes" active="no"/>
+<layer number="20" name="Dimension" color="15" fill="1" visible="yes" active="no"/>
+<layer number="21" name="tPlace" color="7" fill="1" visible="yes" active="no"/>
+<layer number="22" name="bPlace" color="7" fill="1" visible="yes" active="no"/>
+<layer number="23" name="tOrigins" color="15" fill="1" visible="yes" active="no"/>
+<layer number="24" name="bOrigins" color="15" fill="1" visible="yes" active="no"/>
+<layer number="25" name="tNames" color="7" fill="1" visible="yes" active="no"/>
+<layer number="26" name="bNames" color="7" fill="1" visible="yes" active="no"/>
+<layer number="27" name="tValues" color="7" fill="1" visible="yes" active="no"/>
+<layer number="28" name="bValues" color="7" fill="1" visible="yes" active="no"/>
 <layer number="29" name="tStop" color="7" fill="3" visible="no" active="no"/>
 <layer number="30" name="bStop" color="7" fill="6" visible="no" active="no"/>
 <layer number="31" name="tCream" color="7" fill="4" visible="no" active="no"/>
@@ -44,8 +44,8 @@
 <layer number="34" name="bFinish" color="6" fill="6" visible="no" active="no"/>
 <layer number="35" name="tGlue" color="7" fill="4" visible="no" active="no"/>
 <layer number="36" name="bGlue" color="7" fill="5" visible="no" active="no"/>
-<layer number="37" name="tTest" color="7" fill="1" visible="no" active="no"/>
-<layer number="38" name="bTest" color="7" fill="1" visible="no" active="no"/>
+<layer number="37" name="tTest" color="7" fill="1" visible="yes" active="no"/>
+<layer number="38" name="bTest" color="7" fill="1" visible="yes" active="no"/>
 <layer number="39" name="tKeepout" color="4" fill="11" visible="no" active="no"/>
 <layer number="40" name="bKeepout" color="1" fill="11" visible="no" active="no"/>
 <layer number="41" name="tRestrict" color="4" fill="10" visible="no" active="no"/>
@@ -53,17 +53,17 @@
 <layer number="43" name="vRestrict" color="2" fill="10" visible="no" active="no"/>
 <layer number="44" name="Drills" color="7" fill="1" visible="no" active="no"/>
 <layer number="45" name="Holes" color="7" fill="1" visible="no" active="no"/>
-<layer number="46" name="Milling" color="3" fill="1" visible="no" active="no"/>
-<layer number="47" name="Measures" color="7" fill="1" visible="no" active="no"/>
-<layer number="48" name="Document" color="7" fill="1" visible="no" active="no"/>
-<layer number="49" name="Reference" color="7" fill="1" visible="no" active="no"/>
-<layer number="50" name="dxf" color="7" fill="1" visible="no" active="no"/>
-<layer number="51" name="tDocu" color="7" fill="1" visible="no" active="no"/>
-<layer number="52" name="bDocu" color="7" fill="1" visible="no" active="no"/>
-<layer number="53" name="tGND_GNDA" color="7" fill="9" visible="no" active="no"/>
-<layer number="54" name="bGND_GNDA" color="1" fill="9" visible="no" active="no"/>
-<layer number="56" name="wert" color="7" fill="1" visible="no" active="no"/>
-<layer number="57" name="tCAD" color="7" fill="1" visible="no" active="no"/>
+<layer number="46" name="Milling" color="3" fill="1" visible="yes" active="no"/>
+<layer number="47" name="Measures" color="7" fill="1" visible="yes" active="no"/>
+<layer number="48" name="Document" color="7" fill="1" visible="yes" active="no"/>
+<layer number="49" name="Reference" color="7" fill="1" visible="yes" active="no"/>
+<layer number="50" name="dxf" color="7" fill="1" visible="yes" active="no"/>
+<layer number="51" name="tDocu" color="7" fill="1" visible="yes" active="no"/>
+<layer number="52" name="bDocu" color="7" fill="1" visible="yes" active="no"/>
+<layer number="53" name="tGND_GNDA" color="7" fill="9" visible="yes" active="no"/>
+<layer number="54" name="bGND_GNDA" color="1" fill="9" visible="yes" active="no"/>
+<layer number="56" name="wert" color="7" fill="1" visible="yes" active="no"/>
+<layer number="57" name="tCAD" color="7" fill="1" visible="yes" active="no"/>
 <layer number="91" name="Nets" color="2" fill="1" visible="yes" active="yes"/>
 <layer number="92" name="Busses" color="1" fill="1" visible="yes" active="yes"/>
 <layer number="93" name="Pins" color="2" fill="1" visible="no" active="yes"/>
@@ -10005,211 +10005,6 @@ MAX3223-MAX3243.pdf</description>
 </deviceset>
 </devicesets>
 </library>
-<library name="attiny1634">
-<packages>
-<package name="MLF20">
-<description>&lt;b&gt;HP-VFQFP-N20&lt;/b&gt; Micro Lead Frame package (MLF)</description>
-<wire x1="-2.375" y1="2.05" x2="-2.05" y2="2.375" width="0.254" layer="21"/>
-<wire x1="-2.05" y1="2.375" x2="2.05" y2="2.375" width="0.254" layer="51"/>
-<wire x1="2.05" y1="-2.375" x2="-2.05" y2="-2.375" width="0.254" layer="51"/>
-<wire x1="-2.05" y1="-2.375" x2="-2.375" y2="-2.05" width="0.254" layer="21"/>
-<wire x1="-2.375" y1="-2.05" x2="-2.375" y2="2.05" width="0.254" layer="51"/>
-<wire x1="2.375" y1="2.05" x2="2.375" y2="-2.05" width="0.254" layer="51"/>
-<wire x1="2.05" y1="2.375" x2="2.375" y2="2.05" width="0.254" layer="21"/>
-<wire x1="2.375" y1="-2.05" x2="2.05" y2="-2.375" width="0.254" layer="21"/>
-<circle x="-1.55" y="1.55" radius="0.15" width="0.254" layer="21"/>
-<smd name="1" x="-2.25" y="1.3" dx="0.9" dy="0.35" layer="1" roundness="50"/>
-<smd name="2" x="-2.25" y="0.65" dx="0.9" dy="0.35" layer="1" roundness="50"/>
-<smd name="3" x="-2.25" y="0" dx="0.9" dy="0.35" layer="1" roundness="50"/>
-<smd name="4" x="-2.25" y="-0.65" dx="0.9" dy="0.35" layer="1" roundness="50"/>
-<smd name="5" x="-2.25" y="-1.3" dx="0.9" dy="0.35" layer="1" roundness="50"/>
-<smd name="6" x="-1.3" y="-2.25" dx="0.35" dy="0.9" layer="1" roundness="50"/>
-<smd name="7" x="-0.65" y="-2.25" dx="0.35" dy="0.9" layer="1" roundness="50"/>
-<smd name="8" x="0" y="-2.25" dx="0.35" dy="0.9" layer="1" roundness="50"/>
-<smd name="9" x="0.65" y="-2.25" dx="0.35" dy="0.9" layer="1" roundness="50"/>
-<smd name="10" x="1.3" y="-2.25" dx="0.35" dy="0.9" layer="1" roundness="50"/>
-<smd name="11" x="2.25" y="-1.3" dx="0.9" dy="0.35" layer="1" roundness="50"/>
-<smd name="12" x="2.25" y="-0.65" dx="0.9" dy="0.35" layer="1" roundness="50"/>
-<smd name="13" x="2.25" y="0" dx="0.9" dy="0.35" layer="1" roundness="50"/>
-<smd name="14" x="2.25" y="0.65" dx="0.9" dy="0.35" layer="1" roundness="50"/>
-<smd name="15" x="2.25" y="1.3" dx="0.9" dy="0.35" layer="1" roundness="50"/>
-<smd name="16" x="1.3" y="2.25" dx="0.35" dy="0.9" layer="1" roundness="50"/>
-<smd name="17" x="0.65" y="2.25" dx="0.35" dy="0.9" layer="1" roundness="50"/>
-<smd name="18" x="0" y="2.25" dx="0.35" dy="0.9" layer="1" roundness="50"/>
-<smd name="19" x="-0.65" y="2.25" dx="0.35" dy="0.9" layer="1" roundness="50"/>
-<smd name="20" x="-1.3" y="2.25" dx="0.35" dy="0.9" layer="1" roundness="50"/>
-<text x="-2.54" y="3.175" size="1.27" layer="25">&gt;NAME</text>
-<text x="-2.54" y="-4.445" size="1.27" layer="27">&gt;VALUE</text>
-<rectangle x1="-2.35" y1="1.15" x2="-1.9" y2="1.45" layer="51"/>
-<rectangle x1="-2.35" y1="0.5" x2="-1.9" y2="0.8" layer="51"/>
-<rectangle x1="-2.35" y1="-0.15" x2="-1.9" y2="0.15" layer="51"/>
-<rectangle x1="-2.35" y1="-0.8" x2="-1.9" y2="-0.5" layer="51"/>
-<rectangle x1="-2.35" y1="-1.45" x2="-1.9" y2="-1.15" layer="51"/>
-<rectangle x1="-1.45" y1="-2.35" x2="-1.15" y2="-1.9" layer="51"/>
-<rectangle x1="-0.8" y1="-2.35" x2="-0.5" y2="-1.9" layer="51"/>
-<rectangle x1="-0.15" y1="-2.35" x2="0.15" y2="-1.9" layer="51"/>
-<rectangle x1="0.5" y1="-2.35" x2="0.8" y2="-1.9" layer="51"/>
-<rectangle x1="1.15" y1="-2.35" x2="1.45" y2="-1.9" layer="51"/>
-<rectangle x1="1.9" y1="-1.45" x2="2.35" y2="-1.15" layer="51"/>
-<rectangle x1="1.9" y1="-0.8" x2="2.35" y2="-0.5" layer="51"/>
-<rectangle x1="1.9" y1="-0.15" x2="2.35" y2="0.15" layer="51"/>
-<rectangle x1="1.9" y1="0.5" x2="2.35" y2="0.8" layer="51"/>
-<rectangle x1="1.9" y1="1.15" x2="2.35" y2="1.45" layer="51"/>
-<rectangle x1="1.15" y1="1.9" x2="1.45" y2="2.35" layer="51"/>
-<rectangle x1="0.5" y1="1.9" x2="0.8" y2="2.35" layer="51"/>
-<rectangle x1="-0.15" y1="1.9" x2="0.15" y2="2.35" layer="51"/>
-<rectangle x1="-0.8" y1="1.9" x2="-0.5" y2="2.35" layer="51"/>
-<rectangle x1="-1.45" y1="1.9" x2="-1.15" y2="2.35" layer="51"/>
-<smd name="GND" x="0" y="0" dx="2.54" dy="2.54" layer="1"/>
-</package>
-<package name="SOIC20">
-<wire x1="-2.62" y1="3.75" x2="10.24" y2="3.75" width="0.1524" layer="51"/>
-<wire x1="-2.62" y1="-3.75" x2="10.24" y2="-3.75" width="0.1524" layer="51"/>
-<wire x1="-2.62" y1="3.75" x2="-2.62" y2="-3.175" width="0.1524" layer="51"/>
-<wire x1="-2.62" y1="-3.175" x2="-2.62" y2="-3.75" width="0.1524" layer="51"/>
-<wire x1="10.24" y1="3.75" x2="10.24" y2="-3.175" width="0.1524" layer="51"/>
-<wire x1="10.24" y1="-3.175" x2="10.24" y2="-3.75" width="0.1524" layer="51"/>
-<wire x1="-2.62" y1="-3.175" x2="10.24" y2="-3.175" width="0.1524" layer="51"/>
-<wire x1="-2.62" y1="3.75" x2="-2.62" y2="-3.75" width="0.1524" layer="21"/>
-<wire x1="10.24" y1="3.75" x2="10.24" y2="-3.75" width="0.1524" layer="21"/>
-<circle x="-1.32" y="-2" radius="0.5656" width="0.1524" layer="21"/>
-<smd name="1" x="-1.905" y="-4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
-<smd name="2" x="-0.635" y="-4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
-<smd name="3" x="0.635" y="-4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
-<smd name="4" x="1.905" y="-4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
-<smd name="5" x="3.175" y="-4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
-<smd name="6" x="4.445" y="-4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
-<smd name="7" x="5.715" y="-4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
-<smd name="8" x="6.985" y="-4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
-<smd name="9" x="8.255" y="-4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
-<smd name="10" x="9.525" y="-4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
-<smd name="11" x="9.525" y="4.445" dx="2.2" dy="0.6" layer="1" rot="R270"/>
-<smd name="12" x="8.255" y="4.445" dx="2.2" dy="0.6" layer="1" rot="R270"/>
-<smd name="13" x="6.985" y="4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
-<smd name="14" x="5.715" y="4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
-<smd name="15" x="4.445" y="4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
-<smd name="16" x="3.175" y="4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
-<smd name="17" x="1.905" y="4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
-<smd name="18" x="0.635" y="4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
-<smd name="19" x="-0.635" y="4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
-<smd name="20" x="-1.905" y="4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
-<text x="-3.175" y="-3.81" size="1.27" layer="25" ratio="10" rot="R90">&gt;NAME</text>
-<text x="12.065" y="-3.81" size="1.27" layer="27" ratio="10" rot="R90">&gt;VALUE</text>
-<rectangle x1="4.245" y1="-5.15" x2="4.645" y2="-3.75" layer="51"/>
-<rectangle x1="-2.105" y1="-5.15" x2="-1.705" y2="-3.75" layer="51"/>
-<rectangle x1="2.975" y1="-5.15" x2="3.375" y2="-3.75" layer="51"/>
-<rectangle x1="-0.835" y1="-5.15" x2="-0.435" y2="-3.75" layer="51"/>
-<rectangle x1="0.435" y1="-5.15" x2="0.835" y2="-3.75" layer="51"/>
-<rectangle x1="1.705" y1="-5.15" x2="2.105" y2="-3.75" layer="51"/>
-<rectangle x1="5.515" y1="-5.15" x2="5.915" y2="-3.75" layer="51"/>
-<rectangle x1="6.785" y1="-5.15" x2="7.185" y2="-3.75" layer="51"/>
-<rectangle x1="8.055" y1="-5.15" x2="8.455" y2="-3.75" layer="51"/>
-<rectangle x1="9.325" y1="-5.15" x2="9.725" y2="-3.75" layer="51"/>
-<rectangle x1="9.325" y1="3.74" x2="9.725" y2="5.14" layer="51"/>
-<rectangle x1="8.055" y1="3.74" x2="8.455" y2="5.14" layer="51"/>
-<rectangle x1="6.785" y1="3.74" x2="7.185" y2="5.14" layer="51"/>
-<rectangle x1="5.515" y1="3.74" x2="5.915" y2="5.14" layer="51"/>
-<rectangle x1="4.245" y1="3.74" x2="4.645" y2="5.14" layer="51"/>
-<rectangle x1="2.975" y1="3.74" x2="3.375" y2="5.14" layer="51"/>
-<rectangle x1="1.705" y1="3.74" x2="2.105" y2="5.14" layer="51"/>
-<rectangle x1="0.435" y1="3.74" x2="0.835" y2="5.14" layer="51"/>
-<rectangle x1="-0.835" y1="3.74" x2="-0.435" y2="5.14" layer="51"/>
-<rectangle x1="-2.105" y1="3.74" x2="-1.705" y2="5.14" layer="51"/>
-</package>
-</packages>
-<symbols>
-<symbol name="ATTINY1634">
-<pin name="PB0/TXD0/ADC5" x="-30.48" y="0" length="middle"/>
-<pin name="PA7/RXD0/ADC4" x="-30.48" y="-2.54" length="middle"/>
-<pin name="PA6/ADC3/OC1B" x="-30.48" y="-5.08" length="middle"/>
-<pin name="PA5/ADC2/OC0B" x="-30.48" y="-7.62" length="middle"/>
-<pin name="PA4/ADC1/T0" x="-30.48" y="-10.16" length="middle"/>
-<pin name="PA3/ADC0/T1/SNS" x="-30.48" y="-12.7" length="middle"/>
-<pin name="PA2/AIN1" x="-30.48" y="-15.24" length="middle"/>
-<pin name="PA1/AIN0" x="-30.48" y="-17.78" length="middle"/>
-<pin name="PA0/AREF" x="-30.48" y="-20.32" length="middle"/>
-<pin name="GND" x="-30.48" y="-22.86" length="middle" direction="pwr"/>
-<pin name="RXD1/ADC6/DI/SDA/MOSI/PB1" x="40.64" y="0" length="middle" rot="R180"/>
-<pin name="ADC7/MISO/TXD1/DO/PB2" x="40.64" y="-2.54" length="middle" rot="R180"/>
-<pin name="ADC8/OC1A/PB3" x="40.64" y="-5.08" length="middle" rot="R180"/>
-<pin name="ADC9/OC0A/XCK0/PC0" x="40.64" y="-7.62" length="middle" rot="R180"/>
-<pin name="ADC10/SCL/USCK/XCK1/PC1" x="40.64" y="-10.16" length="middle" rot="R180"/>
-<pin name="ADC11/CLK0/PC2" x="40.64" y="-12.7" length="middle" rot="R180"/>
-<pin name="-RESET/PC3" x="40.64" y="-15.24" length="middle" rot="R180"/>
-<pin name="XTAL2/PC4" x="40.64" y="-17.78" length="middle" rot="R180"/>
-<pin name="XTAL1/PC5" x="40.64" y="-20.32" length="middle" rot="R180"/>
-<pin name="VCC" x="40.64" y="-22.86" length="middle" direction="pwr" rot="R180"/>
-<wire x1="-25.4" y1="2.54" x2="-25.4" y2="-27.94" width="0.254" layer="94"/>
-<wire x1="-25.4" y1="-27.94" x2="35.56" y2="-27.94" width="0.254" layer="94"/>
-<wire x1="35.56" y1="-27.94" x2="35.56" y2="2.54" width="0.254" layer="94"/>
-<wire x1="35.56" y1="2.54" x2="-25.4" y2="2.54" width="0.254" layer="94"/>
-<text x="-25.4" y="5.08" size="1.778" layer="95">&gt;NAME</text>
-</symbol>
-</symbols>
-<devicesets>
-<deviceset name="ATTINY1634" prefix="MLF">
-<gates>
-<gate name="G$1" symbol="ATTINY1634" x="0" y="0"/>
-</gates>
-<devices>
-<device name="SOIC20" package="SOIC20">
-<connects>
-<connect gate="G$1" pin="-RESET/PC3" pad="14"/>
-<connect gate="G$1" pin="ADC10/SCL/USCK/XCK1/PC1" pad="16"/>
-<connect gate="G$1" pin="ADC11/CLK0/PC2" pad="15"/>
-<connect gate="G$1" pin="ADC7/MISO/TXD1/DO/PB2" pad="19"/>
-<connect gate="G$1" pin="ADC8/OC1A/PB3" pad="18"/>
-<connect gate="G$1" pin="ADC9/OC0A/XCK0/PC0" pad="17"/>
-<connect gate="G$1" pin="GND" pad="10"/>
-<connect gate="G$1" pin="PA0/AREF" pad="9"/>
-<connect gate="G$1" pin="PA1/AIN0" pad="8"/>
-<connect gate="G$1" pin="PA2/AIN1" pad="7"/>
-<connect gate="G$1" pin="PA3/ADC0/T1/SNS" pad="6"/>
-<connect gate="G$1" pin="PA4/ADC1/T0" pad="5"/>
-<connect gate="G$1" pin="PA5/ADC2/OC0B" pad="4"/>
-<connect gate="G$1" pin="PA6/ADC3/OC1B" pad="3"/>
-<connect gate="G$1" pin="PA7/RXD0/ADC4" pad="2"/>
-<connect gate="G$1" pin="PB0/TXD0/ADC5" pad="1"/>
-<connect gate="G$1" pin="RXD1/ADC6/DI/SDA/MOSI/PB1" pad="20"/>
-<connect gate="G$1" pin="VCC" pad="11"/>
-<connect gate="G$1" pin="XTAL1/PC5" pad="12"/>
-<connect gate="G$1" pin="XTAL2/PC4" pad="13"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="MLF20" package="MLF20">
-<connects>
-<connect gate="G$1" pin="-RESET/PC3" pad="12"/>
-<connect gate="G$1" pin="ADC10/SCL/USCK/XCK1/PC1" pad="14"/>
-<connect gate="G$1" pin="ADC11/CLK0/PC2" pad="13"/>
-<connect gate="G$1" pin="ADC7/MISO/TXD1/DO/PB2" pad="17"/>
-<connect gate="G$1" pin="ADC8/OC1A/PB3" pad="16"/>
-<connect gate="G$1" pin="ADC9/OC0A/XCK0/PC0" pad="15"/>
-<connect gate="G$1" pin="GND" pad="8 GND"/>
-<connect gate="G$1" pin="PA0/AREF" pad="7"/>
-<connect gate="G$1" pin="PA1/AIN0" pad="6"/>
-<connect gate="G$1" pin="PA2/AIN1" pad="5"/>
-<connect gate="G$1" pin="PA3/ADC0/T1/SNS" pad="4"/>
-<connect gate="G$1" pin="PA4/ADC1/T0" pad="3"/>
-<connect gate="G$1" pin="PA5/ADC2/OC0B" pad="2"/>
-<connect gate="G$1" pin="PA6/ADC3/OC1B" pad="1"/>
-<connect gate="G$1" pin="PA7/RXD0/ADC4" pad="20"/>
-<connect gate="G$1" pin="PB0/TXD0/ADC5" pad="19"/>
-<connect gate="G$1" pin="RXD1/ADC6/DI/SDA/MOSI/PB1" pad="18"/>
-<connect gate="G$1" pin="VCC" pad="9"/>
-<connect gate="G$1" pin="XTAL1/PC5" pad="10"/>
-<connect gate="G$1" pin="XTAL2/PC4" pad="11"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-</devicesets>
-</library>
 <library name="custom">
 <packages>
 <package name="SOT23-6L">
@@ -11341,6 +11136,211 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 </deviceset>
 </devicesets>
 </library>
+<library name="attiny1634_corrected">
+<packages>
+<package name="SOIC20">
+<wire x1="-2.62" y1="3.75" x2="10.24" y2="3.75" width="0.1524" layer="51"/>
+<wire x1="-2.62" y1="-3.75" x2="10.24" y2="-3.75" width="0.1524" layer="51"/>
+<wire x1="-2.62" y1="3.75" x2="-2.62" y2="-3.175" width="0.1524" layer="51"/>
+<wire x1="-2.62" y1="-3.175" x2="-2.62" y2="-3.75" width="0.1524" layer="51"/>
+<wire x1="10.24" y1="3.75" x2="10.24" y2="-3.175" width="0.1524" layer="51"/>
+<wire x1="10.24" y1="-3.175" x2="10.24" y2="-3.75" width="0.1524" layer="51"/>
+<wire x1="-2.62" y1="-3.175" x2="10.24" y2="-3.175" width="0.1524" layer="51"/>
+<wire x1="-2.62" y1="3.75" x2="-2.62" y2="-3.75" width="0.1524" layer="21"/>
+<wire x1="10.24" y1="3.75" x2="10.24" y2="-3.75" width="0.1524" layer="21"/>
+<circle x="-1.32" y="-2" radius="0.5656" width="0.1524" layer="21"/>
+<smd name="1" x="-1.905" y="-4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
+<smd name="2" x="-0.635" y="-4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
+<smd name="3" x="0.635" y="-4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
+<smd name="4" x="1.905" y="-4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
+<smd name="5" x="3.175" y="-4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
+<smd name="6" x="4.445" y="-4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
+<smd name="7" x="5.715" y="-4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
+<smd name="8" x="6.985" y="-4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
+<smd name="9" x="8.255" y="-4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
+<smd name="10" x="9.525" y="-4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
+<smd name="11" x="9.525" y="4.445" dx="2.2" dy="0.6" layer="1" rot="R270"/>
+<smd name="12" x="8.255" y="4.445" dx="2.2" dy="0.6" layer="1" rot="R270"/>
+<smd name="13" x="6.985" y="4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
+<smd name="14" x="5.715" y="4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
+<smd name="15" x="4.445" y="4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
+<smd name="16" x="3.175" y="4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
+<smd name="17" x="1.905" y="4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
+<smd name="18" x="0.635" y="4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
+<smd name="19" x="-0.635" y="4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
+<smd name="20" x="-1.905" y="4.445" dx="2.2" dy="0.6" layer="1" rot="R90"/>
+<text x="-3.175" y="-3.81" size="1.27" layer="25" ratio="10" rot="R90">&gt;NAME</text>
+<text x="12.065" y="-3.81" size="1.27" layer="27" ratio="10" rot="R90">&gt;VALUE</text>
+<rectangle x1="4.245" y1="-5.15" x2="4.645" y2="-3.75" layer="51"/>
+<rectangle x1="-2.105" y1="-5.15" x2="-1.705" y2="-3.75" layer="51"/>
+<rectangle x1="2.975" y1="-5.15" x2="3.375" y2="-3.75" layer="51"/>
+<rectangle x1="-0.835" y1="-5.15" x2="-0.435" y2="-3.75" layer="51"/>
+<rectangle x1="0.435" y1="-5.15" x2="0.835" y2="-3.75" layer="51"/>
+<rectangle x1="1.705" y1="-5.15" x2="2.105" y2="-3.75" layer="51"/>
+<rectangle x1="5.515" y1="-5.15" x2="5.915" y2="-3.75" layer="51"/>
+<rectangle x1="6.785" y1="-5.15" x2="7.185" y2="-3.75" layer="51"/>
+<rectangle x1="8.055" y1="-5.15" x2="8.455" y2="-3.75" layer="51"/>
+<rectangle x1="9.325" y1="-5.15" x2="9.725" y2="-3.75" layer="51"/>
+<rectangle x1="9.325" y1="3.74" x2="9.725" y2="5.14" layer="51"/>
+<rectangle x1="8.055" y1="3.74" x2="8.455" y2="5.14" layer="51"/>
+<rectangle x1="6.785" y1="3.74" x2="7.185" y2="5.14" layer="51"/>
+<rectangle x1="5.515" y1="3.74" x2="5.915" y2="5.14" layer="51"/>
+<rectangle x1="4.245" y1="3.74" x2="4.645" y2="5.14" layer="51"/>
+<rectangle x1="2.975" y1="3.74" x2="3.375" y2="5.14" layer="51"/>
+<rectangle x1="1.705" y1="3.74" x2="2.105" y2="5.14" layer="51"/>
+<rectangle x1="0.435" y1="3.74" x2="0.835" y2="5.14" layer="51"/>
+<rectangle x1="-0.835" y1="3.74" x2="-0.435" y2="5.14" layer="51"/>
+<rectangle x1="-2.105" y1="3.74" x2="-1.705" y2="5.14" layer="51"/>
+</package>
+<package name="MLF20">
+<description>&lt;b&gt;HP-VFQFP-N20&lt;/b&gt; Micro Lead Frame package (MLF)</description>
+<wire x1="-2.375" y1="2.05" x2="-2.05" y2="2.375" width="0.254" layer="21"/>
+<wire x1="-2.05" y1="2.375" x2="2.05" y2="2.375" width="0.254" layer="51"/>
+<wire x1="2.05" y1="-2.375" x2="-2.05" y2="-2.375" width="0.254" layer="51"/>
+<wire x1="-2.05" y1="-2.375" x2="-2.375" y2="-2.05" width="0.254" layer="21"/>
+<wire x1="-2.375" y1="-2.05" x2="-2.375" y2="2.05" width="0.254" layer="51"/>
+<wire x1="2.375" y1="2.05" x2="2.375" y2="-2.05" width="0.254" layer="51"/>
+<wire x1="2.05" y1="2.375" x2="2.375" y2="2.05" width="0.254" layer="21"/>
+<wire x1="2.375" y1="-2.05" x2="2.05" y2="-2.375" width="0.254" layer="21"/>
+<circle x="-1.55" y="1.55" radius="0.15" width="0.254" layer="21"/>
+<smd name="1" x="-2.25" y="1.000759375" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
+<smd name="2" x="-2.25" y="0.50038125" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
+<smd name="3" x="-2.25" y="0" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
+<smd name="4" x="-2.25" y="-0.50038125" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
+<smd name="5" x="-2.25" y="-1.000759375" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
+<smd name="6" x="-1.000759375" y="-2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
+<smd name="7" x="-0.50038125" y="-2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
+<smd name="8" x="0" y="-2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
+<smd name="9" x="0.50038125" y="-2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
+<smd name="10" x="1.000759375" y="-2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
+<smd name="11" x="2.25" y="-1.000759375" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
+<smd name="12" x="2.25" y="-0.50038125" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
+<smd name="13" x="2.25" y="0" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
+<smd name="14" x="2.25" y="0.50038125" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
+<smd name="15" x="2.25" y="1.000759375" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
+<smd name="16" x="1.000759375" y="2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
+<smd name="17" x="0.50038125" y="2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
+<smd name="18" x="0" y="2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
+<smd name="19" x="-0.50038125" y="2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
+<smd name="20" x="-1.000759375" y="2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
+<text x="-2.54" y="3.175" size="1.27" layer="25">&gt;NAME</text>
+<text x="-2.54" y="-4.445" size="1.27" layer="27">&gt;VALUE</text>
+<rectangle x1="-2.35" y1="0.86868125" x2="-1.9" y2="1.14808125" layer="51"/>
+<rectangle x1="-2.35" y1="0.36068125" x2="-1.9" y2="0.64008125" layer="51"/>
+<rectangle x1="-2.35" y1="-0.15" x2="-1.9" y2="0.15" layer="51"/>
+<rectangle x1="-2.35" y1="-0.64008125" x2="-1.9" y2="-0.36068125" layer="51"/>
+<rectangle x1="-2.35" y1="-1.14808125" x2="-1.9" y2="-0.86868125" layer="51"/>
+<rectangle x1="-0.64008125" y1="-2.35" x2="-0.36068125" y2="-1.9" layer="51"/>
+<rectangle x1="-1.14808125" y1="-2.35" x2="-0.86868125" y2="-1.9" layer="51"/>
+<rectangle x1="-0.15" y1="-2.35" x2="0.15" y2="-1.9" layer="51"/>
+<rectangle x1="0.36068125" y1="-2.35" x2="0.64008125" y2="-1.9" layer="51"/>
+<rectangle x1="0.86868125" y1="-2.35" x2="1.14808125" y2="-1.9" layer="51"/>
+<rectangle x1="1.9" y1="-1.14808125" x2="2.35" y2="-0.86868125" layer="51"/>
+<rectangle x1="1.9" y1="-0.64008125" x2="2.35" y2="-0.36068125" layer="51"/>
+<rectangle x1="1.9" y1="-0.15" x2="2.35" y2="0.15" layer="51"/>
+<rectangle x1="1.9" y1="0.36068125" x2="2.35" y2="0.64008125" layer="51"/>
+<rectangle x1="1.9" y1="0.86868125" x2="2.35" y2="1.14808125" layer="51"/>
+<rectangle x1="0.86868125" y1="1.9" x2="1.14808125" y2="2.35" layer="51"/>
+<rectangle x1="0.36068125" y1="1.9" x2="0.64008125" y2="2.35" layer="51"/>
+<rectangle x1="-0.15" y1="1.9" x2="0.15" y2="2.35" layer="51"/>
+<rectangle x1="-0.64008125" y1="1.9" x2="-0.36068125" y2="2.35" layer="51"/>
+<rectangle x1="-1.14808125" y1="1.9" x2="-0.86868125" y2="2.35" layer="51"/>
+<smd name="GND" x="0" y="0" dx="2.54" dy="2.54" layer="1"/>
+</package>
+</packages>
+<symbols>
+<symbol name="ATTINY1634">
+<pin name="PB0/TXD0/ADC5" x="-30.48" y="0" length="middle"/>
+<pin name="PA7/RXD0/ADC4" x="-30.48" y="-2.54" length="middle"/>
+<pin name="PA6/ADC3/OC1B" x="-30.48" y="-5.08" length="middle"/>
+<pin name="PA5/ADC2/OC0B" x="-30.48" y="-7.62" length="middle"/>
+<pin name="PA4/ADC1/T0" x="-30.48" y="-10.16" length="middle"/>
+<pin name="PA3/ADC0/T1/SNS" x="-30.48" y="-12.7" length="middle"/>
+<pin name="PA2/AIN1" x="-30.48" y="-15.24" length="middle"/>
+<pin name="PA1/AIN0" x="-30.48" y="-17.78" length="middle"/>
+<pin name="PA0/AREF" x="-30.48" y="-20.32" length="middle"/>
+<pin name="GND" x="-30.48" y="-22.86" length="middle" direction="pwr"/>
+<pin name="RXD1/ADC6/DI/SDA/MOSI/PB1" x="40.64" y="0" length="middle" rot="R180"/>
+<pin name="ADC7/MISO/TXD1/DO/PB2" x="40.64" y="-2.54" length="middle" rot="R180"/>
+<pin name="ADC8/OC1A/PB3" x="40.64" y="-5.08" length="middle" rot="R180"/>
+<pin name="ADC9/OC0A/XCK0/PC0" x="40.64" y="-7.62" length="middle" rot="R180"/>
+<pin name="ADC10/SCL/USCK/XCK1/PC1" x="40.64" y="-10.16" length="middle" rot="R180"/>
+<pin name="ADC11/CLK0/PC2" x="40.64" y="-12.7" length="middle" rot="R180"/>
+<pin name="-RESET/PC3" x="40.64" y="-15.24" length="middle" rot="R180"/>
+<pin name="XTAL2/PC4" x="40.64" y="-17.78" length="middle" rot="R180"/>
+<pin name="XTAL1/PC5" x="40.64" y="-20.32" length="middle" rot="R180"/>
+<pin name="VCC" x="40.64" y="-22.86" length="middle" direction="pwr" rot="R180"/>
+<wire x1="-25.4" y1="2.54" x2="-25.4" y2="-27.94" width="0.254" layer="94"/>
+<wire x1="-25.4" y1="-27.94" x2="35.56" y2="-27.94" width="0.254" layer="94"/>
+<wire x1="35.56" y1="-27.94" x2="35.56" y2="2.54" width="0.254" layer="94"/>
+<wire x1="35.56" y1="2.54" x2="-25.4" y2="2.54" width="0.254" layer="94"/>
+<text x="-25.4" y="5.08" size="1.778" layer="95">&gt;NAME</text>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="ATTINY1634" prefix="MLF">
+<gates>
+<gate name="G$1" symbol="ATTINY1634" x="0" y="0"/>
+</gates>
+<devices>
+<device name="SOIC20" package="SOIC20">
+<connects>
+<connect gate="G$1" pin="-RESET/PC3" pad="14"/>
+<connect gate="G$1" pin="ADC10/SCL/USCK/XCK1/PC1" pad="16"/>
+<connect gate="G$1" pin="ADC11/CLK0/PC2" pad="15"/>
+<connect gate="G$1" pin="ADC7/MISO/TXD1/DO/PB2" pad="19"/>
+<connect gate="G$1" pin="ADC8/OC1A/PB3" pad="18"/>
+<connect gate="G$1" pin="ADC9/OC0A/XCK0/PC0" pad="17"/>
+<connect gate="G$1" pin="GND" pad="10"/>
+<connect gate="G$1" pin="PA0/AREF" pad="9"/>
+<connect gate="G$1" pin="PA1/AIN0" pad="8"/>
+<connect gate="G$1" pin="PA2/AIN1" pad="7"/>
+<connect gate="G$1" pin="PA3/ADC0/T1/SNS" pad="6"/>
+<connect gate="G$1" pin="PA4/ADC1/T0" pad="5"/>
+<connect gate="G$1" pin="PA5/ADC2/OC0B" pad="4"/>
+<connect gate="G$1" pin="PA6/ADC3/OC1B" pad="3"/>
+<connect gate="G$1" pin="PA7/RXD0/ADC4" pad="2"/>
+<connect gate="G$1" pin="PB0/TXD0/ADC5" pad="1"/>
+<connect gate="G$1" pin="RXD1/ADC6/DI/SDA/MOSI/PB1" pad="20"/>
+<connect gate="G$1" pin="VCC" pad="11"/>
+<connect gate="G$1" pin="XTAL1/PC5" pad="12"/>
+<connect gate="G$1" pin="XTAL2/PC4" pad="13"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="MLF20" package="MLF20">
+<connects>
+<connect gate="G$1" pin="-RESET/PC3" pad="12"/>
+<connect gate="G$1" pin="ADC10/SCL/USCK/XCK1/PC1" pad="14"/>
+<connect gate="G$1" pin="ADC11/CLK0/PC2" pad="13"/>
+<connect gate="G$1" pin="ADC7/MISO/TXD1/DO/PB2" pad="17"/>
+<connect gate="G$1" pin="ADC8/OC1A/PB3" pad="16"/>
+<connect gate="G$1" pin="ADC9/OC0A/XCK0/PC0" pad="15"/>
+<connect gate="G$1" pin="GND" pad="8 GND"/>
+<connect gate="G$1" pin="PA0/AREF" pad="7"/>
+<connect gate="G$1" pin="PA1/AIN0" pad="6"/>
+<connect gate="G$1" pin="PA2/AIN1" pad="5"/>
+<connect gate="G$1" pin="PA3/ADC0/T1/SNS" pad="4"/>
+<connect gate="G$1" pin="PA4/ADC1/T0" pad="3"/>
+<connect gate="G$1" pin="PA5/ADC2/OC0B" pad="2"/>
+<connect gate="G$1" pin="PA6/ADC3/OC1B" pad="1"/>
+<connect gate="G$1" pin="PA7/RXD0/ADC4" pad="20"/>
+<connect gate="G$1" pin="PB0/TXD0/ADC5" pad="19"/>
+<connect gate="G$1" pin="RXD1/ADC6/DI/SDA/MOSI/PB1" pad="18"/>
+<connect gate="G$1" pin="VCC" pad="9"/>
+<connect gate="G$1" pin="XTAL1/PC5" pad="10"/>
+<connect gate="G$1" pin="XTAL2/PC4" pad="11"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -11363,7 +11363,6 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 <part name="R7" library="resistor" deviceset="R-EU_" device="R2012" value="130k"/>
 <part name="R6" library="resistor" deviceset="R-EU_" device="R2012" value="16k"/>
 <part name="IC$2" library="lightmeter" deviceset="SN74HC164" device="TSSOP-14" value="SN74HC164TSSOP-14"/>
-<part name="U$1" library="attiny1634" deviceset="ATTINY1634" device="MLF20"/>
 <part name="GND11" library="supply1" deviceset="GND" device=""/>
 <part name="GND12" library="supply1" deviceset="GND" device=""/>
 <part name="C1" library="rcl" deviceset="C-EU" device="C1608" value="µ1"/>
@@ -11386,7 +11385,7 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
 <part name="R4" library="resistor" deviceset="R-EU_" device="R2012" value="10k"/>
 <part name="GND9" library="supply1" deviceset="GND" device=""/>
-<part name="TSDBG" library="testpad" deviceset="TP" device="B1,27"/>
+<part name="TSDBG" library="testpad" deviceset="TP" device="PAD1-13" value="TPPAD1-13"/>
 <part name="GND8" library="supply1" deviceset="GND" device=""/>
 <part name="S4" library="switch" deviceset="SKHMP*E010" device="" technology="S"/>
 <part name="S5" library="switch" deviceset="SKHMP*E010" device="" technology="S"/>
@@ -11436,6 +11435,7 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 <part name="GND14" library="supply1" deviceset="GND" device=""/>
 <part name="IC1" library="tc1047" deviceset="TC1047" device="SOT-23B"/>
 <part name="GND10" library="supply1" deviceset="GND" device=""/>
+<part name="IC$3" library="attiny1634_corrected" deviceset="ATTINY1634" device="MLF20"/>
 </parts>
 <sheets>
 <sheet>
@@ -11468,7 +11468,6 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 <instance part="R7" gate="G$1" x="99.06" y="17.78"/>
 <instance part="R6" gate="G$1" x="99.06" y="0"/>
 <instance part="IC$2" gate="G$1" x="66.04" y="81.28"/>
-<instance part="U$1" gate="G$1" x="-17.78" y="30.48"/>
 <instance part="GND11" gate="1" x="-53.34" y="7.62" rot="R270"/>
 <instance part="GND12" gate="1" x="35.56" y="66.04" rot="R270"/>
 <instance part="C1" gate="G$1" x="-15.24" y="-5.08" rot="R270"/>
@@ -11541,6 +11540,7 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 <instance part="GND14" gate="1" x="-53.34" y="50.8"/>
 <instance part="IC1" gate="G$1" x="-96.52" y="20.32"/>
 <instance part="GND10" gate="1" x="-96.52" y="-2.54"/>
+<instance part="IC$3" gate="G$1" x="-17.78" y="30.48"/>
 </instances>
 <busses>
 </busses>
@@ -11710,12 +11710,12 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 <wire x1="-96.52" y1="5.08" x2="-96.52" y2="0" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="U$1" gate="G$1" pin="GND"/>
 <pinref part="GND11" gate="1" pin="GND"/>
 <wire x1="-48.26" y1="7.62" x2="-50.8" y2="7.62" width="0.1524" layer="91"/>
 <pinref part="C1" gate="G$1" pin="2"/>
 <wire x1="-20.32" y1="-5.08" x2="-48.26" y2="-5.08" width="0.1524" layer="91"/>
 <wire x1="-48.26" y1="-5.08" x2="-48.26" y2="7.62" width="0.1524" layer="91"/>
+<pinref part="IC$3" gate="G$1" pin="GND"/>
 <junction x="-48.26" y="7.62"/>
 </segment>
 </net>
@@ -11747,7 +11747,6 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 </net>
 <net name="VREG" class="0">
 <segment>
-<pinref part="U$1" gate="G$1" pin="VCC"/>
 <wire x1="22.86" y1="7.62" x2="25.4" y2="7.62" width="0.1524" layer="91"/>
 <label x="27.94" y="7.62" size="1.778" layer="95" xref="yes"/>
 <wire x1="25.4" y1="7.62" x2="27.94" y2="7.62" width="0.1524" layer="91"/>
@@ -11755,6 +11754,7 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 <wire x1="25.4" y1="7.62" x2="25.4" y2="-5.08" width="0.1524" layer="91"/>
 <pinref part="C1" gate="G$1" pin="1"/>
 <wire x1="25.4" y1="-5.08" x2="-12.7" y2="-5.08" width="0.1524" layer="91"/>
+<pinref part="IC$3" gate="G$1" pin="VCC"/>
 </segment>
 <segment>
 <pinref part="C4" gate="G$1" pin="1"/>
@@ -11881,16 +11881,16 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 <label x="86.36" y="66.04" size="1.778" layer="95" xref="yes"/>
 </segment>
 <segment>
-<pinref part="U$1" gate="G$1" pin="PA1/AIN0"/>
 <wire x1="-48.26" y1="12.7" x2="-50.8" y2="12.7" width="0.1524" layer="91"/>
 <label x="-50.8" y="12.7" size="1.778" layer="95" rot="R180" xref="yes"/>
+<pinref part="IC$3" gate="G$1" pin="PA1/AIN0"/>
 </segment>
 </net>
 <net name="SRA" class="0">
 <segment>
-<pinref part="U$1" gate="G$1" pin="PA4/ADC1/T0"/>
 <wire x1="-48.26" y1="20.32" x2="-50.8" y2="20.32" width="0.1524" layer="91"/>
 <label x="-50.8" y="20.32" size="1.778" layer="95" rot="R180" xref="yes"/>
+<pinref part="IC$3" gate="G$1" pin="PA4/ADC1/T0"/>
 </segment>
 <segment>
 <pinref part="IC$2" gate="G$1" pin="A"/>
@@ -11905,9 +11905,9 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 </net>
 <net name="SCRDAT" class="0">
 <segment>
-<pinref part="U$1" gate="G$1" pin="PB0/TXD0/ADC5"/>
 <wire x1="-48.26" y1="30.48" x2="-50.8" y2="30.48" width="0.1524" layer="91"/>
 <label x="-50.8" y="30.48" size="1.778" layer="95" rot="R180" xref="yes"/>
+<pinref part="IC$3" gate="G$1" pin="PB0/TXD0/ADC5"/>
 </segment>
 <segment>
 <pinref part="U$4" gate="G$1" pin="D1/SPI_SDIN/I2C_SDA"/>
@@ -11917,9 +11917,9 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 </net>
 <net name="SCRDC" class="0">
 <segment>
-<pinref part="U$1" gate="G$1" pin="PA7/RXD0/ADC4"/>
 <wire x1="-48.26" y1="27.94" x2="-50.8" y2="27.94" width="0.1524" layer="91"/>
 <label x="-50.8" y="27.94" size="1.778" layer="95" rot="R180" xref="yes"/>
+<pinref part="IC$3" gate="G$1" pin="PA7/RXD0/ADC4"/>
 </segment>
 <segment>
 <pinref part="U$4" gate="G$1" pin="DC/I2C_SA0"/>
@@ -11934,26 +11934,16 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 <label x="198.12" y="20.32" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<pinref part="U$1" gate="G$1" pin="PA0/AREF"/>
 <wire x1="-48.26" y1="10.16" x2="-50.8" y2="10.16" width="0.1524" layer="91"/>
 <label x="-50.8" y="10.16" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
-</net>
-<net name="N$23" class="0">
-<segment>
-<pinref part="U$1" gate="G$1" pin="PA5/ADC2/OC0B"/>
-<wire x1="-48.26" y1="22.86" x2="-63.5" y2="22.86" width="0.1524" layer="91"/>
-<wire x1="-63.5" y1="22.86" x2="-63.5" y2="2.54" width="0.1524" layer="91"/>
-<wire x1="-63.5" y1="2.54" x2="-55.88" y2="2.54" width="0.1524" layer="91"/>
-<pinref part="TSDBG" gate="G$1" pin="TP"/>
-<wire x1="-55.88" y1="2.54" x2="-55.88" y2="0" width="0.1524" layer="91"/>
+<pinref part="IC$3" gate="G$1" pin="PA0/AREF"/>
 </segment>
 </net>
 <net name="AVRMISO" class="0">
 <segment>
-<pinref part="U$1" gate="G$1" pin="ADC7/MISO/TXD1/DO/PB2"/>
 <wire x1="22.86" y1="27.94" x2="27.94" y2="27.94" width="0.1524" layer="91"/>
 <label x="27.94" y="27.94" size="1.778" layer="95" xref="yes"/>
+<pinref part="IC$3" gate="G$1" pin="ADC7/MISO/TXD1/DO/PB2"/>
 </segment>
 <segment>
 <pinref part="J1" gate="G$1" pin="1"/>
@@ -12005,16 +11995,16 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 <junction x="88.9" y="43.18"/>
 </segment>
 <segment>
-<pinref part="U$1" gate="G$1" pin="ADC9/OC0A/XCK0/PC0"/>
 <wire x1="22.86" y1="22.86" x2="27.94" y2="22.86" width="0.1524" layer="91"/>
 <label x="27.94" y="22.86" size="1.778" layer="95" xref="yes"/>
+<pinref part="IC$3" gate="G$1" pin="ADC9/OC0A/XCK0/PC0"/>
 </segment>
 </net>
 <net name="AVRSCK" class="0">
 <segment>
-<pinref part="U$1" gate="G$1" pin="ADC10/SCL/USCK/XCK1/PC1"/>
 <wire x1="22.86" y1="20.32" x2="27.94" y2="20.32" width="0.1524" layer="91"/>
 <label x="27.94" y="20.32" size="1.778" layer="95" xref="yes"/>
+<pinref part="IC$3" gate="G$1" pin="ADC10/SCL/USCK/XCK1/PC1"/>
 </segment>
 <segment>
 <pinref part="J1" gate="G$1" pin="3"/>
@@ -12039,9 +12029,9 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 </net>
 <net name="AVRRST" class="0">
 <segment>
-<pinref part="U$1" gate="G$1" pin="-RESET/PC3"/>
 <wire x1="22.86" y1="15.24" x2="27.94" y2="15.24" width="0.1524" layer="91"/>
 <label x="27.94" y="15.24" size="1.778" layer="95" xref="yes"/>
+<pinref part="IC$3" gate="G$1" pin="-RESET/PC3"/>
 </segment>
 <segment>
 <pinref part="J1" gate="G$1" pin="5"/>
@@ -12051,9 +12041,9 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 </net>
 <net name="SCRCS" class="0">
 <segment>
-<pinref part="U$1" gate="G$1" pin="XTAL2/PC4"/>
 <wire x1="22.86" y1="12.7" x2="27.94" y2="12.7" width="0.1524" layer="91"/>
 <label x="27.94" y="12.7" size="1.778" layer="95" xref="yes"/>
+<pinref part="IC$3" gate="G$1" pin="XTAL2/PC4"/>
 </segment>
 <segment>
 <pinref part="U$4" gate="G$1" pin="/CS"/>
@@ -12063,9 +12053,9 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 </net>
 <net name="SCRCLK" class="0">
 <segment>
-<pinref part="U$1" gate="G$1" pin="XTAL1/PC5"/>
 <wire x1="22.86" y1="10.16" x2="27.94" y2="10.16" width="0.1524" layer="91"/>
 <label x="27.94" y="10.16" size="1.778" layer="95" xref="yes"/>
+<pinref part="IC$3" gate="G$1" pin="XTAL1/PC5"/>
 </segment>
 <segment>
 <pinref part="U$4" gate="G$1" pin="D0/SPI_SCLK/I2C_SCK"/>
@@ -12126,9 +12116,9 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 <wire x1="-53.34" y1="-27.94" x2="-22.86" y2="-27.94" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="U$1" gate="G$1" pin="PA2/AIN1"/>
 <wire x1="-48.26" y1="15.24" x2="-50.8" y2="15.24" width="0.1524" layer="91"/>
 <label x="-50.8" y="15.24" size="1.778" layer="95" rot="R180" xref="yes"/>
+<pinref part="IC$3" gate="G$1" pin="PA2/AIN1"/>
 </segment>
 </net>
 <net name="PBI$3" class="0">
@@ -12140,16 +12130,16 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 <wire x1="-5.08" y1="-22.86" x2="0" y2="-22.86" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="U$1" gate="G$1" pin="ADC11/CLK0/PC2"/>
 <wire x1="22.86" y1="17.78" x2="27.94" y2="17.78" width="0.1524" layer="91"/>
 <label x="27.94" y="17.78" size="1.778" layer="95" xref="yes"/>
+<pinref part="IC$3" gate="G$1" pin="ADC11/CLK0/PC2"/>
 </segment>
 </net>
 <net name="PBI$1" class="0">
 <segment>
-<pinref part="U$1" gate="G$1" pin="PA3/ADC0/T1/SNS"/>
 <wire x1="-48.26" y1="17.78" x2="-50.8" y2="17.78" width="0.1524" layer="91"/>
 <label x="-50.8" y="17.78" size="1.778" layer="95" rot="R180" xref="yes"/>
+<pinref part="IC$3" gate="G$1" pin="PA3/ADC0/T1/SNS"/>
 </segment>
 <segment>
 <pinref part="S1" gate="G$1" pin="1.1"/>
@@ -12409,9 +12399,9 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 </net>
 <net name="AVRMOSI" class="0">
 <segment>
-<pinref part="U$1" gate="G$1" pin="RXD1/ADC6/DI/SDA/MOSI/PB1"/>
 <wire x1="22.86" y1="30.48" x2="27.94" y2="30.48" width="0.1524" layer="91"/>
 <label x="27.94" y="30.48" size="1.778" layer="95" xref="yes"/>
+<pinref part="IC$3" gate="G$1" pin="RXD1/ADC6/DI/SDA/MOSI/PB1"/>
 </segment>
 <segment>
 <pinref part="J1" gate="G$1" pin="4"/>
@@ -12457,8 +12447,8 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 <pinref part="IC1" gate="G$1" pin="VOUT"/>
 <wire x1="-83.82" y1="20.32" x2="-73.66" y2="20.32" width="0.1524" layer="91"/>
 <wire x1="-73.66" y1="20.32" x2="-73.66" y2="25.4" width="0.1524" layer="91"/>
-<pinref part="U$1" gate="G$1" pin="PA6/ADC3/OC1B"/>
 <wire x1="-73.66" y1="25.4" x2="-48.26" y2="25.4" width="0.1524" layer="91"/>
+<pinref part="IC$3" gate="G$1" pin="PA6/ADC3/OC1B"/>
 </segment>
 </net>
 <net name="N$12" class="0">
@@ -12466,6 +12456,15 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 <pinref part="U$4" gate="G$1" pin="VCOMH"/>
 <pinref part="C16" gate="G$1" pin="2"/>
 <wire x1="203.2" y1="-12.7" x2="167.64" y2="-12.7" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$23" class="0">
+<segment>
+<pinref part="TSDBG" gate="G$1" pin="TP"/>
+<wire x1="-55.88" y1="0" x2="-68.58" y2="0" width="0.1524" layer="91"/>
+<wire x1="-68.58" y1="0" x2="-68.58" y2="22.86" width="0.1524" layer="91"/>
+<wire x1="-68.58" y1="22.86" x2="-48.26" y2="22.86" width="0.1524" layer="91"/>
+<pinref part="IC$3" gate="G$1" pin="PA5/ADC2/OC0B"/>
 </segment>
 </net>
 </nets>
