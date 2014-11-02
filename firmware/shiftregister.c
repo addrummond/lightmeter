@@ -1,5 +1,6 @@
 #include <avr/io.h>
 #include <deviceconfig.h>
+#include <util/delay.h>
 
 void setup_shift_register()
 {
@@ -16,13 +17,13 @@ void set_shift_register_out()
 
     uint8_t j;
     for (j = 0; j < 8; ++j) {
-        uint8_t bit = (out & 0b10000000) >> 7;
+        uint8_t bit = (out >> 7) & 1;
         out <<= 1;
-        // Set the clock low.
-        SHIFT_REGISTER_CLK_PORT &= ~(1 << SHIFT_REGISTER_CLK_BIT);
         // Output the bit.
         SHIFT_REGISTER_OUTPUT_PORT &= ~(1 << SHIFT_REGISTER_OUTPUT_BIT);
         SHIFT_REGISTER_OUTPUT_PORT |= (bit << SHIFT_REGISTER_OUTPUT_BIT);
+        // Set the clock low.
+        SHIFT_REGISTER_CLK_PORT &= ~(1 << SHIFT_REGISTER_CLK_BIT);
         // Set the clock high.
         SHIFT_REGISTER_CLK_PORT |= (1 << SHIFT_REGISTER_CLK_BIT);
     }
