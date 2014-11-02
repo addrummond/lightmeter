@@ -4500,7 +4500,6 @@ Please make sure your boards conform to these design rules.</description>
 <contactref element="C9" pad="2"/>
 <contactref element="U$4" pad="9"/>
 <contactref element="C8" pad="2"/>
-<wire x1="37.7054" y1="76.3778" x2="40.34" y2="76.27" width="0" layer="19" extent="1-16"/>
 <wire x1="40.34" y1="76.27" x2="40.3352" y2="73.9648" width="0.4064" layer="16"/>
 <wire x1="40.3352" y1="73.9648" x2="40.3352" y2="73.9394" width="0.4064" layer="16"/>
 <wire x1="40.3352" y1="73.9394" x2="40.7924" y2="73.4822" width="0.4064" layer="16"/>
@@ -4521,6 +4520,13 @@ Please make sure your boards conform to these design rules.</description>
 <wire x1="24.0284" y1="75.1332" x2="24.257" y2="75.3618" width="0.4064" layer="1"/>
 <wire x1="24.257" y1="75.3618" x2="27.8774" y2="75.3618" width="0.4064" layer="1"/>
 <wire x1="27.8774" y1="75.3618" x2="27.8892" y2="75.3736" width="0.4064" layer="1"/>
+<wire x1="37.7054" y1="76.3778" x2="37.7054" y2="76.6182" width="0.4064" layer="1"/>
+<wire x1="37.7054" y1="76.6182" x2="39.1414" y2="78.0542" width="0.4064" layer="1"/>
+<via x="39.1414" y="78.0542" extent="1-16" drill="0.6" shape="square"/>
+<wire x1="39.1414" y1="78.0542" x2="40.005" y2="78.0542" width="0.4064" layer="16"/>
+<wire x1="40.005" y1="78.0542" x2="40.3352" y2="77.724" width="0.4064" layer="16"/>
+<wire x1="40.3352" y1="77.724" x2="40.3352" y2="76.2748" width="0.4064" layer="16"/>
+<wire x1="40.3352" y1="76.2748" x2="40.34" y2="76.27" width="0.4064" layer="16"/>
 </signal>
 </signals>
 </board>
