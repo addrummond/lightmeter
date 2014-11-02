@@ -109,18 +109,28 @@ void setup_ADC()
     ADCSRA |= (1 << ADSC);
 }
 
-static void set_op_amp_resistor_stage(uint8_t op_amp_resistor_stage)
+#define DIODE_INCIDENT_NOND   SHIFT_REGISTER_DIODESW1_BIT
+#define DIODE_INCIDENT_ND     SHIFT_REGISTER_DIODESW2_BIT
+#define DIODE_REFLECTIVE_NOND SHIFT_REGISTER_DIODESW3_BIT
+#define DIODE_REFLECTIVE_ND   SHIFT_REGISTER_DIODESW4_BIT
+#define DIODE_SAME            255
+static void set_diode_configuration(uint8_t op_amp_resistor_stage, uint8_t diode)
 {
-    and_shift_register_bits(~(1 << (SHIFT_REGISTER_STG1_BIT + global_transient_meter_state.op_amp_resistor_stage - 1)));
-    or_shift_register_bits(1 << (SHIFT_REGISTER_STG1_BIT + op_amp_resistor_stage - 1));
+    // Select diode.
+    if (diode != DIODE_SAME) {
+        and_shift_register_bits(~((1 << SHIFT_REGISTER_DIODESW1_BIT) | (1 << SHIFT_REGISTER_DIODESW2_BIT) |
+                                  (1 << SHIFT_REGISTER_DIODESW3_BIT) | (1 << SHIFT_REGISTER_DIODESW4_BIT)));
+        or_shift_register_bits(1 << diode);
+    }
+
+    // Select op amp resistor stage.
+    and_shift_register_bits(~((1 << SHIFT_REGISTER_STG1_BIT) || (1 << (SHIFT_REGISTER_STG1_BIT+1))));
+    uint8_t stg1 = op_amp_resistor_stage & 1;
+    or_shift_register_bits(stg1 << SHIFT_REGISTER_STG1_BIT);
+    uint8_t stg2 = (op_amp_resistor_stage & 2)>>1;
+    or_shift_register_bits(stg2 << (SHIFT_REGISTER_STG1_BIT+1));
     set_shift_register_out();
     global_transient_meter_state.op_amp_resistor_stage = op_amp_resistor_stage;
-}
-
-static void turn_on_display()
-{
-    or_shift_register_bits(1 << SHIFT_REGISTER_SCRPWR_BIT);
-    set_shift_register_out();
 }
 
 static void led_test(void);
@@ -176,7 +186,7 @@ void handle_measurement()
             --debounce;
         }
         else {
-            set_op_amp_resistor_stage(newr);
+            set_diode_configuration(newr, DIODE_SAME);
             debounce = 8;
         }
     }
@@ -276,9 +286,20 @@ int main()
     // Enable interrupts.
     sei();
 
-    turn_on_display();
+    // Turn things on.
+    or_shift_register_bits((1 << SHIFT_REGISTER_SCRPWR_BIT) |
+                           (1 << SHIFT_REGISTER_OAPWR_BIT));
+    set_shift_register_out();
+
+    set_diode_configuration(1, DIODE_INCIDENT_NOND);
+
+    and_shift_register_bits(0);
+    or_shift_register_bits(0b00011111);
+    set_shift_register_out();
+
     display_init();
     display_clear();
+    ui_show_interface();
 
     // The following code is useful for testing that all pins are connected.
     // It sets all pins to output mode and switches them from low to high
@@ -324,7 +345,7 @@ int main()
             next_is_temperature = false;
         }
 
-        handle_measurement();
+        //handle_measurement();
         ui_show_interface();
 
 //#ifdef DEBUG
