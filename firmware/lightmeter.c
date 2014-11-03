@@ -19,23 +19,6 @@
 #include <basic_serial/basic_serial.h>
 #endif
 
-// Save result of ADC on interrupt.
-volatile static uint16_t adc_light_value = 0;
-volatile static uint16_t adc_temperature_value = 300; // About 25C
-volatile static bool next_is_temperature = true;
-ISR(ADC_vect) {
-    if (next_is_temperature) {
-        adc_temperature_value = ADCW;
-    }
-    else {
-        adc_light_value = ADCW;
-        global_transient_meter_state.exposure_ready = true;
-    }
-
-    TIFR |= (1<<OCF0A); // Clear timer compare match flag.
-    ADCSRA |= (1 << ADSC);
-}
-
 // TODO: These constants will be replaced with members of global_meter_state once
 // this is working correctly. The various _TENTHS could be packed into two bytes.
 //
@@ -51,9 +34,8 @@ ISR(ADC_vect) {
 
 static volatile uint8_t current_temp = 193; // 22 C
 
-static void calculate_current_temp()
+static void calculate_current_temp(uint16_t t)
 {
-    uint16_t t = adc_temperature_value;
     uint8_t i;
     uint16_t newt = t - ADC_TEMP_CONSTANT;
     for (i = 0; i < ADC_TEMP_SLOPE_WHOLES; ++i)
@@ -79,19 +61,24 @@ void setup_ADC()
     ADMUX = (0 << REFS1) | (0 << REFS0);
     // Set ADC source to light sensor.
     ADMUX |= ADMUX_LIGHT_SOURCE | ADMUX_LIGHT_SOURCE_REF_VOLTAGE;
+
+    //
+    // ***** No longer using interrupts for ADC *****
+    //
+    //
     // Auto triggering (this needs to be set for turning on counter interrupt ADCSRB to take effect).
-    ADCSRA |= (1 << ADATE);
+    //ADCSRA |= (1 << ADATE);
     // Enable ADC interrupt.
-    ADCSRA |= (1 << ADIE);
+    //ADCSRA |= (1 << ADIE);
     // Timer/counter 0 compare match A setup.
     // This causes the ADC to fire on an interupt once every 1024 clock cycles
     // (so about 8 times a second if we're running at 8MHz).
-    ADCSRB &= ~((1 << ADTS2) | (1 << ADTS1) | (1 << ADTS0));
-    ADCSRB |= ((0 << ADTS2) | (1 << ADTS1) | (1 << ADTS0)); // Timer/Counter0 Compare Match A
-    TCCR0B &= ~((1 << CS02) | (1 << CS01) | (1 << CS00));
-    TCCR0B |= ((1 << CS02) | (0 << CS01) | (0 << CS00)); // prescaler: clock/256
-    TCNT0 = 0;
-    OCR0A = 4; // TO-----------
+    //ADCSRB &= ~((1 << ADTS2) | (1 << ADTS1) | (1 << ADTS0));
+    //ADCSRB |= ((0 << ADTS2) | (1 << ADTS1) | (1 << ADTS0)); // Timer/Counter0 Compare Match A
+    //TCCR0B &= ~((1 << CS02) | (1 << CS01) | (1 << CS00));
+    //TCCR0B |= ((1 << CS02) | (0 << CS01) | (0 << CS00)); // prescaler: clock/256
+    //TCNT0 = 0;
+    //OCR0A = 4; // TO-----------
 
     // Turn off bipolar input mode.
     // N/A on attiny1634.
@@ -105,8 +92,6 @@ void setup_ADC()
 
     // Enable ADC.
     ADCSRA |= (1 << ADEN);
-    // Start taking readings.
-    ADCSRA |= (1 << ADSC);
 }
 
 #define DIODE_INCIDENT_NOND   SHIFT_REGISTER_DIODESW1_BIT
@@ -116,6 +101,8 @@ void setup_ADC()
 #define DIODE_SAME            255
 static void set_diode_configuration(uint8_t op_amp_resistor_stage, uint8_t diode)
 {
+    op_amp_resistor_stage -= 1;
+
     // Select diode.
     if (diode != DIODE_SAME) {
         and_shift_register_bits(~((1 << SHIFT_REGISTER_DIODESW1_BIT) | (1 << SHIFT_REGISTER_DIODESW2_BIT) |
@@ -133,23 +120,22 @@ static void set_diode_configuration(uint8_t op_amp_resistor_stage, uint8_t diode
     global_transient_meter_state.op_amp_resistor_stage = op_amp_resistor_stage;
 }
 
-static void led_test(void);
-void handle_measurement()
+static uint16_t get_adc_reading()
 {
-    // Copy the volatile value, which could change in the middle of this function.
+    ADCSRA |= (1<<ADSC);
+    while(ADCSRA & (1<<ADSC));
+    return ADCW;
+}
+
+void handle_measurement(uint16_t adc_light_value)
+{
     // Div by 4 because we're going from units of 1/1024 to units of 1/256.
     // (Could left adjust everything, but we might want the full 10 bits for temps.)
-    uint8_t adc_light_nonvol_value = (uint8_t)(adc_light_value >> 2);
-#ifdef DEBUG
-    tx_byte('S');
-    tx_byte(global_transient_meter_state.op_amp_resistor_stage);
-    tx_byte('V');
-    tx_byte(adc_light_nonvol_value);
-#endif
+    uint8_t light_value8 = (adc_light_value >> 2);
 
     global_transient_meter_state.last_ev_with_fracs = get_ev100_at_temperature_voltage(
         current_temp,
-        adc_light_nonvol_value,
+        light_value8,
         global_transient_meter_state.op_amp_resistor_stage
     );
 
@@ -174,10 +160,10 @@ void handle_measurement()
 
     // If we're too near the top or bottom of the range, change the gain next time.
     uint8_t newr = 0; // Not a valid stage.
-    if (adc_light_nonvol_value > 250 && global_transient_meter_state.op_amp_resistor_stage < NUM_OP_AMP_RESISTOR_STAGES) {
+    if (light_value8 > 250 && global_transient_meter_state.op_amp_resistor_stage < NUM_OP_AMP_RESISTOR_STAGES) {
         newr = global_transient_meter_state.op_amp_resistor_stage + 1;
     }
-    else if (adc_light_nonvol_value <= VOLTAGE_TO_EV_ABS_OFFSET + 5 && global_transient_meter_state.op_amp_resistor_stage > 1) {
+    else if (light_value8 <= VOLTAGE_TO_EV_ABS_OFFSET + 5 && global_transient_meter_state.op_amp_resistor_stage > 1) {
         newr = global_transient_meter_state.op_amp_resistor_stage - 1;
     }
 
@@ -291,11 +277,7 @@ int main()
                            (1 << SHIFT_REGISTER_OAPWR_BIT));
     set_shift_register_out();
 
-    set_diode_configuration(1, DIODE_INCIDENT_NOND);
-
-    and_shift_register_bits(0);
-    or_shift_register_bits(0b00011111);
-    set_shift_register_out();
+    set_diode_configuration(3, DIODE_INCIDENT_NOND);
 
     display_init();
     display_clear();
@@ -325,35 +307,10 @@ int main()
             handle_button_press(button_pressed);
         }
 
-        // Do lightmetery stuff.
-        if (cnt == 0) {
-            // Make the next ADC reading a temperature reading.
-            ADMUX &= ADMUX_CLEAR_REF_VOLTAGE;
-            ADMUX |= ADMUX_TEMP_REF_VOLTAGE;
-            ADMUX |= ADMUX_TEMPERATURE_SOURCE; // 1111, so no need to clear bits first.
-            next_is_temperature = true;
-        }
-        else if (cnt == 0b100000) {
-            // TODO: Calling this seems to give rise to some kind of memory corruption bug.
-            //calculate_current_temp();
-
-            // Make the next ADC reading a light reading.
-            ADMUX &= ADMUX_CLEAR_REF_VOLTAGE;
-            ADMUX |= ADMUX_LIGHT_SOURCE_REF_VOLTAGE;
-            ADMUX &= ADMUX_CLEAR_SOURCE;
-            ADMUX |= ADMUX_LIGHT_SOURCE;
-            next_is_temperature = false;
-        }
-
-        //handle_measurement();
+        handle_measurement(get_adc_reading());
+        global_transient_meter_state.exposure_ready = true;
         ui_show_interface();
 
-//#ifdef DEBUG
-//    tx_byte('X');
-//#endif
-
-        // Put device in idle mode for a bit.
-        //go_to_idle_mode();
         _delay_ms(50);
     }
 
