@@ -8,3 +8,7 @@ Notes on issues with initial prototype boards
 * Debug pad should be turned into via.
 
 * Pad spacing on attiny1634 to be changed.
+
+* Add battery recharge circuit (with microusb connector)?
+
+* Test pad for op amp output?
