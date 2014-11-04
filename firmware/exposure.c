@@ -37,7 +37,7 @@ ev_with_fracs_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t vo
                    ev_thirds = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_THIRDS)
 #define CASE(n) case n: ASSIGN(n); break;
     switch (op_amp_resistor_stage) {
-FOR_EACH_OP_AMP_RESISTOR_STAGE(CASE)
+FOREACH_AMP_STAGE(CASE)
     }
 #undef ASSIGN
 #undef CASE
@@ -68,6 +68,10 @@ FOR_EACH_OP_AMP_RESISTOR_STAGE(CASE)
         bits1 &= bits1 - 1;
     for (; bits2; ++ret.ev)
         bits2 &= bits2 - 1;
+#ifdef DEBUG
+    tx_byte('B');
+    tx_byte(ret.ev);
+#endif
 
     // Calculate tenths.
     uint8_t tenths_bit = pgm_read_byte(ev_tenths + (voltage >> 3));
@@ -109,7 +113,7 @@ FOR_EACH_OP_AMP_RESISTOR_STAGE(CASE)
         return ret;
     }*/
 
-    ret.ev = (uint8_t) withcomp;
+    ret.ev = (uint8_t)withcomp;
 
     // Any whole adjustments will have been taken care of by the preceding
     // change to ret.ev, so we just want to do the fractional bit now.
@@ -810,6 +814,7 @@ static void print_bcd(uint8_t *digits, uint8_t length, uint8_t sigfigs, uint8_t 
 
 int main()
 {
+    aperture_string_output_t aso;
     shutter_string_output_t sso;
     ev_with_fracs_t iso100;
     ev_with_fracs_init(iso100);
@@ -833,8 +838,6 @@ int main()
         //    printf("%c", lux_digits[x] + '0');
         //printf("\n");
     }
-
-    return 0;
 
     printf("fps_and_angle_to_shutter_speed\n");
     uint16_t fps;
@@ -889,7 +892,6 @@ int main()
 
     printf("Apertures in thirds:\n");
     uint8_t a;
-    aperture_string_output_t aso;
     for (a = AP_MIN; a <= (AP_MAX/8)*3; ++a) {
         ev_with_fracs_t evwf;
         ev_with_fracs_init(evwf);
@@ -1064,6 +1066,7 @@ int main()
             v = 0;
         uint8_t uncompressed = pgm_read_byte(&TEST_VOLTAGE_TO_EV[(unsigned)v]);
         ev_with_fracs_t evwf = get_ev100_at_temperature_voltage(t, (uint8_t)v_, 2);
+        printf("V %i ev8=%i\n", v, ev_with_fracs_get_ev8(evwf));
         uint8_t compressed = evwf.ev;
         if (uncompressed != compressed) {
             printf("Values not equal for t = %i, v = %i: compressed = %i, uncompressed = %i\n", (unsigned)t, (unsigned)v_, (unsigned)compressed, (unsigned)uncompressed);
@@ -1072,6 +1075,8 @@ int main()
     }
 
     printf("\nCompression test completed successfully.\n");
+
+    return 0;
 
     // Sanity check: pass in the values which are used as a base for the calculation
     // and check that we get the originals back.

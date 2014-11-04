@@ -94,30 +94,70 @@ void setup_ADC()
     ADCSRA |= (1 << ADEN);
 }
 
-#define DIODE_INCIDENT_NOND   SHIFT_REGISTER_DIODESW1_BIT
-#define DIODE_INCIDENT_ND     SHIFT_REGISTER_DIODESW2_BIT
-#define DIODE_REFLECTIVE_NOND SHIFT_REGISTER_DIODESW3_BIT
-#define DIODE_REFLECTIVE_ND   SHIFT_REGISTER_DIODESW4_BIT
-#define DIODE_SAME            255
-static void set_diode_configuration(uint8_t op_amp_resistor_stage, uint8_t diode)
+#define REFLECTIVE 0
+#define INCIDENT 1
+// Layout of diodes from left to right is:
+//
+//     incident without nd
+//     incident with nd
+//     refl with nd
+//     refl without nd
+//
+static void set_amp_stage(uint8_t reflective_or_incident, uint8_t stage)
 {
-    op_amp_resistor_stage -= 1;
+#define s(i) ((STAGE ## i ## _STOPS_SUBTRACTED == 0 ? 0 : 1) << ((i)-1)) |
+#define ss(i) ((STAGE ## i ## _RESISTOR_NUMBER) << (((i)-1)*2)) |
+    static const uint8_t stage_uses_nd_filter = FOREACH_AMP_STAGE(s) 0;
+    static const uint16_t stage_uses_resistor = FOREACH_AMP_STAGE(ss) 0;
+#undef s
+#undef ss
 
-    // Select diode.
-    if (diode != DIODE_SAME) {
-        and_shift_register_bits(~((1 << SHIFT_REGISTER_DIODESW1_BIT) | (1 << SHIFT_REGISTER_DIODESW2_BIT) |
-                                  (1 << SHIFT_REGISTER_DIODESW3_BIT) | (1 << SHIFT_REGISTER_DIODESW4_BIT)));
-        or_shift_register_bits(1 << diode);
+    // Deselect all diodes.
+    and_shift_register_bits(~((1 << SHIFT_REGISTER_DIODESW1_BIT) | (1 << SHIFT_REGISTER_DIODESW2_BIT) |
+                              (1 << SHIFT_REGISTER_DIODESW3_BIT) | (1 << SHIFT_REGISTER_DIODESW4_BIT)));
+
+    uint8_t undf = stage_uses_nd_filter & (1 << (stage-1));
+
+    // Which diode do we use?
+    uint8_t dbit;
+    if (reflective_or_incident == REFLECTIVE) {
+        if (undf) {
+            dbit = SHIFT_REGISTER_DIODESW3_BIT;
+        }
+        else {
+            dbit = SHIFT_REGISTER_DIODESW4_BIT;
+        }
+    }
+    else {
+        if (undf) {
+            dbit = SHIFT_REGISTER_DIODESW2_BIT;
+        }
+        else {
+            dbit = SHIFT_REGISTER_DIODESW1_BIT;
+        }
+    }
+    or_shift_register_bits(1 << dbit);
+
+    // Set all stage switch pins to zero.
+    and_shift_register_bits(~((1 << SHIFT_REGISTER_STG1_BIT) | (1 << SHIFT_REGISTER_STG2_BIT)));
+
+    // Which resistor do we use? (count starts from 0)
+    uint8_t rnum = (stage_uses_resistor >> ((stage-1)*2)) & 0b11;
+    if (rnum == 0) {
+        or_shift_register_bits((1 << SHIFT_REGISTER_STG1_BIT) | (1 << SHIFT_REGISTER_STG2_BIT));
+    }
+    else if (rnum == 1) {
+        or_shift_register_bits(1 << SHIFT_REGISTER_STG2_BIT);
+    }
+    else if (rnum == 2) {
+        or_shift_register_bits(1 << SHIFT_REGISTER_STG1_BIT);
+    }
+    else { //if (rnum == 3) {
+        ;
     }
 
-    // Select op amp resistor stage.
-    and_shift_register_bits(~((1 << SHIFT_REGISTER_STG1_BIT) || (1 << (SHIFT_REGISTER_STG1_BIT+1))));
-    uint8_t stg1 = op_amp_resistor_stage & 1;
-    or_shift_register_bits(stg1 << SHIFT_REGISTER_STG1_BIT);
-    uint8_t stg2 = (op_amp_resistor_stage & 2)>>1;
-    or_shift_register_bits(stg2 << (SHIFT_REGISTER_STG1_BIT+1));
     set_shift_register_out();
-    global_transient_meter_state.op_amp_resistor_stage = op_amp_resistor_stage;
+    global_transient_meter_state.op_amp_resistor_stage = stage;
 }
 
 static uint16_t get_adc_reading()
@@ -133,11 +173,21 @@ void handle_measurement(uint16_t adc_light_value)
     // (Could left adjust everything, but we might want the full 10 bits for temps.)
     uint8_t light_value8 = (adc_light_value >> 2);
 
+#ifdef DEBUG
+    tx_byte('V');
+    tx_byte(light_value8);
+#endif
+
     global_transient_meter_state.last_ev_with_fracs = get_ev100_at_temperature_voltage(
         current_temp,
         light_value8,
         global_transient_meter_state.op_amp_resistor_stage
     );
+
+#ifdef DEBUG
+    tx_byte('E');
+    tx_byte(ev_with_fracs_get_ev8(global_transient_meter_state.last_ev_with_fracs));
+#endif
 
     if (global_meter_state.priority == SHUTTER_PRIORITY) {
         global_transient_meter_state.shutter_speed = global_meter_state.priority_shutter_speed;
@@ -156,11 +206,13 @@ void handle_measurement(uint16_t adc_light_value)
         );
     }
 
+    return;
+
     static uint8_t debounce = 0;
 
     // If we're too near the top or bottom of the range, change the gain next time.
     uint8_t newr = 0; // Not a valid stage.
-    if (light_value8 > 250 && global_transient_meter_state.op_amp_resistor_stage < NUM_OP_AMP_RESISTOR_STAGES) {
+    if (light_value8 > 250 && global_transient_meter_state.op_amp_resistor_stage < NUM_AMP_STAGES) {
         newr = global_transient_meter_state.op_amp_resistor_stage + 1;
     }
     else if (light_value8 <= VOLTAGE_TO_EV_ABS_OFFSET + 5 && global_transient_meter_state.op_amp_resistor_stage > 1) {
@@ -172,7 +224,7 @@ void handle_measurement(uint16_t adc_light_value)
             --debounce;
         }
         else {
-            set_diode_configuration(newr, DIODE_SAME);
+            set_amp_stage(INCIDENT/*temporary default setting*/,newr);
             debounce = 8;
         }
     }
@@ -277,7 +329,7 @@ int main()
                            (1 << SHIFT_REGISTER_OAPWR_BIT));
     set_shift_register_out();
 
-    set_diode_configuration(3, DIODE_INCIDENT_NOND);
+    set_amp_stage(INCIDENT, 2);
 
     display_init();
     display_clear();

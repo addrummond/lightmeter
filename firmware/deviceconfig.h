@@ -140,8 +140,6 @@
 #define SHIFT_REGISTER_DIODESW3_BIT  6
 #define SHIFT_REGISTER_DIODESW4_BIT  5
 
-#define FOR_EACH_OP_AMP_RESISTOR_STAGE(x) x(1) x(2) x(3) x(4) x(5)
-
 
 //
 // Port for sending serial debug output.

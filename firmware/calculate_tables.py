@@ -8,7 +8,7 @@ import re
 
 reference_voltage = 2772.72  # mV
 op_amp_gain       = reference_voltage/1100.0
-op_amp_resistor_stages = [ # In (kOhm,gain) pairs
+amp_stages = [ # In (kOhm,gain) pairs
     # For BPW 34
     #(320.0,1,0.0), # Very low light
     #(12.0,1,0.0)   # Fairly low light (brightish rooms, that kind of thing)
@@ -42,7 +42,14 @@ op_amp_resistor_stages = [ # In (kOhm,gain) pairs
     ( 16,                    1,             8.0                                       )
 ]
 
-op_amp_normal_resistor = op_amp_resistor_stages[1][0] * op_amp_resistor_stages[1][1]
+op_amp_normal_resistor = amp_stages[1][0] * amp_stages[1][1]
+
+op_amp_resistor_value_to_resistor_number = { }
+rvalcount = 0
+for s in amp_stages:
+    if not op_amp_resistor_value_to_resistor_number.has_key(s[0]):
+        op_amp_resistor_value_to_resistor_number[s[0]] = rvalcount
+        rvalcount += 1
 
 # Table cells not calculated for voltages lower than this.
 # This is because in the region just above v = 0, the changes
@@ -456,15 +463,15 @@ def output_ev_table(of, name_prefix, op_amp_resistor):
 # using single input mode).
 def output_sanity_graph():
     f = open("sanitygraph.csv", "w")
-    f.write("v," + ','.join(["s" + str(n+1) for n in xrange(len(op_amp_resistor_stages))]) + ',')
-    f.write(','.join(["b" + str(n+1) for n in xrange(len(op_amp_resistor_stages))]) + '\n')
+    f.write("v," + ','.join(["s" + str(n+1) for n in xrange(len(amp_stages))]) + ',')
+    f.write(','.join(["b" + str(n+1) for n in xrange(len(amp_stages))]) + '\n')
     for v in xrange(b_voltage_offset, 256):
         f.write("%i" % v)
         voltage = (v * bv_to_voltage)
         bins = [ ]
-        for stage in xrange(len(op_amp_resistor_stages)):
-            ev = voltage_and_oa_resistor_to_ev(voltage, op_amp_resistor_stages[stage][0] * op_amp_resistor_stages[stage][1])
-            ev +=  op_amp_resistor_stages[stage][2]
+        for stage in xrange(len(amp_stages)):
+            ev = voltage_and_oa_resistor_to_ev(voltage, amp_stages[stage][0] * amp_stages[stage][1])
+            ev +=  amp_stages[stage][2]
             ev8 = int(round((ev + 5.0) * 8.0))
             bins.append(ev8)
             f.write(",%f" % ev)
@@ -1166,21 +1173,32 @@ def output():
     ofh.write("#define TABLES_H\n\n")
     ofh.write("#include <stdint.h>\n\n")
 
-    ofh.write("#define NUM_OP_AMP_RESISTOR_STAGES %i\n" % len(op_amp_resistor_stages))
+    ofh.write("#define NUM_AMP_STAGES %i\n" % len(amp_stages))
+    ofh.write("#define FOREACH_AMP_STAGE(x) ")
+    for i in xrange(1, len(amp_stages)+1):
+        ofh.write("x(%i) " % i)
+    ofh.write("\n")
 
     ofc.write("#include <stdint.h>\n")
     ofc.write("#include <readbyte.h>\n")
 
     e, pr = None, None
-    for i in xrange(len(op_amp_resistor_stages)):
-        e, pr = output_ev_table(ofc, 'STAGE' + str(i+1), op_amp_resistor_stages[i][0] * op_amp_resistor_stages[i][1])
+    for i in xrange(len(amp_stages)):
+        resistor_value = amp_stages[i][0]
+        gain = amp_stages[i][1]
+        stops_subtracted = amp_stages[i][2]
+
+        ofh.write("#define STAGE%i_RESISTOR_NUMBER %i\n" % (i+1, op_amp_resistor_value_to_resistor_number[resistor_value]))
+        ofh.write("#define STAGE%i_STOPS_SUBTRACTED %i\n" % (i+1, int(stops_subtracted)))
+
+        e, pr = output_ev_table(ofc, 'STAGE' + str(i+1), amp_stages[i][0] * amp_stages[i][1])
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_BITPATTERNS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_ABS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_DIFFS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_TENTHS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_THIRDS[];\n" % (i+1))
         if not e:
-            sys.stderr.write("R ERROR %.3f: (%.3f, %.3f)\n" % (op_amp_resistor_stages[i][0] * op_amp_resistor_stages[i][1], pr[0], pr[1]))
+            sys.stderr.write("R ERROR %.3f: (%.3f, %.3f)\n" % (amp_stages[i][0] * amp_stages[i][1], pr[0], pr[1]))
             break
 
     ofh.write("#define VOLTAGE_TO_EV_ABS_OFFSET " + str(b_voltage_offset) + '\n')
