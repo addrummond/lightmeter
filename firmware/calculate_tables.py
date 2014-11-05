@@ -564,7 +564,7 @@ shutter_speeds_thirds = [
     '1.3',
 
     '1',
-    # Initial '' starts here.
+    # Initial '1/' starts here.
     '1.3',
     '1.6',
 
@@ -681,7 +681,7 @@ shutter_speeds_eighths = [
     '1.1',
 
     '1',
-    # Initial '/' starts here.
+    # Initial '1/' starts here.
     '1.1',
     '1.2',
     '1.3',
@@ -1174,7 +1174,7 @@ def output():
     ofh.write("#include <stdint.h>\n\n")
 
     ofh.write("#define NUM_AMP_STAGES %i\n" % len(amp_stages))
-    ofh.write("#define FOREACH_AMP_STAGE(x) ")
+    ofh.write("#define FOR_EACH_AMP_STAGE(x) ")
     for i in xrange(1, len(amp_stages)+1):
         ofh.write("x(%i) " % i)
     ofh.write("\n")
@@ -1190,6 +1190,7 @@ def output():
 
         ofh.write("#define STAGE%i_RESISTOR_NUMBER %i\n" % (i+1, op_amp_resistor_value_to_resistor_number[resistor_value]))
         ofh.write("#define STAGE%i_STOPS_SUBTRACTED %i\n" % (i+1, int(stops_subtracted)))
+        ofh.write("#define STAGE%i_GAIN %fF\n" % (i+1, gain))
 
         e, pr = output_ev_table(ofc, 'STAGE' + str(i+1), amp_stages[i][0] * amp_stages[i][1])
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_BITPATTERNS[];\n" % (i+1))
