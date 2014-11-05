@@ -98,7 +98,7 @@ typedef struct ev_with_fracs {
 #define ev_with_fracs_get_tenths(evwf)        ((evwf).fracs >> 4)
 #define ev_with_fracs_set_tenths(evwf, v)     ((evwf).fracs |= (v) << 4)
 #define ev_with_fracs_is_whole(evwf)          ((evwf).fracs == 0)
-#define ev_with_fracs_get_wholes(evwf)         ((evwf).ev >> 3)
+#define ev_with_fracs_get_wholes(evwf)        ((evwf).ev >> 3)
 #define ev_with_fracs_zero_fracs(evwf)        ((evwf).fracs = 0)
 #define ev_with_fracs_get_nth(evwf)           (((evwf).fracs & 0b11) == 0 ? 8 : (((evwf).fracs & 0b11) == 1 ? 3 : 10))
 #define ev_with_fracs_set_nth(evwf, nth)      ((nth) == 8 ? (evwf).fracs |= 0 : ((nth) == 3 ? ((evwf).fracs |= 1) : ((evwf).fracs |= 2)))
