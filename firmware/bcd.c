@@ -426,7 +426,7 @@ uint8_t *uint32_to_bcd(uint32_t n, uint8_t *digits, uint8_t length)
     return digits + i;
 }
 
-// 'digits' and 'test' may point to same buffer.
+// 'digits' and 'dest' may point to same buffer.
 uint8_t bcd_to_string_fp(uint8_t *digits, uint8_t length, uint8_t *dest, uint8_t sigfigs, uint8_t dps)
 {
     uint8_t i;
