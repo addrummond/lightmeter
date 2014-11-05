@@ -74,10 +74,6 @@ void display_init()
     display_command(DISPLAY_SETDISPLAYOFFSET);              // 0xD3
     display_command(0x0);                                   // no offset
     display_command(DISPLAY_SETSTARTLINE | 0x0);            // line #0
-    //
-    // NOTE NOTE NOTE TODO. May need to change the following settings in
-    // production when we are not using internal charge pump.
-    //
     display_command(DISPLAY_CHARGEPUMP);                    // 0x8D
     display_command(0x14);
     display_command(DISPLAY_MEMORYMODE);                    // 0x20
