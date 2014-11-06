@@ -57,6 +57,8 @@ static void calculate_current_temp(uint16_t t)
 
 void setup_ADC()
 {
+    // Disable analogue comparator (unused).
+    ACSRA |= (1 << ACD);
 
     ADMUX = (0 << REFS1) | (0 << REFS0);
     // Set ADC source to light sensor.
@@ -105,12 +107,23 @@ void setup_ADC()
 //
 static void set_amp_stage(uint8_t reflective_or_incident, uint8_t stage)
 {
-#define s(i) ((STAGE ## i ## _STOPS_SUBTRACTED == 0 ? 0 : 1) << ((i)-1)) |
-#define ss(i) ((STAGE ## i ## _RESISTOR_NUMBER) << (((i)-1)*2)) |
-    static const uint8_t stage_uses_nd_filter = FOREACH_AMP_STAGE(s) 0;
-    static const uint16_t stage_uses_resistor = FOREACH_AMP_STAGE(ss) 0;
+#define s(i)   ((STAGE ## i ## _STOPS_SUBTRACTED == 0 ? 0 : 1) << ((i)-1)) |
+#define ss(i)  ((STAGE ## i ## _GAIN == 1.0 ? 0 : 1) << ((i)-1)) |
+#define sss(i) ((STAGE ## i ## _RESISTOR_NUMBER) << (((i)-1)*2)) |
+    static const uint8_t  stage_uses_nd_filter = FOR_EACH_AMP_STAGE(s) 0;
+    static const uint8_t  stage_uses_11_ref    = FOR_EACH_AMP_STAGE(ss) 0;
+    static const uint16_t stage_uses_resistor  = FOR_EACH_AMP_STAGE(sss) 0;
 #undef s
 #undef ss
+
+    // Select appropriate ADC ref voltage.
+    ADMUX &= ~((1 << REFS0) | (1 << REFS1));
+    if (stage_uses_11_ref & (1 << (stage-1))) {
+        ADMUX |= ADMUX_LOW_LIGHT_REF_VOLTAGE;
+    }
+    else {
+        ADMUX |= ADMUX_LIGHT_SOURCE_REF_VOLTAGE;
+    }
 
     // Deselect all diodes.
     and_shift_register_bits(~((1 << SHIFT_REGISTER_DIODESW1_BIT) | (1 << SHIFT_REGISTER_DIODESW2_BIT) |
@@ -205,8 +218,6 @@ void handle_measurement(uint16_t adc_light_value)
             global_transient_meter_state.last_ev_with_fracs
         );
     }
-
-    return;
 
     static uint8_t debounce = 0;
 

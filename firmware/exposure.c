@@ -37,7 +37,7 @@ ev_with_fracs_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t vo
                    ev_thirds = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_THIRDS)
 #define CASE(n) case n: ASSIGN(n); break;
     switch (op_amp_resistor_stage) {
-FOREACH_AMP_STAGE(CASE)
+FOR_EACH_AMP_STAGE(CASE)
     }
 #undef ASSIGN
 #undef CASE
@@ -1076,8 +1076,6 @@ int main()
     }
 
     printf("\nCompression test completed successfully.\n");
-
-    return 0;
 
     // Sanity check: pass in the values which are used as a base for the calculation
     // and check that we get the originals back.

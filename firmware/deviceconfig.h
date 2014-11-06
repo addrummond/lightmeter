@@ -77,10 +77,7 @@
 // At some point we may want to switch to the internal 1.1V reference as a lame
 // substitute for increasing gain on the attiny1634. This would in effect give
 // us about 2.5x gain over measuring against VCC (2.8V when running on batteries).
-#define ADMUX_LOW_LIGH_REF_VOLTAGE     ((1 << REFS1) | (0 << REFS0))
-
-#define ADMUX_CLEAR_SOURCE             (~((1 << MUX3) | (1 << MUX2) | (1 << MUX1) | (0 << MUX0)));
-#define ADMUX_CLEAR_REF_VOLTAGE        (~0b11000000); // Couldn't do this with macros without getting overflow warning for some reason.
+#define ADMUX_LOW_LIGHT_REF_VOLTAGE    ((1 << REFS1) | (0 << REFS0))
 
 #define ADC_LIGHT_DIDR                 DIDR1
 #define ADC_LIGHT_DIDR_BIT             3
