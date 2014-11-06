@@ -6,7 +6,7 @@ import re
 # Configuration values.
 ##########
 
-reference_voltage = 2772.72  # mV
+reference_voltage = 2772.72 # mV
 op_amp_gain       = reference_voltage/1100.0
 amp_stages = [ # In (kOhm,gain) pairs
     # For BPW 34
