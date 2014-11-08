@@ -82,10 +82,10 @@ void setup_ADC()
 #define INCIDENT 1
 // Layout of diodes from left to right is:
 //
-//     incident without nd
-//     incident with nd
-//     refl with nd
-//     refl without nd
+//     incident without neutral density filter (NDF)
+//     incident with NDF
+//     refl with NDF
+//     refl without NDF
 //
 static void set_amp_stage(uint8_t reflective_or_incident, uint8_t stage)
 {
