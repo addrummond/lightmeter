@@ -64,24 +64,6 @@ void setup_ADC()
     // Set ADC source to light sensor.
     ADMUX |= ADMUX_LIGHT_SOURCE | ADMUX_LIGHT_SOURCE_REF_VOLTAGE;
 
-    //
-    // ***** No longer using interrupts for ADC *****
-    //
-    //
-    // Auto triggering (this needs to be set for turning on counter interrupt ADCSRB to take effect).
-    //ADCSRA |= (1 << ADATE);
-    // Enable ADC interrupt.
-    //ADCSRA |= (1 << ADIE);
-    // Timer/counter 0 compare match A setup.
-    // This causes the ADC to fire on an interupt once every 1024 clock cycles
-    // (so about 8 times a second if we're running at 8MHz).
-    //ADCSRB &= ~((1 << ADTS2) | (1 << ADTS1) | (1 << ADTS0));
-    //ADCSRB |= ((0 << ADTS2) | (1 << ADTS1) | (1 << ADTS0)); // Timer/Counter0 Compare Match A
-    //TCCR0B &= ~((1 << CS02) | (1 << CS01) | (1 << CS00));
-    //TCCR0B |= ((1 << CS02) | (0 << CS01) | (0 << CS00)); // prescaler: clock/256
-    //TCNT0 = 0;
-    //OCR0A = 4; // TO-----------
-
     // Turn off bipolar input mode.
     // N/A on attiny1634.
     //ADCSRB &= ~(1 << BIN);
