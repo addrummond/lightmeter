@@ -294,7 +294,6 @@ static void process_button_press()
 FOR_EACH_PUSHBUTTON_PCMSK_DO(DEF_ISR)
 #undef DEF_ISR
 
-
 static void handle_button_press(uint8_t but)
 {
     if (but == BUTTON_MENU) {
