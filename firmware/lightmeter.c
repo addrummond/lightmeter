@@ -231,39 +231,77 @@ static void setup_pushbuttons()
                  PUSHBUTTON ## n ## _PUE |= (1 << PUSHBUTTON ## n ## _BIT);
     FOR_X_FROM_1_TO_N_PUSHBUTTONS_DO(SETUP)
 #undef SETUP
+
+    // Set up the 16-bit counter, which we use for debouncing the buttons.
+    // Clock is scaled by /1024.
+    TCCR1B |= (1 << CS02) | (0 << CS01) | (1 << CS00);
+    // Turn on CTC.
+    TCCR1B |= (0 << WGM13) | (1 << WGM12);
+    TCCR1A |= (0 << WGM11) | (0 << WGM10);
+    // This resets the counter a few times per second.
+    OCR1A = 800;
+    TIMSK |= (1 << OCIE1A);
 }
 
-static volatile uint8_t button_pressed = 0;
+static uint8_t debounced = 1;
+ISR(TIM1_COMPA_vect)
+{
+    debounced = 1;
+}
+
+static uint8_t button_bounced()
+{
+    TCNT1 = 0;
+    if (! debounced) {
+        return 1;
+    }
+    else {
+        debounced = 0;
+        return 0;
+    }
+}
+
+static uint8_t button_pressed = 0;
 static void process_button_press()
 {
+    if (button_bounced())
+        return;
+
     uint8_t button_pressed = 0;
-#define IF(n)                                                          \
-    if (! (PUSHBUTTON ## n ## _PIN & (1 << PUSHBUTTON ## n ## _BIT)))  \
+#define IF(n)                                                       \
+    if ((PUSHBUTTON ## n ## _PIN & (1 << PUSHBUTTON ## n ## _BIT))) \
         button_pressed |= (1 << (n-1));
     FOR_X_FROM_1_TO_N_PUSHBUTTONS_DO(IF)
 #undef IF
+
+    // Ignore this event if it's just the release of the previously-pushed button.
+    if (button_pressed == 0 || button_pressed == 7)
+        return;
 
 #if DEBUG
     // Decode for button arrangement on protoboard, buttons numbered 1-5
     // from left-right / top-bottom.
     tx_byte('P');
-    if (button_pressed == 1) {
+    //tx_byte('0' + button_pressed);
+    //tx_byte('X');
+    if (button_pressed == 6) {
         tx_byte('1');
     }
-    else if (button_pressed == 2) {
+    else if (button_pressed == 5) {
         tx_byte('2');
     }
-    else if (button_pressed == 4) {
+    else if (button_pressed == 3) {
         tx_byte('3');
     }
-    else if (button_pressed == 6) {
+    else if (button_pressed == 1) {
         tx_byte('4');
     }
-    else if (button_pressed == 3) {
+    else if (button_pressed == 4) {
         tx_byte('5');
     }
     else {
         tx_byte('?');
+        tx_byte('0' + button_pressed);
     }
 #endif
 }
