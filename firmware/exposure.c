@@ -69,10 +69,10 @@ FOR_EACH_AMP_STAGE(CASE)
         bits1 &= bits1 - 1;
     for (; bits2; ++ret.ev)
         bits2 &= bits2 - 1;
-#ifdef DEBUG
-    tx_byte('B');
-    tx_byte(ret.ev);
-#endif
+//#ifdef DEBUG
+//    tx_byte('B');
+//    tx_byte(ret.ev);
+//#endif
 
     // Calculate tenths.
     uint8_t tenths_bit = pgm_read_byte(ev_tenths + (voltage >> 3));
