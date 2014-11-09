@@ -168,10 +168,10 @@ void handle_measurement(uint16_t adc_light_value)
     // (Could left adjust everything, but we might want the full 10 bits for temps.)
     uint8_t light_value8 = (adc_light_value >> 2);
 
-#ifdef DEBUG
-    tx_byte('V');
-    tx_byte(light_value8);
-#endif
+//#ifdef DEBUG
+//    tx_byte('V');
+//    tx_byte(light_value8);
+//#endif
 
     global_transient_meter_state.last_ev_with_fracs = get_ev100_at_temperature_voltage(
         current_temp,
@@ -179,10 +179,10 @@ void handle_measurement(uint16_t adc_light_value)
         global_transient_meter_state.op_amp_resistor_stage
     );
 
-#ifdef DEBUG
-    tx_byte('E');
-    tx_byte(ev_with_fracs_get_ev8(global_transient_meter_state.last_ev_with_fracs));
-#endif
+//#ifdef DEBUG
+//    tx_byte('E');
+//    tx_byte(ev_with_fracs_get_ev8(global_transient_meter_state.last_ev_with_fracs));
+//#endif
 
     if (global_meter_state.priority == SHUTTER_PRIORITY) {
         global_transient_meter_state.shutter_speed = global_meter_state.priority_shutter_speed;
