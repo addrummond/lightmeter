@@ -11586,6 +11586,7 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 <text x="56.134" y="-7.62" size="1.778" layer="91">(VEMD2523SLX01)</text>
 <text x="160.02" y="-53.34" size="1.778" layer="91">Unused second op amp in IC</text>
 <text x="25.4" y="-63.5" size="1.778" layer="91">Op amp power</text>
+<text x="-111.76" y="-25.4" size="1.778" layer="91">Power muxer</text>
 </plain>
 <instances>
 <instance part="IC$3P" gate="A" x="162.56" y="-43.18"/>
