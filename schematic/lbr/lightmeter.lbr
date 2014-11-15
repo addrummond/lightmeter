@@ -617,7 +617,7 @@ Source: http://sales.hamamatsu.com/assets/pdf/parts_S/S7379-01_etc.pdf</descript
 </device>
 </devices>
 </deviceset>
-<deviceset name="PCHANNELMOSFET">
+<deviceset name="PCHANNELMOSFET" prefix="Q">
 <gates>
 <gate name="G$1" symbol="P-MOS" x="0" y="0"/>
 </gates>
