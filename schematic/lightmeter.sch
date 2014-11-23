@@ -11570,6 +11570,7 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
 <part name="GND4" library="supply1" deviceset="GND" device=""/>
 <part name="P+1" library="supply1" deviceset="VCC" device=""/>
+<part name="GND9" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -11653,7 +11654,7 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 <instance part="IC1" gate="G$1" x="-96.52" y="20.32"/>
 <instance part="GND10" gate="1" x="-96.52" y="-2.54"/>
 <instance part="IC$3" gate="G$1" x="-17.78" y="30.48"/>
-<instance part="U1" gate="G$1" x="-99.06" y="91.44"/>
+<instance part="U1" gate="G$1" x="-68.58" y="-68.58"/>
 <instance part="U$1" gate="G$1" x="-15.24" y="88.9"/>
 <instance part="L2" gate="G$1" x="-40.64" y="93.98"/>
 <instance part="GND23" gate="1" x="-35.56" y="78.74" rot="R270"/>
@@ -11681,6 +11682,7 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 <instance part="GND1" gate="1" x="-82.296" y="-28.448" rot="R90"/>
 <instance part="GND4" gate="1" x="-82.296" y="-45.72" rot="R90"/>
 <instance part="P+1" gate="VCC" x="-81.28" y="-35.56" rot="R270"/>
+<instance part="GND9" gate="1" x="-83.82" y="-63.5" rot="R270"/>
 </instances>
 <busses>
 </busses>
@@ -11860,6 +11862,13 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 <pinref part="Q6" gate="G$1" pin="G"/>
 <wire x1="-95.25" y1="-45.72" x2="-84.836" y2="-45.72" width="0.1524" layer="91"/>
 <pinref part="GND4" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="GND9" gate="1" pin="GND"/>
+<wire x1="-71.12" y1="-63.5" x2="-73.66" y2="-63.5" width="0.1524" layer="91"/>
+<pinref part="U1" gate="G$1" pin="GND"/>
+<wire x1="-73.66" y1="-63.5" x2="-81.28" y2="-63.5" width="0.1524" layer="91"/>
+<junction x="-73.66" y="-63.5"/>
 </segment>
 </net>
 <net name="VCC" class="0">
@@ -12637,6 +12646,11 @@ This is the reduced ISP connector for AVR programming. Common on Arduino. This f
 <label x="-106.68" y="-50.8" size="1.778" layer="95" rot="R180" xref="yes"/>
 <pinref part="Q6" gate="G$1" pin="D"/>
 <wire x1="-102.87" y1="-50.8" x2="-106.68" y2="-50.8" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="U1" gate="G$1" pin="VBUS"/>
+<wire x1="-73.66" y1="-73.66" x2="-81.28" y2="-73.66" width="0.1524" layer="91"/>
+<label x="-81.28" y="-73.66" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 </nets>
