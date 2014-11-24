@@ -11734,6 +11734,8 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND25" library="supply1" deviceset="GND" device=""/>
 <part name="R13" library="resistor" deviceset="R-EU_" device="R2012" value="100K"/>
 <part name="R16" library="resistor" deviceset="R-EU_" device="R2012" value="453K"/>
+<part name="C10" library="rcl" deviceset="C-EU" device="C1608" value="µ1"/>
+<part name="GND28" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -11857,6 +11859,8 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="GND25" gate="1" x="10.16" y="48.26" rot="R90"/>
 <instance part="R13" gate="G$1" x="-35.56" y="45.72"/>
 <instance part="R16" gate="G$1" x="-22.86" y="38.1" rot="R180"/>
+<instance part="C10" gate="G$1" x="-20.32" y="-55.88" rot="R90"/>
+<instance part="GND28" gate="1" x="-6.858" y="-55.88" rot="R90"/>
 </instances>
 <busses>
 </busses>
@@ -12075,6 +12079,11 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="2.54" y1="48.26" x2="7.62" y2="48.26" width="0.1524" layer="91"/>
 <junction x="2.54" y="48.26"/>
 <pinref part="GND25" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="C10" gate="G$1" pin="2"/>
+<wire x1="-15.24" y1="-55.88" x2="-9.398" y2="-55.88" width="0.1524" layer="91"/>
+<pinref part="GND28" gate="1" pin="GND"/>
 </segment>
 </net>
 <net name="VCC" class="0">
@@ -12851,6 +12860,9 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="IC2" gate="G$1" pin="VBAT"/>
 <wire x1="-22.86" y1="-63.5" x2="-17.78" y2="-63.5" width="0.1524" layer="91"/>
 <label x="-17.78" y="-63.5" size="1.778" layer="95" xref="yes"/>
+<pinref part="C10" gate="G$1" pin="1"/>
+<wire x1="-22.86" y1="-63.5" x2="-22.86" y2="-55.88" width="0.1524" layer="91"/>
+<junction x="-22.86" y="-63.5"/>
 </segment>
 </net>
 <net name="VUSB" class="0">
