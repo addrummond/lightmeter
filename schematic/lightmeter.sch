@@ -11715,7 +11715,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="IC2" library="adafruit" deviceset="MCP73831" device="/OT"/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
 <part name="R1" library="resistor" deviceset="R-EU_" device="R2012" value="10K"/>
-<part name="R2" library="resistor" deviceset="R-EU_" device="R2012" value="7K"/>
+<part name="R2" library="resistor" deviceset="R-EU_" device="R2012" value="9.1K"/>
 <part name="GND16" library="supply1" deviceset="GND" device=""/>
 <part name="J2" library="SparkFun-Connectors" deviceset="JST_2MM_MALE" device=""/>
 <part name="GND26" library="supply1" deviceset="GND" device=""/>
