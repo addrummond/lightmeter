@@ -8,34 +8,34 @@
 </settings>
 <grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
-<layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
-<layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
-<layer number="3" name="Route3" color="4" fill="3" visible="no" active="no"/>
-<layer number="4" name="Route4" color="1" fill="4" visible="no" active="no"/>
-<layer number="5" name="Route5" color="4" fill="4" visible="no" active="no"/>
-<layer number="6" name="Route6" color="1" fill="8" visible="no" active="no"/>
-<layer number="7" name="Route7" color="4" fill="8" visible="no" active="no"/>
-<layer number="8" name="Route8" color="1" fill="2" visible="no" active="no"/>
-<layer number="9" name="Route9" color="4" fill="2" visible="no" active="no"/>
-<layer number="10" name="Route10" color="1" fill="7" visible="no" active="no"/>
-<layer number="11" name="Route11" color="4" fill="7" visible="no" active="no"/>
-<layer number="12" name="Route12" color="1" fill="5" visible="no" active="no"/>
-<layer number="13" name="Route13" color="4" fill="5" visible="no" active="no"/>
-<layer number="14" name="Route14" color="1" fill="6" visible="no" active="no"/>
-<layer number="15" name="Route15" color="4" fill="6" visible="no" active="no"/>
-<layer number="16" name="Bottom" color="1" fill="1" visible="no" active="no"/>
-<layer number="17" name="Pads" color="2" fill="1" visible="no" active="no"/>
-<layer number="18" name="Vias" color="2" fill="1" visible="no" active="no"/>
-<layer number="19" name="Unrouted" color="6" fill="1" visible="no" active="no"/>
-<layer number="20" name="Dimension" color="15" fill="1" visible="no" active="no"/>
-<layer number="21" name="tPlace" color="7" fill="1" visible="no" active="no"/>
-<layer number="22" name="bPlace" color="7" fill="1" visible="no" active="no"/>
-<layer number="23" name="tOrigins" color="15" fill="1" visible="no" active="no"/>
-<layer number="24" name="bOrigins" color="15" fill="1" visible="no" active="no"/>
-<layer number="25" name="tNames" color="7" fill="1" visible="no" active="no"/>
-<layer number="26" name="bNames" color="7" fill="1" visible="no" active="no"/>
-<layer number="27" name="tValues" color="7" fill="1" visible="no" active="no"/>
-<layer number="28" name="bValues" color="7" fill="1" visible="no" active="no"/>
+<layer number="1" name="Top" color="4" fill="1" visible="yes" active="no"/>
+<layer number="2" name="Route2" color="1" fill="3" visible="yes" active="no"/>
+<layer number="3" name="Route3" color="4" fill="3" visible="yes" active="no"/>
+<layer number="4" name="Route4" color="1" fill="4" visible="yes" active="no"/>
+<layer number="5" name="Route5" color="4" fill="4" visible="yes" active="no"/>
+<layer number="6" name="Route6" color="1" fill="8" visible="yes" active="no"/>
+<layer number="7" name="Route7" color="4" fill="8" visible="yes" active="no"/>
+<layer number="8" name="Route8" color="1" fill="2" visible="yes" active="no"/>
+<layer number="9" name="Route9" color="4" fill="2" visible="yes" active="no"/>
+<layer number="10" name="Route10" color="1" fill="7" visible="yes" active="no"/>
+<layer number="11" name="Route11" color="4" fill="7" visible="yes" active="no"/>
+<layer number="12" name="Route12" color="1" fill="5" visible="yes" active="no"/>
+<layer number="13" name="Route13" color="4" fill="5" visible="yes" active="no"/>
+<layer number="14" name="Route14" color="1" fill="6" visible="yes" active="no"/>
+<layer number="15" name="Route15" color="4" fill="6" visible="yes" active="no"/>
+<layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="no"/>
+<layer number="17" name="Pads" color="2" fill="1" visible="yes" active="no"/>
+<layer number="18" name="Vias" color="2" fill="1" visible="yes" active="no"/>
+<layer number="19" name="Unrouted" color="6" fill="1" visible="yes" active="no"/>
+<layer number="20" name="Dimension" color="15" fill="1" visible="yes" active="no"/>
+<layer number="21" name="tPlace" color="7" fill="1" visible="yes" active="no"/>
+<layer number="22" name="bPlace" color="7" fill="1" visible="yes" active="no"/>
+<layer number="23" name="tOrigins" color="15" fill="1" visible="yes" active="no"/>
+<layer number="24" name="bOrigins" color="15" fill="1" visible="yes" active="no"/>
+<layer number="25" name="tNames" color="7" fill="1" visible="yes" active="no"/>
+<layer number="26" name="bNames" color="7" fill="1" visible="yes" active="no"/>
+<layer number="27" name="tValues" color="7" fill="1" visible="yes" active="no"/>
+<layer number="28" name="bValues" color="7" fill="1" visible="yes" active="no"/>
 <layer number="29" name="tStop" color="7" fill="3" visible="no" active="no"/>
 <layer number="30" name="bStop" color="7" fill="6" visible="no" active="no"/>
 <layer number="31" name="tCream" color="7" fill="4" visible="no" active="no"/>
@@ -44,8 +44,8 @@
 <layer number="34" name="bFinish" color="6" fill="6" visible="no" active="no"/>
 <layer number="35" name="tGlue" color="7" fill="4" visible="no" active="no"/>
 <layer number="36" name="bGlue" color="7" fill="5" visible="no" active="no"/>
-<layer number="37" name="tTest" color="7" fill="1" visible="no" active="no"/>
-<layer number="38" name="bTest" color="7" fill="1" visible="no" active="no"/>
+<layer number="37" name="tTest" color="7" fill="1" visible="yes" active="no"/>
+<layer number="38" name="bTest" color="7" fill="1" visible="yes" active="no"/>
 <layer number="39" name="tKeepout" color="4" fill="11" visible="no" active="no"/>
 <layer number="40" name="bKeepout" color="1" fill="11" visible="no" active="no"/>
 <layer number="41" name="tRestrict" color="4" fill="10" visible="no" active="no"/>
@@ -53,17 +53,17 @@
 <layer number="43" name="vRestrict" color="2" fill="10" visible="no" active="no"/>
 <layer number="44" name="Drills" color="7" fill="1" visible="no" active="no"/>
 <layer number="45" name="Holes" color="7" fill="1" visible="no" active="no"/>
-<layer number="46" name="Milling" color="3" fill="1" visible="no" active="no"/>
-<layer number="47" name="Measures" color="7" fill="1" visible="no" active="no"/>
-<layer number="48" name="Document" color="7" fill="1" visible="no" active="no"/>
-<layer number="49" name="Reference" color="7" fill="1" visible="no" active="no"/>
-<layer number="50" name="dxf" color="7" fill="1" visible="no" active="no"/>
-<layer number="51" name="tDocu" color="7" fill="1" visible="no" active="no"/>
-<layer number="52" name="bDocu" color="7" fill="1" visible="no" active="no"/>
-<layer number="53" name="tGND_GNDA" color="7" fill="9" visible="no" active="no"/>
-<layer number="54" name="bGND_GNDA" color="1" fill="9" visible="no" active="no"/>
-<layer number="56" name="wert" color="7" fill="1" visible="no" active="no"/>
-<layer number="57" name="tCAD" color="7" fill="1" visible="no" active="no"/>
+<layer number="46" name="Milling" color="3" fill="1" visible="yes" active="no"/>
+<layer number="47" name="Measures" color="7" fill="1" visible="yes" active="no"/>
+<layer number="48" name="Document" color="7" fill="1" visible="yes" active="no"/>
+<layer number="49" name="Reference" color="7" fill="1" visible="yes" active="no"/>
+<layer number="50" name="dxf" color="7" fill="1" visible="yes" active="no"/>
+<layer number="51" name="tDocu" color="7" fill="1" visible="yes" active="no"/>
+<layer number="52" name="bDocu" color="7" fill="1" visible="yes" active="no"/>
+<layer number="53" name="tGND_GNDA" color="7" fill="9" visible="yes" active="no"/>
+<layer number="54" name="bGND_GNDA" color="1" fill="9" visible="yes" active="no"/>
+<layer number="56" name="wert" color="7" fill="1" visible="yes" active="no"/>
+<layer number="57" name="tCAD" color="7" fill="1" visible="yes" active="no"/>
 <layer number="91" name="Nets" color="2" fill="1" visible="yes" active="yes"/>
 <layer number="92" name="Busses" color="1" fill="1" visible="yes" active="yes"/>
 <layer number="93" name="Pins" color="2" fill="1" visible="no" active="yes"/>
@@ -11634,23 +11634,23 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <parts>
 <part name="IC$3P" library="analog-devices" deviceset="AD8542" device="RM" value="AD8542RM"/>
 <part name="GND2" library="supply1" deviceset="GND" device=""/>
-<part name="C4" library="rcl" deviceset="C-EU" device="C1608" value="µ1"/>
+<part name="C4" library="rcl" deviceset="C-EU" device="C0402" value="µ1"/>
 <part name="S1" library="switch" deviceset="SKHMP*E010" device="" technology="S"/>
 <part name="S2" library="switch" deviceset="SKHMP*E010" device="" technology="S"/>
 <part name="S3" library="switch" deviceset="SKHMP*E010" device="" technology="S"/>
 <part name="U$4" library="microbuilder" deviceset="DISP_OLED_UG-2864HSWEG01" device="0.96&quot;"/>
-<part name="R7" library="resistor" deviceset="R-EU_" device="R2012" value="130k"/>
-<part name="R6" library="resistor" deviceset="R-EU_" device="R2012" value="16k"/>
+<part name="R7" library="resistor" deviceset="R-EU_" device="R0402" value="130k"/>
+<part name="R6" library="resistor" deviceset="R-EU_" device="R0402" value="16k"/>
 <part name="IC$2" library="lightmeter" deviceset="SN74HC164" device="TSSOP-14" value="SN74HC164TSSOP-14"/>
 <part name="GND11" library="supply1" deviceset="GND" device=""/>
 <part name="GND12" library="supply1" deviceset="GND" device=""/>
-<part name="C1" library="rcl" deviceset="C-EU" device="C1608" value="µ1"/>
+<part name="C1" library="rcl" deviceset="C-EU" device="C0402" value="µ1"/>
 <part name="GND13" library="supply1" deviceset="GND" device=""/>
 <part name="GND15" library="supply1" deviceset="GND" device=""/>
-<part name="C5" library="rcl" deviceset="C-EU" device="C0603K" value="µ1"/>
-<part name="R3" library="resistor" deviceset="R-EU_" device="R2012" value="10k"/>
+<part name="C5" library="rcl" deviceset="C-EU" device="C0402" value="µ1"/>
+<part name="R3" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
-<part name="R4" library="resistor" deviceset="R-EU_" device="R2012" value="10k"/>
+<part name="R4" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
 <part name="TSDBG" library="testpad" deviceset="TP" device="PAD1-13" value="TPPAD1-13"/>
 <part name="GND8" library="supply1" deviceset="GND" device=""/>
 <part name="S4" library="switch" deviceset="SKHMP*E010" device="" technology="S"/>
@@ -11659,32 +11659,32 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="D6" library="diode2" deviceset="DIODE-" device="SOD323-W"/>
 <part name="D5" library="diode2" deviceset="DIODE-" device="SOD323-W"/>
 <part name="D7" library="diode2" deviceset="DIODE-" device="SOD323-W"/>
-<part name="R8" library="resistor" deviceset="R-EU_" device="R2012" value="390k"/>
-<part name="C12" library="rcl" deviceset="C-EU" device="C2012" value="4µ7"/>
-<part name="C13" library="rcl" deviceset="C-EU" device="C2012" value="4µ7"/>
-<part name="C14" library="rcl" deviceset="C-EU" device="C2012" value="4µ7"/>
+<part name="R8" library="resistor" deviceset="R-EU_" device="R0402" value="390k"/>
+<part name="C12" library="rcl" deviceset="C-EU" device="C0402" value="4µ7"/>
+<part name="C13" library="rcl" deviceset="C-EU" device="C0402" value="4µ7"/>
+<part name="C14" library="rcl" deviceset="C-EU" device="C0402" value="4µ7"/>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
 <part name="GND18" library="supply1" deviceset="GND" device=""/>
 <part name="GND19" library="supply1" deviceset="GND" device=""/>
 <part name="GND20" library="supply1" deviceset="GND" device=""/>
-<part name="C15" library="rcl" deviceset="C-EU" device="C2012" value="4µ7"/>
-<part name="R9" library="resistor" deviceset="R-EU_" device="R2012" value="1M"/>
-<part name="R10" library="resistor" deviceset="R-EU_" device="R2012" value="1M"/>
-<part name="R11" library="resistor" deviceset="R-EU_" device="R2012" value="1M"/>
+<part name="C15" library="rcl" deviceset="C-EU" device="C0402" value="4µ7"/>
+<part name="R9" library="resistor" deviceset="R-EU_" device="R0402" value="1M"/>
+<part name="R10" library="resistor" deviceset="R-EU_" device="R0402" value="1M"/>
+<part name="R11" library="resistor" deviceset="R-EU_" device="R0402" value="1M"/>
 <part name="D8" library="lightmeter" deviceset="VEMD2523SLX01" device=""/>
 <part name="D9" library="lightmeter" deviceset="VEMD2523SLX01" device=""/>
 <part name="D10" library="lightmeter" deviceset="VEMD2523SLX01" device=""/>
 <part name="D11" library="lightmeter" deviceset="VEMD2523SLX01" device=""/>
 <part name="R5" library="resistor" deviceset="R-EU_" device="R0402" value="390k"/>
-<part name="C6" library="rcl" deviceset="C-EU" device="C2012" value="1µ"/>
+<part name="C6" library="rcl" deviceset="C-EU" device="C0402" value="1µ"/>
 <part name="C11" library="rcl" deviceset="C-EU" device="C0402" value="1µ"/>
 <part name="GND17" library="supply1" deviceset="GND" device=""/>
 <part name="GND21" library="supply1" deviceset="GND" device=""/>
 <part name="GND22" library="supply1" deviceset="GND" device=""/>
 <part name="C16" library="rcl" deviceset="C-EU" device="C0402" value="4µ7"/>
 <part name="C17" library="rcl" deviceset="C-EU" device="C0402" value="2µ2"/>
-<part name="C8" library="rcl" deviceset="C-EU" device="C2012" value="1µ"/>
-<part name="C9" library="rcl" deviceset="C-EU" device="C2012" value="1µ"/>
+<part name="C8" library="rcl" deviceset="C-EU" device="C0402" value="1µ"/>
+<part name="C9" library="rcl" deviceset="C-EU" device="C0402" value="1µ"/>
 <part name="GND3" library="supply1" deviceset="GND" device=""/>
 <part name="J1" library="SparkFun-Connectors" deviceset="AVR_SPI_PRG_6" device="NS"/>
 <part name="GND14" library="supply1" deviceset="GND" device=""/>
@@ -11692,7 +11692,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND10" library="supply1" deviceset="GND" device=""/>
 <part name="IC$3" library="attiny1634_corrected" deviceset="ATTINY1634" device="MLF20"/>
 <part name="U1" library="SparkFun-Connectors" deviceset="USB-AB" device="CONN-11794"/>
-<part name="L2" library="microbuilder" deviceset="INDUCTOR" device="0805" value="4µ7"/>
+<part name="L2" library="microbuilder" deviceset="INDUCTOR" device="_0402" value="4µ7"/>
 <part name="GND23" library="supply1" deviceset="GND" device=""/>
 <part name="Q11" library="lightmeter" deviceset="NCHANNELMOSFET" device=""/>
 <part name="Q12" library="lightmeter" deviceset="NCHANNELMOSFET" device=""/>
@@ -11714,30 +11714,30 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND9" library="supply1" deviceset="GND" device=""/>
 <part name="IC2" library="adafruit" deviceset="MCP73831" device="/OT"/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
-<part name="R1" library="resistor" deviceset="R-EU_" device="R2012" value="10K"/>
-<part name="R2" library="resistor" deviceset="R-EU_" device="R2012" value="9.1K"/>
+<part name="R1" library="resistor" deviceset="R-EU_" device="R0402" value="10K"/>
+<part name="R2" library="resistor" deviceset="R-EU_" device="R0402" value="9.1K"/>
 <part name="GND16" library="supply1" deviceset="GND" device=""/>
 <part name="J2" library="SparkFun-Connectors" deviceset="JST_2MM_MALE" device=""/>
 <part name="GND26" library="supply1" deviceset="GND" device=""/>
 <part name="U$1" library="lightmeter" deviceset="LM3671" device=""/>
 <part name="P+3" library="supply1" deviceset="VCC" device=""/>
-<part name="C2" library="rcl" deviceset="C-EU" device="C1608" value="4.7"/>
-<part name="R14" library="resistor" deviceset="R-EU_" device="R2012" value="453K"/>
-<part name="R15" library="resistor" deviceset="R-EU_" device="R2012" value="100K"/>
+<part name="C2" library="rcl" deviceset="C-EU" device="C0402" value="4.7"/>
+<part name="R14" library="resistor" deviceset="R-EU_" device="R0402" value="453K"/>
+<part name="R15" library="resistor" deviceset="R-EU_" device="R0402" value="100K"/>
 <part name="GND27" library="supply1" deviceset="GND" device=""/>
-<part name="C3" library="rcl" deviceset="C-EU" device="C1608" value="8p2"/>
-<part name="C18" library="rcl" deviceset="C-EU" device="C1608" value="33p"/>
-<part name="C7" library="rcl" deviceset="C-EU" device="C1608" value="10µ"/>
+<part name="C3" library="rcl" deviceset="C-EU" device="C0402" value="8p2"/>
+<part name="C18" library="rcl" deviceset="C-EU" device="C0402" value="33p"/>
+<part name="C7" library="rcl" deviceset="C-EU" device="C0402" value="10µ"/>
 <part name="GND24" library="supply1" deviceset="GND" device=""/>
 <part name="U$2" library="lightmeter" deviceset="TL4051" device=""/>
-<part name="R12" library="resistor" deviceset="R-EU_" device="R2012" value="453K"/>
+<part name="R12" library="resistor" deviceset="R-EU_" device="R0402" value="453K"/>
 <part name="GND25" library="supply1" deviceset="GND" device=""/>
-<part name="R13" library="resistor" deviceset="R-EU_" device="R2012" value="100K"/>
-<part name="R16" library="resistor" deviceset="R-EU_" device="R2012" value="453K"/>
-<part name="C10" library="rcl" deviceset="C-EU" device="C1608" value="µ1"/>
+<part name="R13" library="resistor" deviceset="R-EU_" device="R0402" value="100K"/>
+<part name="R16" library="resistor" deviceset="R-EU_" device="R0402" value="453K"/>
+<part name="C10" library="rcl" deviceset="C-EU" device="C0402" value="µ1"/>
 <part name="GND28" library="supply1" deviceset="GND" device=""/>
-<part name="R17" library="resistor" deviceset="R-EU_" device="R2012" value="510K"/>
-<part name="R18" library="resistor" deviceset="R-EU_" device="R2012" value="510K"/>
+<part name="R17" library="resistor" deviceset="R-EU_" device="R0402" value="510K"/>
+<part name="R18" library="resistor" deviceset="R-EU_" device="R0402" value="510K"/>
 <part name="GND29" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
