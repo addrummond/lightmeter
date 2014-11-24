@@ -15,8 +15,8 @@
 //  when the programmer is disconnected.
 //
 //          Display data |    ADC5/PB0 1---20 [MOSI]    | **********
-//            Display DC |    ADC4/PA7 2---19 [MISO]    | **********
-//           Temp sensor |    ADC3/PA6 3---18 PB3/ADC8  | Display reset
+//            Display DC |    ADC4/PA7 2---19 [MISO]    | MISO / Display reset
+//           Temp sensor |    ADC3/PA6 3---18 PB3/ADC8  | Battery stat input
 //     Serial debug port |    ADC2/PA5 4---17 PC0/ADC9  | Op amp output
 //      Shift register A |    ADC1/PA4 5---16 [USCK]    | **********
 //          Pushbutton 1 |    ADC0/PA3 6---15 PC2/ADC11 | Pushbutton 3
@@ -57,7 +57,7 @@
 
 #define DISPLAY_RESET_PORT  PORTB
 #define DISPLAY_RESET_DDR   DDRB
-#define DISPLAY_RESET_BIT   PB3
+#define DISPLAY_RESET_BIT   PB2
 
 
 //

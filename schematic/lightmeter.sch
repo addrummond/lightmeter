@@ -12328,13 +12328,8 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="203.2" y1="20.32" x2="198.12" y2="20.32" width="0.1524" layer="91"/>
 <label x="198.12" y="20.32" size="1.4224" layer="95" rot="R180" xref="yes"/>
 </segment>
-<segment>
-<pinref part="IC$3" gate="G$1" pin="ADC8/OC1A/PB3"/>
-<wire x1="22.86" y1="25.4" x2="27.94" y2="25.4" width="0.1524" layer="91"/>
-<label x="27.94" y="25.4" size="1.778" layer="95" xref="yes"/>
-</segment>
 </net>
-<net name="AVRMISO" class="0">
+<net name="AVRMISO/SCRRES" class="0">
 <segment>
 <wire x1="22.86" y1="27.94" x2="27.94" y2="27.94" width="0.1524" layer="91"/>
 <label x="27.94" y="27.94" size="1.778" layer="95" xref="yes"/>
@@ -12890,6 +12885,11 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <junction x="-53.34" y="-73.66"/>
 <pinref part="R1" gate="G$1" pin="1"/>
 <wire x1="-45.72" y1="-83.82" x2="-53.34" y2="-83.82" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="IC$3" gate="G$1" pin="ADC8/OC1A/PB3"/>
+<wire x1="22.86" y1="25.4" x2="27.94" y2="25.4" width="0.1524" layer="91"/>
+<label x="27.94" y="25.4" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="N$5" class="0">
