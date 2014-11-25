@@ -11851,7 +11851,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <text x="55.88" y="0" size="1.778" layer="91">Op amp (AD8546ARMZ)</text>
 <text x="-73.66" y="-15.24" size="1.778" layer="91">Pushbuttons (1571634-2)</text>
 <text x="-7.62" y="35.56" size="1.778" layer="91">Microcontroller (attiny1634)</text>
-<text x="213.36" y="60.96" size="1.778" layer="91">Screen</text>
+<text x="213.36" y="60.96" size="1.778" layer="91">Screen (C2P right, IREF left)</text>
 <text x="-91.44" y="68.58" size="1.778" layer="91">AVR programming header</text>
 <text x="56.134" y="-3.556" size="1.778" layer="91"> and photodiode </text>
 <text x="56.134" y="-7.62" size="1.778" layer="91">(VEMD2523SLX01)</text>
