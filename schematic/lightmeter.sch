@@ -9851,6 +9851,22 @@ MAX3223-MAX3243.pdf</description>
 <rectangle x1="0.2588" y1="-0.3048" x2="0.5588" y2="0.2951" layer="51"/>
 <rectangle x1="-0.1999" y1="-0.4001" x2="0.1999" y2="0.4001" layer="35"/>
 </package>
+<package name="3TRS-SMD">
+<smd name="P$1" x="-6.2738" y="-1.27" dx="2.3876" dy="2.5527" layer="1"/>
+<smd name="P$3" x="3.3782" y="-1.27" dx="2.8956" dy="2.5527" layer="1"/>
+<smd name="P$2" x="-2.54" y="6.0833" dx="2.3876" dy="2.5527" layer="1"/>
+<hole x="-5.08" y="2.40665" drill="1.6002"/>
+<hole x="1.27" y="2.40665" drill="1.6002"/>
+<wire x1="-11.43" y1="5.08" x2="-11.43" y2="4.445" width="0.127" layer="21"/>
+<wire x1="-11.43" y1="4.445" x2="-11.43" y2="0.635" width="0.127" layer="21"/>
+<wire x1="-11.43" y1="0.635" x2="-11.43" y2="0" width="0.127" layer="21"/>
+<wire x1="-11.43" y1="0" x2="6.35" y2="0" width="0.127" layer="21"/>
+<wire x1="6.35" y1="0" x2="6.35" y2="5.08" width="0.127" layer="21"/>
+<wire x1="6.35" y1="5.08" x2="-11.43" y2="5.08" width="0.127" layer="21"/>
+<wire x1="-11.43" y1="4.445" x2="-12.7" y2="4.445" width="0.127" layer="21"/>
+<wire x1="-12.7" y1="4.445" x2="-12.7" y2="0.635" width="0.127" layer="21"/>
+<wire x1="-12.7" y1="0.635" x2="-11.43" y2="0.635" width="0.127" layer="21"/>
+</package>
 </packages>
 <symbols>
 <symbol name="SN74HC164">
@@ -10019,6 +10035,23 @@ MAX3223-MAX3243.pdf</description>
 <text x="-2.54" y="-6.35" size="1.778" layer="96">&gt;VALUE</text>
 <pin name="1" x="5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1" rot="R180"/>
 <pin name="2" x="-5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1"/>
+</symbol>
+<symbol name="AUDIO-JACK">
+<wire x1="-1.27" y1="-2.54" x2="0" y2="-1.27" width="0.1524" layer="94"/>
+<wire x1="0" y1="-1.27" x2="1.27" y2="-2.54" width="0.1524" layer="94"/>
+<wire x1="1.27" y1="-2.54" x2="2.54" y2="-2.54" width="0.1524" layer="94"/>
+<wire x1="2.54" y1="0" x2="-1.27" y2="0" width="0.1524" layer="94"/>
+<wire x1="-1.27" y1="0" x2="-2.54" y2="-1.27" width="0.1524" layer="94"/>
+<wire x1="-2.54" y1="-1.27" x2="-3.81" y2="0" width="0.1524" layer="94"/>
+<wire x1="2.54" y1="2.54" x2="-5.08" y2="2.54" width="0.1524" layer="94"/>
+<text x="-5.08" y="3.048" size="1.778" layer="95">&gt;NAME</text>
+<text x="-5.08" y="-5.08" size="1.778" layer="96">&gt;VALUE</text>
+<text x="2.286" y="-2.286" size="1.016" layer="94" ratio="15">L</text>
+<text x="2.286" y="0.254" size="1.016" layer="94" ratio="15">R</text>
+<rectangle x1="-7.62" y1="-0.762" x2="-2.54" y2="0.762" layer="94" rot="R90"/>
+<pin name="RIGHT" x="5.08" y="0" visible="off" length="short" rot="R180"/>
+<pin name="LEFT" x="5.08" y="-2.54" visible="off" length="short" rot="R180"/>
+<pin name="SLEEVE" x="5.08" y="2.54" visible="off" length="short" rot="R180"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -10194,6 +10227,23 @@ MAX3223-MAX3243.pdf</description>
 <connects>
 <connect gate="G$1" pin="1" pad="1"/>
 <connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="3TRS_PHONE_JACK">
+<gates>
+<gate name="G$1" symbol="AUDIO-JACK" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="3TRS-SMD">
+<connects>
+<connect gate="G$1" pin="LEFT" pad="P$3"/>
+<connect gate="G$1" pin="RIGHT" pad="P$2"/>
+<connect gate="G$1" pin="SLEEVE" pad="P$1"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -11790,6 +11840,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="R17" library="lightmeter" deviceset="THERMISTOR" device="R0402"/>
 <part name="R18" library="resistor" deviceset="R-EU_" device="R0402" value="???"/>
 <part name="GND29" library="supply1" deviceset="GND" device=""/>
+<part name="U$3" library="lightmeter" deviceset="3TRS_PHONE_JACK" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -11916,6 +11967,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="R17" gate="G$1" x="170.18" y="-66.04"/>
 <instance part="R18" gate="G$1" x="154.94" y="-76.2" rot="R90"/>
 <instance part="GND29" gate="1" x="154.94" y="-91.44"/>
+<instance part="U$3" gate="G$1" x="-104.14" y="20.32"/>
 </instances>
 <busses>
 </busses>
