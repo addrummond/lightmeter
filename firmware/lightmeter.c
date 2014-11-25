@@ -19,42 +19,6 @@
 #include <basic_serial/basic_serial.h>
 #endif
 
-// TODO: These constants will be replaced with members of global_meter_state once
-// this is working correctly. The various _TENTHS could be packed into two bytes.
-//
-// For current test chip, slope = 1.12 and k = 290
-// We're going from x to y, 1/slope = 0.89.
-// After
-#define ADC_TEMP_CONSTANT              785
-#define ADC_TEMP_SLOPE_WHOLES          0 // I.e. add one more whole.
-#define ADC_TEMP_SLOPE_EIGHT_TENTHS    0
-#define ADC_TEMP_SLOPE_FOUR_TENTHS     1
-#define ADC_TEMP_SLOPE_TENTHS          0
-#define ADC_TEMP_SLOPE_MINUS_TENTHS    0
-
-static volatile uint8_t current_temp = 193; // 22 C
-
-static void calculate_current_temp(uint16_t t)
-{
-    uint8_t i;
-    uint16_t newt = t - ADC_TEMP_CONSTANT;
-    for (i = 0; i < ADC_TEMP_SLOPE_WHOLES; ++i)
-        newt += t;
-    uint16_t tenth = newt/10;
-    for (i = 0; i < ADC_TEMP_SLOPE_TENTHS; ++i)
-        newt += tenth;
-    for (i = 0; i < ADC_TEMP_SLOPE_MINUS_TENTHS; ++i)
-        newt -= tenth;
-    tenth <<= 2;
-    for (i = 0; i < ADC_TEMP_SLOPE_FOUR_TENTHS; ++i)
-        newt += tenth;
-    tenth <<= 1;
-    for (i = 0; i < ADC_TEMP_SLOPE_EIGHT_TENTHS; ++i)
-        newt += tenth;
-
-    current_temp = newt;
-}
-
 void setup_ADC()
 {
     // Disable analogue comparator (unused).
@@ -165,7 +129,6 @@ static uint16_t get_adc_reading()
 void handle_measurement(uint16_t adc_light_value)
 {
     // Div by 4 because we're going from units of 1/1024 to units of 1/256.
-    // (Could left adjust everything, but we might want the full 10 bits for temps.)
     uint8_t light_value8 = (adc_light_value >> 2);
 
 //#ifdef DEBUG
@@ -173,8 +136,7 @@ void handle_measurement(uint16_t adc_light_value)
 //    tx_byte(light_value8);
 //#endif
 
-    global_transient_meter_state.last_ev_with_fracs = get_ev100_at_temperature_voltage(
-        current_temp,
+    global_transient_meter_state.last_ev_with_fracs = get_ev100_at_voltage(
         light_value8,
         global_transient_meter_state.op_amp_resistor_stage
     );

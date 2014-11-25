@@ -27,7 +27,7 @@
 // temp/voltage are encoded.
 //
 // 'voltage' is in 1/256ths of the reference voltage.
-ev_with_fracs_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage, uint8_t op_amp_resistor_stage)
+ev_with_fracs_t get_ev100_at_voltage(uint8_t voltage, uint8_t op_amp_resistor_stage)
 {
     const uint8_t *ev_abs = NULL, *ev_diffs = NULL, *ev_bitpatterns = NULL, *ev_tenths = NULL, *ev_thirds = NULL;
 #define ASSIGN(n) (ev_abs = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_ABS,                 \
@@ -87,34 +87,6 @@ FOR_EACH_AMP_STAGE(CASE)
     thirds_bit &= 0b11;
     int8_t ret_thirds = third_below_eighth(ret.ev);
     ret_thirds += thirds_bit;
-
-    int8_t adj8 =  TEMP_EV_ADJUST_AT_T0,
-           adj10 = TEMP_EV_ADJUST_AT_T0,
-           adj3 =  TEMP_EV_ADJUST_AT_T0;
-    uint8_t i;
-#define GET_TEMP_COMP(xth, xn)                                                      \
-    for (i = 0; i < TEMP_EV_ADJUST_CHANGE_TEMPS_LENGTH_ ## xth; ++i) {              \
-        if (temperature >= pgm_read_byte(TEMP_EV_ADJUST_CHANGE_TEMPS_ ## xth + i))  \
-            --adj ## xn;                                                            \
-    }
-    GET_TEMP_COMP(EIGHTH, 8)
-    GET_TEMP_COMP(TENTH, 10)
-    GET_TEMP_COMP(THIRD, 3)
-#undef GET_TEMP_COMP
-
-    int16_t withcomp = ret.ev;/* + adj8;
-    if (withcomp < 0) {
-        ret.ev = 0;
-        ev_with_fracs_zero_fracs(ret);
-        return ret;
-    }
-    else if (withcomp > 255) {
-        ret.ev = 255;
-        ev_with_fracs_zero_fracs(ret);
-        return ret;
-    }*/
-
-    ret.ev = (uint8_t)withcomp;
 
     // Any whole adjustments will have been taken care of by the preceding
     // change to ret.ev, so we just want to do the fractional bit now.
@@ -1060,13 +1032,12 @@ int main()
 
     // Test that compressed table is giving correct values by comparing to uncompressed table.
     printf("OFFSET %i\n", VOLTAGE_TO_EV_ABS_OFFSET);
-    uint8_t t = 203; // ~=30C; should track reference_temperature in calculate_tables.py
     for (int v_ = 0; v_ < 246; ++v_) {
         int v = v_ - VOLTAGE_TO_EV_ABS_OFFSET;
         if (v < 0)
             v = 0;
         uint8_t uncompressed = pgm_read_byte(&TEST_VOLTAGE_TO_EV[(unsigned)v]);
-        ev_with_fracs_t evwf = get_ev100_at_temperature_voltage(t, (uint8_t)v_, 2);
+        ev_with_fracs_t evwf = get_ev100_at_voltage((uint8_t)v_, 2);
         printf("V %i ev8=%i\n", v, ev_with_fracs_get_ev8(evwf));
         uint8_t compressed = evwf.ev;
         if (uncompressed != compressed) {

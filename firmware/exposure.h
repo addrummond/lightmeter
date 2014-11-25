@@ -111,7 +111,7 @@ ev_with_fracs_t x_given_y_iso_ev(ev_with_fracs_t given_x, ev_with_fracs_t given_
 uint8_t iso_bcd_to_third_stops(uint8_t *digits, uint8_t length);
 uint8_t *iso_in_third_stops_into_bcd(uint8_t iso, uint8_t *digits, uint8_t length);
 
-ev_with_fracs_t get_ev100_at_temperature_voltage(uint8_t temperature, uint8_t voltage, uint8_t op_amp_resistor_stage);
+ev_with_fracs_t get_ev100_at_voltage(uint8_t voltage, uint8_t op_amp_resistor_stage);
 uint8_t convert_from_reference_voltage(uint16_t adc_out);
 
 uint8_t *ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits);

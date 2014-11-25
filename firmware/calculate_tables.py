@@ -57,8 +57,7 @@ for s in amp_stages:
 # in EV values which the table compression mechanism can't handle.
 voltage_offset                   = 250.0   # mV
 
-#reference_temperature           = 30.0    # BPW34, C
-reference_temperature            = 25.0    # VEMD2503X01
+reference_temperature           = 30.0     # VEMD2503X01, BPW34, C
 
 ##########
 
@@ -176,9 +175,8 @@ bv_to_voltage = ((1/256.0) * reference_voltage)
 #    return ((19/022500.0)*temp) + (97.0/100.0)
 #
 # For VEMD2503X01. See p. 2 Fig 2 of datasheet.
-# TODO: Break up into several lines because it's quite significantly curved.
 def temp_to_rrlc(temp):
-    return (1.0/1250.0)*temp + (49.0/50.0)
+    return (317.0/300000.0)*temp + (9683.0/10000.0)
 
 
 # Log10 reverse light current microamps to log10 lux.
@@ -257,22 +255,11 @@ def voltage_and_oa_resistor_to_ev(v, r, TADJ = 0.0):
     ev = log_illuminance_to_ev_at_100(log_lux)
     return ev
 
-# If rlc_to_lux(rlc) is linear (as we falsely assume), then each +1 C yields
-# a constant decrease in EV. The value of the op amp resistor makes no difference.
-# Rather than crunching through the equations, we just choose a couple of arbitrary values to calculate this.
-ev_change_for_every_1_6_c_rise = None
-for x in xrange(1): # Just here to get a new scope
-    tadj = math.log(temp_to_rrlc(reference_temperature-10), 10)
-    r1 = voltage_and_oa_resistor_to_ev(reference_voltage/2.0, op_amp_normal_resistor, tadj)
-    tadj = math.log(temp_to_rrlc(reference_temperature), 10)
-    r2 = voltage_and_oa_resistor_to_ev(reference_voltage/2.0, op_amp_normal_resistor, tadj)
-    ev_change_for_every_1_6_c_rise = r1 - r2
 
 #
-# Temperature, EV and voltage are all represented as unsigned 8-bit
+# EV and voltage are all represented as unsigned 8-bit
 # values on the microcontroller.
 #
-# Temperature: from -51C to 51C in 0.4C intervals (0 = -51C)
 # Voltage: from 0 up in 1/256ths of the reference voltage.
 # EV: from -5 to 26EV in 1/8 EV intervals.
 # EV: from -5 to 26EV in 18 EV intervals.
@@ -299,43 +286,6 @@ for x in xrange(1): # Just here to get a new scope
 # VOLTAGE_TO_EV_ABS_OFFSET constant indicates the voltage for the
 # first element of the table.
 #
-# A separate table of int8_t values maps temperatures to compensation
-# in EV@100*80.
-#
-#
-
-# The temperature adjustment curve is very flat, so we store it as
-# follows. #define TEMP_EV_ADJUST_AT_T0 gives the EV compensation
-# value for t=0 (i.e. -51C). Then we store the temperatures at which the
-# EV compensation value goes down by 1 (i.e. 1/8EV) in TEMP_EV_ADJUST_CHANGE_TEMPS.
-#
-# Update: we have three separate tables for 1/8, 1/10 and 1/3 increments.
-def output_temp_table(ofc, ofh, name, frac):
-    lastFracs = None
-    arrayLen = 0
-    for t in xrange(256):
-        temperature = -51.0 + (t * 0.4)
-        dtemp = temperature - reference_temperature
-        comp = ev_change_for_every_1_6_c_rise * (dtemp / 1.6)
-        fracs = int(round(comp * frac))
-        assert fracs > -127 and fracs < 127
-
-        if t == 0:
-            # Ugly -- this will get output multiple times, but it doesn't really matter.
-            ofh.write("#undef TEMP_EV_ADJUST_AT_T0\n#define TEMP_EV_ADJUST_AT_T0 %i\n" % (fracs))
-        else:
-            if t == 1:
-                ofc.write("const uint8_t TEMP_EV_ADJUST_CHANGE_TEMPS_%s[] PROGMEM = { " % name)
-
-            if fracs == lastFracs:
-                pass
-            else:
-                arrayLen += 1
-                ofc.write("%i," % t)
-
-        lastFracs = fracs
-    ofc.write("};\n")
-    ofh.write("#define TEMP_EV_ADJUST_CHANGE_TEMPS_LENGTH_%s %i\n" % (name, arrayLen))
 
 def get_xth_bit(ev, x):
     """Given a representation of a voltage, return either 0 or 1,
@@ -1205,9 +1155,6 @@ def output():
     ofh.write("#define VOLTAGE_TO_EV_ABS_OFFSET " + str(b_voltage_offset) + '\n')
     ofh.write("#define LUMINANCE_COMPENSATION " + str(int(round(LUMINANCE_COMPENSATION*8.0))) + '\n')
 
-    output_temp_table(ofc, ofh, 'EIGHTH', 8)
-    output_temp_table(ofc, ofh, 'THIRD', 3)
-    output_temp_table(ofc, ofh, 'TENTH', 10)
     ofc.write('\n#ifdef TEST\n')
     ofc.write('const uint8_t TEST_VOLTAGE_TO_EV[] PROGMEM =\n')
     ofh.write('extern const uint8_t TEST_VOLTGE_TO_EV[];\n')
@@ -1223,9 +1170,6 @@ def output():
     ofh.write("extern uint8_t APERTURES_EIGHTH[];\n")
     ofh.write("extern uint8_t APERTURES_TENTH[];\n")
     ofh.write("extern uint8_t APERTURES_THIRD[];\n")
-    ofh.write("extern uint8_t TEMP_EV_ADJUST_CHANGE_TEMPS_EIGHTH[];\n")
-    ofh.write("extern uint8_t TEMP_EV_ADJUST_CHANGE_TEMPS_THIRD[];\n")
-    ofh.write("extern uint8_t TEMP_EV_ADJUST_CHANGE_TEMPS_TENTH[];\n")
 
     ofh.write("\n#endif\n")
 
