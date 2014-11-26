@@ -11876,6 +11876,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <text x="160.02" y="-33.02" size="1.778" layer="91">Temperature compensation</text>
 <text x="25.4" y="-63.5" size="1.778" layer="91">Op amp power</text>
 <text x="-119.38" y="-30.48" size="1.778" layer="91">Power muxer</text>
+<text x="-114.3" y="27.94" size="1.778" layer="91">Jack for flash sync input + protection circuit</text>
 </plain>
 <instances>
 <instance part="IC$3P" gate="A" x="162.56" y="-43.18"/>
