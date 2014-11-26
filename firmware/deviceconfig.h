@@ -45,16 +45,6 @@
 #define DISPLAY_DC_DDR      DDRA
 #define DISPLAY_DC_BIT      PA7
 
-// Override ordinary display DC port due to solder failure in prototype board.
-#ifdef PDEBUG
-#undef DISPLAY_DC_PORT
-#undef DISPLAY_DC_DDR
-#undef DISPLAY_DC_BIT
-#define DISPLAY_DC_PORT     PORTB
-#define DISPLAY_DC_DDR      DDRB
-#define DISPLAY_DC_BIT      PB3
-#endif
-
 #define DISPLAY_RESET_PORT  PORTA
 #define DISPLAY_RESET_DDR   DDRA
 #define DISPLAY_RESET_BIT   PA6
@@ -157,14 +147,6 @@
 #define SHIFT_REGISTER_CLK_PORT     PORTA
 #define SHIFT_REGISTER_CLK_DDR      DDRA
 #define SHIFT_REGISTER_CLK_BIT      PA1
-#ifdef PDEBUG
-#undef SHIFT_REGISTER_CLK_PORT
-#undef SHIFT_REGISTER_CLK_DDR
-#undef SHIFT_REGISTER_CLK_BIT
-#define SHIFT_REGISTER_CLK_PORT PORTB
-#define SHIFT_REGISTER_CLK_DDR  DDRB
-#define SHIFT_REGISTER_CLK_BIT  PB2
-#endif
 
 
 #endif
