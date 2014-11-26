@@ -126,9 +126,9 @@
 <board>
 <plain>
 <wire x1="-1.27" y1="0" x2="26.67" y2="0" width="0" layer="20"/>
-<wire x1="26.67" y1="0" x2="26.67" y2="80" width="0" layer="20"/>
-<wire x1="26.67" y1="80" x2="-1.27" y2="80" width="0" layer="20"/>
-<wire x1="-1.27" y1="80" x2="-1.27" y2="0" width="0" layer="20"/>
+<wire x1="26.67" y1="0" x2="26.67" y2="52.06" width="0" layer="20"/>
+<wire x1="26.67" y1="52.06" x2="-1.27" y2="52.06" width="0" layer="20"/>
+<wire x1="-1.27" y1="52.06" x2="-1.27" y2="0" width="0" layer="20"/>
 </plain>
 <libraries>
 <library name="rcl">
