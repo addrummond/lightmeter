@@ -12414,9 +12414,9 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <label x="86.36" y="66.04" size="1.778" layer="95" xref="yes"/>
 </segment>
 <segment>
-<wire x1="-48.26" y1="12.7" x2="-50.8" y2="12.7" width="0.1524" layer="91"/>
-<label x="-50.8" y="12.7" size="1.778" layer="95" rot="R180" xref="yes"/>
-<pinref part="IC$3" gate="G$1" pin="PA1/AIN0"/>
+<pinref part="IC$3" gate="G$1" pin="ADC11/CLK0/PC2"/>
+<wire x1="22.86" y1="17.78" x2="27.94" y2="17.78" width="0.1524" layer="91"/>
+<label x="27.94" y="17.78" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="SRA" class="0">
@@ -12667,9 +12667,9 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="S4" gate="G$1" pin="1"/>
 </segment>
 <segment>
-<wire x1="22.86" y1="17.78" x2="27.94" y2="17.78" width="0.1524" layer="91"/>
-<label x="27.94" y="17.78" size="1.778" layer="95" xref="yes"/>
-<pinref part="IC$3" gate="G$1" pin="ADC11/CLK0/PC2"/>
+<pinref part="IC$3" gate="G$1" pin="PA1/AIN0"/>
+<wire x1="-48.26" y1="12.7" x2="-50.8" y2="12.7" width="0.1524" layer="91"/>
+<label x="-50.8" y="12.7" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="PBI$1" class="0">

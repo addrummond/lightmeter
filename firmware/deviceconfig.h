@@ -19,9 +19,9 @@
 //           Display RST |    ADC3/PA6 3---18 PB3/ADC8  | Battery stat input
 //     Serial debug port |    ADC2/PA5 4---17 PC0/ADC9  | Op amp output
 //      Shift register A |    ADC1/PA4 5---16 [USCK]    | **********
-//          Pushbutton 1 |    ADC0/PA3 6---15 PC2/ADC11 | Pushbutton 3
+//          Pushbutton 1 |    ADC0/PA3 6---15 PC2/ADC11 | Shift register clock
 //          Pushbutton 2 |         PA2 7---14 [RESET]   | **********
-//  Shift register clock |         PA1 8---13 PC4       | Display CS
+//          Pushbutton 3 |         PA1 8---13 PC4       | Display CS
 //           ADC ext ref |         PA0 9---12 PC5       | Display CLK
 //            ********** |       [GND] 10--11 [VCC]     | **********
 
@@ -96,15 +96,15 @@
 #define PUSHBUTTON2_PCINT_BIT    PCINT2
 #define PUSHBUTTON2_PCINT_VECT   PCINT0_vect
 
-#define PUSHBUTTON3_PORT         PORTC
-#define PUSHBUTTON3_PIN          PINC
-#define PUSHBUTTON3_PUE          PUEC
-#define PUSHBUTTON3_DDR          DDRC
-#define PUSHBUTTON3_BIT          PC2
-#define PUSHBUTTON3_PCMSK        PCMSK2
-#define PUSHBUTTON3_PCIE         PCIE2
-#define PUSHBUTTON3_PCINT_BIT    PCINT14
-#define PUSHBUTTON3_PCINT_VECT   PCINT2_vect
+#define PUSHBUTTON3_PORT         PORTA
+#define PUSHBUTTON3_PIN          PINA
+#define PUSHBUTTON3_PUE          PUEA
+#define PUSHBUTTON3_DDR          DDR
+#define PUSHBUTTON3_BIT          PA1
+#define PUSHBUTTON3_PCMSK        PCMSK0
+#define PUSHBUTTON3_PCIE         PCIE0
+#define PUSHBUTTON3_PCINT_BIT    PCINT1
+#define PUSHBUTTON3_PCINT_VECT   PCINT1_vect
 
 #define FOR_X_FROM_1_TO_N_PUSHBUTTONS_DO(x) x(1) x(2) x(3)
 #define FOR_EACH_PUSHBUTTON_PCMSK_DO(x)     x(0) x(2)
@@ -141,12 +141,9 @@
 #define SHIFT_REGISTER_OUTPUT_PORT  PORTA
 #define SHIFT_REGISTER_OUTPUT_DDR   DDRA
 #define SHIFT_REGISTER_OUTPUT_BIT   PA4
-//#define SHIFT_REGISTER_CLR_PORT     PORTC
-//#define SHIFT_REGISTER_CLR_DDR      DDRC
-//#define SHIFT_REGISTER_CLR_BIT      PC2
-#define SHIFT_REGISTER_CLK_PORT     PORTA
-#define SHIFT_REGISTER_CLK_DDR      DDRA
-#define SHIFT_REGISTER_CLK_BIT      PA1
+#define SHIFT_REGISTER_CLK_PORT     PORTC
+#define SHIFT_REGISTER_CLK_DDR      DDRC
+#define SHIFT_REGISTER_CLK_BIT      PC2
 
 
 #endif
