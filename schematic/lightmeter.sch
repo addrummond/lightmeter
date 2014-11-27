@@ -11857,6 +11857,10 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="S3" library="lightmeter" deviceset="SMALLPUSHBUTTON" device=""/>
 <part name="S4" library="lightmeter" deviceset="SMALLPUSHBUTTON" device=""/>
 <part name="S5" library="lightmeter" deviceset="SMALLPUSHBUTTON" device=""/>
+<part name="R21" library="resistor" deviceset="R-EU_" device="R0402" value="10K"/>
+<part name="R22" library="resistor" deviceset="R-EU_" device="R0402" value="2.2K"/>
+<part name="Q16" library="lightmeter" deviceset="NCHANNELMOSFET" device=""/>
+<part name="GND32" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -11988,6 +11992,10 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="S3" gate="G$1" x="-22.86" y="-38.1" rot="R270"/>
 <instance part="S4" gate="G$1" x="-5.08" y="-38.1" rot="R270"/>
 <instance part="S5" gate="G$1" x="12.7" y="-38.1" rot="R270"/>
+<instance part="R21" gate="G$1" x="-99.06" y="-88.9" rot="R180"/>
+<instance part="R22" gate="G$1" x="-81.28" y="-88.9" rot="R180"/>
+<instance part="Q16" gate="G$1" x="-111.76" y="-88.9" rot="R90"/>
+<instance part="GND32" gate="1" x="-69.596" y="-88.9" rot="R90"/>
 </instances>
 <busses>
 </busses>
@@ -12213,6 +12221,11 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="D2" gate="1" pin="2"/>
 <wire x1="-88.9" y1="7.62" x2="-88.9" y2="8.636" width="0.1524" layer="91"/>
 <pinref part="GND30" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="R22" gate="G$1" pin="1"/>
+<wire x1="-76.2" y1="-88.9" x2="-72.136" y2="-88.9" width="0.1524" layer="91"/>
+<pinref part="GND32" gate="1" pin="GND"/>
 </segment>
 </net>
 <net name="VCC" class="0">
@@ -12577,6 +12590,11 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="48.26" y1="86.36" x2="43.18" y2="86.36" width="0.1524" layer="91"/>
 <label x="43.18" y="86.36" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
+<segment>
+<label x="-109.22" y="-96.52" size="1.778" layer="95" xref="yes"/>
+<pinref part="Q16" gate="G$1" pin="G"/>
+<wire x1="-109.22" y1="-99.06" x2="-109.22" y2="-93.98" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="AVRRST" class="0">
 <segment>
@@ -12870,11 +12888,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 </net>
 <net name="AVRMOSI" class="0">
 <segment>
-<wire x1="22.86" y1="30.48" x2="27.94" y2="30.48" width="0.1524" layer="91"/>
-<label x="27.94" y="30.48" size="1.778" layer="95" xref="yes"/>
-<pinref part="IC$3" gate="G$1" pin="RXD1/ADC6/DI/SDA/MOSI/PB1"/>
-</segment>
-<segment>
 <pinref part="J1" gate="G$1" pin="4"/>
 <wire x1="-55.88" y1="58.42" x2="-50.8" y2="58.42" width="0.1524" layer="91"/>
 <label x="-50.8" y="58.42" size="1.778" layer="95" xref="yes"/>
@@ -12996,6 +13009,11 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="-22.86" y1="-63.5" x2="-22.86" y2="-55.88" width="0.1524" layer="91"/>
 <junction x="-22.86" y="-63.5"/>
 </segment>
+<segment>
+<pinref part="Q16" gate="G$1" pin="D"/>
+<wire x1="-116.84" y1="-88.9" x2="-119.38" y2="-88.9" width="0.1524" layer="91"/>
+<label x="-119.38" y="-88.9" size="1.778" layer="95" rot="R90" xref="yes"/>
+</segment>
 </net>
 <net name="VUSB" class="0">
 <segment>
@@ -13006,7 +13024,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <segment>
 <pinref part="U1" gate="G$1" pin="VBUS"/>
 <wire x1="-73.66" y1="-73.66" x2="-81.28" y2="-73.66" width="0.1524" layer="91"/>
-<label x="-81.28" y="-73.66" size="1.778" layer="95" rot="R180" xref="yes"/>
+<label x="-81.28" y="-73.66" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 <segment>
 <pinref part="IC2" gate="G$1" pin="VDD"/>
@@ -13131,6 +13149,31 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="Q12" gate="G$1" pin="D"/>
 <pinref part="D9" gate="G$1" pin="P$2"/>
 <wire x1="91.44" y1="-53.34" x2="93.98" y2="-53.34" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="AVRMOSI/BATVOLTAGE" class="0">
+<segment>
+<wire x1="22.86" y1="30.48" x2="27.94" y2="30.48" width="0.1524" layer="91"/>
+<label x="27.94" y="30.48" size="1.778" layer="95" xref="yes"/>
+<pinref part="IC$3" gate="G$1" pin="RXD1/ADC6/DI/SDA/MOSI/PB1"/>
+</segment>
+<segment>
+<pinref part="R21" gate="G$1" pin="1"/>
+<pinref part="R22" gate="G$1" pin="2"/>
+<label x="-88.9" y="-88.9" size="1.778" layer="95" rot="R90" xref="yes"/>
+<wire x1="-93.98" y1="-88.9" x2="-86.36" y2="-88.9" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$30" class="0">
+<segment>
+<pinref part="Q16" gate="G$1" pin="S"/>
+<pinref part="R21" gate="G$1" pin="2"/>
+<wire x1="-106.68" y1="-88.9" x2="-104.14" y2="-88.9" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$28" class="0">
+<segment>
+<wire x1="-99.06" y1="-71.12" x2="-99.06" y2="-67.056" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
