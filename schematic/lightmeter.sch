@@ -12824,8 +12824,9 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="119.38" y1="17.78" x2="124.46" y2="17.78" width="0.1524" layer="91"/>
 <pinref part="Q4" gate="G$1" pin="D"/>
 <wire x1="119.38" y1="0" x2="124.46" y2="0" width="0.1524" layer="91"/>
-<wire x1="127" y1="17.78" x2="124.46" y2="17.78" width="0.1524" layer="91"/>
 <junction x="124.46" y="17.78"/>
+<pinref part="Q6" gate="G$1" pin="S"/>
+<wire x1="125.73" y1="17.78" x2="124.46" y2="17.78" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="DIODESW$1" class="0">
@@ -12923,8 +12924,9 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="Q14" gate="G$1" pin="S"/>
 <wire x1="81.28" y1="-73.66" x2="55.88" y2="-73.66" width="0.1524" layer="91"/>
 <pinref part="Q5" gate="G$1" pin="S"/>
-<wire x1="134.62" y1="17.78" x2="137.16" y2="17.78" width="0.1524" layer="91"/>
 <junction x="137.16" y="17.78"/>
+<pinref part="Q6" gate="G$1" pin="D"/>
+<wire x1="135.89" y1="17.78" x2="137.16" y2="17.78" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$12" class="0">
