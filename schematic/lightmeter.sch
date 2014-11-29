@@ -11861,6 +11861,10 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND32" library="supply1" deviceset="GND" device=""/>
 <part name="U2" library="SparkFun-Connectors" deviceset="USB-AB" device="&quot;"/>
 <part name="GND31" library="supply1" deviceset="GND" device=""/>
+<part name="R23" library="resistor" deviceset="R-EU_" device="R0402" value="15K"/>
+<part name="R24" library="resistor" deviceset="R-EU_" device="R0402" value="15K"/>
+<part name="GND9" library="supply1" deviceset="GND" device=""/>
+<part name="GND33" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -11996,6 +12000,10 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="GND32" gate="1" x="-69.596" y="-88.9" rot="R90"/>
 <instance part="U2" gate="G$1" x="-86.36" y="88.9"/>
 <instance part="GND31" gate="1" x="-99.06" y="93.98" rot="R270"/>
+<instance part="R23" gate="G$1" x="-111.76" y="88.9"/>
+<instance part="R24" gate="G$1" x="-113.538" y="86.36"/>
+<instance part="GND9" gate="1" x="-117.856" y="98.298" rot="R180"/>
+<instance part="GND33" gate="1" x="-118.618" y="78.74"/>
 </instances>
 <busses>
 </busses>
@@ -12229,6 +12237,17 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="U2" gate="G$1" pin="GND"/>
 <pinref part="GND31" gate="1" pin="GND"/>
 <wire x1="-91.44" y1="93.98" x2="-96.52" y2="93.98" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<wire x1="-118.618" y1="81.28" x2="-118.618" y2="86.36" width="0.1524" layer="91"/>
+<pinref part="GND33" gate="1" pin="GND"/>
+<pinref part="R24" gate="G$1" pin="1"/>
+</segment>
+<segment>
+<wire x1="-116.84" y1="88.9" x2="-117.856" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="-117.856" y1="88.9" x2="-117.856" y2="95.758" width="0.1524" layer="91"/>
+<pinref part="GND9" gate="1" pin="GND"/>
+<pinref part="R23" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="VCC" class="0">
@@ -13173,6 +13192,20 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="R19" gate="G$1" pin="1"/>
 <wire x1="-93.98" y1="17.78" x2="-91.44" y2="17.78" width="0.1524" layer="91"/>
 <junction x="-93.98" y="17.78"/>
+</segment>
+</net>
+<net name="N$28" class="0">
+<segment>
+<pinref part="U2" gate="G$1" pin="D+"/>
+<wire x1="-91.44" y1="88.9" x2="-106.68" y2="88.9" width="0.1524" layer="91"/>
+<pinref part="R23" gate="G$1" pin="2"/>
+</segment>
+</net>
+<net name="N$32" class="0">
+<segment>
+<pinref part="U2" gate="G$1" pin="D-"/>
+<wire x1="-91.44" y1="86.36" x2="-108.458" y2="86.36" width="0.1524" layer="91"/>
+<pinref part="R24" gate="G$1" pin="2"/>
 </segment>
 </net>
 </nets>
