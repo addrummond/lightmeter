@@ -12897,13 +12897,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="190.5" y1="48.26" x2="203.2" y2="48.26" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="AVRMOSI" class="0">
-<segment>
-<pinref part="J1" gate="G$1" pin="4"/>
-<wire x1="-55.88" y1="58.42" x2="-50.8" y2="58.42" width="0.1524" layer="91"/>
-<label x="-50.8" y="58.42" size="1.778" layer="95" xref="yes"/>
-</segment>
-</net>
 <net name="N$26" class="0">
 <segment>
 <wire x1="137.16" y1="45.72" x2="137.16" y2="17.78" width="0.1524" layer="91"/>
@@ -13174,6 +13167,11 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="R22" gate="G$1" pin="2"/>
 <label x="-88.9" y="-88.9" size="1.778" layer="95" rot="R90" xref="yes"/>
 <wire x1="-93.98" y1="-88.9" x2="-86.36" y2="-88.9" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="J1" gate="G$1" pin="4"/>
+<wire x1="-55.88" y1="58.42" x2="-50.8" y2="58.42" width="0.1524" layer="91"/>
+<label x="-50.8" y="58.42" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="N$30" class="0">
