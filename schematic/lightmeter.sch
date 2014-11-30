@@ -11971,7 +11971,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="C1" gate="G$1" x="-50.8" y="88.9" rot="R270"/>
 <instance part="R3" gate="G$1" x="6.604" y="93.98"/>
 <instance part="R4" gate="G$1" x="2.54" y="78.74" rot="R90"/>
-<instance part="GND27" gate="1" x="12.7" y="73.66" rot="R90"/>
+<instance part="GND27" gate="1" x="15.24" y="73.66" rot="R90"/>
 <instance part="C3" gate="G$1" x="4.826" y="101.6" rot="R90"/>
 <instance part="C2" gate="G$1" x="-7.62" y="78.74" rot="R180"/>
 <instance part="C4" gate="G$1" x="4.064" y="106.68" rot="R270"/>
@@ -12185,14 +12185,12 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 </segment>
 <segment>
 <pinref part="R4" gate="G$1" pin="1"/>
-<wire x1="2.54" y1="73.66" x2="10.16" y2="73.66" width="0.1524" layer="91"/>
+<wire x1="2.54" y1="73.66" x2="12.7" y2="73.66" width="0.1524" layer="91"/>
 <pinref part="C2" gate="G$1" pin="1"/>
-<wire x1="10.16" y1="73.66" x2="12.7" y2="73.66" width="0.1524" layer="91"/>
 <wire x1="-7.62" y1="76.2" x2="-7.62" y2="73.66" width="0.1524" layer="91"/>
 <wire x1="-7.62" y1="73.66" x2="2.54" y2="73.66" width="0.1524" layer="91"/>
 <junction x="2.54" y="73.66"/>
 <pinref part="GND27" gate="1" pin="GND"/>
-<junction x="10.16" y="73.66"/>
 </segment>
 <segment>
 <pinref part="R24" gate="G$1" pin="2"/>
