@@ -9,19 +9,19 @@
 <grid distance="0.05" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.005" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
-<layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="yes"/>
-<layer number="17" name="Pads" color="2" fill="1" visible="yes" active="yes"/>
-<layer number="18" name="Vias" color="2" fill="1" visible="yes" active="yes"/>
-<layer number="19" name="Unrouted" color="6" fill="1" visible="yes" active="yes"/>
-<layer number="20" name="Dimension" color="15" fill="1" visible="yes" active="yes"/>
-<layer number="21" name="tPlace" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="22" name="bPlace" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="23" name="tOrigins" color="15" fill="1" visible="yes" active="yes"/>
-<layer number="24" name="bOrigins" color="15" fill="1" visible="yes" active="yes"/>
+<layer number="16" name="Bottom" color="1" fill="1" visible="no" active="yes"/>
+<layer number="17" name="Pads" color="2" fill="1" visible="no" active="yes"/>
+<layer number="18" name="Vias" color="2" fill="1" visible="no" active="yes"/>
+<layer number="19" name="Unrouted" color="6" fill="1" visible="no" active="yes"/>
+<layer number="20" name="Dimension" color="15" fill="1" visible="no" active="yes"/>
+<layer number="21" name="tPlace" color="7" fill="1" visible="no" active="yes"/>
+<layer number="22" name="bPlace" color="7" fill="1" visible="no" active="yes"/>
+<layer number="23" name="tOrigins" color="15" fill="1" visible="no" active="yes"/>
+<layer number="24" name="bOrigins" color="15" fill="1" visible="no" active="yes"/>
 <layer number="25" name="tNames" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="26" name="bNames" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="27" name="tValues" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="28" name="bValues" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="26" name="bNames" color="7" fill="1" visible="no" active="yes"/>
+<layer number="27" name="tValues" color="7" fill="1" visible="no" active="yes"/>
+<layer number="28" name="bValues" color="7" fill="1" visible="no" active="yes"/>
 <layer number="29" name="tStop" color="7" fill="3" visible="no" active="yes"/>
 <layer number="30" name="bStop" color="7" fill="6" visible="no" active="yes"/>
 <layer number="31" name="tCream" color="7" fill="4" visible="no" active="yes"/>
@@ -30,22 +30,22 @@
 <layer number="34" name="bFinish" color="6" fill="6" visible="no" active="yes"/>
 <layer number="35" name="tGlue" color="7" fill="4" visible="no" active="yes"/>
 <layer number="36" name="bGlue" color="7" fill="5" visible="no" active="yes"/>
-<layer number="37" name="tTest" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="38" name="bTest" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="39" name="tKeepout" color="4" fill="11" visible="yes" active="yes"/>
-<layer number="40" name="bKeepout" color="1" fill="11" visible="yes" active="yes"/>
-<layer number="41" name="tRestrict" color="4" fill="10" visible="yes" active="yes"/>
-<layer number="42" name="bRestrict" color="1" fill="10" visible="yes" active="yes"/>
-<layer number="43" name="vRestrict" color="2" fill="10" visible="yes" active="yes"/>
+<layer number="37" name="tTest" color="7" fill="1" visible="no" active="yes"/>
+<layer number="38" name="bTest" color="7" fill="1" visible="no" active="yes"/>
+<layer number="39" name="tKeepout" color="4" fill="11" visible="no" active="yes"/>
+<layer number="40" name="bKeepout" color="1" fill="11" visible="no" active="yes"/>
+<layer number="41" name="tRestrict" color="4" fill="10" visible="no" active="yes"/>
+<layer number="42" name="bRestrict" color="1" fill="10" visible="no" active="yes"/>
+<layer number="43" name="vRestrict" color="2" fill="10" visible="no" active="yes"/>
 <layer number="44" name="Drills" color="7" fill="1" visible="no" active="yes"/>
-<layer number="45" name="Holes" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="46" name="Milling" color="3" fill="1" visible="yes" active="yes"/>
-<layer number="47" name="Measures" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="48" name="Document" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="49" name="Reference" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="45" name="Holes" color="7" fill="1" visible="no" active="yes"/>
+<layer number="46" name="Milling" color="3" fill="1" visible="no" active="yes"/>
+<layer number="47" name="Measures" color="7" fill="1" visible="no" active="yes"/>
+<layer number="48" name="Document" color="7" fill="1" visible="no" active="yes"/>
+<layer number="49" name="Reference" color="7" fill="1" visible="no" active="yes"/>
 <layer number="50" name="dxf" color="7" fill="1" visible="no" active="no"/>
-<layer number="51" name="tDocu" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="52" name="bDocu" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="51" name="tDocu" color="7" fill="1" visible="no" active="yes"/>
+<layer number="52" name="bDocu" color="7" fill="1" visible="no" active="yes"/>
 <layer number="53" name="tGND_GNDA" color="7" fill="9" visible="no" active="no"/>
 <layer number="54" name="bGND_GNDA" color="1" fill="9" visible="no" active="no"/>
 <layer number="56" name="wert" color="7" fill="1" visible="no" active="no"/>
@@ -61,54 +61,54 @@
 <layer number="99" name="SpiceOrder" color="5" fill="1" visible="no" active="no"/>
 <layer number="100" name="Muster" color="7" fill="1" visible="no" active="no"/>
 <layer number="101" name="Patch_Top" color="12" fill="4" visible="no" active="yes"/>
-<layer number="102" name="Vscore" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="103" name="tMap" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="104" name="Name" color="16" fill="1" visible="yes" active="yes"/>
-<layer number="105" name="tPlate" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="106" name="bPlate" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="107" name="Crop" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="108" name="tplace-old" color="10" fill="1" visible="yes" active="yes"/>
-<layer number="109" name="ref-old" color="11" fill="1" visible="yes" active="yes"/>
-<layer number="110" name="bBPL" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="111" name="MPL" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="112" name="tSilk" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="113" name="IDFDebug" color="4" fill="1" visible="yes" active="yes"/>
+<layer number="102" name="Vscore" color="7" fill="1" visible="no" active="yes"/>
+<layer number="103" name="tMap" color="7" fill="1" visible="no" active="yes"/>
+<layer number="104" name="Name" color="16" fill="1" visible="no" active="yes"/>
+<layer number="105" name="tPlate" color="7" fill="1" visible="no" active="yes"/>
+<layer number="106" name="bPlate" color="7" fill="1" visible="no" active="yes"/>
+<layer number="107" name="Crop" color="7" fill="1" visible="no" active="yes"/>
+<layer number="108" name="tplace-old" color="10" fill="1" visible="no" active="yes"/>
+<layer number="109" name="ref-old" color="11" fill="1" visible="no" active="yes"/>
+<layer number="110" name="bBPL" color="7" fill="1" visible="no" active="yes"/>
+<layer number="111" name="MPL" color="7" fill="1" visible="no" active="yes"/>
+<layer number="112" name="tSilk" color="7" fill="1" visible="no" active="yes"/>
+<layer number="113" name="IDFDebug" color="4" fill="1" visible="no" active="yes"/>
 <layer number="116" name="Patch_BOT" color="9" fill="4" visible="no" active="yes"/>
 <layer number="121" name="_tsilk" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="122" name="_bsilk" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="123" name="tTestmark" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="124" name="bTestmark" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="123" name="tTestmark" color="7" fill="1" visible="no" active="yes"/>
+<layer number="124" name="bTestmark" color="7" fill="1" visible="no" active="yes"/>
 <layer number="125" name="_tNames" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="126" name="_bNames" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="127" name="_tValues" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="128" name="_bValues" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="131" name="prix" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="132" name="test" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="144" name="Drill_legend" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="150" name="Notes" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="151" name="HeatSink" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="152" name="_bDocu" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="131" name="prix" color="7" fill="1" visible="no" active="yes"/>
+<layer number="132" name="test" color="7" fill="1" visible="no" active="yes"/>
+<layer number="144" name="Drill_legend" color="7" fill="1" visible="no" active="yes"/>
+<layer number="150" name="Notes" color="7" fill="1" visible="no" active="yes"/>
+<layer number="151" name="HeatSink" color="7" fill="1" visible="no" active="yes"/>
+<layer number="152" name="_bDocu" color="7" fill="1" visible="no" active="yes"/>
 <layer number="153" name="FabDoc1" color="6" fill="1" visible="no" active="no"/>
 <layer number="154" name="FabDoc2" color="2" fill="1" visible="no" active="no"/>
 <layer number="155" name="FabDoc3" color="7" fill="15" visible="no" active="no"/>
-<layer number="199" name="Contour" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="200" name="200bmp" color="1" fill="10" visible="yes" active="yes"/>
-<layer number="201" name="201bmp" color="2" fill="10" visible="yes" active="yes"/>
-<layer number="202" name="202bmp" color="3" fill="10" visible="yes" active="yes"/>
-<layer number="203" name="203bmp" color="4" fill="10" visible="yes" active="yes"/>
-<layer number="204" name="204bmp" color="5" fill="10" visible="yes" active="yes"/>
-<layer number="205" name="205bmp" color="6" fill="10" visible="yes" active="yes"/>
-<layer number="206" name="206bmp" color="7" fill="10" visible="yes" active="yes"/>
-<layer number="207" name="207bmp" color="8" fill="10" visible="yes" active="yes"/>
-<layer number="208" name="208bmp" color="9" fill="10" visible="yes" active="yes"/>
-<layer number="209" name="209bmp" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="210" name="210bmp" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="211" name="211bmp" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="212" name="212bmp" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="213" name="213bmp" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="214" name="214bmp" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="215" name="215bmp" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="216" name="216bmp" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="199" name="Contour" color="7" fill="1" visible="no" active="yes"/>
+<layer number="200" name="200bmp" color="1" fill="10" visible="no" active="yes"/>
+<layer number="201" name="201bmp" color="2" fill="10" visible="no" active="yes"/>
+<layer number="202" name="202bmp" color="3" fill="10" visible="no" active="yes"/>
+<layer number="203" name="203bmp" color="4" fill="10" visible="no" active="yes"/>
+<layer number="204" name="204bmp" color="5" fill="10" visible="no" active="yes"/>
+<layer number="205" name="205bmp" color="6" fill="10" visible="no" active="yes"/>
+<layer number="206" name="206bmp" color="7" fill="10" visible="no" active="yes"/>
+<layer number="207" name="207bmp" color="8" fill="10" visible="no" active="yes"/>
+<layer number="208" name="208bmp" color="9" fill="10" visible="no" active="yes"/>
+<layer number="209" name="209bmp" color="7" fill="1" visible="no" active="yes"/>
+<layer number="210" name="210bmp" color="7" fill="1" visible="no" active="yes"/>
+<layer number="211" name="211bmp" color="7" fill="1" visible="no" active="yes"/>
+<layer number="212" name="212bmp" color="7" fill="1" visible="no" active="yes"/>
+<layer number="213" name="213bmp" color="7" fill="1" visible="no" active="yes"/>
+<layer number="214" name="214bmp" color="7" fill="1" visible="no" active="yes"/>
+<layer number="215" name="215bmp" color="7" fill="1" visible="no" active="yes"/>
+<layer number="216" name="216bmp" color="7" fill="1" visible="no" active="yes"/>
 <layer number="217" name="217bmp" color="18" fill="1" visible="no" active="no"/>
 <layer number="218" name="218bmp" color="19" fill="1" visible="no" active="no"/>
 <layer number="219" name="219bmp" color="20" fill="1" visible="no" active="no"/>
@@ -117,11 +117,11 @@
 <layer number="222" name="222bmp" color="23" fill="1" visible="no" active="no"/>
 <layer number="223" name="223bmp" color="24" fill="1" visible="no" active="no"/>
 <layer number="224" name="224bmp" color="25" fill="1" visible="no" active="no"/>
-<layer number="248" name="Housing" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="249" name="Edge" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="248" name="Housing" color="7" fill="1" visible="no" active="yes"/>
+<layer number="249" name="Edge" color="7" fill="1" visible="no" active="yes"/>
 <layer number="250" name="Descript" color="3" fill="1" visible="no" active="no"/>
 <layer number="251" name="SMDround" color="12" fill="11" visible="no" active="no"/>
-<layer number="254" name="cooling" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="254" name="cooling" color="7" fill="1" visible="no" active="yes"/>
 </layers>
 <board>
 <plain>
@@ -1274,6 +1274,7 @@ MAX3223-MAX3243.pdf</description>
 <smd name="P$3" x="0" y="0.4" dx="0.5" dy="0.6" layer="1"/>
 <smd name="P$1" x="-0.5" y="-0.9" dx="0.5" dy="0.6" layer="1"/>
 <smd name="P$2" x="0.5" y="-0.9" dx="0.5" dy="0.6" layer="1"/>
+<text x="-1.905" y="1.27" size="1.27" layer="25">&gt;NAME</text>
 </package>
 <package name="R0402">
 <description>&lt;b&gt;RESISTOR&lt;/b&gt;</description>
@@ -1294,10 +1295,11 @@ MAX3223-MAX3243.pdf</description>
 <package name="BUTTON">
 <smd name="P$1" x="-2.54" y="0" dx="2.79999375" dy="2.2" layer="1"/>
 <smd name="P$3" x="2.259990625" y="0" dx="2.79999375" dy="2.2" layer="1"/>
-<wire x1="-3.175" y1="1.905" x2="-3.175" y2="-1.905" width="0.127" layer="25"/>
-<wire x1="-3.175" y1="-1.905" x2="3.175" y2="-1.905" width="0.127" layer="25"/>
-<wire x1="3.175" y1="-1.905" x2="3.175" y2="1.905" width="0.127" layer="25"/>
-<wire x1="3.175" y1="1.905" x2="-3.175" y2="1.905" width="0.127" layer="25"/>
+<wire x1="-3.175" y1="1.905" x2="-3.175" y2="-1.905" width="0.127" layer="21"/>
+<wire x1="-3.175" y1="-1.905" x2="3.175" y2="-1.905" width="0.127" layer="21"/>
+<wire x1="3.175" y1="-1.905" x2="3.175" y2="1.905" width="0.127" layer="21"/>
+<wire x1="3.175" y1="1.905" x2="-3.175" y2="1.905" width="0.127" layer="21"/>
+<text x="-3.175" y="2.54" size="1.27" layer="25">&gt;NAME</text>
 </package>
 <package name="SOT23-5">
 <wire x1="1.422" y1="-0.781" x2="-1.423" y2="-0.781" width="0.1524" layer="51"/>
@@ -2974,12 +2976,18 @@ Please make sure your boards conform to these design rules.</description>
 <elements>
 <element name="C1" library="rcl" package="C0402" value="µ1" x="5.4356" y="35.9156" rot="R180"/>
 <element name="C10" library="rcl" package="C0402" value="µ1" x="15.494" y="26.67"/>
-<element name="C11" library="rcl" package="C0402" value="1µ" x="16.637" y="44.069" rot="R320"/>
+<element name="C11" library="rcl" package="C0402" value="1µ" x="16.637" y="44.069" smashed="yes" rot="R320">
+<attribute name="NAME" x="14.27273125" y="43.69360625" size="1.27" layer="25" rot="R320"/>
+<attribute name="VALUE" x="14.92605" y="43.017853125" size="1.27" layer="27" rot="R320"/>
+</element>
 <element name="C12" library="rcl" package="C0402" value="4µ7" x="20.32" y="33.655"/>
 <element name="C13" library="rcl" package="C0402" value="4µ7" x="20.32" y="37.465"/>
 <element name="C14" library="rcl" package="C0402" value="4µ7" x="20.32" y="41.402"/>
 <element name="C15" library="rcl" package="C0402" value="4µ7" x="20.32" y="45.085"/>
-<element name="C16" library="rcl" package="C0402" value="4µ7" x="8.382" y="44.704" rot="R120"/>
+<element name="C16" library="rcl" package="C0402" value="4µ7" x="8.382" y="44.704" smashed="yes" rot="R120">
+<attribute name="NAME" x="8.233428125" y="47.519571875" size="1.27" layer="25" rot="R210"/>
+<attribute name="VALUE" x="10.349278125" y="45.106571875" size="1.27" layer="27" rot="R120"/>
+</element>
 <element name="C18" library="rcl" package="C0402" value="33p" x="15.24" y="24.13" rot="R90"/>
 <element name="C2" library="rcl" package="C0402" value="4.7" x="10.287" y="25.527" rot="R90"/>
 <element name="C3" library="rcl" package="C0402" value="8p2" x="12.7" y="19.812"/>
@@ -2999,11 +3007,13 @@ Please make sure your boards conform to these design rules.</description>
 <element name="D9" library="lightmeter" package="VEMD2523SLX01" value="VEMD2523SLX01" x="8.255" y="46.228"/>
 <element name="IC$2" library="lightmeter" package="TSSOP14" value="SN74HC164TSSOP-14" x="11.43" y="36.83"/>
 <element name="IC$3" library="attiny1634_corrected" package="MLF20" value="ATTINY1634MLF20" x="4.445" y="39.878"/>
-<element name="IC$3P" library="analog-devices" package="MSOP08" value="AD8542RM" x="12.827" y="45.085">
+<element name="IC$3P" library="analog-devices" package="MSOP08" value="AD8542RM" x="12.827" y="45.085" smashed="yes">
 <attribute name="OC_NEWARK" value="19M0965" x="12.827" y="45.085" size="1.778" layer="27" display="off"/>
 <attribute name="MPN" value="AD8542ARZ" x="12.827" y="45.085" size="1.778" layer="27" display="off"/>
 <attribute name="MF" value="" x="12.827" y="45.085" size="1.778" layer="27" display="off"/>
 <attribute name="OC_FARNELL" value="1464965" x="12.827" y="45.085" size="1.778" layer="27" display="off"/>
+<attribute name="NAME" x="12.065" y="43.815" size="1.27" layer="25" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="16.129" y="42.545" size="1.27" layer="27" ratio="10" rot="R90"/>
 </element>
 <element name="IC2" library="adafruit" package="SOT23-5L" value="MCP73831/OT" x="19.685" y="29.845"/>
 <element name="J1" library="SparkFun-Connectors" package="2X3-NS" value="AVR_SPI_PRG_6NS" x="21.59" y="3.8862" rot="R90"/>
@@ -3017,22 +3027,30 @@ Please make sure your boards conform to these design rules.</description>
 <element name="Q12" library="lightmeter" package="SOT-416-3" value="NCHANNELMOSFET" x="5.8928" y="46.8884"/>
 <element name="Q13" library="lightmeter" package="SOT-416-3" value="NCHANNELMOSFET" x="10.16" y="49.53"/>
 <element name="Q14" library="lightmeter" package="SOT-416-3" value="NCHANNELMOSFET" x="8.255" y="47.625"/>
-<element name="Q2" library="lightmeter" package="SOT-416-3" value="PCHANNELMOSFET" x="24.13" y="40.64"/>
-<element name="Q3" library="lightmeter" package="SOT-416-3" value="NCHANNELMOSFET" x="24.13" y="38.1"/>
+<element name="Q2" library="lightmeter" package="SOT-416-3" value="PCHANNELMOSFET" x="24.13" y="40.64" smashed="yes">
+<attribute name="NAME" x="26.162" y="40.894" size="1.27" layer="25" rot="R90"/>
+</element>
+<element name="Q3" library="lightmeter" package="SOT-416-3" value="NCHANNELMOSFET" x="24.13" y="38.1" smashed="yes">
+<attribute name="NAME" x="21.209" y="39.878" size="1.27" layer="25"/>
+</element>
 <element name="Q4" library="lightmeter" package="SOT-416-3" value="PCHANNELMOSFET" x="24.0538" y="35.56"/>
 <element name="Q5" library="lightmeter" package="SOT-416-3" value="NCHANNELMOSFET" x="17.272" y="41.275"/>
 <element name="Q6" library="lightmeter" package="SOT-416-3" value="PCHANNELMOSFET" x="17.78" y="34.925"/>
 <element name="Q7" library="lightmeter" package="SOT-416-3" value="NCHANNELMOSFET" x="25.527" y="44.577"/>
 <element name="Q8" library="lightmeter" package="SOT-416-3" value="PCHANNELMOSFET" x="0.635" y="43.053"/>
 <element name="Q9" library="lightmeter" package="SOT-416-3" value="PCHANNELMOSFET" x="9.779" y="16.891"/>
-<element name="R1" library="resistor" package="R0402" value="10K" x="22.4282" y="29.845" rot="R270">
+<element name="R1" library="resistor" package="R0402" value="10K" x="22.4282" y="29.845" smashed="yes" rot="R270">
 <attribute name="SPICEPREFIX" value="R" x="22.4282" y="29.845" size="1.778" layer="27" rot="R270" display="off"/>
+<attribute name="NAME" x="22.1742" y="29.083" size="1.27" layer="25" rot="R270"/>
+<attribute name="VALUE" x="20.3962" y="30.48" size="1.27" layer="27" rot="R270"/>
 </element>
 <element name="R10" library="resistor" package="R0402" value="1M" x="20.32" y="46.863">
 <attribute name="SPICEPREFIX" value="R" x="20.32" y="46.863" size="1.778" layer="27" display="off"/>
 </element>
-<element name="R11" library="resistor" package="R0402" value="1M" x="16.5862" y="46.736">
+<element name="R11" library="resistor" package="R0402" value="1M" x="16.5862" y="46.736" smashed="yes">
 <attribute name="SPICEPREFIX" value="R" x="16.5862" y="46.736" size="1.778" layer="27" display="off"/>
+<attribute name="NAME" x="14.8082" y="45.085" size="1.27" layer="25"/>
+<attribute name="VALUE" x="15.9512" y="44.704" size="1.27" layer="27"/>
 </element>
 <element name="R12" library="resistor" package="R0402" value="453K" x="1.27" y="29.718">
 <attribute name="SPICEPREFIX" value="R" x="1.27" y="29.718" size="1.778" layer="27" display="off"/>
@@ -3040,8 +3058,10 @@ Please make sure your boards conform to these design rules.</description>
 <element name="R13" library="resistor" package="R0402" value="100K" x="3.81" y="31.75" rot="R90">
 <attribute name="SPICEPREFIX" value="R" x="3.81" y="31.75" size="1.778" layer="27" rot="R90" display="off"/>
 </element>
-<element name="R14" library="resistor" package="R0402" value="453K" x="9.906" y="22.86" rot="R180">
+<element name="R14" library="resistor" package="R0402" value="453K" x="9.906" y="22.86" smashed="yes" rot="R180">
 <attribute name="SPICEPREFIX" value="R" x="9.906" y="22.86" size="1.778" layer="27" rot="R180" display="off"/>
+<attribute name="NAME" x="11.811" y="24.638" size="1.27" layer="25" rot="R180"/>
+<attribute name="VALUE" x="10.541" y="24.892" size="1.27" layer="27" rot="R180"/>
 </element>
 <element name="R15" library="resistor" package="R0402" value="100K" x="16.51" y="21.59">
 <attribute name="SPICEPREFIX" value="R" x="16.51" y="21.59" size="1.778" layer="27" display="off"/>
@@ -3049,27 +3069,36 @@ Please make sure your boards conform to these design rules.</description>
 <element name="R16" library="resistor" package="R0402" value="453K" x="5.715" y="31.75" rot="R90">
 <attribute name="SPICEPREFIX" value="R" x="5.715" y="31.75" size="1.778" layer="27" rot="R90" display="off"/>
 </element>
-<element name="R17" library="lightmeter" package="R0402" value="THERMISTORR0402" x="14.097" y="41.021"/>
+<element name="R17" library="lightmeter" package="R0402" value="THERMISTORR0402" x="14.097" y="41.021" smashed="yes">
+<attribute name="NAME" x="15.24" y="40.513" size="1.27" layer="25"/>
+<attribute name="VALUE" x="13.462" y="39.116" size="1.27" layer="27"/>
+</element>
 <element name="R18" library="resistor" package="R0402" value="???" x="6.8072" y="43.053">
 <attribute name="SPICEPREFIX" value="R" x="6.8072" y="43.053" size="1.778" layer="27" display="off"/>
 </element>
 <element name="R19" library="resistor" package="R0402" value="10K" x="9.398" y="1.27">
 <attribute name="SPICEPREFIX" value="R" x="9.398" y="1.27" size="1.778" layer="27" display="off"/>
 </element>
-<element name="R2" library="resistor" package="R0402" value="9.1K" x="25.146" y="29.591" rot="R90">
+<element name="R2" library="resistor" package="R0402" value="9.1K" x="25.146" y="29.591" smashed="yes" rot="R90">
 <attribute name="SPICEPREFIX" value="R" x="25.146" y="29.591" size="1.778" layer="27" rot="R90" display="off"/>
+<attribute name="NAME" x="23.876" y="30.861" size="1.27" layer="25"/>
+<attribute name="VALUE" x="27.178" y="28.956" size="1.27" layer="27" rot="R90"/>
 </element>
 <element name="R20" library="resistor" package="R0402" value="1K" x="17.653" y="3.302" rot="R270">
 <attribute name="SPICEPREFIX" value="R" x="17.653" y="3.302" size="1.778" layer="27" rot="R270" display="off"/>
 </element>
-<element name="R3" library="resistor" package="R0402" value="10k" x="25.781" y="36.83" rot="R270">
+<element name="R3" library="resistor" package="R0402" value="10k" x="25.781" y="36.83" smashed="yes" rot="R270">
 <attribute name="SPICEPREFIX" value="R" x="25.781" y="36.83" size="1.778" layer="27" rot="R270" display="off"/>
+<attribute name="NAME" x="24.13" y="34.163" size="1.27" layer="25"/>
+<attribute name="VALUE" x="23.749" y="37.465" size="1.27" layer="27" rot="R270"/>
 </element>
 <element name="R4" library="resistor" package="R0402" value="10k" x="17.5514" y="37.084" rot="R290">
 <attribute name="SPICEPREFIX" value="R" x="17.5514" y="37.084" size="1.778" layer="27" rot="R290" display="off"/>
 </element>
-<element name="R5" library="resistor" package="R0402" value="390k" x="3.937" y="48.641">
+<element name="R5" library="resistor" package="R0402" value="390k" x="3.937" y="48.641" smashed="yes">
 <attribute name="SPICEPREFIX" value="R" x="3.937" y="48.641" size="1.778" layer="27" display="off"/>
+<attribute name="NAME" x="2.794" y="46.609" size="1.27" layer="25"/>
+<attribute name="VALUE" x="3.302" y="46.609" size="1.27" layer="27"/>
 </element>
 <element name="R6" library="resistor" package="R0402" value="16k" x="20.32" y="35.56">
 <attribute name="SPICEPREFIX" value="R" x="20.32" y="35.56" size="1.778" layer="27" display="off"/>
@@ -3098,16 +3127,22 @@ Please make sure your boards conform to these design rules.</description>
 <element name="R21" library="resistor" package="R0402" value="10K" x="4.318" y="28.067">
 <attribute name="SPICEPREFIX" value="R" x="4.318" y="28.067" size="1.778" layer="27" display="off"/>
 </element>
-<element name="R22" library="resistor" package="R0402" value="2.2K" x="0.3048" y="37.0586" rot="R110">
+<element name="R22" library="resistor" package="R0402" value="2.2K" x="0.3048" y="37.0586" smashed="yes" rot="R110">
 <attribute name="SPICEPREFIX" value="R" x="0.3048" y="37.0586" size="1.778" layer="27" rot="R110" display="off"/>
+<attribute name="NAME" x="2.5999375" y="36.328275" size="1.27" layer="25" rot="R110"/>
+<attribute name="VALUE" x="2.4314375" y="37.156878125" size="1.27" layer="27" rot="R110"/>
 </element>
 <element name="Q16" library="lightmeter" package="SOT-416-3" value="NCHANNELMOSFET" x="6.858" y="28.575" rot="R180"/>
 <element name="U2" library="SparkFun-Connectors" package="USB_AB_MICRO_1:1_V2" value="" x="23.749" y="17.399" rot="R180"/>
-<element name="R23" library="resistor" package="R0402" value="15K" x="19.939" y="21.59" rot="R80">
+<element name="R23" library="resistor" package="R0402" value="15K" x="19.939" y="21.59" smashed="yes" rot="R80">
 <attribute name="SPICEPREFIX" value="R" x="19.939" y="21.59" size="1.778" layer="27" rot="R80" display="off"/>
+<attribute name="NAME" x="21.745309375" y="19.699965625" size="1.27" layer="25" rot="R80"/>
+<attribute name="VALUE" x="21.8298625" y="20.61179375" size="1.27" layer="27" rot="R80"/>
 </element>
-<element name="R24" library="resistor" package="R0402" value="15K" x="18.161" y="13.462">
+<element name="R24" library="resistor" package="R0402" value="15K" x="18.161" y="13.462" smashed="yes">
 <attribute name="SPICEPREFIX" value="R" x="18.161" y="13.462" size="1.778" layer="27" display="off"/>
+<attribute name="NAME" x="16.51" y="11.43" size="1.27" layer="25"/>
+<attribute name="VALUE" x="17.526" y="11.43" size="1.27" layer="27"/>
 </element>
 </elements>
 <signals>

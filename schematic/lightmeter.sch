@@ -9650,6 +9650,7 @@ MAX3223-MAX3243.pdf</description>
 <smd name="P$3" x="0" y="0.4" dx="0.5" dy="0.6" layer="1"/>
 <smd name="P$1" x="-0.5" y="-0.9" dx="0.5" dy="0.6" layer="1"/>
 <smd name="P$2" x="0.5" y="-0.9" dx="0.5" dy="0.6" layer="1"/>
+<text x="-1.905" y="1.27" size="1.27" layer="25">&gt;NAME</text>
 </package>
 <package name="SOT23-5">
 <wire x1="1.422" y1="-0.781" x2="-1.423" y2="-0.781" width="0.1524" layer="51"/>
@@ -9803,10 +9804,11 @@ diameter 9 mm, horizontal, grid 10.16 mm</description>
 <package name="BUTTON">
 <smd name="P$1" x="-2.54" y="0" dx="2.79999375" dy="2.2" layer="1"/>
 <smd name="P$3" x="2.259990625" y="0" dx="2.79999375" dy="2.2" layer="1"/>
-<wire x1="-3.175" y1="1.905" x2="-3.175" y2="-1.905" width="0.127" layer="25"/>
-<wire x1="-3.175" y1="-1.905" x2="3.175" y2="-1.905" width="0.127" layer="25"/>
-<wire x1="3.175" y1="-1.905" x2="3.175" y2="1.905" width="0.127" layer="25"/>
-<wire x1="3.175" y1="1.905" x2="-3.175" y2="1.905" width="0.127" layer="25"/>
+<wire x1="-3.175" y1="1.905" x2="-3.175" y2="-1.905" width="0.127" layer="21"/>
+<wire x1="-3.175" y1="-1.905" x2="3.175" y2="-1.905" width="0.127" layer="21"/>
+<wire x1="3.175" y1="-1.905" x2="3.175" y2="1.905" width="0.127" layer="21"/>
+<wire x1="3.175" y1="1.905" x2="-3.175" y2="1.905" width="0.127" layer="21"/>
+<text x="-3.175" y="2.54" size="1.27" layer="25">&gt;NAME</text>
 </package>
 </packages>
 <symbols>
