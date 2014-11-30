@@ -11837,10 +11837,10 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="C4" library="rcl" deviceset="C-EU" device="C0402" value="10µ"/>
 <part name="GND24" library="supply1" deviceset="GND" device=""/>
 <part name="IC$6" library="lightmeter" deviceset="TL4051" device=""/>
-<part name="R24" library="resistor" deviceset="R-EU_" device="R0402" value="453K"/>
+<part name="R24" library="resistor" deviceset="R-EU_" device="R0402" value="560K"/>
 <part name="GND25" library="supply1" deviceset="GND" device=""/>
-<part name="R22" library="resistor" deviceset="R-EU_" device="R0402" value="100K"/>
-<part name="R23" library="resistor" deviceset="R-EU_" device="R0402" value="453K"/>
+<part name="R22" library="resistor" deviceset="R-EU_" device="R0402" value="1M"/>
+<part name="R23" library="resistor" deviceset="R-EU_" device="R0402" value="6K2"/>
 <part name="C15" library="rcl" deviceset="C-EU" device="C0402" value="µ1"/>
 <part name="GND28" library="supply1" deviceset="GND" device=""/>
 <part name="R13" library="lightmeter" deviceset="THERMISTOR" device="R0402"/>
@@ -11885,7 +11885,9 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <text x="25.4" y="-63.5" size="1.778" layer="91">Op amp power</text>
 <text x="-119.38" y="-30.48" size="1.778" layer="91">Power muxer</text>
 <text x="-114.3" y="27.94" size="1.778" layer="91">Jack for flash sync input + protection circuit</text>
-<text x="-10.16" y="60.96" size="1.778" layer="91">Supplies reference voltage</text>
+<text x="-10.16" y="60.96" size="1.778" layer="91">Supplies reference voltage (2.772V)</text>
+<text x="-50.8" y="43.18" size="1.778" layer="91">R1 in datasheet schem</text>
+<text x="-10.16" y="55.88" size="1.778" layer="91">R2 in datasheet schem</text>
 </plain>
 <instances>
 <instance part="IC$3P" gate="A" x="162.56" y="-43.18"/>
@@ -13084,12 +13086,12 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="-25.4" y1="45.72" x2="-27.94" y2="45.72" width="0.1524" layer="91"/>
 <pinref part="R23" gate="G$1" pin="2"/>
 <wire x1="-27.94" y1="45.72" x2="-30.48" y2="45.72" width="0.1524" layer="91"/>
-<wire x1="-27.94" y1="45.72" x2="-27.94" y2="38.1" width="0.1524" layer="91"/>
+<wire x1="-27.94" y1="38.1" x2="-27.94" y2="40.64" width="0.1524" layer="91"/>
 <junction x="-27.94" y="45.72"/>
-<wire x1="-30.48" y1="45.72" x2="-30.48" y2="40.64" width="0.1524" layer="91"/>
-<junction x="-30.48" y="45.72"/>
-<wire x1="-30.48" y1="40.64" x2="-35.56" y2="40.64" width="0.1524" layer="91"/>
-<label x="-35.56" y="40.64" size="1.778" layer="95" rot="R180" xref="yes"/>
+<wire x1="-27.94" y1="40.64" x2="-27.94" y2="45.72" width="0.1524" layer="91"/>
+<wire x1="-27.94" y1="40.64" x2="-33.02" y2="40.64" width="0.1524" layer="91"/>
+<junction x="-27.94" y="40.64"/>
+<label x="-33.02" y="40.64" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="OAOUT2" class="0">

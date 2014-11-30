@@ -5,6 +5,6 @@
 *   Pad layout for battery charger IC is correct.
 *   Screen is connected correctly.
 * + Buck regulator is connected correctly.
-*   Voltage reference IC is connected correctly.
+* + Voltage reference IC is connected correctly.
 *   Battery charger IC is connected correctly.
 *   Protection diodes are connected correctly.
