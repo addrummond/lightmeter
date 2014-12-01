@@ -11518,58 +11518,34 @@ CONN-08352</description>
 </package>
 <package name="MLF20">
 <description>&lt;b&gt;HP-VFQFP-N20&lt;/b&gt; Micro Lead Frame package (MLF)</description>
-<wire x1="-2.375" y1="2.05" x2="-2.05" y2="2.375" width="0.254" layer="21"/>
-<wire x1="-2.05" y1="2.375" x2="2.05" y2="2.375" width="0.254" layer="51"/>
-<wire x1="2.05" y1="-2.375" x2="-2.05" y2="-2.375" width="0.254" layer="51"/>
-<wire x1="-2.05" y1="-2.375" x2="-2.375" y2="-2.05" width="0.254" layer="21"/>
-<wire x1="-2.375" y1="-2.05" x2="-2.375" y2="2.05" width="0.254" layer="51"/>
-<wire x1="2.375" y1="2.05" x2="2.375" y2="-2.05" width="0.254" layer="51"/>
-<wire x1="2.05" y1="2.375" x2="2.375" y2="2.05" width="0.254" layer="21"/>
-<wire x1="2.375" y1="-2.05" x2="2.05" y2="-2.375" width="0.254" layer="21"/>
-<circle x="-1.55" y="1.55" radius="0.15" width="0.254" layer="21"/>
-<smd name="1" x="-2.25" y="1.000759375" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
-<smd name="2" x="-2.25" y="0.50038125" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
-<smd name="3" x="-2.25" y="0" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
-<smd name="4" x="-2.25" y="-0.50038125" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
-<smd name="5" x="-2.25" y="-1.000759375" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
-<smd name="6" x="-1.000759375" y="-2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
-<smd name="7" x="-0.50038125" y="-2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
-<smd name="8" x="0" y="-2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
-<smd name="9" x="0.50038125" y="-2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
-<smd name="10" x="1.000759375" y="-2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
-<smd name="11" x="2.25" y="-1.000759375" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
-<smd name="12" x="2.25" y="-0.50038125" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
-<smd name="13" x="2.25" y="0" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
-<smd name="14" x="2.25" y="0.50038125" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
-<smd name="15" x="2.25" y="1.000759375" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
-<smd name="16" x="1.000759375" y="2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
-<smd name="17" x="0.50038125" y="2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
-<smd name="18" x="0" y="2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
-<smd name="19" x="-0.50038125" y="2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
-<smd name="20" x="-1.000759375" y="2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
+<wire x1="-2" y1="2" x2="2" y2="2" width="0.254" layer="51"/>
+<wire x1="2" y1="-2" x2="-2" y2="-2" width="0.254" layer="51"/>
+<wire x1="-1.999996875" y1="-2" x2="-1.999996875" y2="2" width="0.254" layer="51"/>
+<wire x1="2" y1="2" x2="2" y2="-2" width="0.254" layer="51"/>
+<circle x="-1.55" y="1.55" radius="0.15" width="0.127" layer="21"/>
+<smd name="1" x="-2.2098" y="1.000759375" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
+<smd name="2" x="-2.2098" y="0.50038125" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
+<smd name="3" x="-2.2098" y="0" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
+<smd name="4" x="-2.2098" y="-0.50038125" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
+<smd name="5" x="-2.2098" y="-1.000759375" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
+<smd name="6" x="-1.000759375" y="-2.2098" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
+<smd name="7" x="-0.50038125" y="-2.2098" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
+<smd name="8" x="0" y="-2.2098" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
+<smd name="9" x="0.50038125" y="-2.2098" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
+<smd name="10" x="1.000759375" y="-2.2098" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
+<smd name="11" x="2.2098" y="-1.000759375" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
+<smd name="12" x="2.2098" y="-0.50038125" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
+<smd name="13" x="2.2098" y="0" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
+<smd name="14" x="2.2098" y="0.50038125" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
+<smd name="15" x="2.2098" y="1.000759375" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
+<smd name="16" x="1.000759375" y="2.2098" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
+<smd name="17" x="0.50038125" y="2.2098" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
+<smd name="18" x="0" y="2.2098" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
+<smd name="19" x="-0.50038125" y="2.2098" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
+<smd name="20" x="-1.000759375" y="2.2098" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
 <text x="-2.54" y="3.175" size="1.27" layer="25">&gt;NAME</text>
 <text x="-2.54" y="-4.445" size="1.27" layer="27">&gt;VALUE</text>
-<rectangle x1="-2.35" y1="0.86868125" x2="-1.9" y2="1.14808125" layer="51"/>
-<rectangle x1="-2.35" y1="0.36068125" x2="-1.9" y2="0.64008125" layer="51"/>
-<rectangle x1="-2.35" y1="-0.15" x2="-1.9" y2="0.15" layer="51"/>
-<rectangle x1="-2.35" y1="-0.64008125" x2="-1.9" y2="-0.36068125" layer="51"/>
-<rectangle x1="-2.35" y1="-1.14808125" x2="-1.9" y2="-0.86868125" layer="51"/>
-<rectangle x1="-0.64008125" y1="-2.35" x2="-0.36068125" y2="-1.9" layer="51"/>
-<rectangle x1="-1.14808125" y1="-2.35" x2="-0.86868125" y2="-1.9" layer="51"/>
-<rectangle x1="-0.15" y1="-2.35" x2="0.15" y2="-1.9" layer="51"/>
-<rectangle x1="0.36068125" y1="-2.35" x2="0.64008125" y2="-1.9" layer="51"/>
-<rectangle x1="0.86868125" y1="-2.35" x2="1.14808125" y2="-1.9" layer="51"/>
-<rectangle x1="1.9" y1="-1.14808125" x2="2.35" y2="-0.86868125" layer="51"/>
-<rectangle x1="1.9" y1="-0.64008125" x2="2.35" y2="-0.36068125" layer="51"/>
-<rectangle x1="1.9" y1="-0.15" x2="2.35" y2="0.15" layer="51"/>
-<rectangle x1="1.9" y1="0.36068125" x2="2.35" y2="0.64008125" layer="51"/>
-<rectangle x1="1.9" y1="0.86868125" x2="2.35" y2="1.14808125" layer="51"/>
-<rectangle x1="0.86868125" y1="1.9" x2="1.14808125" y2="2.35" layer="51"/>
-<rectangle x1="0.36068125" y1="1.9" x2="0.64008125" y2="2.35" layer="51"/>
-<rectangle x1="-0.15" y1="1.9" x2="0.15" y2="2.35" layer="51"/>
-<rectangle x1="-0.64008125" y1="1.9" x2="-0.36068125" y2="2.35" layer="51"/>
-<rectangle x1="-1.14808125" y1="1.9" x2="-0.86868125" y2="2.35" layer="51"/>
-<smd name="GND" x="0" y="0" dx="2.54" dy="2.54" layer="1"/>
+<smd name="GND" x="0" y="0" dx="2.59999375" dy="2.59999375" layer="1"/>
 </package>
 </packages>
 <symbols>
@@ -12642,14 +12618,14 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 </net>
 <net name="SCRCLK" class="0">
 <segment>
-<wire x1="22.86" y1="10.16" x2="27.94" y2="10.16" width="0.1524" layer="91"/>
-<label x="27.94" y="10.16" size="1.778" layer="95" xref="yes"/>
-<pinref part="IC$1" gate="G$1" pin="XTAL1/PC5"/>
-</segment>
-<segment>
 <pinref part="IC$4" gate="G$1" pin="D0/SPI_SCLK/I2C_SCK"/>
 <wire x1="203.2" y1="10.16" x2="198.12" y2="10.16" width="0.1524" layer="91"/>
 <label x="198.12" y="10.16" size="1.4224" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="IC$1" gate="G$1" pin="ADC8/OC1A/PB3"/>
+<wire x1="22.86" y1="25.4" x2="27.94" y2="25.4" width="0.1524" layer="91"/>
+<label x="27.94" y="25.4" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="N$6" class="0">
@@ -12688,9 +12664,9 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="S3" gate="G$1" pin="1"/>
 </segment>
 <segment>
-<wire x1="-48.26" y1="15.24" x2="-50.8" y2="15.24" width="0.1524" layer="91"/>
-<label x="-50.8" y="15.24" size="1.778" layer="95" rot="R180" xref="yes"/>
-<pinref part="IC$1" gate="G$1" pin="PA2/AIN1"/>
+<wire x1="-48.26" y1="17.78" x2="-50.8" y2="17.78" width="0.1524" layer="91"/>
+<label x="-50.8" y="17.78" size="1.778" layer="95" rot="R180" xref="yes"/>
+<pinref part="IC$1" gate="G$1" pin="PA3/ADC0/T1/SNS"/>
 </segment>
 </net>
 <net name="PBI$3" class="0">
@@ -12709,16 +12685,16 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 </net>
 <net name="PBI$1" class="0">
 <segment>
-<wire x1="-48.26" y1="17.78" x2="-50.8" y2="17.78" width="0.1524" layer="91"/>
-<label x="-50.8" y="17.78" size="1.778" layer="95" rot="R180" xref="yes"/>
-<pinref part="IC$1" gate="G$1" pin="PA3/ADC0/T1/SNS"/>
-</segment>
-<segment>
 <wire x1="-43.18" y1="-33.02" x2="-43.18" y2="-22.86" width="0.1524" layer="91"/>
 <pinref part="D4" gate="G$1" pin="A"/>
 <wire x1="-43.18" y1="-22.86" x2="-53.34" y2="-22.86" width="0.1524" layer="91"/>
 <label x="-43.18" y="-22.86" size="1.778" layer="95" rot="R90" xref="yes"/>
 <pinref part="S2" gate="G$1" pin="1"/>
+</segment>
+<segment>
+<wire x1="-48.26" y1="15.24" x2="-50.8" y2="15.24" width="0.1524" layer="91"/>
+<label x="-50.8" y="15.24" size="1.778" layer="95" rot="R180" xref="yes"/>
+<pinref part="IC$1" gate="G$1" pin="PA2/AIN1"/>
 </segment>
 </net>
 <net name="N$7" class="0">
@@ -13065,9 +13041,9 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="-45.72" y1="-83.82" x2="-53.34" y2="-83.82" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="IC$1" gate="G$1" pin="ADC8/OC1A/PB3"/>
-<wire x1="22.86" y1="25.4" x2="27.94" y2="25.4" width="0.1524" layer="91"/>
-<label x="27.94" y="25.4" size="1.778" layer="95" xref="yes"/>
+<wire x1="22.86" y1="10.16" x2="27.94" y2="10.16" width="0.1524" layer="91"/>
+<label x="27.94" y="10.16" size="1.778" layer="95" xref="yes"/>
+<pinref part="IC$1" gate="G$1" pin="XTAL1/PC5"/>
 </segment>
 </net>
 <net name="N$5" class="0">
