@@ -3005,7 +3005,10 @@ Please make sure your boards conform to these design rules.</description>
 <element name="D2" library="lightmeter" package="R0603" value="BZW50BR0603" x="9.525" y="5.08" rot="R90"/>
 <element name="D4" library="diode2" package="SOD323-W" value="" x="3.81" y="7.112" rot="R180"/>
 <element name="D5" library="diode2" package="SOD323-W" value="" x="3.81" y="5.334" rot="R180"/>
-<element name="D6" library="diode2" package="SOD323-W" value="" x="0" y="5.969" rot="R90"/>
+<element name="D6" library="diode2" package="SOD323-W" value="" x="0" y="5.969" smashed="yes" rot="R90">
+<attribute name="NAME" x="2.81" y="1.059" size="1.27" layer="25" rot="R90"/>
+<attribute name="VALUE" x="2.3" y="4.869" size="1.27" layer="27" rot="R90"/>
+</element>
 <element name="D7" library="diode2" package="SOD323-W" value="" x="5.207" y="2.794" rot="R180"/>
 <element name="D8" library="lightmeter" package="VEMD2523SLX01" value="VEMD2523SLX01" x="3.81" y="46.228" smashed="yes">
 <attribute name="NAME" x="-0.762" y="47.879" size="1.27" layer="26"/>
@@ -3044,7 +3047,9 @@ Please make sure your boards conform to these design rules.</description>
 <element name="Q4" library="lightmeter" package="SOT-416-3" value="PCHANNELMOSFET" x="24.0538" y="35.56"/>
 <element name="Q5" library="lightmeter" package="SOT-416-3" value="NCHANNELMOSFET" x="17.272" y="41.275"/>
 <element name="Q6" library="lightmeter" package="SOT-416-3" value="PCHANNELMOSFET" x="17.78" y="34.925"/>
-<element name="Q12" library="lightmeter" package="SOT-416-3" value="NCHANNELMOSFET" x="25.527" y="44.577"/>
+<element name="Q12" library="lightmeter" package="SOT-416-3" value="NCHANNELMOSFET" x="25.527" y="44.577" smashed="yes">
+<attribute name="NAME" x="23.368" y="45.72" size="1.27" layer="25"/>
+</element>
 <element name="Q7" library="lightmeter" package="SOT-416-3" value="PCHANNELMOSFET" x="0.635" y="43.053"/>
 <element name="Q15" library="lightmeter" package="SOT-416-3" value="PCHANNELMOSFET" x="9.779" y="16.891"/>
 <element name="R17" library="resistor" package="R0402" value="10K" x="22.4282" y="29.845" smashed="yes" rot="R270">
@@ -3091,7 +3096,7 @@ Please make sure your boards conform to these design rules.</description>
 </element>
 <element name="R16" library="resistor" package="R0402" value="10K" x="25.146" y="29.591" smashed="yes" rot="R90">
 <attribute name="SPICEPREFIX" value="R" x="25.146" y="29.591" size="1.778" layer="27" rot="R90" display="off"/>
-<attribute name="NAME" x="23.876" y="30.861" size="1.27" layer="25"/>
+<attribute name="NAME" x="22.606" y="32.131" size="1.27" layer="25"/>
 <attribute name="VALUE" x="27.178" y="28.956" size="1.27" layer="27" rot="R90"/>
 </element>
 <element name="R20" library="resistor" package="R0402" value="R2000" x="17.653" y="3.302" rot="R270">
@@ -3099,7 +3104,7 @@ Please make sure your boards conform to these design rules.</description>
 </element>
 <element name="R15" library="resistor" package="R0402" value="10k" x="25.781" y="36.83" smashed="yes" rot="R270">
 <attribute name="SPICEPREFIX" value="R" x="25.781" y="36.83" size="1.778" layer="27" rot="R270" display="off"/>
-<attribute name="NAME" x="24.13" y="34.163" size="1.27" layer="25"/>
+<attribute name="NAME" x="22.86" y="34.163" size="1.27" layer="25"/>
 <attribute name="VALUE" x="23.749" y="37.465" size="1.27" layer="27" rot="R270"/>
 </element>
 <element name="R11" library="resistor" package="R0402" value="10k" x="17.5514" y="37.084" rot="R290">
