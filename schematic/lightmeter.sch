@@ -12286,7 +12286,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="-41.402" y1="93.98" x2="-45.72" y2="93.98" width="0.1524" layer="91"/>
 <wire x1="-45.72" y1="93.98" x2="-58.42" y2="93.98" width="0.1524" layer="91"/>
 <wire x1="-58.42" y1="93.98" x2="-60.96" y2="93.98" width="0.1524" layer="91"/>
-<wire x1="-53.34" y1="88.9" x2="-55.88" y2="88.9" width="0.1524" layer="91"/>
 <wire x1="-55.88" y1="88.9" x2="-58.42" y2="88.9" width="0.1524" layer="91"/>
 <wire x1="-58.42" y1="88.9" x2="-58.42" y2="93.98" width="0.1524" layer="91"/>
 <junction x="-58.42" y="93.98"/>
@@ -12296,7 +12295,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="IC$2" gate="G$1" pin="VIN"/>
 <pinref part="IC$2" gate="G$1" pin="EN"/>
 <pinref part="C1" gate="G$1" pin="2"/>
-<junction x="-55.88" y="88.9"/>
 </segment>
 </net>
 <net name="VREG" class="0">
