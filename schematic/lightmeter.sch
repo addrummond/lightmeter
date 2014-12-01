@@ -11878,7 +11878,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <text x="45.72" y="25.4" size="1.778" layer="91">Battery (3.7V nominal)</text>
 <text x="-55.88" y="101.6" size="1.778" layer="91">Buck regulator LM3671 (outputs 2.765 volts)</text>
 <text x="55.88" y="0" size="1.778" layer="91">Op amp (AD8546ARMZ)</text>
-<text x="-73.66" y="-15.24" size="1.778" layer="91">Pushbuttons (1571634-2)</text>
+<text x="-73.66" y="-15.24" size="1.778" layer="91">Pushbuttons (mouser 506-147873-1)</text>
 <text x="-7.62" y="35.56" size="1.778" layer="91">Microcontroller (attiny1634)</text>
 <text x="213.36" y="60.96" size="1.778" layer="91">Screen (C2P right, IREF left)</text>
 <text x="-91.44" y="68.58" size="1.778" layer="91">AVR programming header</text>
