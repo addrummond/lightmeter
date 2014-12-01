@@ -11,3 +11,4 @@
 * + Protection diodes are connected correctly.
 * + Battery voltage divider is correct in schematic.
 * + deviceconfig.h is consistent with schematic.
+* + attiny1634 layout is correct.
