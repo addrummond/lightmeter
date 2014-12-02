@@ -16,13 +16,13 @@
 //
 //          Display data |    ADC5/PB0 1---20 [MOSI]    | MOSI / Battery voltage
 //            Display DC |    ADC4/PA7 2---19 [MISO]    | MISO / Flash sync
-//           Display RST |    ADC3/PA6 3---18 PB3/ADC8  | Battery stat input
+//           Display RST |    ADC3/PA6 3---18 PB3/ADC8  | Display CLK
 //     Serial debug port |    ADC2/PA5 4---17 PC0/ADC9  | Op amp output
 //      Shift register A |    ADC1/PA4 5---16 [USCK]    | **********
-//          Pushbutton 1 |    ADC0/PA3 6---15 PC2/ADC11 | Shift register clock
-//          Pushbutton 2 |         PA2 7---14 [RESET]   | **********
+//          Pushbutton 2 |    ADC0/PA3 6---15 PC2/ADC11 | Shift register clock
+//          Pushbutton 1 |         PA2 7---14 [RESET]   | **********
 //          Pushbutton 3 |         PA1 8---13 PC4       | Display CS
-//           ADC ext ref |         PA0 9---12 PC5       | Display CLK
+//           ADC ext ref |         PA0 9---12 PC5       | Battery stat input
 //            ********** |       [GND] 10--11 [VCC]     | **********
 
 
@@ -37,9 +37,9 @@
 #define DISPLAY_CS_DDR      DDRC
 #define DISPLAY_CS_BIT      PC4
 
-#define DISPLAY_CLK_PORT    PORTC
-#define DISPLAY_CLK_DDR     DDRC
-#define DISPLAY_CLK_BIT     PC5
+#define DISPLAY_CLK_PORT    PORTB
+#define DISPLAY_CLK_DDR     DDRB
+#define DISPLAY_CLK_BIT     PB3
 
 #define DISPLAY_DC_PORT     PORTA
 #define DISPLAY_DC_DDR      DDRA
@@ -80,20 +80,20 @@
 #define PUSHBUTTON1_PIN          PINA
 #define PUSHBUTTON1_PUE          PUEA
 #define PUSHBUTTON1_DDR          DDRA
-#define PUSHBUTTON1_BIT          PA3
+#define PUSHBUTTON1_BIT          PA2
 #define PUSHBUTTON1_PCMSK        PCMSK0
 #define PUSHBUTTON1_PCIE         PCIE0
-#define PUSHBUTTON1_PCINT_BIT    PCINT3
+#define PUSHBUTTON1_PCINT_BIT    PCINT2
 #define PUSHBUTTON1_PCINT_VECT   PCINT0_vect
 
 #define PUSHBUTTON2_PORT         PORTA
 #define PUSHBUTTON2_PIN          PINA
 #define PUSHBUTTON2_PUE          PUEA
 #define PUSHBUTTON2_DDR          DDRA
-#define PUSHBUTTON2_BIT          PA2
+#define PUSHBUTTON2_BIT          PA3
 #define PUSHBUTTON2_PCMSK        PCMSK0
 #define PUSHBUTTON2_PCIE         PCIE0
-#define PUSHBUTTON2_PCINT_BIT    PCINT2
+#define PUSHBUTTON2_PCINT_BIT    PCINT3
 #define PUSHBUTTON2_PCINT_VECT   PCINT0_vect
 
 #define PUSHBUTTON3_PORT         PORTA
