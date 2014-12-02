@@ -56,18 +56,8 @@
 // Set ADC for PC0 input.
 #define ADMUX_LIGHT_SOURCE             ((1 << MUX3) | (0 << MUX2) | (0 << MUX1) | (1 << MUX0))
 
-#define ADMUX_TEMPERATURE_SOURCE       ((1 << MUX3) | (1 << MUX2) | (1 << MUX1) | (0 << MUX0))
-
-// Use 1.1V internal reference.
-#define ADMUX_TEMP_REF_VOLTAGE         ((1 << REFS1) | (0 << REFS0))
-
 // Use Vcc as reference voltage.
 #define ADMUX_LIGHT_SOURCE_REF_VOLTAGE ((0 << REFS1) | (0 << REFS0))
-
-// At some point we may want to switch to the internal 1.1V reference as a lame
-// substitute for increasing gain on the attiny1634. This would in effect give
-// us about 2.5x gain over measuring against VCC (2.8V when running on batteries).
-#define ADMUX_LOW_LIGHT_REF_VOLTAGE    ((1 << REFS1) | (0 << REFS0))
 
 #define ADC_LIGHT_DIDR                 DIDR1
 #define ADC_LIGHT_DIDR_BIT             3

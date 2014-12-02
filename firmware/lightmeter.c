@@ -54,22 +54,15 @@ void setup_ADC()
 static void set_amp_stage(uint8_t reflective_or_incident, uint8_t stage)
 {
 #define s(i)   ((STAGE ## i ## _STOPS_SUBTRACTED == 0 ? 0 : 1) << ((i)-1)) |
-#define ss(i)  ((STAGE ## i ## _GAIN == 1.0 ? 0 : 1) << ((i)-1)) |
-#define sss(i) ((STAGE ## i ## _RESISTOR_NUMBER) << (((i)-1)*2)) |
+#define ss(i)  ((STAGE ## i ## _RESISTOR_NUMBER) << (((i)-1)*2)) |
     static const uint8_t  stage_uses_nd_filter = FOR_EACH_AMP_STAGE(s) 0;
-    static const uint8_t  stage_uses_11_ref    = FOR_EACH_AMP_STAGE(ss) 0;
-    static const uint16_t stage_uses_resistor  = FOR_EACH_AMP_STAGE(sss) 0;
+    static const uint16_t stage_uses_resistor  = FOR_EACH_AMP_STAGE(ss) 0;
 #undef s
 #undef ss
 
     // Select appropriate ADC ref voltage.
     ADMUX &= ~((1 << REFS0) | (1 << REFS1));
-    if (stage_uses_11_ref & (1 << (stage-1))) {
-        ADMUX |= ADMUX_LOW_LIGHT_REF_VOLTAGE;
-    }
-    else {
-        ADMUX |= ADMUX_LIGHT_SOURCE_REF_VOLTAGE;
-    }
+    ADMUX |= ADMUX_LIGHT_SOURCE_REF_VOLTAGE;
 
     // Deselect all diodes.
     and_shift_register_bits(~((1 << SHIFT_REGISTER_DIODESW1_BIT) | (1 << SHIFT_REGISTER_DIODESW2_BIT) |

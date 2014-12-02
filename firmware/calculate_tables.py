@@ -6,43 +6,27 @@ import re
 # Configuration values.
 ##########
 
-reference_voltage = 2772.72 # mV
-op_amp_gain       = reference_voltage/1100.0
+reference_voltage = 2765 # mV
+
+op_amp_gain       = 1.0#reference_voltage/1100.0
+
+# The gain from the second stage of amplification.
+second_stage_gain = 10.0
+
 amp_stages = [ # In (kOhm,gain) pairs
-    # For BPW 34
-    #(320.0,1,0.0), # Very low light
-    #(12.0,1,0.0)   # Fairly low light (brightish rooms, that kind of thing)
-    #(0.50,1,0.0)   # Bright light (goes up to a bright sunny day)
-    #(0.05,1,0.0),  # Extremely bright light
-
-    # For VTB8440,8441
-    #(258,1,0.0),
-    #(42,1,0.0),
-    #(1.7,1,0.0)
-    #(1,0.075,0.0)
-
-    # For BPW21R. The 1000.0 stage could be skipped in principle, but I've
-    # read that using >1M resistors with op amps is not a great idea, so we
-    # use the smaller resistor until it gets really dark.
-    #(3300.0,op_amp_gain,0.0),
-    #(1000.0,op_amp_gain,0.0),
-    #(330.0,1,0.0),
-    #(22.0,1,0.0),
-    #(1.0,1,0.0)
-
     # For VEMD2503X01.
     # Uses 4 distinct resistor values.
-    # Resistor value (kOhm)  Gain           Stops subtracted by ND filter (should be >= 0)
-    ( 3000.0,                op_amp_gain,   0.0                                       ),
-    ( 390.0,                 op_amp_gain,   0.0                                       ),
-    ( 130.0,                 1,             0.0                                       ),
-    ( 16.0,                  1,             0.0                                       ),
-    ( 390.0,                 op_amp_gain,   8.0                                       ),
-    ( 130.0,                 1,             8.0                                       ),
-    ( 16,                    1,             8.0                                       )
+    # Resistor value (kOhm)  Stops subtracted by ND filter (should be >= 0)
+    ( 750.0,                 0.0  ),
+    ( 97.5,                  0.0  ),
+    ( 13.0,                  0.0  ),
+    ( 1.6,                   0.0  ),
+    ( 97.5,                  8.0  ),
+    ( 13.0,                  8.0  ),
+    ( 1.6,                   8.0  )
 ]
 
-op_amp_normal_resistor = amp_stages[1][0] * amp_stages[1][1]
+op_amp_normal_resistor = amp_stages[1][0]
 
 op_amp_resistor_value_to_resistor_number = { }
 rvalcount = 0
@@ -244,7 +228,7 @@ def voltage_and_oa_resistor_to_ev(v, r, TADJ = 0.0):
     if v < 1e-06:
         v = 1e-06
 
-    v = math.log(v, 10)
+    v = math.log(v, 10) - math.log(second_stage_gain, 10)
     r = math.log(r, 10)
     i = v - r + TADJ
 
@@ -420,8 +404,8 @@ def output_sanity_graph():
         voltage = (v * bv_to_voltage)
         bins = [ ]
         for stage in xrange(len(amp_stages)):
-            ev = voltage_and_oa_resistor_to_ev(voltage, amp_stages[stage][0] * amp_stages[stage][1])
-            ev +=  amp_stages[stage][2]
+            ev = voltage_and_oa_resistor_to_ev(voltage, amp_stages[stage][0])
+            ev +=  amp_stages[stage][1]
             ev8 = int(round((ev + 5.0) * 8.0))
             bins.append(ev8)
             f.write(",%f" % ev)
@@ -1135,21 +1119,19 @@ def output():
     e, pr = None, None
     for i in xrange(len(amp_stages)):
         resistor_value = amp_stages[i][0]
-        gain = amp_stages[i][1]
-        stops_subtracted = amp_stages[i][2]
+        stops_subtracted = amp_stages[i][1]
 
         ofh.write("#define STAGE%i_RESISTOR_NUMBER %i\n" % (i+1, op_amp_resistor_value_to_resistor_number[resistor_value]))
         ofh.write("#define STAGE%i_STOPS_SUBTRACTED %i\n" % (i+1, int(stops_subtracted)))
-        ofh.write("#define STAGE%i_GAIN %fF\n" % (i+1, gain))
 
-        e, pr = output_ev_table(ofc, 'STAGE' + str(i+1), amp_stages[i][0] * amp_stages[i][1])
+        e, pr = output_ev_table(ofc, 'STAGE' + str(i+1), amp_stages[i][0])
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_BITPATTERNS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_ABS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_DIFFS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_TENTHS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_THIRDS[];\n" % (i+1))
         if not e:
-            sys.stderr.write("R ERROR %.3f: (%.3f, %.3f)\n" % (amp_stages[i][0] * amp_stages[i][1], pr[0], pr[1]))
+            sys.stderr.write("R ERROR %.3f: (%.3f, %.3f)\n" % (amp_stages[i][0], pr[0], pr[1]))
             break
 
     ofh.write("#define VOLTAGE_TO_EV_ABS_OFFSET " + str(b_voltage_offset) + '\n')
