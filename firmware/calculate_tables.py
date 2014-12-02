@@ -41,7 +41,10 @@ for s in amp_stages:
 # in EV values which the table compression mechanism can't handle.
 voltage_offset                   = 250.0   # mV
 
-reference_temperature           = 30.0     # VEMD2503X01, BPW34, C
+# Set to highest temperature in which device is likely to be used,
+# so that we can compensate for temperature by amplifying signal
+# slightly.
+reference_temperature            = 50.0     # VEMD2503X01, BPW34, C
 
 ##########
 
@@ -235,7 +238,7 @@ def voltage_and_oa_resistor_to_ev(v, r, TADJ = 0.0):
     # Get i in microamps.
     i += math.log(1000000, 10)
 
-    log_lux = log_rlc_to_log_lux(i)
+    log_lux = log_rlc_to_log_lux(i) * temp_to_rrlc(reference_temperature)
     ev = log_illuminance_to_ev_at_100(log_lux)
     return ev
 
