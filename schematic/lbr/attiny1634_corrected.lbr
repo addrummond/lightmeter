@@ -168,58 +168,34 @@
 </package>
 <package name="MLF20">
 <description>&lt;b&gt;HP-VFQFP-N20&lt;/b&gt; Micro Lead Frame package (MLF)</description>
-<wire x1="-2.375" y1="2.05" x2="-2.05" y2="2.375" width="0.254" layer="21"/>
-<wire x1="-2.05" y1="2.375" x2="2.05" y2="2.375" width="0.254" layer="51"/>
-<wire x1="2.05" y1="-2.375" x2="-2.05" y2="-2.375" width="0.254" layer="51"/>
-<wire x1="-2.05" y1="-2.375" x2="-2.375" y2="-2.05" width="0.254" layer="21"/>
-<wire x1="-2.375" y1="-2.05" x2="-2.375" y2="2.05" width="0.254" layer="51"/>
-<wire x1="2.375" y1="2.05" x2="2.375" y2="-2.05" width="0.254" layer="51"/>
-<wire x1="2.05" y1="2.375" x2="2.375" y2="2.05" width="0.254" layer="21"/>
-<wire x1="2.375" y1="-2.05" x2="2.05" y2="-2.375" width="0.254" layer="21"/>
-<circle x="-1.55" y="1.55" radius="0.15" width="0.254" layer="21"/>
-<smd name="1" x="-2.25" y="1.000759375" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
-<smd name="2" x="-2.25" y="0.50038125" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
-<smd name="3" x="-2.25" y="0" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
-<smd name="4" x="-2.25" y="-0.50038125" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
-<smd name="5" x="-2.25" y="-1.000759375" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
-<smd name="6" x="-1.000759375" y="-2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
-<smd name="7" x="-0.50038125" y="-2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
-<smd name="8" x="0" y="-2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
-<smd name="9" x="0.50038125" y="-2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
-<smd name="10" x="1.000759375" y="-2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
-<smd name="11" x="2.25" y="-1.000759375" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
-<smd name="12" x="2.25" y="-0.50038125" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
-<smd name="13" x="2.25" y="0" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
-<smd name="14" x="2.25" y="0.50038125" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
-<smd name="15" x="2.25" y="1.000759375" dx="0.9" dy="0.2794" layer="1" roundness="50"/>
-<smd name="16" x="1.000759375" y="2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
-<smd name="17" x="0.50038125" y="2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
-<smd name="18" x="0" y="2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
-<smd name="19" x="-0.50038125" y="2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
-<smd name="20" x="-1.000759375" y="2.25" dx="0.2794" dy="0.9" layer="1" roundness="50"/>
+<wire x1="-2" y1="2" x2="2" y2="2" width="0.254" layer="51"/>
+<wire x1="2" y1="-2" x2="-2" y2="-2" width="0.254" layer="51"/>
+<wire x1="-1.999996875" y1="-2" x2="-1.999996875" y2="2" width="0.254" layer="51"/>
+<wire x1="2" y1="2" x2="2" y2="-2" width="0.254" layer="51"/>
+<circle x="-1.55" y="1.55" radius="0.15" width="0.127" layer="21"/>
+<smd name="1" x="-2.159" y="1.000759375" dx="0.9" dy="0.23" layer="1" roundness="50"/>
+<smd name="5" x="-2.159" y="-1.000759375" dx="0.9" dy="0.23" layer="1" roundness="50"/>
+<smd name="6" x="-1.000759375" y="-2.159" dx="0.23" dy="0.9" layer="1" roundness="50"/>
+<smd name="7" x="-0.50038125" y="-2.159" dx="0.23" dy="0.9" layer="1" roundness="50"/>
+<smd name="8" x="0" y="-2.159" dx="0.23" dy="0.9" layer="1" roundness="50"/>
+<smd name="9" x="0.50038125" y="-2.159" dx="0.23" dy="0.9" layer="1" roundness="50"/>
+<smd name="10" x="1.000759375" y="-2.159" dx="0.23" dy="0.9" layer="1" roundness="50"/>
+<smd name="11" x="2.159" y="-1.000759375" dx="0.9" dy="0.23" layer="1" roundness="50"/>
+<smd name="15" x="2.159" y="1.000759375" dx="0.9" dy="0.23" layer="1" roundness="50"/>
+<smd name="16" x="1.000759375" y="2.159" dx="0.23" dy="0.9" layer="1" roundness="50"/>
+<smd name="17" x="0.50038125" y="2.159" dx="0.23" dy="0.9" layer="1" roundness="50"/>
+<smd name="18" x="0" y="2.159" dx="0.23" dy="0.9" layer="1" roundness="50"/>
+<smd name="19" x="-0.50038125" y="2.159" dx="0.23" dy="0.9" layer="1" roundness="50"/>
+<smd name="20" x="-1.000759375" y="2.159" dx="0.23" dy="0.9" layer="1" roundness="50"/>
 <text x="-2.54" y="3.175" size="1.27" layer="25">&gt;NAME</text>
 <text x="-2.54" y="-4.445" size="1.27" layer="27">&gt;VALUE</text>
-<rectangle x1="-2.35" y1="0.86868125" x2="-1.9" y2="1.14808125" layer="51"/>
-<rectangle x1="-2.35" y1="0.36068125" x2="-1.9" y2="0.64008125" layer="51"/>
-<rectangle x1="-2.35" y1="-0.15" x2="-1.9" y2="0.15" layer="51"/>
-<rectangle x1="-2.35" y1="-0.64008125" x2="-1.9" y2="-0.36068125" layer="51"/>
-<rectangle x1="-2.35" y1="-1.14808125" x2="-1.9" y2="-0.86868125" layer="51"/>
-<rectangle x1="-0.64008125" y1="-2.35" x2="-0.36068125" y2="-1.9" layer="51"/>
-<rectangle x1="-1.14808125" y1="-2.35" x2="-0.86868125" y2="-1.9" layer="51"/>
-<rectangle x1="-0.15" y1="-2.35" x2="0.15" y2="-1.9" layer="51"/>
-<rectangle x1="0.36068125" y1="-2.35" x2="0.64008125" y2="-1.9" layer="51"/>
-<rectangle x1="0.86868125" y1="-2.35" x2="1.14808125" y2="-1.9" layer="51"/>
-<rectangle x1="1.9" y1="-1.14808125" x2="2.35" y2="-0.86868125" layer="51"/>
-<rectangle x1="1.9" y1="-0.64008125" x2="2.35" y2="-0.36068125" layer="51"/>
-<rectangle x1="1.9" y1="-0.15" x2="2.35" y2="0.15" layer="51"/>
-<rectangle x1="1.9" y1="0.36068125" x2="2.35" y2="0.64008125" layer="51"/>
-<rectangle x1="1.9" y1="0.86868125" x2="2.35" y2="1.14808125" layer="51"/>
-<rectangle x1="0.86868125" y1="1.9" x2="1.14808125" y2="2.35" layer="51"/>
-<rectangle x1="0.36068125" y1="1.9" x2="0.64008125" y2="2.35" layer="51"/>
-<rectangle x1="-0.15" y1="1.9" x2="0.15" y2="2.35" layer="51"/>
-<rectangle x1="-0.64008125" y1="1.9" x2="-0.36068125" y2="2.35" layer="51"/>
-<rectangle x1="-1.14808125" y1="1.9" x2="-0.86868125" y2="2.35" layer="51"/>
-<smd name="GND" x="0" y="0" dx="2.54" dy="2.54" layer="1"/>
+<smd name="GND" x="0" y="0" dx="2.59999375" dy="2.59999375" layer="1"/>
+<smd name="2" x="-2.159" y="0.50038125" dx="0.9" dy="0.23" layer="1" roundness="50"/>
+<smd name="3" x="-2.159" y="0" dx="0.9" dy="0.23" layer="1" roundness="50"/>
+<smd name="4" x="-2.159" y="-0.50038125" dx="0.9" dy="0.23" layer="1" roundness="50"/>
+<smd name="14" x="2.159" y="0.50038125" dx="0.9" dy="0.23" layer="1" roundness="50"/>
+<smd name="13" x="2.159" y="0" dx="0.9" dy="0.23" layer="1" roundness="50"/>
+<smd name="12" x="2.159" y="-0.50038125" dx="0.9" dy="0.23" layer="1" roundness="50"/>
 </package>
 </packages>
 <symbols>
