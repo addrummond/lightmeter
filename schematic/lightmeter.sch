@@ -11730,8 +11730,8 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND2" library="supply1" deviceset="GND" device=""/>
 <part name="C14" library="rcl" deviceset="C-EU" device="C0402" value="µ1"/>
 <part name="IC$4" library="microbuilder" deviceset="DISP_OLED_UG-2864HSWEG01" device="0.96&quot;"/>
-<part name="R9" library="resistor" deviceset="R-EU_" device="R0402" value="130k"/>
-<part name="R10" library="resistor" deviceset="R-EU_" device="R0402" value="16k"/>
+<part name="R9" library="resistor" deviceset="R-EU_" device="R0402" value="130k%"/>
+<part name="R10" library="resistor" deviceset="R-EU_" device="R0402" value="16k%"/>
 <part name="IC$3" library="lightmeter" deviceset="SN74HC164" device="TSSOP-14" value="SN74HC164TSSOP-14"/>
 <part name="GND11" library="supply1" deviceset="GND" device=""/>
 <part name="GND12" library="supply1" deviceset="GND" device=""/>
@@ -11748,7 +11748,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="D6" library="diode2" deviceset="DIODE-" device="SOD323-W"/>
 <part name="D5" library="diode2" deviceset="DIODE-" device="SOD323-W"/>
 <part name="D7" library="diode2" deviceset="DIODE-" device="SOD323-W"/>
-<part name="R8" library="resistor" deviceset="R-EU_" device="R0402" value="390k"/>
+<part name="R8" library="resistor" deviceset="R-EU_" device="R0402" value="390k%"/>
 <part name="C9" library="rcl" deviceset="C-EU" device="C0402" value="4µ7"/>
 <part name="C8" library="rcl" deviceset="C-EU" device="C0402" value="4µ7"/>
 <part name="C7" library="rcl" deviceset="C-EU" device="C0402" value="4µ7"/>
@@ -11757,9 +11757,9 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND19" library="supply1" deviceset="GND" device=""/>
 <part name="GND20" library="supply1" deviceset="GND" device=""/>
 <part name="C6" library="rcl" deviceset="C-EU" device="C0402" value="4µ7"/>
-<part name="R7" library="resistor" deviceset="R-EU_" device="R0402" value="1M"/>
-<part name="R6" library="resistor" deviceset="R-EU_" device="R0402" value="1M"/>
-<part name="R5" library="resistor" deviceset="R-EU_" device="R0402" value="1M"/>
+<part name="R7" library="resistor" deviceset="R-EU_" device="R0402" value="1M%"/>
+<part name="R6" library="resistor" deviceset="R-EU_" device="R0402" value="1M%"/>
+<part name="R5" library="resistor" deviceset="R-EU_" device="R0402" value="1M%"/>
 <part name="D8" library="lightmeter" deviceset="VEMD2523SLX01" device=""/>
 <part name="D9" library="lightmeter" deviceset="VEMD2523SLX01" device=""/>
 <part name="D10" library="lightmeter" deviceset="VEMD2523SLX01" device=""/>
@@ -11798,28 +11798,28 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="IC$5" library="adafruit" deviceset="MCP73831" device="/OT"/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
 <part name="R17" library="resistor" deviceset="R-EU_" device="R0402" value="10K"/>
-<part name="R16" library="resistor" deviceset="R-EU_" device="R0402" value="10K"/>
+<part name="R16" library="resistor" deviceset="R-EU_" device="R0402" value="10K%"/>
 <part name="J2" library="SparkFun-Connectors" deviceset="JST_2MM_MALE" device=""/>
 <part name="GND26" library="supply1" deviceset="GND" device=""/>
 <part name="IC$2" library="lightmeter" deviceset="LM3671" device=""/>
 <part name="P+3" library="supply1" deviceset="VCC" device=""/>
 <part name="C1" library="rcl" deviceset="C-EU" device="C0402" value="4.7"/>
-<part name="R3" library="resistor" deviceset="R-EU_" device="R0402" value="453K"/>
-<part name="R4" library="resistor" deviceset="R-EU_" device="R0402" value="100K"/>
+<part name="R3" library="resistor" deviceset="R-EU_" device="R0402" value="453K%"/>
+<part name="R4" library="resistor" deviceset="R-EU_" device="R0402" value="100K%"/>
 <part name="GND27" library="supply1" deviceset="GND" device=""/>
 <part name="C3" library="rcl" deviceset="C-EU" device="C0402" value="8p2"/>
 <part name="C2" library="rcl" deviceset="C-EU" device="C0402" value="33p"/>
 <part name="C4" library="rcl" deviceset="C-EU" device="C0402" value="10µ"/>
 <part name="GND24" library="supply1" deviceset="GND" device=""/>
 <part name="IC$6" library="lightmeter" deviceset="TL4051" device=""/>
-<part name="R24" library="resistor" deviceset="R-EU_" device="R0402" value="560K"/>
+<part name="R24" library="resistor" deviceset="R-EU_" device="R0402" value="560K%"/>
 <part name="GND25" library="supply1" deviceset="GND" device=""/>
-<part name="R22" library="resistor" deviceset="R-EU_" device="R0402" value="1M"/>
+<part name="R22" library="resistor" deviceset="R-EU_" device="R0402" value="1M%"/>
 <part name="R23" library="resistor" deviceset="R-EU_" device="R0402" value="6K2"/>
 <part name="C15" library="rcl" deviceset="C-EU" device="C0402" value="4u7"/>
 <part name="GND28" library="supply1" deviceset="GND" device=""/>
-<part name="R13" library="lightmeter" deviceset="THERMISTOR" device="R0402"/>
-<part name="R14" library="resistor" deviceset="R-EU_" device="R0402" value="???"/>
+<part name="R13" library="lightmeter" deviceset="THERMISTOR" device="R0402" value="???%"/>
+<part name="R14" library="resistor" deviceset="R-EU_" device="R0402" value="???%"/>
 <part name="GND29" library="supply1" deviceset="GND" device=""/>
 <part name="U$3" library="lightmeter" deviceset="3TRS_PHONE_JACK" device=""/>
 <part name="GND10" library="supply1" deviceset="GND" device=""/>
@@ -11832,8 +11832,8 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="S3" library="lightmeter" deviceset="SMALLPUSHBUTTON" device=""/>
 <part name="S4" library="lightmeter" deviceset="SMALLPUSHBUTTON" device=""/>
 <part name="S5" library="lightmeter" deviceset="SMALLPUSHBUTTON" device=""/>
-<part name="R18" library="resistor" deviceset="R-EU_" device="R0402" value="10K"/>
-<part name="R19" library="resistor" deviceset="R-EU_" device="R0402" value="6.8K"/>
+<part name="R18" library="resistor" deviceset="R-EU_" device="R0402" value="10K%"/>
+<part name="R19" library="resistor" deviceset="R-EU_" device="R0402" value="6.8K%"/>
 <part name="GND32" library="supply1" deviceset="GND" device=""/>
 <part name="U2" library="SparkFun-Connectors" deviceset="USB-AB" device="&quot;"/>
 <part name="GND31" library="supply1" deviceset="GND" device=""/>
