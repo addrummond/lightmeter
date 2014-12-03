@@ -2960,18 +2960,18 @@ Please make sure your boards conform to these design rules.</description>
 <element name="C8" library="rcl" package="C0402" value="4µ7" x="20.32" y="37.465"/>
 <element name="C7" library="rcl" package="C0402" value="4µ7" x="20.32" y="41.402"/>
 <element name="C6" library="rcl" package="C0402" value="4µ7" x="20.32" y="45.085"/>
-<element name="C13" library="rcl" package="C0402" value="4µ7" x="8.382" y="44.704" smashed="yes" rot="R120">
+<element name="C13" library="rcl" package="C0402" value="2µ2" x="8.382" y="44.704" smashed="yes" rot="R120">
 <attribute name="NAME" x="8.233428125" y="47.519571875" size="1.27" layer="25" rot="R210"/>
 <attribute name="VALUE" x="10.349278125" y="45.106571875" size="1.27" layer="27" rot="R120"/>
 </element>
 <element name="C2" library="rcl" package="C0402" value="33p" x="15.24" y="24.13" rot="R90"/>
-<element name="C1" library="rcl" package="C0402" value="4.7" x="10.287" y="25.527" rot="R90"/>
+<element name="C1" library="rcl" package="C0402" value="4u7" x="10.287" y="25.527" rot="R90"/>
 <element name="C3" library="rcl" package="C0402" value="8p2" x="12.7" y="19.812"/>
 <element name="C14" library="rcl" package="C0402" value="µ1" x="16.075659375" y="49.2506" rot="R270"/>
 <element name="C5" library="rcl" package="C0402" value="µ1" x="14.9352" y="34.417" rot="R90"/>
 <element name="C10" library="rcl" package="C0402" value="1µ" x="22.606" y="42.926" rot="R90"/>
 <element name="C4" library="rcl" package="C0402" value="10µ" x="9.525" y="19.304" rot="R270"/>
-<element name="C12" library="rcl" package="C0402" value="1µ" x="0.762" y="46.863" rot="R90"/>
+<element name="C12" library="rcl" package="C0402" value="4µ7" x="0.762" y="46.863" rot="R90"/>
 <element name="D10" library="lightmeter" package="VEMD2523SLX01" value="VEMD2523SLX01" x="22.352" y="46.228" smashed="yes">
 <attribute name="NAME" x="16.002" y="47.498" size="1.27" layer="26"/>
 </element>
@@ -3075,7 +3075,7 @@ Please make sure your boards conform to these design rules.</description>
 <attribute name="NAME" x="22.606" y="32.131" size="1.27" layer="25"/>
 <attribute name="VALUE" x="27.178" y="28.956" size="1.27" layer="27" rot="R90"/>
 </element>
-<element name="R20" library="resistor" package="R0402" value="R2000" x="17.653" y="3.302" rot="R270">
+<element name="R20" library="resistor" package="R0402" value="10k" x="17.653" y="3.302" rot="R270">
 <attribute name="SPICEPREFIX" value="R" x="17.653" y="3.302" size="1.778" layer="27" rot="R270" display="off"/>
 </element>
 <element name="R15" library="resistor" package="R0402" value="10k" x="25.781" y="36.83" smashed="yes" rot="R270">
@@ -3132,7 +3132,7 @@ Please make sure your boards conform to these design rules.</description>
 <attribute name="NAME" x="21.745309375" y="19.699965625" size="1.27" layer="25" rot="R80"/>
 <attribute name="VALUE" x="21.8298625" y="20.61179375" size="1.27" layer="27" rot="R80"/>
 </element>
-<element name="R2" library="resistor" package="R0402" value="R200" x="18.161" y="13.462" smashed="yes">
+<element name="R2" library="resistor" package="R0402" value="15K" x="18.161" y="13.462" smashed="yes">
 <attribute name="SPICEPREFIX" value="R" x="18.161" y="13.462" size="1.778" layer="27" display="off"/>
 <attribute name="NAME" x="16.51" y="11.43" size="1.27" layer="25"/>
 <attribute name="VALUE" x="17.526" y="11.43" size="1.27" layer="27"/>
