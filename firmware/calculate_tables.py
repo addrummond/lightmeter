@@ -13,6 +13,10 @@ op_amp_gain       = 1.0#reference_voltage/1100.0
 # The gain from the second stage of amplification.
 second_stage_gain = 10.0
 
+# The value of the resistor in the second stage of the op amp the gain is
+# proportional to the reciprocal of which.
+second_stage_recip_resistor = 10.0 # kOhm
+
 amp_stages = [ # In (kOhm,gain) pairs
     # For VEMD2503X01.
     # Uses 4 distinct resistor values.
