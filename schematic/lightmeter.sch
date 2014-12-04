@@ -9757,50 +9757,6 @@ MAX3223-MAX3243.pdf</description>
 <wire x1="-12.7" y1="4.445" x2="-12.7" y2="0.635" width="0.127" layer="21"/>
 <wire x1="-12.7" y1="0.635" x2="-11.43" y2="0.635" width="0.127" layer="21"/>
 </package>
-<package name="AG">
-<description>&lt;B&gt;DIODE&lt;/B&gt;&lt;p&gt;
-diameter 9 mm, horizontal, grid 10.16 mm</description>
-<wire x1="-4.699" y1="-4.572" x2="-4.699" y2="4.572" width="0.1524" layer="21"/>
-<wire x1="4.699" y1="4.572" x2="4.699" y2="-4.572" width="0.1524" layer="21"/>
-<wire x1="-4.699" y1="4.572" x2="4.699" y2="4.572" width="0.1524" layer="21"/>
-<wire x1="4.699" y1="-4.572" x2="-4.699" y2="-4.572" width="0.1524" layer="21"/>
-<wire x1="-1.143" y1="0" x2="0" y2="0" width="0.1524" layer="21"/>
-<wire x1="0" y1="0" x2="1.27" y2="0.635" width="0.1524" layer="21"/>
-<wire x1="0" y1="0" x2="2.54" y2="0" width="0.1524" layer="21"/>
-<wire x1="1.27" y1="0.635" x2="1.27" y2="-0.635" width="0.1524" layer="21"/>
-<wire x1="1.27" y1="-0.635" x2="0" y2="0" width="0.1524" layer="21"/>
-<wire x1="7.62" y1="0" x2="5.842" y2="0" width="1.4732" layer="51"/>
-<wire x1="-7.62" y1="0" x2="-5.842" y2="0" width="1.4732" layer="51"/>
-<wire x1="-0.381" y1="0.508" x2="-0.381" y2="0.635" width="0.1524" layer="21"/>
-<wire x1="-0.381" y1="0.635" x2="0" y2="0.635" width="0.1524" layer="21"/>
-<wire x1="0" y1="0.635" x2="0" y2="0" width="0.1524" layer="21"/>
-<wire x1="0.381" y1="-0.508" x2="0.381" y2="-0.635" width="0.1524" layer="21"/>
-<wire x1="0.381" y1="-0.635" x2="0" y2="-0.635" width="0.1524" layer="21"/>
-<wire x1="0" y1="-0.635" x2="0" y2="0" width="0.1524" layer="21"/>
-<pad name="C" x="-7.62" y="0" drill="1.8034" shape="long"/>
-<pad name="A" x="7.62" y="0" drill="1.8034" shape="long"/>
-<text x="-4.8006" y="4.8514" size="1.778" layer="25" ratio="10">&gt;NAME</text>
-<text x="-2.4892" y="-3.302" size="1.778" layer="27" ratio="10">&gt;VALUE</text>
-<rectangle x1="-3.81" y1="-4.572" x2="-3.302" y2="4.572" layer="21"/>
-<rectangle x1="4.699" y1="-0.7112" x2="5.6134" y2="0.7112" layer="21"/>
-<rectangle x1="-5.6134" y1="-0.7112" x2="-4.699" y2="0.7112" layer="21"/>
-</package>
-<package name="R0603">
-<description>&lt;b&gt;RESISTOR&lt;/b&gt;</description>
-<wire x1="-0.432" y1="-0.356" x2="0.432" y2="-0.356" width="0.1524" layer="51"/>
-<wire x1="0.432" y1="0.356" x2="-0.432" y2="0.356" width="0.1524" layer="51"/>
-<wire x1="-1.473" y1="0.983" x2="1.473" y2="0.983" width="0.0508" layer="39"/>
-<wire x1="1.473" y1="0.983" x2="1.473" y2="-0.983" width="0.0508" layer="39"/>
-<wire x1="1.473" y1="-0.983" x2="-1.473" y2="-0.983" width="0.0508" layer="39"/>
-<wire x1="-1.473" y1="-0.983" x2="-1.473" y2="0.983" width="0.0508" layer="39"/>
-<smd name="1" x="-0.85" y="0" dx="1" dy="1.1" layer="1"/>
-<smd name="2" x="0.85" y="0" dx="1" dy="1.1" layer="1"/>
-<text x="-0.635" y="0.635" size="1.27" layer="25">&gt;NAME</text>
-<text x="-0.635" y="-1.905" size="1.27" layer="27">&gt;VALUE</text>
-<rectangle x1="0.4318" y1="-0.4318" x2="0.8382" y2="0.4318" layer="51"/>
-<rectangle x1="-0.8382" y1="-0.4318" x2="-0.4318" y2="0.4318" layer="51"/>
-<rectangle x1="-0.1999" y1="-0.4001" x2="0.1999" y2="0.4001" layer="35"/>
-</package>
 <package name="BUTTON">
 <smd name="P$1" x="-2.54" y="0" dx="2.79999375" dy="2.2" layer="1"/>
 <smd name="P$3" x="2.259990625" y="0" dx="2.79999375" dy="2.2" layer="1"/>
@@ -9996,26 +9952,6 @@ diameter 9 mm, horizontal, grid 10.16 mm</description>
 <pin name="LEFT" x="5.08" y="-2.54" visible="off" length="short" rot="R180"/>
 <pin name="SLEEVE" x="5.08" y="2.54" visible="off" length="short" rot="R180"/>
 </symbol>
-<symbol name="SCHOTTKY-BIDIR">
-<wire x1="-1.27" y1="-1.27" x2="1.27" y2="0" width="0.254" layer="94"/>
-<wire x1="1.27" y1="0" x2="-1.27" y2="1.27" width="0.254" layer="94"/>
-<wire x1="1.905" y1="1.27" x2="1.27" y2="1.27" width="0.254" layer="94"/>
-<wire x1="1.27" y1="1.27" x2="1.27" y2="0" width="0.254" layer="94"/>
-<wire x1="0" y1="0" x2="1.27" y2="0" width="0.1524" layer="94"/>
-<wire x1="-1.27" y1="1.27" x2="-1.27" y2="-1.27" width="0.254" layer="94"/>
-<wire x1="1.27" y1="0" x2="1.27" y2="-1.27" width="0.254" layer="94"/>
-<wire x1="1.27" y1="-1.27" x2="0.635" y2="-1.27" width="0.254" layer="94"/>
-<wire x1="3.81" y1="1.27" x2="3.81" y2="-1.27" width="0.254" layer="94"/>
-<wire x1="3.81" y1="-1.27" x2="1.27" y2="0" width="0.254" layer="94"/>
-<wire x1="1.27" y1="0" x2="3.81" y2="1.27" width="0.254" layer="94"/>
-<wire x1="1.27" y1="0" x2="2.54" y2="0" width="0.1524" layer="94"/>
-<wire x1="1.905" y1="1.27" x2="1.905" y2="1.016" width="0.254" layer="94"/>
-<wire x1="0.635" y1="-1.016" x2="0.635" y2="-1.27" width="0.254" layer="94"/>
-<text x="-1.27" y="1.905" size="1.778" layer="95">&gt;NAME</text>
-<text x="-1.27" y="-3.429" size="1.778" layer="96">&gt;VALUE</text>
-<pin name="1" x="-2.54" y="0" visible="off" length="short" direction="pas"/>
-<pin name="2" x="5.08" y="0" visible="off" length="short" direction="pas" rot="R180"/>
-</symbol>
 <symbol name="SWITCH-NO">
 <wire x1="-2.54" y1="0" x2="2.54" y2="0.889" width="0.254" layer="94"/>
 <circle x="-2.54" y="0" radius="0.2839" width="0" layer="94"/>
@@ -10024,6 +9960,21 @@ diameter 9 mm, horizontal, grid 10.16 mm</description>
 <text x="-3.81" y="-3.81" size="1.778" layer="96">&gt;VALUE</text>
 <pin name="1" x="-5.08" y="0" visible="pad" length="short" direction="pas"/>
 <pin name="2" x="5.08" y="0" visible="pad" length="short" direction="pas" rot="R180"/>
+</symbol>
+<symbol name="SCHOTTKY">
+<wire x1="-1.27" y1="-1.27" x2="1.27" y2="0" width="0.254" layer="94"/>
+<wire x1="1.27" y1="0" x2="-1.27" y2="1.27" width="0.254" layer="94"/>
+<wire x1="1.905" y1="1.27" x2="1.27" y2="1.27" width="0.254" layer="94"/>
+<wire x1="1.27" y1="1.27" x2="1.27" y2="0" width="0.254" layer="94"/>
+<wire x1="-1.27" y1="1.27" x2="-1.27" y2="-1.27" width="0.254" layer="94"/>
+<wire x1="1.27" y1="0" x2="1.27" y2="-1.27" width="0.254" layer="94"/>
+<wire x1="1.905" y1="1.27" x2="1.905" y2="1.016" width="0.254" layer="94"/>
+<wire x1="1.27" y1="-1.27" x2="0.635" y2="-1.27" width="0.254" layer="94"/>
+<wire x1="0.635" y1="-1.016" x2="0.635" y2="-1.27" width="0.254" layer="94"/>
+<text x="-2.286" y="1.905" size="1.778" layer="95">&gt;NAME</text>
+<text x="-2.286" y="-3.429" size="1.778" layer="96">&gt;VALUE</text>
+<pin name="A" x="-2.54" y="0" visible="off" length="short" direction="pas"/>
+<pin name="C" x="2.54" y="0" visible="off" length="short" direction="pas" rot="R180"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -10223,33 +10174,6 @@ diameter 9 mm, horizontal, grid 10.16 mm</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="BZW50B" prefix="D">
-<description>&lt;B&gt;DIODE&lt;/B&gt;&lt;p&gt;
-uni and bidirectional supressor diode</description>
-<gates>
-<gate name="1" symbol="SCHOTTKY-BIDIR" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="AG">
-<connects>
-<connect gate="1" pin="1" pad="A"/>
-<connect gate="1" pin="2" pad="C"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="R0603" package="R0603">
-<connects>
-<connect gate="1" pin="1" pad="1"/>
-<connect gate="1" pin="2" pad="2"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
 <deviceset name="SMALLPUSHBUTTON">
 <gates>
 <gate name="G$1" symbol="SWITCH-NO" x="0" y="0"/>
@@ -10259,6 +10183,22 @@ uni and bidirectional supressor diode</description>
 <connects>
 <connect gate="G$1" pin="1" pad="P$1"/>
 <connect gate="G$1" pin="2" pad="P$3"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="GSOT04-E3-08">
+<gates>
+<gate name="G$1" symbol="SCHOTTKY" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="SOT23">
+<connects>
+<connect gate="G$1" pin="A" pad="1"/>
+<connect gate="G$1" pin="C" pad="3"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -11823,10 +11763,9 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND29" library="supply1" deviceset="GND" device=""/>
 <part name="U$3" library="lightmeter" deviceset="3TRS_PHONE_JACK" device=""/>
 <part name="GND10" library="supply1" deviceset="GND" device=""/>
-<part name="R21" library="resistor" deviceset="R-EU_" device="R0402" value="10K"/>
-<part name="R20" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
+<part name="R21" library="resistor" deviceset="R-EU_" device="R0402" value="16K"/>
+<part name="R20" library="resistor" deviceset="R-EU_" device="R0402" value="6k8"/>
 <part name="GND30" library="supply1" deviceset="GND" device=""/>
-<part name="D2" library="lightmeter" deviceset="BZW50B" device="R0603"/>
 <part name="S1" library="lightmeter" deviceset="SMALLPUSHBUTTON" device=""/>
 <part name="S2" library="lightmeter" deviceset="SMALLPUSHBUTTON" device=""/>
 <part name="S3" library="lightmeter" deviceset="SMALLPUSHBUTTON" device=""/>
@@ -11845,6 +11784,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND34" library="supply1" deviceset="GND" device=""/>
 <part name="R25" library="resistor" deviceset="R-EU_" device="R0402" value="10K"/>
 <part name="Q16" library="lightmeter" deviceset="PCHANNELMOSFET" device=""/>
+<part name="D$1" library="lightmeter" deviceset="GSOT04-E3-08" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -11973,7 +11913,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="R21" gate="G$1" x="-86.36" y="17.78"/>
 <instance part="R20" gate="G$1" x="-93.98" y="0" rot="R90"/>
 <instance part="GND30" gate="1" x="-88.9" y="11.176" rot="R180"/>
-<instance part="D2" gate="1" x="-88.9" y="2.54" rot="R90"/>
 <instance part="S1" gate="G$1" x="-60.96" y="-38.1" rot="R270"/>
 <instance part="S2" gate="G$1" x="-43.18" y="-38.1" rot="R270"/>
 <instance part="S3" gate="G$1" x="-22.86" y="-38.1" rot="R270"/>
@@ -11992,6 +11931,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="GND34" gate="1" x="-70.612" y="-72.39" rot="R270"/>
 <instance part="R25" gate="G$1" x="-63.5" y="-99.06" rot="R180"/>
 <instance part="Q16" gate="G$1" x="-81.28" y="-93.98" rot="R90"/>
+<instance part="D$1" gate="G$1" x="-88.9" y="2.54" rot="R90"/>
 </instances>
 <busses>
 </busses>
@@ -12203,11 +12143,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="-99.06" y1="22.86" x2="-91.44" y2="22.86" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="D2" gate="1" pin="2"/>
-<wire x1="-88.9" y1="7.62" x2="-88.9" y2="8.636" width="0.1524" layer="91"/>
-<pinref part="GND30" gate="1" pin="GND"/>
-</segment>
-<segment>
 <pinref part="U2" gate="G$1" pin="GND"/>
 <pinref part="GND31" gate="1" pin="GND"/>
 <wire x1="-91.44" y1="93.98" x2="-96.52" y2="93.98" width="0.1524" layer="91"/>
@@ -12237,6 +12172,11 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="-76.2" y1="-93.98" x2="-69.596" y2="-93.98" width="0.1524" layer="91"/>
 <pinref part="GND32" gate="1" pin="GND"/>
 <pinref part="Q16" gate="G$1" pin="D"/>
+</segment>
+<segment>
+<pinref part="D$1" gate="G$1" pin="C"/>
+<wire x1="-88.9" y1="5.08" x2="-88.9" y2="8.636" width="0.1524" layer="91"/>
+<pinref part="GND30" gate="1" pin="GND"/>
 </segment>
 </net>
 <net name="VCC" class="0">
@@ -12499,9 +12439,9 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="R20" gate="G$1" pin="1"/>
 <label x="-83.82" y="-5.08" size="1.016" layer="95" rot="R90" xref="yes"/>
 <wire x1="-93.98" y1="-5.08" x2="-88.9" y2="-5.08" width="0.1524" layer="91"/>
-<pinref part="D2" gate="1" pin="1"/>
+<pinref part="D$1" gate="G$1" pin="A"/>
 <wire x1="-88.9" y1="-5.08" x2="-83.82" y2="-5.08" width="0.1524" layer="91"/>
-<wire x1="-88.9" y1="0" x2="-88.9" y2="-5.08" width="0.1524" layer="91"/>
+<wire x1="-88.9" y1="-5.08" x2="-88.9" y2="0" width="0.1524" layer="91"/>
 <junction x="-88.9" y="-5.08"/>
 </segment>
 </net>
