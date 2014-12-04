@@ -3057,7 +3057,7 @@ Please make sure your boards conform to these design rules.</description>
 <element name="R4" library="resistor" package="R0402" value="100K%" x="16.51" y="21.59">
 <attribute name="SPICEPREFIX" value="R" x="16.51" y="21.59" size="1.778" layer="27" display="off"/>
 </element>
-<element name="R23" library="resistor" package="R0402" value="6K2" x="5.8928" y="32.639" rot="R290">
+<element name="R23" library="resistor" package="R0402" value="6K8" x="5.8928" y="32.639" rot="R290">
 <attribute name="SPICEPREFIX" value="R" x="5.8928" y="32.639" size="1.778" layer="27" rot="R290" display="off"/>
 </element>
 <element name="R13" library="lightmeter" package="R0402" value="???%" x="14.097" y="41.021" smashed="yes">
@@ -3121,7 +3121,7 @@ Please make sure your boards conform to these design rules.</description>
 <element name="R18" library="resistor" package="R0402" value="10K%" x="2.921" y="27.94">
 <attribute name="SPICEPREFIX" value="R" x="2.921" y="27.94" size="1.778" layer="27" display="off"/>
 </element>
-<element name="R19" library="resistor" package="R0402" value="6.8K%" x="0.3048" y="37.0586" smashed="yes" rot="R110">
+<element name="R19" library="resistor" package="R0402" value="6K8%" x="0.3048" y="37.0586" smashed="yes" rot="R110">
 <attribute name="SPICEPREFIX" value="R" x="0.3048" y="37.0586" size="1.778" layer="27" rot="R110" display="off"/>
 <attribute name="NAME" x="2.5999375" y="36.328275" size="1.27" layer="25" rot="R110"/>
 <attribute name="VALUE" x="2.4314375" y="37.156878125" size="1.27" layer="27" rot="R110"/>
