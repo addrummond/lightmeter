@@ -565,7 +565,8 @@ static int16_t ev_with_fracs_to_xth(ev_with_fracs_t evwf, uint8_t const_offset)
 //
 //     aperture_given_shutter_speed_iso_ev(shutter_speed,iso,ev)
 //     shutter_speed_given_aperture_iso_ev(aperture,iso,ev)
-ev_with_fracs_t x_given_y_iso_ev(ev_with_fracs_t given_x_, ev_with_fracs_t given_iso_, ev_with_fracs_t evwf, uint8_t x) // x=0: aperture, x=1: shutter_speed
+//     iso_given_aperture_shutter_speed(aperture, shutter_speed)
+ev_with_fracs_t z_given_x_y_ev(ev_with_fracs_t given_x_, ev_with_fracs_t given_y_, ev_with_fracs_t evwf, uint8_t x) // x=0: aperture, x=1: shutter_speed
 {
     // We use an internal represenation of values in 1/120 EV steps. This permits
     // exact division by 8, 10 and 3.
@@ -578,7 +579,7 @@ ev_with_fracs_t x_given_y_iso_ev(ev_with_fracs_t given_x_, ev_with_fracs_t given
     const int16_t the_iso = 4*120;      // 100 ISO
 
     int16_t given_x = ev_with_fracs_to_120th(given_x_);
-    int16_t given_iso = ev_with_fracs_to_120th(given_iso_);
+    int16_t given_y = ev_with_fracs_to_120th(given_y_);
     int16_t given_ev = (int16_t)(ev_with_fracs_get_ev8(evwf) * 15);
     int16_t whole_given_ev = (int16_t)((ev_with_fracs_get_ev8(evwf) & ~0b111) * 15);
     // We do the main calculation using the 1/120EV value derived from the 1/8 EV value.
@@ -590,23 +591,31 @@ ev_with_fracs_t x_given_y_iso_ev(ev_with_fracs_t given_x_, ev_with_fracs_t given
 
     int16_t r;
     int16_t min, max;
-    if (x == 1) {
-        int16_t ap_adjusted = the_ev + given_x - the_aperture;
-
-        int16_t evdiff = given_ev - ap_adjusted;
-        r = the_speed + evdiff;
-        min = SS_MIN*15, max = SS_MAX*15;
-    }
-    else { // x == 0
+    if (x == 0) {
         int16_t shut_adjusted = the_ev + given_x - the_speed;
 
         int16_t evdiff = given_ev - shut_adjusted;
         r = the_aperture + evdiff;
+        // Adjust for difference between reference ISO and actual ISO.
+        r += given_y - the_iso;
         min = AP_MIN*15, max = AP_MAX*15;
     }
-
-    // Adjust for difference between reference ISO and actual ISO.
-    r += given_iso - the_iso;
+    else if (x == 1) {
+        int16_t ap_adjusted = the_ev + given_x - the_aperture;
+        int16_t evdiff = given_ev - ap_adjusted;
+        r = the_speed + evdiff;
+        // Adjust for difference between reference ISO and actual ISO.
+        r += given_y - the_iso;
+        min = SS_MIN*15, max = SS_MAX*15;
+    }
+    else { // x == 2
+        int16_t iso_adjusted = the_ev + given_x - the_aperture;
+        int16_t evdiff = given_ev - iso_adjusted;
+        r = the_iso + evdiff;
+        // Adjust for difference between reference shutter speed and actual shutter speed.
+        r += given_y - the_speed;
+        min = ISO_MIN*15, max = ISO_MAX*15;
+    }
 
     if (r < min)
         r = min;
