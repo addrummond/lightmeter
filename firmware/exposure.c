@@ -88,14 +88,9 @@ FOR_EACH_AMP_STAGE(CASE)
     int8_t ret_thirds = third_below_eighth(ret.ev);
     ret_thirds += thirds_bit;
 
-    // Any whole adjustments will have been taken care of by the preceding
-    // change to ret.ev, so we just want to do the fractional bit now.
-    adj10 %= 10;
-    adj3 %= 3;
-
     // Note behavior of '%' with respect to negative numbers. E.g. -3 % 8 == 5.
-    ev_with_fracs_set_tenths(ret, (ret_tenths + adj10) % 10);
-    ev_with_fracs_set_thirds(ret, (ret_thirds + adj3) % 3);
+    ev_with_fracs_set_tenths(ret, ret_tenths % 10);
+    ev_with_fracs_set_thirds(ret, ret_thirds % 3);
 
     return ret;
 }
