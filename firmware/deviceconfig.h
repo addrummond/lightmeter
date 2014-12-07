@@ -89,7 +89,7 @@
 #define PUSHBUTTON3_PORT         PORTA
 #define PUSHBUTTON3_PIN          PINA
 #define PUSHBUTTON3_PUE          PUEA
-#define PUSHBUTTON3_DDR          DDR
+#define PUSHBUTTON3_DDR          DDRA
 #define PUSHBUTTON3_BIT          PA1
 #define PUSHBUTTON3_PCMSK        PCMSK0
 #define PUSHBUTTON3_PCIE         PCIE0
