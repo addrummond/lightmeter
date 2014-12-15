@@ -11730,7 +11730,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="Q6" library="lightmeter" deviceset="PCHANNELMOSFET" device=""/>
 <part name="Q7" library="lightmeter" deviceset="PCHANNELMOSFET" device=""/>
 <part name="Q12" library="lightmeter" deviceset="NCHANNELMOSFET" device=""/>
-<part name="GND4" library="supply1" deviceset="GND" device=""/>
 <part name="P+1" library="supply1" deviceset="VCC" device=""/>
 <part name="IC$5" library="adafruit" deviceset="MCP73831" device="/OT"/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
@@ -11877,7 +11876,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="Q6" gate="G$1" x="130.81" y="17.78" rot="R90"/>
 <instance part="Q7" gate="G$1" x="157.48" y="15.24" rot="R90"/>
 <instance part="Q12" gate="G$1" x="40.64" y="-40.64"/>
-<instance part="GND4" gate="1" x="-82.296" y="-45.72" rot="R90"/>
 <instance part="P+1" gate="VCC" x="-81.28" y="-35.56" rot="R270"/>
 <instance part="IC$5" gate="G$1" x="-38.1" y="-68.58"/>
 <instance part="GND6" gate="1" x="0.762" y="-73.66" rot="R90"/>
