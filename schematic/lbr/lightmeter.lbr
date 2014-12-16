@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
+<grid distance="0.05" unitdist="inch" unit="inch" style="lines" multiple="1" display="yes" altdistance="0.025" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="yes"/>
@@ -429,19 +429,19 @@ Source: http://sales.hamamatsu.com/assets/pdf/parts_S/S7379-01_etc.pdf</descript
 </package>
 <package name="3TRS-SMD">
 <smd name="P$1" x="-6.2738" y="-1.27" dx="2.3876" dy="2.5527" layer="1"/>
-<smd name="P$3" x="3.3782" y="-1.27" dx="2.8956" dy="2.5527" layer="1"/>
-<smd name="P$2" x="-2.54" y="6.0833" dx="2.3876" dy="2.5527" layer="1"/>
+<smd name="P$3" x="3.048" y="-1.27" dx="2.8956" dy="2.5527" layer="1"/>
+<smd name="P$2" x="-4.191" y="6.0833" dx="2.3876" dy="2.5527" layer="1"/>
 <hole x="-5.08" y="2.40665" drill="1.6002"/>
-<hole x="1.27" y="2.40665" drill="1.6002"/>
-<wire x1="-11.43" y1="5.08" x2="-11.43" y2="4.445" width="0.127" layer="21"/>
-<wire x1="-11.43" y1="4.445" x2="-11.43" y2="0.635" width="0.127" layer="21"/>
-<wire x1="-11.43" y1="0.635" x2="-11.43" y2="0" width="0.127" layer="21"/>
-<wire x1="-11.43" y1="0" x2="6.35" y2="0" width="0.127" layer="21"/>
+<hole x="1.9304" y="2.40665" drill="1.6002"/>
+<wire x1="-10.16" y1="5.08" x2="-10.16" y2="4.445" width="0.127" layer="21"/>
+<wire x1="-10.16" y1="4.445" x2="-10.16" y2="0.635" width="0.127" layer="21"/>
+<wire x1="-10.16" y1="0.635" x2="-10.16" y2="0" width="0.127" layer="21"/>
+<wire x1="-10.16" y1="0" x2="6.35" y2="0" width="0.127" layer="21"/>
 <wire x1="6.35" y1="0" x2="6.35" y2="5.08" width="0.127" layer="21"/>
-<wire x1="6.35" y1="5.08" x2="-11.43" y2="5.08" width="0.127" layer="21"/>
-<wire x1="-11.43" y1="4.445" x2="-12.7" y2="4.445" width="0.127" layer="21"/>
-<wire x1="-12.7" y1="4.445" x2="-12.7" y2="0.635" width="0.127" layer="21"/>
-<wire x1="-12.7" y1="0.635" x2="-11.43" y2="0.635" width="0.127" layer="21"/>
+<wire x1="6.35" y1="5.08" x2="-10.16" y2="5.08" width="0.127" layer="21"/>
+<wire x1="-10.16" y1="4.445" x2="-11.43" y2="4.445" width="0.127" layer="21"/>
+<wire x1="-11.43" y1="4.445" x2="-11.43" y2="0.635" width="0.127" layer="21"/>
+<wire x1="-11.43" y1="0.635" x2="-10.16" y2="0.635" width="0.127" layer="21"/>
 </package>
 <package name="AUDIO-JACK">
 <wire x1="7.5" y1="6" x2="7.5" y2="-6" width="0.2032" layer="21"/>
