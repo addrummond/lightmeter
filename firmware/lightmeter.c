@@ -310,8 +310,9 @@ int main()
     sei();
 
     // Turn things on.
-    or_shift_register_bits((1 << SHIFT_REGISTER_SCRPWR_BIT) |
-                           (1 << SHIFT_REGISTER_OAPWR_BIT));
+    or_shift_register_bits(1 << SHIFT_REGISTER_OAPWR_BIT);
+    // Screen power MOSFET is p-channel with pullup.
+    and_shift_register_bits(~(1 << SHIFT_REGISTER_SCRPWR_BIT));
     set_shift_register_out();
 
     set_amp_stage(INCIDENT, 2);
@@ -349,6 +350,10 @@ int main()
         ui_show_interface();
 
         _delay_ms(50);
+
+#ifdef DEBUG
+    //tx_byte('L');
+#endif
     }
 
     return 0;
