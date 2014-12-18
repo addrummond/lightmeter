@@ -8,3 +8,5 @@ Ideas for cutting down cost of components
 * Replace diodes with http://www.mouser.com/ProductDetail/Vishay-Semiconductors/BAT54WS-E3-18/?qs=sGAEpiMZZMtQ8nqTKtFS%2fD7QH7JJs%2flZ9YSVt88cA%2fQ%3d (saves 0.044)
 
 * Replace buck regulator with http://www.mouser.com/ProductDetail/Diodes-Incorporated/AP3418KTR-G1/?qs=sGAEpiMZZMtitjHzVIkrqQ05hQ8aRQKKrGtFA7kCfsGw9fLcsVumGg%3d%3d (saves 0.255)
+
+* Switch to fixed output voltage buck regulator to save on components.

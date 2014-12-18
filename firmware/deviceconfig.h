@@ -19,10 +19,10 @@
 //           Display RST |    ADC3/PA6 3---18 PB3/ADC8  | Display CLK
 //     Serial debug port |    ADC2/PA5 4---17 PC0/ADC9  | Op amp output
 //      Shift register A |    ADC1/PA4 5---16 [USCK]    | **********
-//          Pushbutton 2 |    ADC0/PA3 6---15 PC2/ADC11 | Shift register clock
+//                       |    ADC0/PA3 6---15 PC2/ADC11 | Shift register clock
 //          Pushbutton 1 |         PA2 7---14 [RESET]   | **********
-//          Pushbutton 3 |         PA1 8---13 PC4       | Display CS
-//           ADC ext ref |         PA0 9---12 PC5       | Battery stat input
+//          Pushbutton 2 |         PA1 8---13 PC4       | Display CS
+//                       |         PA0 9---12 PC5       | Battery stat input
 //            ********** |       [GND] 10--11 [VCC]     | **********
 
 
