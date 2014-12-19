@@ -11686,8 +11686,8 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND2" library="supply1" deviceset="GND" device=""/>
 <part name="C14" library="rcl" deviceset="C-EU" device="C0402" value="µ1"/>
 <part name="IC$4" library="microbuilder" deviceset="DISP_OLED_UG-2864HSWEG01" device="0.96&quot;"/>
-<part name="R9" library="resistor" deviceset="R-EU_" device="R0402" value="130k%"/>
-<part name="R10" library="resistor" deviceset="R-EU_" device="R0402" value="16k%"/>
+<part name="R9" library="resistor" deviceset="R-EU_" device="R0402" value="13k%"/>
+<part name="R10" library="resistor" deviceset="R-EU_" device="R0402" value="1k6%"/>
 <part name="IC$3" library="lightmeter" deviceset="SN74HC164" device="TSSOP-14" value="SN74HC164TSSOP-14"/>
 <part name="GND11" library="supply1" deviceset="GND" device=""/>
 <part name="GND12" library="supply1" deviceset="GND" device=""/>
@@ -11700,7 +11700,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="TSDBG" library="testpad" deviceset="TP" device="PAD1-13" value="TPPAD1-13"/>
 <part name="GND8" library="supply1" deviceset="GND" device=""/>
 <part name="D7" library="diode2" deviceset="DIODE-" device="SOD323-W"/>
-<part name="R8" library="resistor" deviceset="R-EU_" device="R0402" value="390k%"/>
+<part name="R8" library="resistor" deviceset="R-EU_" device="R0402" value="97.5k%"/>
 <part name="C9" library="rcl" deviceset="C-EU" device="C0402" value="4µ7"/>
 <part name="C8" library="rcl" deviceset="C-EU" device="C0402" value="4µ7"/>
 <part name="C7" library="rcl" deviceset="C-EU" device="C0402" value="4µ7"/>
@@ -11709,9 +11709,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND19" library="supply1" deviceset="GND" device=""/>
 <part name="GND20" library="supply1" deviceset="GND" device=""/>
 <part name="C6" library="rcl" deviceset="C-EU" device="C0402" value="4µ7"/>
-<part name="R7" library="resistor" deviceset="R-EU_" device="R0402" value="1M%"/>
-<part name="R6" library="resistor" deviceset="R-EU_" device="R0402" value="1M%"/>
-<part name="R5" library="resistor" deviceset="R-EU_" device="R0402" value="1M%"/>
+<part name="R7" library="resistor" deviceset="R-EU_" device="R0402" value="750k%"/>
 <part name="D8" library="lightmeter" deviceset="VEMD2523SLX01" device=""/>
 <part name="D9" library="lightmeter" deviceset="VEMD2523SLX01" device=""/>
 <part name="D10" library="lightmeter" deviceset="VEMD2523SLX01" device=""/>
@@ -11847,8 +11845,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="GND20" gate="1" x="114.3" y="-73.66" rot="R90"/>
 <instance part="C6" gate="G$1" x="96.52" y="43.18" rot="R90"/>
 <instance part="R7" gate="G$1" x="99.06" y="53.34"/>
-<instance part="R6" gate="G$1" x="83.82" y="53.34"/>
-<instance part="R5" gate="G$1" x="76.2" y="45.72" rot="R90"/>
 <instance part="D8" gate="G$1" x="101.6" y="-45.72" rot="R180"/>
 <instance part="D9" gate="G$1" x="101.6" y="-55.88" rot="R180"/>
 <instance part="D10" gate="G$1" x="101.6" y="-66.04" rot="R180"/>
@@ -12478,10 +12474,9 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <label x="78.74" y="-15.24" size="1.778" layer="95" rot="R180" xref="yes"/>
 <wire x1="83.82" y1="-27.94" x2="78.74" y2="-27.94" width="0.1524" layer="91"/>
 <junction x="78.74" y="-27.94"/>
-<pinref part="R5" gate="G$1" pin="1"/>
-<wire x1="76.2" y1="40.64" x2="86.36" y2="40.64" width="0.1524" layer="91"/>
-<wire x1="86.36" y1="40.64" x2="86.36" y2="43.18" width="0.1524" layer="91"/>
-<wire x1="86.36" y1="43.18" x2="88.9" y2="43.18" width="0.1524" layer="91"/>
+<pinref part="R7" gate="G$1" pin="1"/>
+<wire x1="93.98" y1="53.34" x2="88.9" y2="53.34" width="0.1524" layer="91"/>
+<wire x1="88.9" y1="43.18" x2="88.9" y2="53.34" width="0.1524" layer="91"/>
 <junction x="88.9" y="43.18"/>
 </segment>
 <segment>
@@ -12660,21 +12655,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="Q1" gate="G$1" pin="D"/>
 <wire x1="109.22" y1="53.34" x2="106.68" y2="53.34" width="0.1524" layer="91"/>
 <junction x="106.68" y="53.34"/>
-</segment>
-</net>
-<net name="N$13" class="0">
-<segment>
-<pinref part="R7" gate="G$1" pin="1"/>
-<pinref part="R6" gate="G$1" pin="2"/>
-<wire x1="93.98" y1="53.34" x2="88.9" y2="53.34" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$18" class="0">
-<segment>
-<pinref part="R6" gate="G$1" pin="1"/>
-<wire x1="78.74" y1="53.34" x2="76.2" y2="53.34" width="0.1524" layer="91"/>
-<pinref part="R5" gate="G$1" pin="2"/>
-<wire x1="76.2" y1="53.34" x2="76.2" y2="50.8" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$20" class="0">
