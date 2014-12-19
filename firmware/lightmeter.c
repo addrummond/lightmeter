@@ -234,22 +234,18 @@ static void process_button_press()
         return;
 
 #if DEBUG
-    // Decode for button arrangement on protoboard, buttons numbered 1-5
+    // Decode for button arrangement on protoboard, buttons numbered 1-3.
     // from left-right / top-bottom.
     tx_byte('P');
-    //tx_byte('0' + button_pressed);
-    //tx_byte('X');
-    if (button_pressed == 6) {
+    if (button_pressed == 1) {
         tx_byte('1');
     }
-    else if (button_pressed == 5) {
-        tx_byte('2');
-    }
     else if (button_pressed == 3) {
-        tx_byte('3');
+        tx_byte('2');
+
     }
-    else if (button_pressed == 1) {
-        tx_byte('4');
+    else if (button_pressed == 2) {
+        tx_byte('3');
     }
     else if (button_pressed == 4) {
         tx_byte('5');

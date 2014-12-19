@@ -3071,8 +3071,8 @@ Please make sure your boards conform to these design rules.</description>
 <attribute name="SPICEPREFIX" value="R" x="24.13" y="46.99" size="1.778" layer="27" display="off"/>
 </element>
 <element name="S$1" library="lightmeter" package="BUTTON" value="SMALLPUSHBUTTON" x="12.7" y="30.2514"/>
-<element name="S$2" library="lightmeter" package="BUTTON" value="SMALLPUSHBUTTON" x="22.606" y="25.273"/>
-<element name="S$3" library="lightmeter" package="BUTTON" value="SMALLPUSHBUTTON" x="3.0734" y="25.273"/>
+<element name="S$3" library="lightmeter" package="BUTTON" value="SMALLPUSHBUTTON" x="22.606" y="25.273"/>
+<element name="S$2" library="lightmeter" package="BUTTON" value="SMALLPUSHBUTTON" x="3.0734" y="25.273"/>
 <element name="TSDBG" library="testpad" package="P1-13" value="TPPAD1-13" x="0.381" y="48.387">
 <attribute name="TP_SIGNAL_NAME" value="" x="0.381" y="48.387" size="1.778" layer="27" display="off"/>
 </element>
@@ -3128,8 +3128,8 @@ Please make sure your boards conform to these design rules.</description>
 <contactref element="IC$3" pad="7"/>
 <contactref element="R15" pad="2"/>
 <contactref element="S$1" pad="P$3"/>
-<contactref element="S$2" pad="P$3"/>
 <contactref element="S$3" pad="P$3"/>
+<contactref element="S$2" pad="P$3"/>
 <contactref element="IC$3P" pad="5"/>
 <contactref element="D8" pad="P$1"/>
 <contactref element="D9" pad="P$1"/>
@@ -4637,8 +4637,8 @@ Please make sure your boards conform to these design rules.</description>
 <wire x1="6.477" y1="45.3898" x2="7.224" y2="44.958" width="0.254" layer="1"/>
 </signal>
 <signal name="PBI$2">
-<contactref element="S$2" pad="P$1"/>
 <contactref element="S$3" pad="P$1"/>
+<contactref element="S$2" pad="P$1"/>
 <contactref element="D7" pad="C"/>
 <contactref element="IC$1" pad="6"/>
 <via x="2.0574" y="34.036" extent="1-16" drill="0.3302" shape="square"/>

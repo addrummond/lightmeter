@@ -19,10 +19,10 @@
 //           Display RST |    ADC3/PA6 3---18 PB3/ADC8  | Display CLK
 //     Serial debug port |    ADC2/PA5 4---17 PC0/ADC9  | Op amp output
 //      Shift register A |    ADC1/PA4 5---16 [USCK]    | **********
-//                       |    ADC0/PA3 6---15 PC2/ADC11 | Shift register clock
+//               ACC SCL |    ADC0/PA3 6---15 PC2/ADC11 | Shift register clock
 //          Pushbutton 1 |         PA2 7---14 [RESET]   | **********
 //          Pushbutton 2 |         PA1 8---13 PC4       | Display CS
-//                       |         PA0 9---12 PC5       | Battery stat input
+//               ACC SDA |         PA0 9---12 PC5       | Battery stat input
 //            ********** |       [GND] 10--11 [VCC]     | **********
 
 
@@ -48,6 +48,18 @@
 #define DISPLAY_RESET_PORT  PORTA
 #define DISPLAY_RESET_DDR   DDRA
 #define DISPLAY_RESET_BIT   PA6
+
+
+//
+// Accelerometer.
+//
+#define ACCEL_SCL_PORT PORTA
+#define ACCEL_SCL_DDR  DDRA
+#define ACCEL_SCL_BIT  PA3
+
+#define ACCEL_SDA_PORT PORTA
+#define ACCEL_SDA_DDR  DDRA
+#define ACCEL_SDA_BIT  PA0
 
 
 //
@@ -80,25 +92,16 @@
 #define PUSHBUTTON2_PIN          PINA
 #define PUSHBUTTON2_PUE          PUEA
 #define PUSHBUTTON2_DDR          DDRA
-#define PUSHBUTTON2_BIT          PA3
+#define PUSHBUTTON2_BIT          PA1
 #define PUSHBUTTON2_PCMSK        PCMSK0
 #define PUSHBUTTON2_PCIE         PCIE0
-#define PUSHBUTTON2_PCINT_BIT    PCINT3
-#define PUSHBUTTON2_PCINT_VECT   PCINT0_vect
+#define PUSHBUTTON2_PCINT_BIT    PCINT1
+#define PUSHBUTTON2_PCINT_VECT   PCINT1_vect
 
-#define PUSHBUTTON3_PORT         PORTA
-#define PUSHBUTTON3_PIN          PINA
-#define PUSHBUTTON3_PUE          PUEA
-#define PUSHBUTTON3_DDR          DDRA
-#define PUSHBUTTON3_BIT          PA1
-#define PUSHBUTTON3_PCMSK        PCMSK0
-#define PUSHBUTTON3_PCIE         PCIE0
-#define PUSHBUTTON3_PCINT_BIT    PCINT1
-#define PUSHBUTTON3_PCINT_VECT   PCINT1_vect
+#define FOR_X_FROM_1_TO_N_PUSHBUTTONS_DO(x) x(1) x(2)
+#define FOR_EACH_PUSHBUTTON_PCMSK_DO(x)     x(0)
 
-#define FOR_X_FROM_1_TO_N_PUSHBUTTONS_DO(x) x(1) x(2) x(3)
-#define FOR_EACH_PUSHBUTTON_PCMSK_DO(x)     x(0) x(2)
-
+// TODO: Obselete.
 #define BUTTON_METER  1
 #define BUTTON_MENU   2
 #define BUTTON_UP     4
