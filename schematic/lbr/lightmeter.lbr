@@ -22,7 +22,7 @@
 <layer number="26" name="bNames" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="27" name="tValues" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="28" name="bValues" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="29" name="tStop" color="7" fill="3" visible="no" active="yes"/>
+<layer number="29" name="tStop" color="7" fill="3" visible="yes" active="yes"/>
 <layer number="30" name="bStop" color="7" fill="6" visible="no" active="yes"/>
 <layer number="31" name="tCream" color="7" fill="4" visible="no" active="yes"/>
 <layer number="32" name="bCream" color="7" fill="5" visible="no" active="yes"/>
@@ -1109,16 +1109,16 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <wire x1="-1.076959375" y1="-1.076959375" x2="-1.076959375" y2="1.076959375" width="0.127" layer="21"/>
 <wire x1="1.076959375" y1="-1.076959375" x2="1.076959375" y2="1.076959375" width="0.127" layer="21"/>
 <wire x1="-1.076959375" y1="-1.076959375" x2="1.076959375" y2="-1.076959375" width="0.127" layer="21"/>
-<smd name="P$1" x="-0.8001" y="-0.7493" dx="0.2286" dy="0.50038125" layer="1" rot="R180"/>
-<smd name="P$2" x="-0.4001" y="-0.7493" dx="0.2286" dy="0.50038125" layer="1" rot="R180"/>
-<smd name="P$3" x="-0.000103125" y="-0.7493" dx="0.2286" dy="0.50038125" layer="1" rot="R180"/>
-<smd name="P$4" x="0.399896875" y="-0.7493" dx="0.2286" dy="0.50038125" layer="1" rot="R180"/>
-<smd name="P$5" x="0.799896875" y="-0.7493" dx="0.2286" dy="0.50038125" layer="1" rot="R180"/>
-<smd name="P$6" x="0.799896875" y="0.7493" dx="0.2286" dy="0.50038125" layer="1" rot="R180"/>
-<smd name="P$7" x="0.399896875" y="0.7493" dx="0.2286" dy="0.50038125" layer="1" rot="R180"/>
-<smd name="P$8" x="-0.000103125" y="0.7493" dx="0.2286" dy="0.50038125" layer="1" rot="R180"/>
-<smd name="P$9" x="-0.4001" y="0.7493" dx="0.2286" dy="0.50038125" layer="1" rot="R180"/>
-<smd name="P$10" x="-0.8001" y="0.7493" dx="0.2286" dy="0.50038125" layer="1" rot="R180"/>
+<smd name="P$1" x="-0.8001" y="-0.7493" dx="0.1905" dy="0.50038125" layer="1" rot="R180"/>
+<smd name="P$2" x="-0.4001" y="-0.7493" dx="0.1905" dy="0.50038125" layer="1" rot="R180"/>
+<smd name="P$3" x="-0.000103125" y="-0.7493" dx="0.1905" dy="0.50038125" layer="1" rot="R180"/>
+<smd name="P$4" x="0.399896875" y="-0.7493" dx="0.1905" dy="0.50038125" layer="1" rot="R180"/>
+<smd name="P$5" x="0.799896875" y="-0.7493" dx="0.1905" dy="0.50038125" layer="1" rot="R180"/>
+<smd name="P$6" x="0.799896875" y="0.7493" dx="0.1905" dy="0.50038125" layer="1" rot="R180"/>
+<smd name="P$7" x="0.399896875" y="0.7493" dx="0.1905" dy="0.50038125" layer="1" rot="R180"/>
+<smd name="P$8" x="-0.000103125" y="0.7493" dx="0.1905" dy="0.50038125" layer="1" rot="R180"/>
+<smd name="P$9" x="-0.4001" y="0.7493" dx="0.1905" dy="0.50038125" layer="1" rot="R180"/>
+<smd name="P$10" x="-0.8001" y="0.7493" dx="0.1905" dy="0.50038125" layer="1" rot="R180"/>
 <circle x="-0.762" y="-0.3175" radius="0.0508" width="0.0508" layer="21"/>
 </package>
 <package name="USB_AB_MICRO_1:1_V2">

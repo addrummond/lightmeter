@@ -168,10 +168,10 @@
 </package>
 <package name="MLF20">
 <description>&lt;b&gt;HP-VFQFP-N20&lt;/b&gt; Micro Lead Frame package (MLF)</description>
-<wire x1="-2.921" y1="2.921" x2="2.921" y2="2.921" width="0.254" layer="51"/>
-<wire x1="2.921" y1="-2.921" x2="-2.921" y2="-2.921" width="0.254" layer="51"/>
-<wire x1="-2.921" y1="-2.921" x2="-2.921" y2="2.921" width="0.254" layer="51"/>
-<wire x1="2.921" y1="2.921" x2="2.921" y2="-2.921" width="0.254" layer="51"/>
+<wire x1="-2" y1="2" x2="2" y2="2" width="0.254" layer="21"/>
+<wire x1="2" y1="-2" x2="-2" y2="-2" width="0.254" layer="21"/>
+<wire x1="-2" y1="-2" x2="-2" y2="2" width="0.254" layer="21"/>
+<wire x1="2" y1="2" x2="2" y2="-2" width="0.254" layer="21"/>
 <circle x="-1.55" y="1.55" radius="0.15" width="0.127" layer="21"/>
 <smd name="1" x="-2.159" y="1.000759375" dx="0.9" dy="0.23" layer="1" roundness="50"/>
 <smd name="5" x="-2.159" y="-1.000759375" dx="0.9" dy="0.23" layer="1" roundness="50"/>
