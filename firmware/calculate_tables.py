@@ -6,7 +6,7 @@ import re
 # Configuration values.
 ##########
 
-reference_voltage = 2765 # mV
+reference_voltage = 2800 # mV
 
 op_amp_gain       = 1.0#reference_voltage/1100.0
 
