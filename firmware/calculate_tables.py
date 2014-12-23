@@ -17,7 +17,7 @@ second_stage_gain = 1.0+(97.6/10.0)
 # proportional to the reciprocal of which.
 second_stage_recip_resistor = 10.0 # kOhm
 
-amp_stages = [ # In (kOhm,gain) pairs
+amp_stages = [
     # For VEMD2503X01.
     # Uses 4 distinct resistor values.
     # Resistor value (kOhm)  Stops subtracted by ND filter (should be >= 0)
