@@ -11,7 +11,7 @@ reference_voltage = 2800 # mV
 op_amp_gain       = 1.0#reference_voltage/1100.0
 
 # The gain from the second stage of amplification.
-second_stage_gain = 10.0
+second_stage_gain = 1.0+(97.6/10.0)
 
 # The value of the resistor in the second stage of the op amp the gain is
 # proportional to the reciprocal of which.
@@ -22,11 +22,11 @@ amp_stages = [ # In (kOhm,gain) pairs
     # Uses 4 distinct resistor values.
     # Resistor value (kOhm)  Stops subtracted by ND filter (should be >= 0)
     ( 750.0,                 0.0  ),
-    ( 97.5,                  0.0  ),
-    ( 13.0,                  0.0  ),
+    ( 97.6,                  0.0  ),
+    ( 15.0,                  0.0  ),
     ( 1.6,                   0.0  ),
     ( 97.5,                  8.0  ),
-    ( 13.0,                  8.0  ),
+    ( 15.0,                  8.0  ),
     ( 1.6,                   8.0  )
 ]
 

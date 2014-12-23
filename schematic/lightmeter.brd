@@ -3028,7 +3028,7 @@ Please make sure your boards conform to these design rules.</description>
 <element name="R14" library="resistor" package="R0402" value="???%" x="6.8072" y="43.1038">
 <attribute name="SPICEPREFIX" value="R" x="6.8072" y="43.1038" size="1.778" layer="27" display="off"/>
 </element>
-<element name="R21" library="resistor" package="R0402" value="16K" x="18.796" y="6.985" rot="R90">
+<element name="R21" library="resistor" package="R0402" value="15K" x="18.796" y="6.985" rot="R90">
 <attribute name="SPICEPREFIX" value="R" x="18.796" y="6.985" size="1.778" layer="27" rot="R90" display="off"/>
 </element>
 <element name="R16" library="resistor" package="R0402" value="10K%" x="25.146" y="29.591" smashed="yes" rot="R90">
@@ -3057,10 +3057,10 @@ Please make sure your boards conform to these design rules.</description>
 <element name="R10" library="resistor" package="R0402" value="1k6%" x="20.32" y="35.56">
 <attribute name="SPICEPREFIX" value="R" x="20.32" y="35.56" size="1.778" layer="27" display="off"/>
 </element>
-<element name="R9" library="resistor" package="R0402" value="13k%" x="20.32" y="39.37">
+<element name="R9" library="resistor" package="R0402" value="15k%" x="20.32" y="39.37">
 <attribute name="SPICEPREFIX" value="R" x="20.32" y="39.37" size="1.778" layer="27" display="off"/>
 </element>
-<element name="R8" library="resistor" package="R0402" value="97.5k%" x="20.32" y="43.18">
+<element name="R8" library="resistor" package="R0402" value="97.6k%" x="20.32" y="43.18">
 <attribute name="SPICEPREFIX" value="R" x="20.32" y="43.18" size="1.778" layer="27" display="off"/>
 </element>
 <element name="R7" library="resistor" package="R0402" value="750k%" x="24.13" y="46.99">

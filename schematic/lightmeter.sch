@@ -11686,7 +11686,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND2" library="supply1" deviceset="GND" device=""/>
 <part name="C14" library="rcl" deviceset="C-EU" device="C0402" value="µ1"/>
 <part name="IC$4" library="microbuilder" deviceset="DISP_OLED_UG-2864HSWEG01" device="0.96&quot;"/>
-<part name="R9" library="resistor" deviceset="R-EU_" device="R0402" value="13k%"/>
+<part name="R9" library="resistor" deviceset="R-EU_" device="R0402" value="15k%"/>
 <part name="R10" library="resistor" deviceset="R-EU_" device="R0402" value="1k6%"/>
 <part name="IC$3" library="lightmeter" deviceset="SN74HC164" device="TSSOP-14" value="SN74HC164TSSOP-14"/>
 <part name="GND11" library="supply1" deviceset="GND" device=""/>
@@ -11700,7 +11700,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="TSDBG" library="testpad" deviceset="TP" device="PAD1-13" value="TPPAD1-13"/>
 <part name="GND8" library="supply1" deviceset="GND" device=""/>
 <part name="D7" library="diode2" deviceset="DIODE-" device="SOD323-W"/>
-<part name="R8" library="resistor" deviceset="R-EU_" device="R0402" value="97.5k%"/>
+<part name="R8" library="resistor" deviceset="R-EU_" device="R0402" value="97.6k%"/>
 <part name="C9" library="rcl" deviceset="C-EU" device="C0402" value="4µ7"/>
 <part name="C8" library="rcl" deviceset="C-EU" device="C0402" value="4µ7"/>
 <part name="C7" library="rcl" deviceset="C-EU" device="C0402" value="4µ7"/>
@@ -11756,7 +11756,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND29" library="supply1" deviceset="GND" device=""/>
 <part name="U$3" library="lightmeter" deviceset="3TRS_PHONE_JACK" device=""/>
 <part name="GND10" library="supply1" deviceset="GND" device=""/>
-<part name="R21" library="resistor" deviceset="R-EU_" device="R0402" value="16K"/>
+<part name="R21" library="resistor" deviceset="R-EU_" device="R0402" value="15K"/>
 <part name="R20" library="resistor" deviceset="R-EU_" device="R0402" value="6k8"/>
 <part name="GND30" library="supply1" deviceset="GND" device=""/>
 <part name="S$1" library="lightmeter" deviceset="SMALLPUSHBUTTON" device=""/>
