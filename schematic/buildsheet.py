@@ -1,6 +1,19 @@
 from lxml import etree as ET
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
+import math
+import re
+
+angle_re = re.compile(r"^R(\d+)$")
+
+def rotate_coords(xy, angle):
+    if angle is None:
+        return xy
+    angle = (angle/180)*math.pi
+    x, y = xy
+    x2 = (x * math.cos(angle)) - (y * math.sin(angle))
+    y2 = (x * math.sin(angle)) - (y * math.cos(angle))
+    return x2, y2
 
 class BoardInfo():
     def __init__(self):
@@ -10,17 +23,21 @@ class BoardInfo():
         self.components = [ ]
 
 class Component():
-    def __init__(self, name, value, pads):
+    def __init__(self, x, y, name, value, pads, angle):
+        self.x = x
+        self.y = y
         self.name = name
         self.value = value
         self.pads = pads
+        self.angle = angle
 
 class Pad():
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width, height, angle):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
+        self.angle = angle
 
 def getfloat(elem, name):
     f = elem.get(name, None)
@@ -79,7 +96,7 @@ def getBoardInfo(filename):
     ourcomps = [ ]
     for c in comps:
         compname = c.get("name", None)
-        if compname is None:
+        if compname is None or compname == '':
             raise Exception("Component without name")
         compvalue = c.get("value", None)
         if compvalue is None:
@@ -100,22 +117,47 @@ def getBoardInfo(filename):
         compx = getfloat(c, "x")
         compy = getfloat(c, "y")
 
+        rot = c.get("rot")
+        eangle = None
+        if rot is not None:
+            m = re.match(angle_re, rot)
+            if not m:
+                raise Exception("Could not parse angle")
+            eangle = float(m.group(1))
+
         ourpads = [ ]
         complayer = None # Assume that all components pads will be on same layer.
         for p in ppads:
             if p.get("layer", None) is None:
                 raise Exception("Could not get pad layer")
+
+            x = getfloat(p, "x")
+            y = getfloat(p, "y")
+
+            # Get angle.
+            rot = p.get("rot", None)
+            pangle = None
+            if rot is not None:
+                m = re.match(angle_re, rot)
+                if not m:
+                    raise Exception("Could not parse angle")
+                pangle = float(m.group(1))
+
             complayer = p.get("layer")
-            op = Pad(x = getfloat(p, "x") + compx,
-                     y = getfloat(p, "y") + compy,
+            op = Pad(x = x,
+                     y = y,
                      width = getfloat(p, "dx"),
-                     height = getfloat(p, "dy"))
+                     height = getfloat(p, "dy"),
+                     angle = pangle)
             ourpads.append(op)
 
         com = Component(
+            x = compx,
+            y = compy,
             name=compname,
             value=compvalue,
-            pads=ourpads
+            pads=ourpads,
+            angle=eangle
         )
         ourcomps.append(com)
 
@@ -132,26 +174,55 @@ def getBoardInfo(filename):
     bi.components = ourcomps
     return bi
 
+def render_component_pad(cv, c, p, highlight):
+    corners = [(-(p.width/2), -(p.height/2)),
+               ((-(p.width/2), (p.height/2))),
+               ((p.width/2), (p.height/2)),
+               ((p.width/2), -(p.height/2))]
+    corners = [rotate_coords(cr, p.angle) for cr in corners]
+    corners = [(cr[0] + p.x, cr[1] + p.y) for cr in corners]
+    corners = [rotate_coords((cr[0], cr[1]), c.angle) for cr in corners]
+    corners = [(cr[0] + c.x, cr[1] + c.y) for cr in corners]
+    pth = cv.beginPath()
+    pth.moveTo(corners[0][0], corners[0][1])
+    for i in xrange(1, len(corners)):
+        pth.lineTo(corners[i][0], corners[i][1])
+    cv.setFillColor(colors.red if highlight else colors.black)
+    cv.drawPath(pth, fill=1, stroke=0)
+
 def render_components(cv, bi, on_layer, with_value):
+    lvwtc = bi.layer_value_to_components.get((on_layer, with_value))
+    if lvwtc is None:
+        return
+
     for c in bi.components:
-        if c in bi.layer_value_to_components[(on_layer, with_value)]:
+        if c in lvwtc:
             continue
         for p in c.pads:
-            cv.setFillColor(colors.black)
-            cv.rect(p.x - (p.width/2), p.y - (p.height/2),
-                    p.width, p.height,
-                    stroke=0, fill=1)
+            render_component_pad(cv, c, p, highlight=False)
 
-    for c in bi.layer_value_to_components[(on_layer, with_value)]:
+    for c in lvwtc:
         for p in c.pads:
-            cv.setFillColor(colors.red)
-            cv.rect(p.x - (p.width/2), p.y - (p.height/2),
-                    p.width, p.height,
-                    stroke=0, fill=1)
+            render_component_pad(cv, c, p, highlight=True)
 
-i = getBoardInfo("lightmeter.brd")
-print("Width %f, height %f" % (i.width, i.height))
-cv = canvas.Canvas("test.pdf",pagesize=(i.width, i.height))
-render_components(cv, i, "1", "10K")
-cv.showPage()
+def layout_by_same_value(cv, bi):
+    headingspace = bi.height / 10.0
+    cwidth = bi.width
+    cheight = bi.height+headingspace
+
+    cv.setPageSize((cwidth, cheight))
+
+    for val, cs in bi.value_to_components.items():
+        names = [c.name for c in cs]
+        names.sort()
+
+        cv.setFont("Helvetica", headingspace/5.0)
+        cv.drawCentredString(cwidth/2, cheight-(headingspace/2.0), "V = %s, NS = %s" % (val, ','.join(names)))
+        render_components(cv, bi, on_layer="1", with_value=val)
+        cv.showPage()
+
+bi = getBoardInfo("lightmeter.brd")
+print("Width %f, height %f" % (bi.width, bi.height))
+cv = canvas.Canvas("test.pdf")
+layout_by_same_value(cv, bi)
 cv.save()
