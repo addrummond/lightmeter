@@ -9,10 +9,6 @@
 
 
 //
-//  Currently we are leaving pins used for serial programming unattached to
-//  make in-circuit programming more reliable. In principle some of these pins
-//  could be re-used, but this seems to cause weird issues in practice, even
-//  when the programmer is disconnected.
 //
 //          Display data |    ADC5/PB0 1---20 [MOSI]    | MOSI / Battery voltage
 //            Display DC |    ADC4/PA7 2---19 [MISO]    | MISO / Flash sync
