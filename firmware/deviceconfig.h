@@ -56,10 +56,12 @@
 #define ACCEL_SCL_PORT PORTA
 #define ACCEL_SCL_DDR  DDRA
 #define ACCEL_SCL_BIT  PA3
+#define ACCEL_SCL_PUE  PUEA
 
 #define ACCEL_SDA_PORT PORTA
 #define ACCEL_SDA_DDR  DDRA
 #define ACCEL_SDA_BIT  PA0
+#define ACCEL_SDA_PUE  PUEA
 
 
 //
