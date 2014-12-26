@@ -1,37 +1,14 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <deviceconfig.h>
+#include <i2c.h>
 
 #define STD_DELAY() (_delay_us(15))
 
-void i2c_data_high()
-{
-    ACCEL_SDA_DDR &= ~(1 << ACCEL_SDA_BIT); // Set for input.
-}
-
-void i2c_data_low()
-{
-    ACCEL_SDA_DDR |= (1 << ACCEL_SDA_BIT);
-    ACCEL_SDA_PORT |= (1 << ACCEL_SDA_BIT);
-}
-
-void i2c_clock_high()
-{
-    ACCEL_SCL_DDR &= ~(1 << ACCEL_SDA_BIT); // Set for input.
-}
-
-void i2c_clock_low()
-{
-    ACCEL_SCL_DDR |= (1 << ACCEL_SDA_BIT);
-    ACCEL_SCL_PORT |= (1 << ACCEL_SDA_BIT);
-}
-
 void i2c_start()
 {
-//#if ACCEL_SCL_PORT != ACCEL_SDA_PORT
-//#error "Code in i2c_start() in i2c.c assumes that ACCEL_SCL_PORT == ACCEL_SDA_PORT"
-//#endif
-    ACCEL_SDA_DDR |= ~((1 << ACCEL_SDA_BIT) | (1 << ACCEL_SCL_BIT));
+    i2c_data_high();
+    i2c_clock_high();
     STD_DELAY();
 
     i2c_data_low();
