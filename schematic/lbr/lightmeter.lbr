@@ -1229,6 +1229,20 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <rectangle x1="-0.85" y1="-4.684" x2="0.85" y2="-2.684" layer="29"/>
 <rectangle x1="-0.85" y1="-1.35" x2="0.85" y2="1.35" layer="29"/>
 </package>
+<package name="MICROUSBAB">
+<smd name="P$3" x="0.58" y="0" dx="2.54" dy="0.4318" layer="1"/>
+<smd name="P$2" x="0.58" y="0.65" dx="2.54" dy="0.4318" layer="1"/>
+<smd name="P$4" x="0.58" y="-0.65" dx="2.54" dy="0.4318" layer="1"/>
+<smd name="P$5" x="0.58" y="-1.3" dx="2.54" dy="0.4318" layer="1"/>
+<smd name="P$1" x="0.58" y="1.3" dx="2.54" dy="0.4318" layer="1"/>
+<smd name="P$6" x="-0.36" y="2.4625" dx="2.1" dy="1.4478" layer="1"/>
+<smd name="P$7" x="0" y="-2.4625" dx="1.38" dy="1.4478" layer="1"/>
+<smd name="P$8" x="-2.66" y="2.9125" dx="1.9" dy="2.375" layer="1"/>
+<smd name="P$9" x="-2.66" y="-2.9125" dx="1.9" dy="2.375" layer="1"/>
+<smd name="P$10" x="-2.66" y="0.8375" dx="1.9" dy="1.175" layer="1"/>
+<smd name="P$11" x="-2.66" y="-0.8375" dx="1.9" dy="1.175" layer="1"/>
+<wire x1="-4.11" y1="3.81" x2="-4.11" y2="-3.81" width="0.127" layer="21"/>
+</package>
 </packages>
 <symbols>
 <symbol name="74HC164">
@@ -2284,6 +2298,18 @@ Source: www.cotorelay.com .. Coto_Technology__CT10-1530-G1.pdf</description>
 <technology name="">
 <attribute name="PROD_ID" value="CONN-11794"/>
 </technology>
+</technologies>
+</device>
+<device name="MICROUSBAB" package="MICROUSBAB">
+<connects>
+<connect gate="G$1" pin="D+" pad="P$3"/>
+<connect gate="G$1" pin="D-" pad="P$2"/>
+<connect gate="G$1" pin="GND" pad="P$5"/>
+<connect gate="G$1" pin="USBID" pad="P$4"/>
+<connect gate="G$1" pin="VBUS" pad="P$1"/>
+</connects>
+<technologies>
+<technology name=""/>
 </technologies>
 </device>
 </devices>
