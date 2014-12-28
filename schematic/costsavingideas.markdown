@@ -9,4 +9,4 @@ Ideas for cutting down cost of components
 
 * Replace buck regulator with http://www.mouser.com/ProductDetail/Diodes-Incorporated/AP3418KTR-G1/?qs=sGAEpiMZZMtitjHzVIkrqQ05hQ8aRQKKrGtFA7kCfsGw9fLcsVumGg%3d%3d (saves 0.255)
 
-* Switch to fixed output voltage buck regulator to save on components.
+* Switch to fixed output voltage buck regulator to save on components.  
