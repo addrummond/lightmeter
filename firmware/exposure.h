@@ -103,18 +103,18 @@ typedef struct ev_with_fracs {
 #define ev_with_fracs_get_nth(evwf)           (((evwf).fracs & 0b11) == 0 ? 8 : (((evwf).fracs & 0b11) == 1 ? 3 : 10))
 #define ev_with_fracs_set_nth(evwf, nth)      ((nth) == 8 ? (evwf).fracs |= 0 : ((nth) == 3 ? ((evwf).fracs |= 1) : ((evwf).fracs |= 2)))
 
-void shutter_speed_to_string(ev_with_fracs_t shutter_speed, shutter_string_output_t *eso, uint8_t precision_mode);
-void aperture_to_string(ev_with_fracs_t aperture, aperture_string_output_t *aso, uint8_t precision_mode);
-ev_with_fracs_t z_given_x_y_ev(ev_with_fracs_t given_x, ev_with_fracs_t given_y, ev_with_fracs_t evwf, uint8_t x);
+void shutter_speed_to_string(ev_with_fracs_t shutter_speed, shutter_string_output_t *eso, uint_fast8_t precision_mode);
+void aperture_to_string(ev_with_fracs_t aperture, aperture_string_output_t *aso, uint_fast8_t precision_mode);
+ev_with_fracs_t z_given_x_y_ev(ev_with_fracs_t given_x, ev_with_fracs_t given_y, ev_with_fracs_t evwf, uint_fast8_t x);
 #define aperture_given_shutter_speed_iso_ev(a,b,c) z_given_x_y_ev((a),(b),(c),0)
 #define shutter_speed_given_aperture_iso_ev(a,b,c) z_given_x_y_ev((a),(b),(c),1)
 #define iso_given_aperture_shutter_speed_ev(a,b,c) z_given_x_y_ev((a),(b),(c),2)
 
-uint8_t iso_bcd_to_third_stops(uint8_t *digits, uint8_t length);
-uint8_t *iso_in_third_stops_into_bcd(uint8_t iso, uint8_t *digits, uint8_t length);
+uint_fast8_t iso_bcd_to_third_stops(uint8_t *digits, uint_fast8_t length);
+uint8_t *iso_in_third_stops_into_bcd(uint_fast8_t iso, uint8_t *digits, uint_fast8_t length);
 
-ev_with_fracs_t get_ev100_at_voltage(uint8_t voltage, uint8_t op_amp_resistor_stage);
-uint8_t convert_from_reference_voltage(uint16_t adc_out);
+ev_with_fracs_t get_ev100_at_voltage(uint_fast8_t voltage, uint_fast8_t op_amp_resistor_stage);
+uint_fast8_t convert_from_reference_voltage(uint_fast16_t adc_out);
 
 uint8_t *ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits);
 #define EV_AT_100_TO_BCD_LUX_RESULT_PRECISION BCD_EXP2_PRECISION

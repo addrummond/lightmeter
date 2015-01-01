@@ -50,7 +50,7 @@ typedef enum meter_mode {
 } precision_mode_t;*/
 // gcc insisted on making this enum two bytes, I think because there
 // was a prototype declaration in another file.
-typedef uint8_t precision_mode_t;
+typedef uint_fast8_t precision_mode_t;
 #define PRECISION_MODE_FULL 1
 #define PRECISION_MODE_HALF 2
 #define PRECISION_MODE_THIRD 3

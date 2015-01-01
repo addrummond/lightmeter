@@ -7,7 +7,6 @@
 // Attiny1634 final(ish) configuration.
 //
 
-
 //
 //
 //          Display data |    ADC5/PB0 1---20 [MOSI]    | MOSI / Battery voltage

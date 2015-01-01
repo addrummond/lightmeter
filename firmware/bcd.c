@@ -18,25 +18,25 @@
 // Stores result in digits1.
 // Returns a pointer which may be equal to, less than or greater than digits1.
 // This is used to implement both bcd_add and bcd_sub (which are now macros).
-uint8_t *bcd_add_(uint8_t *digits1, uint8_t digits1_length,
-                  uint8_t *digits2, uint8_t digits2_length,
-                  uint8_t xoradd)
+uint8_t *bcd_add_(uint8_t *digits1, uint_fast8_t digits1_length,
+                  uint8_t *digits2, uint_fast8_t digits2_length,
+                  uint_fast8_t xoradd)
 {
-    uint8_t end1 = digits1_length - 1;
-    uint8_t end2 = digits2_length - 1;
+    uint_fast8_t end1 = digits1_length - 1;
+    uint_fast8_t end2 = digits2_length - 1;
 
-    int8_t carry = 0;
+    int_fast8_t carry = 0;
 
-    int8_t i = end1, j = end2;
+    int_fast8_t i = end1, j = end2;
     do {
-        int8_t x = 0;
+        int_fast8_t x = 0;
         if (j >= 0)
             x = digits2[j];
-        int8_t y = 0;
+        int_fast8_t y = 0;
         if (i >= 0)
             y = digits1[i];
         x = (x ^ xoradd) + (xoradd & 1);
-        int8_t r = x + y + carry;
+        int_fast8_t r = x + y + carry;
         if (r < 0) {
             digits1[i] = r + 10;
             carry = -1;
@@ -74,12 +74,12 @@ uint8_t *bcd_add_(uint8_t *digits1, uint8_t digits1_length,
 
 // Save some code space by implementing <, <=, >, >=, = in one function.
 // This function is called by macros bcd_lt, bcd_gteq, etc.
-bool bcd_cmp(const uint8_t *digits1, uint8_t length1, const uint8_t *digits2, uint8_t length2,
-             uint8_t which) // 0 == eq, 1 = lteq, 2 = gteq, 3 = lt, 4 = gt)
+bool bcd_cmp(const uint8_t *digits1, uint_fast8_t length1, const uint8_t *digits2, uint_fast8_t length2,
+             uint_fast8_t which) // 0 == eq, 1 = lteq, 2 = gteq, 3 = lt, 4 = gt)
 {
-    uint8_t i, j;
-    uint8_t zeroes1 = 0;
-    uint8_t zeroes2 = 0;
+    uint_fast8_t i, j;
+    uint_fast8_t zeroes1 = 0;
+    uint_fast8_t zeroes2 = 0;
     if (length2 > length1)
         zeroes1 = length2 - length1;
     else
@@ -87,7 +87,7 @@ bool bcd_cmp(const uint8_t *digits1, uint8_t length1, const uint8_t *digits2, ui
 
     i = 0, j = 0;
     for (; i < length1;) {
-        int8_t a, b;
+        int_fast8_t a, b;
         if (zeroes1) {
             a = 0;
             --zeroes1;
@@ -106,7 +106,7 @@ bool bcd_cmp(const uint8_t *digits1, uint8_t length1, const uint8_t *digits2, ui
             ++j;
         }
 
-        int8_t diff = a - b;
+        int_fast8_t diff = a - b;
         if (diff != 0) {
             if (which == 0) {
                 return false;
@@ -129,31 +129,31 @@ bool bcd_cmp(const uint8_t *digits1, uint8_t length1, const uint8_t *digits2, ui
     return (which >= 0 && which <= 2);
 }
 
-uint8_t *bcd_mul(uint8_t *digits1, uint8_t length1, const uint8_t *digits2, uint8_t length2)
+uint_fast8_t *bcd_mul(uint8_t *digits1, uint_fast8_t length1, const uint8_t *digits2, uint_fast8_t length2)
 {
-    uint8_t l = length1 + length2;
-    uint8_t tmp1[l], tmp2[l];
+    uint_fast8_t l = length1 + length2;
+    uint_fast8_t tmp1[l], tmp2[l];
     memset8_zero(tmp1, l);
     memset8_zero(tmp2, l);
 
-    uint8_t *result_digits = tmp2;
+    uint_fast8_t *result_digits = tmp2;
 
     // Multiply by each digit separately.
-    uint8_t j = length2-1;
-    uint8_t result_digits_length = l;
-    uint8_t zeroes = 0;
+    uint_fast8_t j = length2-1;
+    uint_fast8_t result_digits_length = l;
+    uint_fast8_t zeroes = 0;
     do {
         uint8_t *mulres_start = tmp1 + l - 1;
         // Add trailing zeroes as appropriate.
-        uint8_t z;
+        uint_fast8_t z;
         for (z = 0; z < zeroes; ++z)
             *(mulres_start--) = 0;
         ++zeroes;
 
-        uint8_t carry = 0;
-        uint8_t i = length1-1;
+        uint_fast8_t carry = 0;
+        uint_fast8_t i = length1-1;
         do {
-            uint8_t r = (digits1[i] * digits2[j]) + carry;
+            uint_fast8_t r = (digits1[i] * digits2[j]) + carry;
             *(mulres_start--) = r % 10;
             carry = r / 10;
         } while (i-- > 0);
@@ -162,7 +162,7 @@ uint8_t *bcd_mul(uint8_t *digits1, uint8_t length1, const uint8_t *digits2, uint
         }
 
 
-        uint8_t mulres_length = l - (mulres_start - tmp1);
+        uint_fast8_t mulres_length = l - (mulres_start - tmp1);
 
         //printf("(M) ADDING ");
         //uint8_t x;
@@ -197,12 +197,12 @@ uint8_t *bcd_div_by_lt10(uint8_t *digits, uint8_t length, uint8_t by)
 {
     assert(by < 10);
 
-    uint8_t n = digits[0];
-    uint8_t outi;
-    uint8_t rem = 0;
+    uint_fast8_t n = digits[0];
+    uint_fast8_t outi;
+    uint_fast8_t rem = 0;
     for (outi = 0; outi < length; ++outi) {
         n = digits[outi];
-        uint8_t rem8 = rem << 3;
+        uint_fast8_t rem8 = rem << 3;
         n += rem8;
         n += rem + rem;
         if (n < by && outi != length - 1) {
@@ -211,7 +211,7 @@ uint8_t *bcd_div_by_lt10(uint8_t *digits, uint8_t length, uint8_t by)
             digits[outi++] = 0;
         }
 
-        uint8_t c;
+        uint_fast8_t c;
         for (c = 0; n >= by; ++c, n -= by);
         rem = n;
 
@@ -225,9 +225,9 @@ uint8_t *bcd_div_by_lt10(uint8_t *digits, uint8_t length, uint8_t by)
     return digits;
 }
 
-static uint8_t first_nonzero_index(uint8_t *digits, uint8_t length)
+static uint_fast8_t first_nonzero_index(uint8_t *digits, uint_fast8_t length)
 {
-    uint8_t i;
+    uint_fast8_t i;
     for (i = 0; i < length && digits[i] == 0; ++i);
     return i;
 }
@@ -273,23 +273,23 @@ static const uint8_t TWO_0_PT_01[] = { 5,  0,0,0,0,0,1  DIGITS(0,0, 0,1, 6,7, 9,
 #define GTEQ_0_PT_01(n,l,fnzi)    GTEQ((n), (l), -1, (fnzi),  1,  2,  1)
 #define N_DIGITS                  ((sizeof(TWO_4)/sizeof(uint8_t)) - 1)
 #define N_WHOLE_DIGITS            ((sizeof(TWO_4)/sizeof(uint8_t)) - BCD_EXP2_PRECISION - 1)
-uint8_t *bcd_exp2(uint8_t *digits, uint8_t length)
+uint8_t *bcd_exp2(uint8_t *digits, uint_fast8_t length)
 {
 #ifdef TEST
     assert(!GTEQ_30(digits, length, first_nonzero_index(digits, length)));
 #endif
 
-    uint8_t log_digits_[length];
+    uint_fast8_t log_digits_[length];
     uint8_t *log_digits = log_digits_;
-    uint8_t i;
+    uint_fast8_t i;
     for (i = 0; i < length; ++i)
         log_digits[i] = digits[i];
 
     uint8_t sub_digits[length];
 
-    uint8_t result_length = length;
+    uint_fast8_t result_length = length;
     bool first_loop;
-    uint8_t fnzi;
+    uint_fast8_t fnzi;
     for (first_loop = true;
          fnzi = first_nonzero_index(log_digits, length), GTEQ_0_PT_01(log_digits, length, fnzi);
          first_loop = false) {
@@ -338,7 +338,7 @@ uint8_t *bcd_exp2(uint8_t *digits, uint8_t length)
             mulby_digits = TWO_0_PT_01;
         }
 
-        uint8_t trailing_zeroes = mulby_digits[0];
+        uint_fast8_t trailing_zeroes = mulby_digits[0];
         ++mulby_digits;
 
         if (first_loop) {
@@ -373,7 +373,7 @@ uint8_t *bcd_exp2(uint8_t *digits, uint8_t length)
             if (digits[result_length-BCD_EXP2_PRECISION] >= 5 && digits[result_length-BCD_EXP2_PRECISION-1] < 9)
                 ++digits[result_length-BCD_EXP2_PRECISION-1];
             i = result_length - 1;
-            uint8_t j = result_length - 1 - BCD_EXP2_PRECISION;
+            uint_fast8_t j = result_length - 1 - BCD_EXP2_PRECISION;
             do {
                 digits[i] = digits[j];
             } while (--i, j-- > 0);
@@ -405,13 +405,13 @@ uint8_t *bcd_exp2(uint8_t *digits, uint8_t length)
 #undef N_DIGITS
 #undef N_WHOLE_DIGITS
 
-uint8_t *uint32_to_bcd(uint32_t n, uint8_t *digits, uint8_t length)
+uint8_t *uint32_to_bcd(uint32_t n, uint8_t *digits, uint_fast8_t length)
 {
-    uint8_t i = length-1;
+    uint_fast8_t i = length-1;
     while (n >= 10) {
         uint32_t v = n/10;
         //printf("  %i/%i = %i\n", n, 10, v);
-        uint8_t rem = n - (v*10);
+        uint_fast8_t rem = n - (v*10);
         //printf("  %i%%%i = %i\n", n, 10, rem);
         n = v;
 
@@ -427,9 +427,9 @@ uint8_t *uint32_to_bcd(uint32_t n, uint8_t *digits, uint8_t length)
 }
 
 // 'digits' and 'dest' may point to same buffer.
-uint8_t bcd_to_string_fp(uint8_t *digits, uint8_t length, uint8_t *dest, uint8_t sigfigs, uint8_t dps)
+uint_fast8_t bcd_to_string_fp(uint8_t *digits, uint_fast8_t length, uint_fast8_t *dest, uint_fast8_t sigfigs, uint_fast8_t dps)
 {
-    uint8_t i;
+    uint_fast8_t i;
     for (i = 0; i < length && digits[i] == 0; ++i);
     if (i == length) {
         dest[0] = '0';
@@ -437,9 +437,9 @@ uint8_t bcd_to_string_fp(uint8_t *digits, uint8_t length, uint8_t *dest, uint8_t
         return 1;
     }
 
-    uint8_t dot = 0;
+    uint_fast8_t dot = 0;
 
-    uint8_t j;
+    uint_fast8_t j;
     for (j = 0; i < length && j < sigfigs; ++i, ++j) {
         if (length - i == dps)
             dot = j++;
@@ -451,7 +451,7 @@ uint8_t bcd_to_string_fp(uint8_t *digits, uint8_t length, uint8_t *dest, uint8_t
 
     // Rounding
     if (digits[i] >= 5) {
-        uint8_t k = j-1;
+        uint_fast8_t k = j-1;
         do {
             if (dest[k] == '.')
                 continue;
@@ -479,28 +479,25 @@ uint8_t bcd_to_string_fp(uint8_t *digits, uint8_t length, uint8_t *dest, uint8_t
     return j;
 }
 
-#if !defined(__AVR__)
-void debug_print_bcd(uint8_t *digits, uint8_t length)
+#ifdef TEST
+
+void debug_print_bcd(uint8_t *digits, uint_fast8_t length)
 {
     uint8_t digits2[length + 1];
-    uint8_t i;
+    uint_fast8_t i;
     for (i = 0; i < length; ++i)
         digits2[i] = digits[i];
     digits2[length] = 0;
     bcd_to_string(digits2, length);
     printf("%s", digits2);
 }
-#endif
-
-
-#ifdef TEST
 
 static void uint32_to_bcd_test_(uint32_t val)
 {
     uint8_t digits[8];
     digits[7] = '\0';
     uint8_t *digits_ = uint32_to_bcd(val, digits, 7);
-    uint8_t i;
+    uint_fast8_t i;
     for (i = 0; i < 7 - (digits_ - digits); ++i)
         digits_[i] += '0';
     printf("%i -> '%s' (%i)\n", val, digits_, (int)bcd_length_after_op(digits, 7, digits_));
