@@ -2,7 +2,7 @@
 #define BCD_H
 
 #include <stdint.h>
-#include <mybool.h>
+#include <stdbool.h>
 
 uint8_t *bcd_add_(uint8_t *digits1, uint_fast8_t digits1_length, uint8_t *digits2, uint_fast8_t digits2_length, uint_fast8_t xoradd);
 #define bcd_add(a,b,c,d) bcd_add_((a), (b), (c), (d), 0)
