@@ -129,14 +129,14 @@ bool bcd_cmp(const uint8_t *digits1, uint_fast8_t length1, const uint8_t *digits
     return (which >= 0 && which <= 2);
 }
 
-uint_fast8_t *bcd_mul(uint8_t *digits1, uint_fast8_t length1, const uint8_t *digits2, uint_fast8_t length2)
+uint8_t *bcd_mul(uint8_t *digits1, uint_fast8_t length1, const uint8_t *digits2, uint_fast8_t length2)
 {
     uint_fast8_t l = length1 + length2;
-    uint_fast8_t tmp1[l], tmp2[l];
+    uint8_t tmp1[l], tmp2[l];
     memset8_zero(tmp1, l);
     memset8_zero(tmp2, l);
 
-    uint_fast8_t *result_digits = tmp2;
+    uint8_t *result_digits = tmp2;
 
     // Multiply by each digit separately.
     uint_fast8_t j = length2-1;
@@ -193,7 +193,7 @@ uint_fast8_t *bcd_mul(uint8_t *digits1, uint_fast8_t length1, const uint8_t *dig
 }
 
 static const uint8_t TEN[] PROGMEM = { 0, 10, 20, 30, 40, 50, 60, 70, 80, 90 };
-uint8_t *bcd_div_by_lt10(uint8_t *digits, uint8_t length, uint8_t by)
+uint8_t *bcd_div_by_lt10(uint8_t *digits, uint_fast8_t length, uint_fast8_t by)
 {
     assert(by < 10);
 
@@ -279,7 +279,7 @@ uint8_t *bcd_exp2(uint8_t *digits, uint_fast8_t length)
     assert(!GTEQ_30(digits, length, first_nonzero_index(digits, length)));
 #endif
 
-    uint_fast8_t log_digits_[length];
+    uint8_t log_digits_[length];
     uint8_t *log_digits = log_digits_;
     uint_fast8_t i;
     for (i = 0; i < length; ++i)
@@ -427,7 +427,7 @@ uint8_t *uint32_to_bcd(uint32_t n, uint8_t *digits, uint_fast8_t length)
 }
 
 // 'digits' and 'dest' may point to same buffer.
-uint_fast8_t bcd_to_string_fp(uint8_t *digits, uint_fast8_t length, uint_fast8_t *dest, uint_fast8_t sigfigs, uint_fast8_t dps)
+uint_fast8_t bcd_to_string_fp(uint8_t *digits, uint_fast8_t length, uint8_t *dest, uint_fast8_t sigfigs, uint_fast8_t dps)
 {
     uint_fast8_t i;
     for (i = 0; i < length && digits[i] == 0; ++i);
