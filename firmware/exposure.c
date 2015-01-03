@@ -11,7 +11,7 @@
 #include <readbyte.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include <assert.h>
+#include <myassert.h>
 #include <state.h>
 #include <exposure.h>
 #include <bcd.h>

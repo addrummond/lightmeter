@@ -3,12 +3,12 @@
 // eventually. This is much easier if we can just overwrite each
 // byte with its value plus 48.
 
-#include <assert.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <bcd.h>
 #include <readbyte.h>
 #include <mymemset.h>
+#include <myassert.h>
 #ifdef TEST
 #include <stdio.h>
 #include <string.h>
