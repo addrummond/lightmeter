@@ -1,1 +1,1 @@
--DSTM32F030 -nostdlib -I ./ -I ./stm -Wall -Os -ffunction-sections -fno-inline-small-functions -finline-limit=3 -fshort-enums -fno-move-loop-invariants -fno-tree-scev-cprop -DF_CPU=8000000L
+-mcpu=cortex-m0 -mthumb -DSTM32F030 -nostdlib -I ./ -I ./stm -Wall -T ./stm/STM32F030R8_FLASH.ld

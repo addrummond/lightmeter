@@ -7,6 +7,8 @@ ST=-save-temps
 CC=arm-none-eabi-gcc
 CFLAGS="$ST $CFLAGS"
 
+python calculate_tables.py output
+
 OBJS=""
 
 # Arm STM stuff.
@@ -15,8 +17,16 @@ OBJS="$OBJS ./stm/system_stm32f0xx.o"
 $CC $CFLAGS -c ./stm/startup_stm32f030.s -o ./stm/startup_stm32f030.o
 OBJS="$OBJS ./stm/startup_stm32f030.o"
 
+$CC $CFLAGS -c tables.c -o tables.o
+OBJS="$OBJS tables.o"
+$CC $CFLAGS -c mymemset.c -o mymemset.o
+OBJS="$OBJS mymemset.o"
 $CC $CFLAGS -c exposure.c -o exposure.o
 OBJS="$OBJS exposure.o"
 $CC $CFLAGS -c bcd.c -o bcd.o
 OBJS="$OBJS bcd.o"
+$CC $CFLAGS -c main.c -o main.o
+OBJS="$OBJS main.o"
+
+$CC $CFLAGS $OBJS -o out.o
 

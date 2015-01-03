@@ -364,19 +364,19 @@ def output_ev_table(of, name_prefix, op_amp_resistor):
 #            sys.stderr.write(str(vallist_abs[t + v]) + " ")
 #        sys.stderr.write("\n")
 
-    of.write('const uint8_t ' + name_prefix + '_LIGHT_VOLTAGE_TO_EV_BITPATTERNS[] PROGMEM = {\n')
+    of.write('const uint8_t ' + name_prefix + '_LIGHT_VOLTAGE_TO_EV_BITPATTERNS[] = {\n')
     for p in bitpatterns:
         of.write('0b%s,' % p)
     of.write('\n};\n')
 
-    of.write('const uint8_t ' + name_prefix + '_LIGHT_VOLTAGE_TO_EV_ABS[] PROGMEM = {')
+    of.write('const uint8_t ' + name_prefix + '_LIGHT_VOLTAGE_TO_EV_ABS[] = {')
     for i in xrange(len(vallist_abs)):
         if i % 32 == 0:
             of.write('\n    ');
         of.write('%i,' % vallist_abs[i])
     of.write('\n};\n')
 
-    of.write('const uint8_t ' + name_prefix + '_LIGHT_VOLTAGE_TO_EV_DIFFS[] PROGMEM = {')
+    of.write('const uint8_t ' + name_prefix + '_LIGHT_VOLTAGE_TO_EV_DIFFS[] = {')
     for i in xrange(len(vallist_diffs)):
         if i % 32 == 0:
             of.write('\n    ');
@@ -386,7 +386,7 @@ def output_ev_table(of, name_prefix, op_amp_resistor):
     def write_x_bits(x):
         name = "TENTHS" if x == 10 else "THIRDS"
         xth_bits = tenth_bits if x == 10 else third_bits
-        of.write('const uint8_t ' + name_prefix + ('_LIGHT_VOLTAGE_TO_EV_%s[] PROGMEM = { ' % name))
+        of.write('const uint8_t ' + name_prefix + ('_LIGHT_VOLTAGE_TO_EV_%s[] = { ' % name))
         bits = ['1' if x == 1 else '0' for x in xth_bits]
         bytes = [ ]
         for i in xrange(0, len(bits), 8):
@@ -1039,7 +1039,7 @@ def output_shutter_speeds(of):
     for x in [('THIRD', shutter_speeds_thirds), ('EIGHTH', shutter_speeds_eighths), ('TENTH', shutter_speeds_tenths)]:
         name = x[0]
         ss = x[1]
-        of.write('const uint8_t SHUTTER_SPEEDS_%s[] PROGMEM = {\n' % name)
+        of.write('const uint8_t SHUTTER_SPEEDS_%s[] = {\n' % name)
         x = 0
         for spd in ss:
             indexes = [shutter_speeds_bitmap.index(c) for c in spd]
@@ -1059,7 +1059,7 @@ def output_shutter_speeds(of):
                 of.write("\n")
             x += 1
         of.write('\n};\n')
-    of.write('const uint8_t SHUTTER_SPEEDS_BITMAP[] PROGMEM = { ')
+    of.write('const uint8_t SHUTTER_SPEEDS_BITMAP[] = { ')
     for c in shutter_speeds_bitmap:
         if c is None:
             of.write("'\\0',")
@@ -1068,12 +1068,12 @@ def output_shutter_speeds(of):
     of.write('};\n')
 
 def output_apertures(of):
-    of.write('const uint8_t APERTURES_THIRD[] PROGMEM = {\n')
+    of.write('const uint8_t APERTURES_THIRD[] = {\n')
     for a in apertures_third:
         of.write("0b{:04b}{:04b},".format(ord(a[1]) - ord('0'), ord(a[0]) - ord('0')))
     of.write('};\n')
 
-    of.write('const uint8_t APERTURES_TENTH[] PROGMEM = {\n')
+    of.write('const uint8_t APERTURES_TENTH[] = {\n')
     odd = [1]
     def wn(n):
         n1s = "{:04b}".format(ord(a[0]) - ord('0'))
@@ -1092,7 +1092,7 @@ def output_apertures(of):
         i += 1
     of.write('};\n')
 
-    of.write('const uint8_t APERTURES_EIGHTH[] PROGMEM = {\n')
+    of.write('const uint8_t APERTURES_EIGHTH[] = {\n')
     odd = [1]
     i = 0
     for a in apertures_eighth:
@@ -1145,7 +1145,7 @@ def output():
     ofh.write("#define LUMINANCE_COMPENSATION " + str(int(round(LUMINANCE_COMPENSATION*8.0))) + '\n')
 
     ofc.write('\n#ifdef TEST\n')
-    ofc.write('const uint8_t TEST_VOLTAGE_TO_EV[] PROGMEM =\n')
+    ofc.write('const uint8_t TEST_VOLTAGE_TO_EV[] =\n')
     ofh.write('extern const uint8_t TEST_VOLTGE_TO_EV[];\n')
     output_test_table(ofc)
     ofc.write(';\n#endif\n')
