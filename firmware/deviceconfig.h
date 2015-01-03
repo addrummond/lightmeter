@@ -3,22 +3,44 @@
 
 #include <stdint.h>
 
-//
-// Attiny1634 final(ish) configuration.
-//
+/*
 
-//
-//
-//          Display data |    ADC5/PB0 1---20 [MOSI]    | MOSI / Battery voltage
-//            Display DC |    ADC4/PA7 2---19 [MISO]    | MISO / Flash sync
-//           Display RST |    ADC3/PA6 3---18 PB3/ADC8  | Display CLK
-//     Serial debug port |    ADC2/PA5 4---17 PC0/ADC9  | Op amp output
-//      Shift register A |    ADC1/PA4 5---16 [USCK]    | **********
-//               ACC SCL |    ADC0/PA3 6---15 PC2/ADC11 | Shift register clock
-//          Pushbutton 1 |         PA2 7---14 [RESET]   | **********
-//          Pushbutton 2 |         PA1 8---13 PC4       | Display CS
-//               ACC SDA |         PA0 9---12 PC5       | Battery stat input
-//            ********** |       [GND] 10--11 [VCC]     | **********
+STM32F030K6T6 configuration.
+
+            V  B  P  P  S  S  S  S
+            S  O  B  B  P  P  P  P
+            S  O  I  I  I  I  I  I
+               T  2  1  M  M  S  N
+               0        O  I  C  S
+                        S  S  K  S
+                        I  O
+
+            |  |  |  |  |  |  |  |
+            ________________________
+VDD      --|                       |-- SWDCLK
+           |                       |
+DIODESW1 --|                       |-- SWDIO/BRESET
+           |                       |
+NRST     --|                       |-- OAPWR
+           |                       |
+VDDA     --|                       |-- SCRPWR
+           |                       |
+OAOUT2   --|                       |-- I2CSDA
+           |                       |
+BATVOL   --|                       |-- I2CSCL
+           |                       |
+DIODESW2 --|                       |-- SCRRES
+           |_______________________|
+            |  |  |  |  |  |  |  |
+            D  S  S  S  S  S  S  V
+            I  P  P  P  P  T  T  S
+            O  I  I  I  I  G  G  S
+            D  N  S  M  M  $  $
+            E  S  C  I  O  1  2
+            S  S  K  S  S
+            W        O  I
+            3
+*/
 
 
 //
