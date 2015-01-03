@@ -1,1 +1,1 @@
--mcpu=cortex-m0 -mthumb -DSTM32F030 -nostdlib -I ./ -I ./stm -Wall -T ./stm/STM32F030R8_FLASH.ld
+-mcpu=cortex-m0 -mthumb -nostdlib -DSTM32F030  -I ./ -I ./stm -Wall 

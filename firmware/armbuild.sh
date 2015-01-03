@@ -28,5 +28,5 @@ OBJS="$OBJS bcd.o"
 $CC $CFLAGS -c main.c -o main.o
 OBJS="$OBJS main.o"
 
-$CC $CFLAGS $OBJS -o out.o
+$CC $CFLAGS -T ./stm/STM32F030R8_FLASH.ld $OBJS -o out.o
 
