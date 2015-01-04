@@ -1,7 +1,6 @@
 #!/bin/sh
 
 CFLAGS=`cat CFLAGS`
-LINKFLAGS=`cat LINKFLAGS`
 ST=-save-temps
 
 CC=arm-none-eabi-gcc
@@ -31,6 +30,8 @@ $CC $CFLAGS -c ./stm/stm32f0xx_gpio.c -o ./stm/stm32f0xx_gpio.o
 OBJS="$OBJS ./stm/stm32f0xx_gpio.o"
 $CC $CFLAGS -c ./stm/stm32f0xx_rcc.c -o ./stm/stm32f0xx_rcc.o
 OBJS="$OBJS ./stm/stm32f0xx_rcc.o"
+$CC $CFLAGS -c ./stm/stm32f0xx_i2c.c -o ./stm/stm32f0xx_i2c.o
+OBJS="$OBJS ./stm/stm32f0xx_i2c.o"
 $CC $CFLAGS -c main.c -o main.o
 OBJS="$OBJS main.o"
 
