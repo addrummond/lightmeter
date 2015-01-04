@@ -42,6 +42,33 @@ DIODESW2 --|                       |-- SCRRES
             3
 */
 
+//
+// Pushbutton ports configuration.
+//
+#define PUSHBUTTON1_GPIO     GPIOB
+#define PUSHBUTTON1_PIN      GPIO_Pin_6
+
+#define PUSHBUTTON2_GPIO     GPIOB
+#define PUSHBUTTON2_PIN      GPIO_Pin_7
+
+//
+// Resistor/diode switches configuration.
+//
+#define DIODESW1_GPIO        GPIOF
+#define DIODESW1_PIN         GPIO_Pin_1
+
+#define DIODESW2_GPIO        GPIOA
+#define DIODESW2_PIN         GPIO_Pin_2
+
+#define DIODESW3_GPIO        GPIOA
+#define DIODESW3_PIN         GPIO_Pin_3
+
+#define STG1_GPIO            GPIOB
+#define STG1_PIN             GPIO_Pin_0
+
+#define STG2_GPIO            GPIOB
+#define STG2_PIN             GPIO_Pin_1
+
 
 //
 // Display
@@ -121,12 +148,6 @@ DIODESW2 --|                       |-- SCRRES
 
 #define FOR_X_FROM_1_TO_N_PUSHBUTTONS_DO(x) x(1) x(2)
 #define FOR_EACH_PUSHBUTTON_PCMSK_DO(x)     x(0)
-
-// TODO: Obselete.
-#define BUTTON_METER  1
-#define BUTTON_MENU   2
-#define BUTTON_UP     4
-#define BUTTON_DOWN   6
 
 
 //
