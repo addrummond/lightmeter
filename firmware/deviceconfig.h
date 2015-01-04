@@ -51,8 +51,7 @@ DIODESW2 --|                       |-- SCRRES
 #define PUSHBUTTON2_GPIO     GPIOB
 #define PUSHBUTTON2_PIN      GPIO_Pin_7
 
-#define FOR_X_FROM_1_TO_N_PUSHBUTTONS_DO(x) x(1) x(2)
-#define FOR_EACH_PUSHBUTTON_PCMSK_DO(x)     x(0)
+#define FOR_X_FROM_1_TO_N_PUSHBUTTONS_WITH_GPIO_DO(x) x(1, GPIOB) x(2, GPIOB)
 
 
 //
