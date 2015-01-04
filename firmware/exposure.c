@@ -8,7 +8,6 @@
 // ISO is represented as an unsigned 8-bit quantity giving 1/3-stops from ISO 6.
 
 #include <stddef.h>
-#include <readbyte.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <myassert.h>
@@ -52,9 +51,9 @@ FOR_EACH_AMP_STAGE(CASE)
     uint_fast8_t absi = voltage >> 4;
     uint_fast8_t bits_to_add = (voltage & 15) + 1; // (voltage % 16) + 1
 
-    uint_fast8_t bit_pattern_indices = pgm_read_byte(ev_diffs + absi);
-    uint_fast8_t bits1 = pgm_read_byte(ev_bitpatterns + (bit_pattern_indices >> 4));
-    uint_fast8_t bits2 = pgm_read_byte(ev_bitpatterns + (bit_pattern_indices & 0x0F));
+    uint_fast8_t bit_pattern_indices = ev_diffs[absi];
+    uint_fast8_t bits1 = ev_bitpatterns[bit_pattern_indices >> 4];
+    uint_fast8_t bits2 = ev_bitpatterns[bit_pattern_indices & 0x0F];
     if (bits_to_add < 8) {
         bits1 &= 0xFF << (8 - bits_to_add);
         bits2 = 0;
@@ -64,7 +63,7 @@ FOR_EACH_AMP_STAGE(CASE)
     }
 
     // See http://stackoverflow.com/questions/109023/how-to-count-the-number-of-set-bits-in-a-32-bit-integer
-    ret.ev = pgm_read_byte(ev_abs + absi);
+    ret.ev = ev_abs[absi];
     for (; bits1; ++ret.ev)
         bits1 &= bits1 - 1;
     for (; bits2; ++ret.ev)
@@ -75,14 +74,14 @@ FOR_EACH_AMP_STAGE(CASE)
 //#endif
 
     // Calculate tenths.
-    uint_fast8_t tenths_bit = pgm_read_byte(ev_tenths + (voltage >> 3));
+    uint_fast8_t tenths_bit = ev_tenths[voltage >> 3];
     tenths_bit >>= (voltage & 0b111);
     tenths_bit &= 1;
     int_fast8_t ret_tenths = tenth_below_eighth(ret.ev);
     ret_tenths += tenths_bit;
 
     // Calculate thirds.
-    uint_fast8_t thirds_bit = pgm_read_byte(ev_thirds + (voltage >> 3));
+    uint_fast8_t thirds_bit = ev_thirds[voltage >> 3];
     thirds_bit >>= (voltage & 0b111);
     thirds_bit &= 0b11;
     int_fast8_t ret_thirds = third_below_eighth(ret.ev);
@@ -153,8 +152,8 @@ void shutter_speed_to_string(ev_with_fracs_t evwf, shutter_string_output_t *sso,
     uint_fast8_t i;
     for (i = 0; i < 2; ++i) {
         uint_fast8_t val, j;
-        for (val = pgm_read_byte(&schars[i]) & 0xF, j = 0; j < 2 && val != 0; val = pgm_read_byte(&schars[i]) >> 4, ++j) {
-            uint_fast8_t b = pgm_read_byte(&SHUTTER_SPEEDS_BITMAP[val]);
+        for (val = schars[i] & 0xF, j = 0; j < 2 && val != 0; val = schars[i] >> 4, ++j) {
+            uint_fast8_t b = SHUTTER_SPEEDS_BITMAP[val];
             if (b == 'X') {
                 sso->chars[last++] = '0';
                 sso->chars[last++] = '0';
@@ -187,7 +186,7 @@ void aperture_to_string(ev_with_fracs_t evwf, aperture_string_output_t *aso, pre
     uint_fast8_t last;
     if (precision_mode == PRECISION_MODE_THIRD) {
         uint_fast8_t thirds = ev_with_fracs_get_thirds(evwf);
-        uint_fast8_t b = pgm_read_byte(&APERTURES_THIRD[((apev >> 3)*3) + thirds]);
+        uint_fast8_t b = APERTURES_THIRD[((apev >> 3)*3) + thirds];
         last = 0;
         aso->chars[last++] = '0' + (b & 0xF);
         if (apev < 6*8 || (apev == 6*8 && thirds < 2))
@@ -199,14 +198,14 @@ void aperture_to_string(ev_with_fracs_t evwf, aperture_string_output_t *aso, pre
         if (precision_mode == PRECISION_MODE_EIGHTH) {
             i = apev + (apev >> 1);
             //printf("I: %i\n", i);
-            b1 = pgm_read_byte(&APERTURES_EIGHTH[i]);
-            b2 = pgm_read_byte(&APERTURES_EIGHTH[i+1]);
+            b1 = APERTURES_EIGHTH[i];
+            b2 = APERTURES_EIGHTH[i+1];
         }
         else { //if (precision_mode == PRECISION_MODE_TENTH) {
             uint_fast8_t tenths = ev_with_fracs_get_tenths(evwf);
             i = ((apev >> 3) * 15) + tenths + (tenths >> 1);
-            b1 = pgm_read_byte(&APERTURES_TENTH[i]);
-            b2 = pgm_read_byte(&APERTURES_TENTH[i+1]);
+            b1 = APERTURES_TENTH[i];
+            b2 = APERTURES_TENTH[i+1];
         }
         uint_fast8_t d1 = '0', d2 = '0', d3 = '0';
         if (i % 3 == 0) {
@@ -274,7 +273,7 @@ void aperture_to_string(ev_with_fracs_t evwf, aperture_string_output_t *aso, pre
 // Each pair of bytes is:
 //     (i)  big-endian 4-bit BCD rep of first two digits,
 //     (ii) number of trailing zeroes.
-static const uint8_t FULL_STOP_ISOS[] PROGMEM = {
+static const uint8_t FULL_STOP_ISOS[] = {
     6, 0,             // 6
     (1 << 4) | 2, 0,  // 12
     (2 << 4) | 5, 0,  // 25
@@ -296,7 +295,7 @@ static const uint8_t FULL_STOP_ISOS[] PROGMEM = {
     (1 << 4) | 6, 5,  // 1600000
 };
 
-static const uint8_t THIRD_STOP_ISOS[] PROGMEM = {
+static const uint8_t THIRD_STOP_ISOS[] = {
     8, 0,             // 8
     (1 << 4) | 0, 0,  // 10
 
@@ -373,14 +372,14 @@ uint8_t *iso_in_third_stops_into_bcd(uint_fast8_t iso, uint8_t *digits, uint_fas
     uint_fast8_t i = iso/3*2;
     uint_fast8_t rem = iso % 3;
     if (rem == 0) {
-        byte1 = pgm_read_byte(&FULL_STOP_ISOS[i]);
-        zeroes = pgm_read_byte(&FULL_STOP_ISOS[i+1]);
+        byte1 = FULL_STOP_ISOS[i];
+        zeroes = FULL_STOP_ISOS[i+1];
     }
     else {
         i *= 2;
         i += (rem - 1)*2;
-        byte1 = pgm_read_byte(&THIRD_STOP_ISOS[i]);
-        zeroes = pgm_read_byte(&THIRD_STOP_ISOS[i+1]);
+        byte1 = THIRD_STOP_ISOS[i];
+        zeroes = THIRD_STOP_ISOS[i+1];
     }
 
     return iso_into_bcd(byte1, zeroes, digits, length);
@@ -394,11 +393,11 @@ bool iso_is_full_stop(const uint8_t *digits, uint_fast8_t length)
 
     uint_fast8_t i;
     for (i = 0; i < sizeof(FULL_STOP_ISOS); i += 2) {
-        uint_fast8_t d = pgm_read_byte(&FULL_STOP_ISOS[i]);
+        uint_fast8_t d = FULL_STOP_ISOS[i];
         uint_fast8_t nsigs = 1;
         if (d & 0xF0)
             ++nsigs;
-        uint_fast8_t nzeroes = pgm_read_byte(&FULL_STOP_ISOS[i+1]);
+        uint_fast8_t nzeroes = FULL_STOP_ISOS[i+1];
         if (nsigs + nzeroes == length) {
             uint_fast8_t d1 = d & 0xF;
             uint_fast8_t checkzeroes_length = length - 1;
@@ -481,10 +480,10 @@ uint_fast8_t iso_bcd_to_third_stops(uint8_t *digits, uint_fast8_t length)
         uint8_t nextup_digits_[ISO_DECIMAL_MAX_DIGITS];
         uint_fast8_t dcount = count << 1;
         //        printf("=====>>> COUNT %i b1 %i b2 %i\n", count, FULL_STOP_ISOS[dcount], FULL_STOP_ISOS[dcount+1]);
-        uint8_t *nextup_digits = iso_into_bcd(pgm_read_byte(&FULL_STOP_ISOS[dcount]),
-                                               pgm_read_byte(&FULL_STOP_ISOS[dcount + 1]),
-                                               nextup_digits_,
-                                               ISO_DECIMAL_MAX_DIGITS);
+        uint8_t *nextup_digits = iso_into_bcd(FULL_STOP_ISOS[dcount],
+                                              FULL_STOP_ISOS[dcount + 1],
+                                              nextup_digits_,
+                                              ISO_DECIMAL_MAX_DIGITS);
         uint_fast8_t nextup_length = ISO_DECIMAL_MAX_DIGITS - (nextup_digits - nextup_digits_);
 
         //printf("NEXTUP ");
@@ -532,7 +531,6 @@ uint_fast8_t iso_bcd_to_third_stops(uint8_t *digits, uint_fast8_t length)
     return stops;
 }
 
-// Not putting this in PROGMEM as it's very small.
 static const uint_fast8_t ev_wtih_fracs_to_xth_consts[] = {
     // 120
     120, 40, 15, 12,
@@ -1040,7 +1038,7 @@ int main()
         int v = v_ - VOLTAGE_TO_EV_ABS_OFFSET;
         if (v < 0)
             v = 0;
-        uint_fast8_t uncompressed = pgm_read_byte(&TEST_VOLTAGE_TO_EV[(unsigned)v]);
+        uint_fast8_t uncompressed = TEST_VOLTAGE_TO_EV[(unsigned)v];
         ev_with_fracs_t evwf = get_ev100_at_voltage((uint_fast8_t)v_, 2);
         printf("V %i ev8=%i\n", v, ev_with_fracs_get_ev8(evwf));
         uint_fast8_t compressed = evwf.ev;

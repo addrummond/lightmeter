@@ -34,4 +34,4 @@ OBJS="$OBJS ./stm/stm32f0xx_rcc.o"
 $CC $CFLAGS -c main.c -o main.o
 OBJS="$OBJS main.o"
 
-#$CC $CFLAGS -T ./stm/STM32F030R8_FLASH.ld $OBJS -o out.o
+$CC $CFLAGS -T ./stm/STM32F030R8_FLASH.ld $OBJS -o out.o

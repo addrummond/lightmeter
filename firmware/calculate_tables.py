@@ -1121,7 +1121,6 @@ def output():
     ofh.write("\n")
 
     ofc.write("#include <stdint.h>\n")
-    ofc.write("#include <readbyte.h>\n")
 
     e, pr = None, None
     for i in xrange(len(amp_stages)):
