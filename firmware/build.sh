@@ -4,44 +4,34 @@ CFLAGS=`cat CFLAGS`
 LINKFLAGS=`cat LINKFLAGS`
 ST=-save-temps
 
-if [ "$1" == "debug" ]
-then
-    echo "Building in debug mode"
-    CFLAGS="$CFLAGS -DDEBUG"
-fi
-if [ "$1" == "pdebug" ]
-then
-    echo "Building in protohack debug mode"
-    CFLAGS="$CFLAGS -DDEBUG -DPDEBUG"
-fi
-
-python output_initial_eeprom.py
+CC=arm-none-eabi-gcc
+CFLAGS="$ST $CFLAGS"
 
 python calculate_tables.py output
 
-cd bitmaps
-python process_bitmaps.py output
-cd ../
+OBJS=""
 
-cd menus
-python process_strings.py strings_english
-cd ../
+# Arm STM stuff.
+$CC $CFLAGS -c ./stm/system_stm32f0xx.c -o ./stm/system_stm32f0xx.o
+OBJS="$OBJS ./stm/system_stm32f0xx.o"
+$CC $CFLAGS -c ./stm/startup_stm32f030.s -o ./stm/startup_stm32f030.o
+OBJS="$OBJS ./stm/startup_stm32f030.o"
 
-avr-gcc $ST $CFLAGS -c basic_serial/basic_serial.S -o basic_serial/basic_serial.out &&
-avr-gcc $ST $CFLAGS -o mymemset.out -c mymemset.c &&
-avr-gcc $ST $CFLAGS -o tables.out -c tables.c &&
-avr-gcc $ST $CFLAGS -o state.out -c state.c &&
-avr-gcc $ST $CFLAGS -o bcd.out -c bcd.c &&
-avr-gcc $ST $CFLAGS -o exposure.out -c exposure.c &&
-avr-gcc $ST $CFLAGS -o display.out -c display.c &&
-avr-gcc $ST $CFLAGS -o ui.out -c ui.c &&
-avr-gcc $ST $CFLAGS -o bitmaps.out -c bitmaps/bitmaps.c &&
-avr-gcc $ST $CFLAGS -o menu_strings_table.out -c menus/menu_strings_table.c &&
-avr-gcc $ST $CFLAGS -o menu_strings.out -c menus/menu_strings.c &&
-avr-gcc $ST $CFLAGS -o lightmeter.out -c lightmeter.c &&
-avr-gcc $ST $CFLAGS -o shiftregister.out -c shiftregister.c &&
-avr-gcc $ST $CFLAGS -o accel.out -c accel.c &&
-avr-gcc $ST $CFLAGS -o i2c.out -c i2c.c &&
-avr-gcc $CFLAGS $LINKFLAGS mymemset.out tables.out state.out bcd.out exposure.out display.out ui.out bitmaps.out basic_serial/basic_serial.out menu_strings_table.out menu_strings.out lightmeter.out shiftregister.out accel.out i2c.out -o main.out
-avr-objcopy -O ihex -R .eeprom main.out lightmeter.hex &&
-cp lightmeter.hex /tmp
+$CC $CFLAGS -c tables.c -o tables.o
+OBJS="$OBJS tables.o"
+$CC $CFLAGS -c myassert.c -o myassert.o
+OBJS="$OBJS myassert.o"
+$CC $CFLAGS -c mymemset.c -o mymemset.o
+OBJS="$OBJS mymemset.o"
+$CC $CFLAGS -c exposure.c -o exposure.o
+OBJS="$OBJS exposure.o"
+$CC $CFLAGS -c bcd.c -o bcd.o
+OBJS="$OBJS bcd.o"
+$CC $CFLAGS -c ./stm/stm32f0xx_gpio.c -o ./stm/stm32f0xx_gpio.o
+OBJS="$OBJS ./stm/stm32f0xx_gpio.o"
+$CC $CFLAGS -c ./stm/stm32f0xx_rcc.c -o ./stm/stm32f0xx_rcc.o
+OBJS="$OBJS ./stm/stm32f0xx_rcc.o"
+$CC $CFLAGS -c main.c -o main.o
+OBJS="$OBJS main.o"
+
+#$CC $CFLAGS -T ./stm/STM32F030R8_FLASH.ld $OBJS -o out.o
