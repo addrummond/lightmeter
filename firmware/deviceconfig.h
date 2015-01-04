@@ -51,6 +51,10 @@ DIODESW2 --|                       |-- SCRRES
 #define PUSHBUTTON2_GPIO     GPIOB
 #define PUSHBUTTON2_PIN      GPIO_Pin_7
 
+#define FOR_X_FROM_1_TO_N_PUSHBUTTONS_DO(x) x(1) x(2)
+#define FOR_EACH_PUSHBUTTON_PCMSK_DO(x)     x(0)
+
+
 //
 // Resistor/diode switches configuration.
 //
@@ -121,33 +125,6 @@ DIODESW2 --|                       |-- SCRRES
 
 #define ADC_LIGHT_DIDR                 DIDR1
 #define ADC_LIGHT_DIDR_BIT             3
-
-
-//
-// Pushbutton ports configuration.
-//
-#define PUSHBUTTON1_PORT         PORTA
-#define PUSHBUTTON1_PIN          PINA
-#define PUSHBUTTON1_PUE          PUEA
-#define PUSHBUTTON1_DDR          DDRA
-#define PUSHBUTTON1_BIT          PA2
-#define PUSHBUTTON1_PCMSK        PCMSK0
-#define PUSHBUTTON1_PCIE         PCIE0
-#define PUSHBUTTON1_PCINT_BIT    PCINT2
-#define PUSHBUTTON1_PCINT_VECT   PCINT0_vect
-
-#define PUSHBUTTON2_PORT         PORTA
-#define PUSHBUTTON2_PIN          PINA
-#define PUSHBUTTON2_PUE          PUEA
-#define PUSHBUTTON2_DDR          DDRA
-#define PUSHBUTTON2_BIT          PA1
-#define PUSHBUTTON2_PCMSK        PCMSK0
-#define PUSHBUTTON2_PCIE         PCIE0
-#define PUSHBUTTON2_PCINT_BIT    PCINT1
-#define PUSHBUTTON2_PCINT_VECT   PCINT1_vect
-
-#define FOR_X_FROM_1_TO_N_PUSHBUTTONS_DO(x) x(1) x(2)
-#define FOR_EACH_PUSHBUTTON_PCMSK_DO(x)     x(0)
 
 
 //
