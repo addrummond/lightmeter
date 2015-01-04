@@ -16,7 +16,7 @@ wavelength,relative spectral sensitivity (http://www.mouser.com/ds/2/427/vemd250
 960,0.96
 1000,0.95
 1020,0.713
-1065,0,4
+1065,0.4
 1090,0.2
 1100,0.15
 1150,0.0
