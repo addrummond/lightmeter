@@ -45,10 +45,10 @@ DIODESW2 --|                       |-- SCRRES
 //
 // Pushbutton ports configuration.
 //
-#define PUSHBUTTON1_GPIO     GPIOB
+#define PUSHBUTTON1_PORT     GPIOB
 #define PUSHBUTTON1_PIN      GPIO_Pin_6
 
-#define PUSHBUTTON2_GPIO     GPIOB
+#define PUSHBUTTON2_PORT     GPIOB
 #define PUSHBUTTON2_PIN      GPIO_Pin_7
 
 #define FOR_X_FROM_1_TO_N_PUSHBUTTONS_WITH_GPIO_DO(x) x(1, GPIOB) x(2, GPIOB)
@@ -57,20 +57,32 @@ DIODESW2 --|                       |-- SCRRES
 //
 // Resistor/diode switches configuration.
 //
-#define DIODESW1_GPIO        GPIOF
+#define DIODESW1_PORT        GPIOF
 #define DIODESW1_PIN         GPIO_Pin_1
 
-#define DIODESW2_GPIO        GPIOA
+#define DIODESW2_PORT        GPIOA
 #define DIODESW2_PIN         GPIO_Pin_2
 
-#define DIODESW3_GPIO        GPIOA
+#define DIODESW3_PORT        GPIOA
 #define DIODESW3_PIN         GPIO_Pin_3
 
-#define STG1_GPIO            GPIOB
+#define STG1_PORT            GPIOB
 #define STG1_PIN             GPIO_Pin_0
 
-#define STG2_GPIO            GPIOB
+#define STG2_POTY            GPIOB
 #define STG2_PIN             GPIO_Pin_1
 
+
+//
+// I2c
+//
+
+#define I2C_I2C              RCC_APB1Periph_I2C1
+#define I2C_SDA_PORT         GPIOA
+#define I2C_SDA_PIN_SOURCE   GPIO_PinSource_10
+#define I2C_SCL_PORT         GPIOA
+#define I2C_SCL_PIN_SOURCE   GPIO_PinSource_9
+#define I2C_SDA_PERIPH_PORT  RCC_AHBPeriph_GPIOB
+#define I2C_SCL_PERIPH_PORT  RCC_AHBPeriph_GPIOB
 
 #endif
