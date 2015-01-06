@@ -11684,14 +11684,14 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <parts>
 <part name="IC$3P" library="analog-devices" deviceset="AD8542" device="RM" value="AD8542RM"/>
 <part name="GND2" library="supply1" deviceset="GND" device=""/>
-<part name="C14" library="rcl" deviceset="C-EU" device="C0402" value="µ1"/>
+<part name="C14" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
 <part name="IC$4" library="microbuilder" deviceset="DISP_OLED_UG-2864HSWEG01" device="0.96&quot;"/>
 <part name="R9" library="resistor" deviceset="R-EU_" device="R0402" value="13k%"/>
 <part name="R10" library="resistor" deviceset="R-EU_" device="R0402" value="1k6%"/>
 <part name="IC$3" library="lightmeter" deviceset="SN74HC164" device="TSSOP-14" value="SN74HC164TSSOP-14"/>
 <part name="GND11" library="supply1" deviceset="GND" device=""/>
 <part name="GND12" library="supply1" deviceset="GND" device=""/>
-<part name="C16" library="rcl" deviceset="C-EU" device="C0402" value="µ1"/>
+<part name="C16" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
 <part name="GND13" library="supply1" deviceset="GND" device=""/>
 <part name="GND15" library="supply1" deviceset="GND" device=""/>
 <part name="R15" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
@@ -11701,31 +11701,31 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND8" library="supply1" deviceset="GND" device=""/>
 <part name="D7" library="diode2" deviceset="DIODE-" device="SOD323-W"/>
 <part name="R8" library="resistor" deviceset="R-EU_" device="R0402" value="97.5k%"/>
-<part name="C9" library="rcl" deviceset="C-EU" device="C0402" value="4µ7"/>
-<part name="C8" library="rcl" deviceset="C-EU" device="C0402" value="4µ7"/>
-<part name="C7" library="rcl" deviceset="C-EU" device="C0402" value="4µ7"/>
+<part name="C9" library="rcl" deviceset="C-EU" device="C0402" value="4u7"/>
+<part name="C8" library="rcl" deviceset="C-EU" device="C0402" value="4u7"/>
+<part name="C7" library="rcl" deviceset="C-EU" device="C0402" value="4u7"/>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
 <part name="GND18" library="supply1" deviceset="GND" device=""/>
 <part name="GND19" library="supply1" deviceset="GND" device=""/>
 <part name="GND20" library="supply1" deviceset="GND" device=""/>
-<part name="C6" library="rcl" deviceset="C-EU" device="C0402" value="4µ7"/>
+<part name="C6" library="rcl" deviceset="C-EU" device="C0402" value="4u7"/>
 <part name="R7" library="resistor" deviceset="R-EU_" device="R0402" value="750k%"/>
 <part name="D8" library="lightmeter" deviceset="VEMD2523SLX01" device=""/>
 <part name="D9" library="lightmeter" deviceset="VEMD2523SLX01" device=""/>
 <part name="D10" library="lightmeter" deviceset="VEMD2523SLX01" device=""/>
 <part name="D11" library="lightmeter" deviceset="VEMD2523SLX01" device=""/>
 <part name="R12" library="resistor" deviceset="R-EU_" device="R0402" value="390k"/>
-<part name="C10" library="rcl" deviceset="C-EU" device="C0402" value="1µ"/>
-<part name="C11" library="rcl" deviceset="C-EU" device="C0402" value="1µ"/>
+<part name="C10" library="rcl" deviceset="C-EU" device="C0402" value="1u"/>
+<part name="C11" library="rcl" deviceset="C-EU" device="C0402" value="1u"/>
 <part name="GND17" library="supply1" deviceset="GND" device=""/>
 <part name="GND21" library="supply1" deviceset="GND" device=""/>
 <part name="GND22" library="supply1" deviceset="GND" device=""/>
-<part name="C12" library="rcl" deviceset="C-EU" device="C0402" value="4µ7"/>
+<part name="C12" library="rcl" deviceset="C-EU" device="C0402" value="4u7"/>
 <part name="GND3" library="supply1" deviceset="GND" device=""/>
 <part name="J1" library="SparkFun-Connectors" deviceset="AVR_SPI_PRG_6" device="NS"/>
 <part name="GND14" library="supply1" deviceset="GND" device=""/>
 <part name="IC$1" library="attiny1634_corrected" deviceset="ATTINY1634" device="MLF20"/>
-<part name="L2" library="microbuilder" deviceset="INDUCTOR" device="_0603" value="2µ2"/>
+<part name="L2" library="microbuilder" deviceset="INDUCTOR" device="_0603" value="2u2"/>
 <part name="GND23" library="supply1" deviceset="GND" device=""/>
 <part name="Q8" library="lightmeter" deviceset="NCHANNELMOSFET" device=""/>
 <part name="Q9" library="lightmeter" deviceset="NCHANNELMOSFET" device=""/>
@@ -11742,8 +11742,8 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="P+1" library="supply1" deviceset="VCC" device=""/>
 <part name="IC$5" library="adafruit" deviceset="MCP73831" device="/OT"/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
-<part name="R17" library="resistor" deviceset="R-EU_" device="R0402" value="10K"/>
-<part name="R16" library="resistor" deviceset="R-EU_" device="R0402" value="10K%"/>
+<part name="R17" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
+<part name="R16" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
 <part name="J2" library="SparkFun-Connectors" deviceset="JST_2MM_MALE" device=""/>
 <part name="GND26" library="supply1" deviceset="GND" device=""/>
 <part name="IC$2" library="lightmeter" deviceset="LM3671" device=""/>
@@ -11756,29 +11756,29 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND29" library="supply1" deviceset="GND" device=""/>
 <part name="U$3" library="lightmeter" deviceset="3TRS_PHONE_JACK" device=""/>
 <part name="GND10" library="supply1" deviceset="GND" device=""/>
-<part name="R21" library="resistor" deviceset="R-EU_" device="R0402" value="16K"/>
+<part name="R21" library="resistor" deviceset="R-EU_" device="R0402" value="16k"/>
 <part name="R20" library="resistor" deviceset="R-EU_" device="R0402" value="6k8"/>
 <part name="GND30" library="supply1" deviceset="GND" device=""/>
 <part name="S$1" library="lightmeter" deviceset="SMALLPUSHBUTTON" device=""/>
 <part name="S$3" library="lightmeter" deviceset="SMALLPUSHBUTTON" device=""/>
 <part name="S$2" library="lightmeter" deviceset="SMALLPUSHBUTTON" device=""/>
-<part name="R18" library="resistor" deviceset="R-EU_" device="R0402" value="10K%"/>
-<part name="R19" library="resistor" deviceset="R-EU_" device="R0402" value="6K8%"/>
+<part name="R18" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
+<part name="R19" library="resistor" deviceset="R-EU_" device="R0402" value="6k8%"/>
 <part name="GND32" library="supply1" deviceset="GND" device=""/>
 <part name="GND31" library="supply1" deviceset="GND" device=""/>
-<part name="R1" library="resistor" deviceset="R-EU_" device="R0402" value="15K"/>
-<part name="R2" library="resistor" deviceset="R-EU_" device="R0402" value="15K"/>
+<part name="R1" library="resistor" deviceset="R-EU_" device="R0402" value="15k"/>
+<part name="R2" library="resistor" deviceset="R-EU_" device="R0402" value="15k"/>
 <part name="GND9" library="supply1" deviceset="GND" device=""/>
 <part name="GND33" library="supply1" deviceset="GND" device=""/>
 <part name="C17" library="rcl" deviceset="C-EU" device="C0402" value="4u7"/>
 <part name="GND34" library="supply1" deviceset="GND" device=""/>
-<part name="R25" library="resistor" deviceset="R-EU_" device="R0402" value="10K"/>
+<part name="R25" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
 <part name="Q16" library="lightmeter" deviceset="PCHANNELMOSFET" device=""/>
 <part name="D$1" library="lightmeter" deviceset="GSOT04-E3-08" device=""/>
-<part name="C18" library="rcl" deviceset="C-EU" device="C0402" value="2µ2"/>
+<part name="C18" library="rcl" deviceset="C-EU" device="C0402" value="2u2"/>
 <part name="D1" library="diode2" deviceset="DIODE-" device="SOD323-W"/>
 <part name="D2" library="diode2" deviceset="DIODE-" device="SOD323-W"/>
-<part name="C2" library="rcl" deviceset="C-EU" device="C0402" value="2µ2"/>
+<part name="C2" library="rcl" deviceset="C-EU" device="C0402" value="2u2"/>
 <part name="IC$6" library="lightmeter" deviceset="MMA8653" device=""/>
 <part name="C3" library="rcl" deviceset="C-EU" device="C0402" value="1u"/>
 <part name="C4" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
@@ -11786,8 +11786,8 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND4" library="supply1" deviceset="GND" device=""/>
 <part name="C5" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
 <part name="GND16" library="supply1" deviceset="GND" device=""/>
-<part name="R3" library="resistor" deviceset="R-EU_" device="R0402" value="1K"/>
-<part name="R4" library="resistor" deviceset="R-EU_" device="R0402" value="1K"/>
+<part name="R3" library="resistor" deviceset="R-EU_" device="R0402" value="1k"/>
+<part name="R4" library="resistor" deviceset="R-EU_" device="R0402" value="1k"/>
 <part name="C13" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
 <part name="U1" library="lightmeter" deviceset="USB-AB" device=""/>
 <part name="GND24" library="supply1" deviceset="GND" device=""/>
