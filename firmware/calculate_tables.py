@@ -57,7 +57,7 @@ b_voltage_offset = int(round((voltage_offset/reference_voltage)*256))
 # So that we don't introduce any rounding error into calculations.
 voltage_offset = (b_voltage_offset/256.0)*reference_voltage
 
-def get_function_from_function_table(filename):
+def get_function_from_function_table(filename, inverse=False):
     f = open(filename)
     lines = f.read().split("\n")
     # Skip column headers if any
@@ -73,13 +73,16 @@ def get_function_from_function_table(filename):
         if re.match(r"^\s*$", l):
             continue
         fields = l.split(",")
-        v = int(fields[0])
+        v = float(fields[0])
         frac = float(fields[1])
         if v < min:
             min = v
         elif v > max:
             max = v
-        function[v] = frac
+        if inverse:
+            function[frac] = v
+        else:
+            function[v] = frac
     f.close()
     def f(x):
         if x < min:
@@ -143,6 +146,11 @@ def irrad_to_illum(irrad):
         irrad_to_illum_constant = (683.002 * area) / 900.0
     return irrad * irrad_to_illum_constant
 
+illum_to_irrad_constant = None
+def illum_to_irrad(illum):
+    if illum_to_irrad_constant is None:
+        irrad_to_illum(5.0) # Dummy value.
+        return illum / irrad_to_illum_constant
 
 #
 # EV table.
