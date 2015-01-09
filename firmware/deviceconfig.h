@@ -19,27 +19,28 @@ STM32F030K6T6 configuration.
             ________________________
 VDD      --|                       |-- SWDCLK
            |                       |
-DIODESW1 --|                       |-- SWDIO/BRESET
+DIODESW  --|                       |-- SWDIO
            |                       |
 NRST     --|                       |-- OAPWR
            |                       |
 VDDA     --|                       |-- SCRPWR
            |                       |
-OAOUT2   --|                       |-- I2CSDA
+OAOUT1   --|                       |-- I2CSDA
            |                       |
 BATVOL   --|                       |-- I2CSCL
            |                       |
-DIODESW2 --|                       |-- SCRRES
+OAOUT2   --|                       |-- SCRRES
            |_______________________|
             |  |  |  |  |  |  |  |
-            D  S  S  S  S  S  S  V
-            I  P  P  P  P  T  T  S
-            O  I  I  I  I  G  G  S
-            D  N  S  M  M  $  $
-            E  S  C  I  O  1  2
-            S  S  K  S  S
-            W        O  I
-            3
+            B  S  S  S  S  I  F  V
+            R  P  P  P  P  N  L  S
+            E  I  I  I  I  T  A  S
+            S  N  S  M  M  E  S
+            E  S  C  I  O  G  H
+            T  S  K  S  S  C  S
+                     O  I  L  Y
+                           R  N
+                              C
 */
 
 //
