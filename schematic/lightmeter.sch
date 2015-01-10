@@ -10993,6 +10993,27 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="C28" library="rcl" deviceset="C-EU" device="C0402" value="1u"/>
 <part name="U$8" library="lightmeter" deviceset="SWD" device="78171-0006"/>
 <part name="U$10" library="lightmeter" deviceset="LIBAT" device=""/>
+<part name="P+4" library="supply1" deviceset="VCC" device=""/>
+<part name="C8" library="rcl" deviceset="C-EU" device="C0402" value="4u7"/>
+<part name="GND7" library="supply1" deviceset="GND" device=""/>
+<part name="C9" library="rcl" deviceset="C-EU" device="C0402" value="100n"/>
+<part name="GND14" library="supply1" deviceset="GND" device=""/>
+<part name="C29" library="rcl" deviceset="C-EU" device="C0402" value="33n"/>
+<part name="GND43" library="supply1" deviceset="GND" device=""/>
+<part name="GND44" library="supply1" deviceset="GND" device=""/>
+<part name="L1" library="microbuilder" deviceset="INDUCTOR" device="_0603" value="8n2"/>
+<part name="L3" library="microbuilder" deviceset="INDUCTOR" device="_0603" value="3n9"/>
+<part name="L4" library="microbuilder" deviceset="INDUCTOR" device="_0603" value="5n6"/>
+<part name="C30" library="rcl" deviceset="C-EU" device="C0402" value="1p8"/>
+<part name="GND45" library="supply1" deviceset="GND" device=""/>
+<part name="C31" library="rcl" deviceset="C-EU" device="C0402" value="1p2"/>
+<part name="C32" library="rcl" deviceset="C-EU" device="C0402" value="???"/>
+<part name="GND46" library="supply1" deviceset="GND" device=""/>
+<part name="C33" library="rcl" deviceset="C-EU" device="C0402" value="2n2"/>
+<part name="GND47" library="supply1" deviceset="GND" device=""/>
+<part name="R9" library="resistor" deviceset="R-EU_" device="R0402" value="22k"/>
+<part name="GND48" library="supply1" deviceset="GND" device=""/>
+<part name="C34" library="rcl" deviceset="C-EU" device="C0402" value="1n"/>
 </parts>
 <sheets>
 <sheet>
@@ -11091,7 +11112,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="GND24" gate="1" x="25.4" y="45.72" rot="R90"/>
 <instance part="C19" gate="G$1" x="7.62" y="93.98" rot="R90"/>
 <instance part="GND25" gate="1" x="17.78" y="93.98" rot="R90"/>
-<instance part="U$1" gate="G$1" x="88.9" y="58.42"/>
+<instance part="U$1" gate="G$1" x="88.9" y="68.58"/>
 <instance part="U$4" gate="G$1" x="99.06" y="-83.82"/>
 <instance part="GND36" gate="1" x="91.44" y="-111.76" rot="R270"/>
 <instance part="U$6" gate="G$1" x="-33.02" y="-10.16"/>
@@ -11130,6 +11151,27 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="C28" gate="G$1" x="-76.2" y="-78.74"/>
 <instance part="U$8" gate="G$1" x="-104.14" y="50.8"/>
 <instance part="U$10" gate="G$1" x="-132.08" y="-12.7"/>
+<instance part="P+4" gate="VCC" x="43.18" y="86.36" rot="R90"/>
+<instance part="C8" gate="G$1" x="48.26" y="96.52" rot="R180"/>
+<instance part="GND7" gate="1" x="48.26" y="106.68" rot="R180"/>
+<instance part="C9" gate="G$1" x="50.8" y="81.28" rot="R270"/>
+<instance part="GND14" gate="1" x="35.56" y="81.28" rot="R270"/>
+<instance part="C29" gate="G$1" x="40.64" y="76.2" rot="R270"/>
+<instance part="GND43" gate="1" x="27.94" y="76.2" rot="R270"/>
+<instance part="GND44" gate="1" x="53.34" y="50.8" rot="R270"/>
+<instance part="L1" gate="G$1" x="132.08" y="73.66" rot="R270"/>
+<instance part="L3" gate="G$1" x="142.24" y="81.28"/>
+<instance part="L4" gate="G$1" x="142.24" y="66.04"/>
+<instance part="C30" gate="G$1" x="154.94" y="81.28" rot="R270"/>
+<instance part="GND45" gate="1" x="160.02" y="63.5"/>
+<instance part="C31" gate="G$1" x="160.02" y="73.66"/>
+<instance part="C32" gate="G$1" x="149.86" y="58.42"/>
+<instance part="GND46" gate="1" x="149.86" y="48.26"/>
+<instance part="C33" gate="G$1" x="142.24" y="58.42"/>
+<instance part="GND47" gate="1" x="142.24" y="48.26"/>
+<instance part="R9" gate="G$1" x="114.3" y="101.6"/>
+<instance part="GND48" gate="1" x="134.62" y="93.98"/>
+<instance part="C34" gate="G$1" x="134.62" y="109.22"/>
 </instances>
 <busses>
 </busses>
@@ -11433,6 +11475,55 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="GND30" gate="1" pin="GND"/>
 <wire x1="-121.92" y1="11.176" x2="-121.92" y2="7.62" width="0.1524" layer="91"/>
 </segment>
+<segment>
+<pinref part="C8" gate="G$1" pin="2"/>
+<wire x1="48.26" y1="101.6" x2="48.26" y2="104.14" width="0.1524" layer="91"/>
+<pinref part="GND7" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="C9" gate="G$1" pin="2"/>
+<wire x1="45.72" y1="81.28" x2="38.1" y2="81.28" width="0.1524" layer="91"/>
+<pinref part="GND14" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="C29" gate="G$1" pin="2"/>
+<wire x1="35.56" y1="76.2" x2="30.48" y2="76.2" width="0.1524" layer="91"/>
+<pinref part="GND43" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="U$1" gate="G$1" pin="VSS"/>
+<wire x1="58.42" y1="50.8" x2="55.88" y2="50.8" width="0.1524" layer="91"/>
+<pinref part="GND44" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="C31" gate="G$1" pin="2"/>
+<pinref part="GND45" gate="1" pin="GND"/>
+<wire x1="160.02" y1="68.58" x2="160.02" y2="66.04" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="C32" gate="G$1" pin="2"/>
+<wire x1="149.86" y1="53.34" x2="149.86" y2="50.8" width="0.1524" layer="91"/>
+<pinref part="GND46" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="C33" gate="G$1" pin="2"/>
+<wire x1="142.24" y1="53.34" x2="142.24" y2="50.8" width="0.1524" layer="91"/>
+<pinref part="GND47" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="R9" gate="G$1" pin="2"/>
+<wire x1="119.38" y1="101.6" x2="121.92" y2="101.6" width="0.1524" layer="91"/>
+<wire x1="121.92" y1="101.6" x2="121.92" y2="81.28" width="0.1524" layer="91"/>
+<pinref part="U$1" gate="G$1" pin="VSS4"/>
+<wire x1="121.92" y1="81.28" x2="119.38" y2="81.28" width="0.1524" layer="91"/>
+<wire x1="121.92" y1="101.6" x2="134.62" y2="101.6" width="0.1524" layer="91"/>
+<junction x="121.92" y="101.6"/>
+<wire x1="134.62" y1="101.6" x2="134.62" y2="96.52" width="0.1524" layer="91"/>
+<pinref part="GND48" gate="1" pin="GND"/>
+<wire x1="134.62" y1="101.6" x2="134.62" y2="104.14" width="0.1524" layer="91"/>
+<junction x="134.62" y="101.6"/>
+<pinref part="C34" gate="G$1" pin="2"/>
+</segment>
 </net>
 <net name="VCC" class="0">
 <segment>
@@ -11471,6 +11562,15 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="U$9" gate="G$1" pin="EN"/>
 <wire x1="-104.14" y1="-86.36" x2="-106.68" y2="-86.36" width="0.1524" layer="91"/>
 <wire x1="-106.68" y1="-86.36" x2="-106.68" y2="-71.12" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="P+4" gate="VCC" pin="VCC"/>
+<pinref part="U$1" gate="G$1" pin="VDD"/>
+<wire x1="45.72" y1="86.36" x2="48.26" y2="86.36" width="0.1524" layer="91"/>
+<pinref part="C8" gate="G$1" pin="1"/>
+<wire x1="48.26" y1="86.36" x2="58.42" y2="86.36" width="0.1524" layer="91"/>
+<wire x1="48.26" y1="86.36" x2="48.26" y2="93.98" width="0.1524" layer="91"/>
+<junction x="48.26" y="86.36"/>
 </segment>
 </net>
 <net name="VREG" class="0">
@@ -11958,8 +12058,8 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 </segment>
 <segment>
 <pinref part="U$1" gate="G$1" pin="REQN"/>
-<wire x1="86.36" y1="27.94" x2="86.36" y2="25.4" width="0.1524" layer="91"/>
-<label x="86.36" y="25.4" size="1.778" layer="95" rot="R270" xref="yes"/>
+<wire x1="86.36" y1="38.1" x2="86.36" y2="33.02" width="0.1524" layer="91"/>
+<label x="86.36" y="33.02" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 <net name="SPISCK" class="0">
@@ -11975,8 +12075,8 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 </segment>
 <segment>
 <pinref part="U$1" gate="G$1" pin="SCK"/>
-<wire x1="81.28" y1="27.94" x2="81.28" y2="25.4" width="0.1524" layer="91"/>
-<label x="81.28" y="25.4" size="1.778" layer="95" rot="R270" xref="yes"/>
+<wire x1="81.28" y1="38.1" x2="81.28" y2="33.02" width="0.1524" layer="91"/>
+<label x="81.28" y="33.02" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 <net name="SPIMISO" class="0">
@@ -11992,8 +12092,8 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 </segment>
 <segment>
 <pinref part="U$1" gate="G$1" pin="MISO"/>
-<wire x1="96.52" y1="27.94" x2="96.52" y2="25.4" width="0.1524" layer="91"/>
-<label x="96.52" y="25.4" size="1.778" layer="95" rot="R270" xref="yes"/>
+<wire x1="96.52" y1="38.1" x2="96.52" y2="33.02" width="0.1524" layer="91"/>
+<label x="96.52" y="33.02" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 <net name="SPIMOSI" class="0">
@@ -12009,8 +12109,8 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 </segment>
 <segment>
 <pinref part="U$1" gate="G$1" pin="MOSI"/>
-<wire x1="91.44" y1="27.94" x2="91.44" y2="25.4" width="0.1524" layer="91"/>
-<label x="91.44" y="25.4" size="1.778" layer="95" rot="R270" xref="yes"/>
+<wire x1="91.44" y1="38.1" x2="91.44" y2="33.02" width="0.1524" layer="91"/>
+<label x="91.44" y="33.02" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 <net name="NRST" class="0">
@@ -12037,15 +12137,15 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 </segment>
 <segment>
 <pinref part="U$1" gate="G$1" pin="RDYN"/>
-<wire x1="106.68" y1="27.94" x2="106.68" y2="25.4" width="0.1524" layer="91"/>
-<label x="106.68" y="25.4" size="1.778" layer="95" xref="yes"/>
+<wire x1="106.68" y1="38.1" x2="106.68" y2="30.48" width="0.1524" layer="91"/>
+<label x="106.68" y="30.48" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="SWDIO" class="0">
 <segment>
 <pinref part="U$1" gate="G$1" pin="RESET"/>
-<wire x1="119.38" y1="50.8" x2="121.92" y2="50.8" width="0.1524" layer="91"/>
-<label x="121.92" y="50.8" size="1.778" layer="95" xref="yes"/>
+<wire x1="119.38" y1="60.96" x2="121.92" y2="60.96" width="0.1524" layer="91"/>
+<label x="121.92" y="60.96" size="1.778" layer="95" xref="yes"/>
 </segment>
 <segment>
 <pinref part="U$6" gate="G$1" pin="PA13"/>
@@ -12262,6 +12362,98 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="114.3" y1="-73.66" x2="114.3" y2="-71.12" width="0.1524" layer="91"/>
 <pinref part="D8" gate="G$1" pin="P$2"/>
 <wire x1="114.3" y1="-71.12" x2="119.38" y2="-71.12" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$4" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="DEC1"/>
+<wire x1="58.42" y1="81.28" x2="53.34" y2="81.28" width="0.1524" layer="91"/>
+<pinref part="C9" gate="G$1" pin="1"/>
+</segment>
+</net>
+<net name="N$14" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="DEC2"/>
+<wire x1="58.42" y1="76.2" x2="43.18" y2="76.2" width="0.1524" layer="91"/>
+<pinref part="C29" gate="G$1" pin="1"/>
+</segment>
+</net>
+<net name="N$20" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="ANT2"/>
+<wire x1="119.38" y1="76.2" x2="124.46" y2="76.2" width="0.1524" layer="91"/>
+<wire x1="124.46" y1="76.2" x2="124.46" y2="81.28" width="0.1524" layer="91"/>
+<wire x1="124.46" y1="81.28" x2="132.08" y2="81.28" width="0.1524" layer="91"/>
+<pinref part="L1" gate="G$1" pin="1"/>
+<wire x1="132.08" y1="81.28" x2="132.08" y2="78.74" width="0.1524" layer="91"/>
+<pinref part="L3" gate="G$1" pin="1"/>
+<wire x1="132.08" y1="81.28" x2="137.16" y2="81.28" width="0.1524" layer="91"/>
+<junction x="132.08" y="81.28"/>
+</segment>
+</net>
+<net name="N$21" class="0">
+<segment>
+<pinref part="L1" gate="G$1" pin="2"/>
+<wire x1="132.08" y1="68.58" x2="132.08" y2="66.04" width="0.1524" layer="91"/>
+<wire x1="132.08" y1="66.04" x2="124.46" y2="66.04" width="0.1524" layer="91"/>
+<wire x1="124.46" y1="66.04" x2="124.46" y2="71.12" width="0.1524" layer="91"/>
+<pinref part="U$1" gate="G$1" pin="ANT1"/>
+<wire x1="124.46" y1="71.12" x2="119.38" y2="71.12" width="0.1524" layer="91"/>
+<pinref part="L4" gate="G$1" pin="1"/>
+<wire x1="132.08" y1="66.04" x2="137.16" y2="66.04" width="0.1524" layer="91"/>
+<junction x="132.08" y="66.04"/>
+</segment>
+</net>
+<net name="N$22" class="0">
+<segment>
+<pinref part="L3" gate="G$1" pin="2"/>
+<wire x1="147.32" y1="81.28" x2="149.86" y2="81.28" width="0.1524" layer="91"/>
+<pinref part="C30" gate="G$1" pin="2"/>
+</segment>
+</net>
+<net name="N$25" class="0">
+<segment>
+<pinref part="C30" gate="G$1" pin="1"/>
+<wire x1="157.48" y1="81.28" x2="160.02" y2="81.28" width="0.1524" layer="91"/>
+<pinref part="C31" gate="G$1" pin="1"/>
+<wire x1="160.02" y1="81.28" x2="160.02" y2="76.2" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$3" class="0">
+<segment>
+<pinref part="L4" gate="G$1" pin="2"/>
+<wire x1="147.32" y1="66.04" x2="149.86" y2="66.04" width="0.1524" layer="91"/>
+<pinref part="C32" gate="G$1" pin="1"/>
+<wire x1="149.86" y1="66.04" x2="149.86" y2="60.96" width="0.1524" layer="91"/>
+<wire x1="149.86" y1="60.96" x2="142.24" y2="60.96" width="0.1524" layer="91"/>
+<junction x="149.86" y="60.96"/>
+<pinref part="C33" gate="G$1" pin="1"/>
+<wire x1="142.24" y1="60.96" x2="142.24" y2="63.5" width="0.1524" layer="91"/>
+<junction x="142.24" y="60.96"/>
+<wire x1="142.24" y1="63.5" x2="119.38" y2="63.5" width="0.1524" layer="91"/>
+<pinref part="U$1" gate="G$1" pin="VDD_PA"/>
+<wire x1="119.38" y1="63.5" x2="119.38" y2="66.04" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$18" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="IREF"/>
+<wire x1="106.68" y1="99.06" x2="106.68" y2="101.6" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="101.6" x2="109.22" y2="101.6" width="0.1524" layer="91"/>
+<pinref part="R9" gate="G$1" pin="1"/>
+</segment>
+</net>
+<net name="N$26" class="0">
+<segment>
+<pinref part="C34" gate="G$1" pin="1"/>
+<wire x1="134.62" y1="111.76" x2="147.32" y2="111.76" width="0.1524" layer="91"/>
+<wire x1="147.32" y1="111.76" x2="147.32" y2="86.36" width="0.1524" layer="91"/>
+<pinref part="U$1" gate="G$1" pin="AVDD"/>
+<wire x1="147.32" y1="86.36" x2="119.38" y2="86.36" width="0.1524" layer="91"/>
+<wire x1="134.62" y1="111.76" x2="101.6" y2="111.76" width="0.1524" layer="91"/>
+<junction x="134.62" y="111.76"/>
+<pinref part="U$1" gate="G$1" pin="AVDD2"/>
+<wire x1="101.6" y1="111.76" x2="101.6" y2="99.06" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
