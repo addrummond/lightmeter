@@ -1528,6 +1528,41 @@ package type OT</description>
 <rectangle x1="0.7" y1="0.85" x2="1.2" y2="1.5" layer="51"/>
 <rectangle x1="-1.2" y1="0.85" x2="-0.7" y2="1.5" layer="51"/>
 </package>
+<package name="87438-0543">
+<smd name="P$800" x="-1.8" y="0" dx="3.55000625" dy="0.85" layer="1"/>
+<smd name="P$3" x="2.125" y="0" dx="2.65" dy="0.85" layer="1"/>
+<smd name="P$900" x="-1.8" y="1.5" dx="3.55000625" dy="0.85" layer="1"/>
+<smd name="P$700" x="-1.8" y="-1.5" dx="3.55000625" dy="0.85" layer="1"/>
+<smd name="P$600" x="-1.8" y="-2.99999375" dx="3.55000625" dy="0.85" layer="1"/>
+<smd name="P$1000" x="-1.8" y="2.99999375" dx="3.55000625" dy="0.85" layer="1"/>
+<smd name="P$1" x="2.125" y="2.99999375" dx="2.65" dy="0.85" layer="1"/>
+<smd name="P$5" x="2.125" y="-2.99999375" dx="2.65" dy="0.85" layer="1"/>
+<smd name="P$2" x="2.125" y="1.5" dx="2.65" dy="0.85" layer="1"/>
+<smd name="P$4" x="2.125" y="-1.5" dx="2.65" dy="0.85" layer="1"/>
+<wire x1="-4.174996875" y1="3.81" x2="-4.174996875" y2="-3.81" width="0.127" layer="51"/>
+</package>
+<package name="6PINSMTDIPRIGHTANGLE">
+</package>
+<package name="78171-0005">
+</package>
+<package name="78171-0006">
+<smd name="P$3" x="-0.6" y="3.145" dx="0.7" dy="2.54" layer="1"/>
+<smd name="P$4" x="0.6" y="3.145" dx="0.7" dy="2.54" layer="1"/>
+<smd name="P$5" x="1.8" y="3.145" dx="0.7" dy="2.54" layer="1"/>
+<smd name="P$2" x="-1.8" y="3.145" dx="0.7" dy="2.54" layer="1"/>
+<smd name="P$6" x="3.07" y="3.145" dx="0.7" dy="2.54" layer="1"/>
+<smd name="P$1" x="-2.99999375" y="3.145" dx="0.7" dy="2.54" layer="1"/>
+<smd name="P$7" x="-5.2" y="-1.475" dx="2.1" dy="0.8" layer="1"/>
+<smd name="P$8" x="5.2" y="-1.475" dx="2.1" dy="0.8" layer="1"/>
+<wire x1="-6.35" y1="-2.54" x2="6.35" y2="-2.54" width="0.127" layer="51"/>
+</package>
+<package name="78171-0002">
+<smd name="P$1" x="-0.6" y="3.145" dx="0.7" dy="2.54" layer="1"/>
+<smd name="P$2" x="0.6" y="3.145" dx="0.7" dy="2.54" layer="1"/>
+<smd name="P$300" x="-2.80000625" y="-1.475" dx="2.1" dy="0.8" layer="1"/>
+<smd name="P$400" x="2.80000625" y="-1.475" dx="2.1" dy="0.8" layer="1"/>
+<wire x1="-5.08" y1="-2.54" x2="5.08" y2="-2.54" width="0.127" layer="51"/>
+</package>
 </packages>
 <symbols>
 <symbol name="74HC164">
@@ -2051,6 +2086,30 @@ package type OT</description>
 <wire x1="-7.62" y1="-10.16" x2="7.62" y2="-10.16" width="0.254" layer="94"/>
 <wire x1="7.62" y1="-10.16" x2="7.62" y2="10.16" width="0.254" layer="94"/>
 <wire x1="7.62" y1="10.16" x2="-7.62" y2="10.16" width="0.254" layer="94"/>
+</symbol>
+<symbol name="MOLEXSWD">
+<wire x1="-7.62" y1="12.7" x2="2.54" y2="12.7" width="0.254" layer="94"/>
+<wire x1="2.54" y1="12.7" x2="2.54" y2="-12.7" width="0.254" layer="94"/>
+<wire x1="2.54" y1="-12.7" x2="-7.62" y2="-12.7" width="0.254" layer="94"/>
+<wire x1="-7.62" y1="-12.7" x2="-7.62" y2="12.7" width="0.254" layer="94"/>
+<pin name="SWCLK" x="7.62" y="5.08" visible="pin" length="middle" rot="R180"/>
+<pin name="GND" x="7.62" y="0" visible="pin" length="middle" rot="R180"/>
+<pin name="VDD" x="7.62" y="10.16" visible="pin" length="middle" rot="R180"/>
+<pin name="SWDIO" x="7.62" y="-5.08" visible="pin" length="middle" rot="R180"/>
+<pin name="NRST" x="7.62" y="-10.16" visible="pin" length="middle" rot="R180"/>
+</symbol>
+<symbol name="LIBAT">
+<wire x1="7.62" y1="2.54" x2="7.62" y2="1.016" width="0.254" layer="94"/>
+<wire x1="7.62" y1="1.016" x2="7.62" y2="-1.016" width="0.254" layer="94"/>
+<wire x1="7.62" y1="-1.016" x2="7.62" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="7.62" y1="-2.54" x2="-7.62" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="-7.62" y1="-2.54" x2="-7.62" y2="2.54" width="0.254" layer="94"/>
+<wire x1="-7.62" y1="2.54" x2="7.62" y2="2.54" width="0.254" layer="94"/>
+<wire x1="7.62" y1="1.016" x2="8.89" y2="1.016" width="0.254" layer="94"/>
+<wire x1="8.89" y1="1.016" x2="8.89" y2="-1.016" width="0.254" layer="94"/>
+<wire x1="8.89" y1="-1.016" x2="7.62" y2="-1.016" width="0.254" layer="94"/>
+<pin name="POS" x="13.97" y="0" visible="pin" length="middle" rot="R180"/>
+<pin name="NEG" x="-12.7" y="0" visible="pin" length="middle"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -3013,6 +3072,53 @@ Source: www.cotorelay.com .. Coto_Technology__CT10-1530-G1.pdf</description>
 <connect gate="G$1" pin="GND" pad="2"/>
 <connect gate="G$1" pin="IN" pad="1"/>
 <connect gate="G$1" pin="OUT" pad="5"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="SWD">
+<gates>
+<gate name="G$1" symbol="MOLEXSWD" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="87438-0543">
+<connects>
+<connect gate="G$1" pin="GND" pad="P$3"/>
+<connect gate="G$1" pin="NRST" pad="P$5"/>
+<connect gate="G$1" pin="SWCLK" pad="P$2"/>
+<connect gate="G$1" pin="SWDIO" pad="P$4"/>
+<connect gate="G$1" pin="VDD" pad="P$1"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="78171-0006" package="78171-0006">
+<connects>
+<connect gate="G$1" pin="GND" pad="P$3"/>
+<connect gate="G$1" pin="NRST" pad="P$5"/>
+<connect gate="G$1" pin="SWCLK" pad="P$2"/>
+<connect gate="G$1" pin="SWDIO" pad="P$4"/>
+<connect gate="G$1" pin="VDD" pad="P$1"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="LIBAT">
+<gates>
+<gate name="G$1" symbol="LIBAT" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="78171-0002">
+<connects>
+<connect gate="G$1" pin="NEG" pad="P$1"/>
+<connect gate="G$1" pin="POS" pad="P$2"/>
 </connects>
 <technologies>
 <technology name=""/>
