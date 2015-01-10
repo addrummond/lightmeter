@@ -11354,7 +11354,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <text x="-5.08" y="22.86" size="1.778" layer="91">Microcontroller</text>
 <text x="213.36" y="60.96" size="1.778" layer="91">Screen (C2P right, IREF left)</text>
 <text x="-91.44" y="68.58" size="1.778" layer="91">AVR programming header</text>
-<text x="160.02" y="-33.02" size="1.778" layer="91">Temperature compensation</text>
 <text x="-152.4" y="-27.94" size="1.778" layer="91">Power muxer</text>
 <text x="-147.32" y="30.48" size="1.778" layer="91">Jack for flash sync input + protection circuit</text>
 <text x="-1.778" y="-141.478" size="1.778" layer="91">Charges at 100mA</text>
