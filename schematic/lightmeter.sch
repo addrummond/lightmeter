@@ -10976,8 +10976,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="C6" library="rcl" deviceset="C-EU" device="C0603" value="0u015"/>
 <part name="GND29" library="supply1" deviceset="GND" device=""/>
 <part name="R8" library="resistor" deviceset="R-EU_" device="R0402" value="500k%"/>
-<part name="U$2" library="lightmeter" deviceset="NCHANNELMOSFET" device=""/>
-<part name="R9" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
 <part name="U$7" library="lightmeter" deviceset="NCHANNELMOSFET" device=""/>
 <part name="R10" library="lightmeter" deviceset="THERMISTOR" device="R0402" value="???%"/>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
@@ -11115,8 +11113,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="C6" gate="G$1" x="83.82" y="-20.32" rot="R270"/>
 <instance part="GND29" gate="1" x="73.66" y="2.54" rot="R180"/>
 <instance part="R8" gate="G$1" x="83.82" y="-30.48"/>
-<instance part="U$2" gate="G$1" x="33.02" y="-40.64"/>
-<instance part="R9" gate="G$1" x="25.4" y="-55.88" rot="R90"/>
 <instance part="U$7" gate="G$1" x="86.36" y="-45.72" rot="R270"/>
 <instance part="R10" gate="G$1" x="86.36" y="7.62"/>
 <instance part="GND5" gate="1" x="114.3" y="2.54" rot="R180"/>
@@ -11380,14 +11376,14 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="GND36" gate="1" pin="GND"/>
 </segment>
 <segment>
-<pinref part="U$2" gate="G$1" pin="S"/>
 <pinref part="GND2" gate="1" pin="GND"/>
-<wire x1="33.02" y1="-45.72" x2="33.02" y2="-50.8" width="0.1524" layer="91"/>
-<pinref part="R9" gate="G$1" pin="1"/>
-<wire x1="25.4" y1="-60.96" x2="27.94" y2="-60.96" width="0.1524" layer="91"/>
-<wire x1="27.94" y1="-60.96" x2="27.94" y2="-50.8" width="0.1524" layer="91"/>
-<wire x1="27.94" y1="-50.8" x2="33.02" y2="-50.8" width="0.1524" layer="91"/>
-<junction x="33.02" y="-50.8"/>
+<pinref part="C14" gate="G$1" pin="2"/>
+<wire x1="33.02" y1="-22.86" x2="33.02" y2="-30.48" width="0.1524" layer="91"/>
+<pinref part="IC$3P" gate="P" pin="V-"/>
+<wire x1="38.1" y1="-27.94" x2="38.1" y2="-30.48" width="0.1524" layer="91"/>
+<wire x1="38.1" y1="-30.48" x2="33.02" y2="-30.48" width="0.1524" layer="91"/>
+<junction x="33.02" y="-30.48"/>
+<wire x1="33.02" y1="-50.8" x2="33.02" y2="-30.48" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND29" gate="1" pin="GND"/>
@@ -11633,22 +11629,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <segment>
 <pinref part="IC$4" gate="G$1" pin="/CS"/>
 <wire x1="203.2" y1="22.86" x2="198.12" y2="22.86" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="OAPWR" class="0">
-<segment>
-<pinref part="U$6" gate="G$1" pin="PA12"/>
-<wire x1="0" y1="-2.54" x2="2.54" y2="-2.54" width="0.1524" layer="91"/>
-<label x="2.54" y="-2.54" size="1.778" layer="95" xref="yes"/>
-</segment>
-<segment>
-<pinref part="U$2" gate="G$1" pin="G"/>
-<wire x1="27.94" y1="-43.18" x2="25.4" y2="-43.18" width="0.1524" layer="91"/>
-<label x="20.32" y="-43.18" size="1.778" layer="95" rot="R270" xref="yes"/>
-<wire x1="25.4" y1="-43.18" x2="20.32" y2="-43.18" width="0.1524" layer="91"/>
-<wire x1="25.4" y1="-43.18" x2="25.4" y2="-50.8" width="0.1524" layer="91"/>
-<junction x="25.4" y="-43.18"/>
-<pinref part="R9" gate="G$1" pin="2"/>
 </segment>
 </net>
 <net name="PBI$1" class="0">
@@ -11901,18 +11881,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="U$4" gate="G$1" pin="COM1"/>
 <wire x1="86.36" y1="-78.74" x2="83.82" y2="-78.74" width="0.1524" layer="91"/>
 <label x="83.82" y="-78.74" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
-</net>
-<net name="OAPWRNEG" class="0">
-<segment>
-<pinref part="C14" gate="G$1" pin="2"/>
-<wire x1="33.02" y1="-22.86" x2="33.02" y2="-30.48" width="0.1524" layer="91"/>
-<pinref part="IC$3P" gate="P" pin="V-"/>
-<wire x1="38.1" y1="-27.94" x2="38.1" y2="-30.48" width="0.1524" layer="91"/>
-<wire x1="38.1" y1="-30.48" x2="33.02" y2="-30.48" width="0.1524" layer="91"/>
-<pinref part="U$2" gate="G$1" pin="D"/>
-<wire x1="33.02" y1="-35.56" x2="33.02" y2="-30.48" width="0.1524" layer="91"/>
-<junction x="33.02" y="-30.48"/>
 </segment>
 </net>
 <net name="BATVOLTAGE" class="0">

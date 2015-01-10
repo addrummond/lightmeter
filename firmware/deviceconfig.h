@@ -21,7 +21,7 @@ VDD      --|                       |-- SWDCLK
            |                       |
 DIODESW  --|                       |-- SWDIO
            |                       |
-NRST     --|                       |-- OAPWR
+NRST     --|                       |-- 
            |                       |
 VDDA     --|                       |-- SCRPWR
            |                       |
