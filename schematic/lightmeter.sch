@@ -10925,8 +10925,8 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="S$1" library="lightmeter" deviceset="SMALLPUSHBUTTON" device=""/>
 <part name="S$3" library="lightmeter" deviceset="SMALLPUSHBUTTON" device=""/>
 <part name="S$2" library="lightmeter" deviceset="SMALLPUSHBUTTON" device=""/>
-<part name="R18" library="resistor" deviceset="R-EU_" device="R0402" value="100k%"/>
-<part name="R19" library="resistor" deviceset="R-EU_" device="R0402" value="100k%"/>
+<part name="R18" library="resistor" deviceset="R-EU_" device="R0402" value="500k%"/>
+<part name="R19" library="resistor" deviceset="R-EU_" device="R0402" value="500k%"/>
 <part name="GND32" library="supply1" deviceset="GND" device=""/>
 <part name="GND31" library="supply1" deviceset="GND" device=""/>
 <part name="R1" library="resistor" deviceset="R-EU_" device="R0402" value="15k"/>
