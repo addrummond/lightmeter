@@ -11432,6 +11432,11 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <label x="-91.44" y="50.8" size="1.778" layer="95" xref="yes"/>
 <pinref part="U$8" gate="G$1" pin="GND"/>
 </segment>
+<segment>
+<pinref part="D$1" gate="G$1" pin="A"/>
+<pinref part="GND30" gate="1" pin="GND"/>
+<wire x1="-121.92" y1="11.176" x2="-121.92" y2="7.62" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="VCC" class="0">
 <segment>
@@ -12083,12 +12088,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="-96.52" y1="45.72" x2="-91.44" y2="45.72" width="0.1524" layer="91"/>
 <label x="-91.44" y="45.72" size="1.778" layer="95" xref="yes"/>
 <pinref part="U$8" gate="G$1" pin="SWDIO"/>
-</segment>
-</net>
-<net name="N$4" class="0">
-<segment>
-<pinref part="D$1" gate="G$1" pin="A"/>
-<wire x1="-121.92" y1="10.16" x2="-121.92" y2="7.62" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="INTEGCLR" class="0">
