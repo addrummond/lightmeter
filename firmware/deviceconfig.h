@@ -7,14 +7,11 @@
 
 STM32F030K6T6 configuration.
 
-            V  B  P  P  S  S  S  S
-            S  O  B  B  P  P  P  P
-            S  O  I  I  I  I  I  I
-               T  2  1  M  M  S  N
-               0        O  I  C  S
-                        S  S  K  S
-                        I  O
-
+            V  B  P  P
+            S  O  B  B
+            S  O  I  I
+               T  2  1
+               0
             |  |  |  |  |  |  |  |
             ________________________
 VDD      --|                       |-- SWDCLK
@@ -32,15 +29,16 @@ SCRPWR   --|                       |-- I2CSCL
 OAOUT2   --|                       |-- SCRRES
            |_______________________|
             |  |  |  |  |  |  |  |
-            B  S  S  S  S  I  F  V
-            R  P  P  P  P  N  L  S
-            E  I  I  I  I  T  A  S
-            S  N  S  M  M  E  S
-            E  S  C  I  O  G  H
-            T  S  K  S  S  C  S
-                     O  I  L  Y
-                           R  N
-                              C
+            B  D  B        I  F  V
+            R  I  A        N  L  S
+            E  O  T        T  A  S
+            S  D  V        E  S
+            E  E  O        G  H
+            T  S  L        C  S
+               W  T        L  Y
+                  A        R  N
+                  G           C
+                  E
 */
 
 //
