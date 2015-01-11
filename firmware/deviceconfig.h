@@ -21,13 +21,13 @@ VDD      --|                       |-- SWDCLK
            |                       |
 DIODESW  --|                       |-- SWDIO
            |                       |
-NRST     --|                       |-- 
+NRST     --|                       |-- USBDM
            |                       |
-VDDA     --|                       |-- SCRPWR
+VDDA     --|                       |-- USBDP
            |                       |
 OAOUT1   --|                       |-- I2CSDA
            |                       |
-BATVOL   --|                       |-- I2CSCL
+SCRPWR   --|                       |-- I2CSCL
            |                       |
 OAOUT2   --|                       |-- SCRRES
            |_______________________|
