@@ -9996,6 +9996,14 @@ package type OT</description>
 <smd name="P$400" x="2.80000625" y="-1.475" dx="2.1" dy="0.8" layer="1"/>
 <wire x1="-5.08" y1="-2.54" x2="5.08" y2="-2.54" width="0.127" layer="51"/>
 </package>
+<package name="PIEZOBENDER165">
+<circle x="0" y="0" radius="6.75" width="0.127" layer="21"/>
+<circle x="0" y="0" radius="4.999990625" width="0.127" layer="21"/>
+<smd name="P$1" x="-5.08" y="10.16" dx="2.99999375" dy="2.99999375" layer="1"/>
+<smd name="P$2" x="5.08" y="10.16" dx="2.99999375" dy="2.99999375" layer="1"/>
+<text x="-6.35" y="6.35" size="1.27" layer="21">-</text>
+<text x="5.08" y="6.35" size="1.27" layer="21">+</text>
+</package>
 </packages>
 <symbols>
 <symbol name="VEMD2523SLX01">
@@ -10283,6 +10291,12 @@ package type OT</description>
 <wire x1="8.89" y1="-1.016" x2="7.62" y2="-1.016" width="0.254" layer="94"/>
 <pin name="POS" x="13.97" y="0" visible="pin" length="middle" rot="R180"/>
 <pin name="NEG" x="-12.7" y="0" visible="pin" length="middle"/>
+</symbol>
+<symbol name="PIEZOBENDER165">
+<circle x="0" y="0" radius="5.6796125" width="0.254" layer="94"/>
+<circle x="0" y="0" radius="10.77630625" width="0.254" layer="94"/>
+<pin name="-" x="-12.7" y="0" visible="pin" length="middle"/>
+<pin name="+" x="5.08" y="0" visible="pin" length="middle" rot="R180"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -10665,6 +10679,22 @@ package type OT</description>
 </device>
 </devices>
 </deviceset>
+<deviceset name="PIEZOBENDER165">
+<gates>
+<gate name="G$1" symbol="PIEZOBENDER165" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="PIEZOBENDER165">
+<connects>
+<connect gate="G$1" pin="+" pad="P$2"/>
+<connect gate="G$1" pin="-" pad="P$1"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
 </devicesets>
 </library>
 <library name="adafruit">
@@ -10868,6 +10898,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="R15" library="resistor" deviceset="R-EU_" device="R0402" value="500k"/>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
 <part name="P+4" library="supply1" deviceset="VCC" device=""/>
+<part name="U$1" library="lightmeter" deviceset="PIEZOBENDER165" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -11005,6 +11036,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="R15" gate="G$1" x="-91.44" y="-124.46"/>
 <instance part="GND7" gate="1" x="-81.788" y="-124.46" rot="R90"/>
 <instance part="P+4" gate="VCC" x="-124.46" y="-124.46" rot="R90"/>
+<instance part="U$1" gate="G$1" x="81.28" y="63.5"/>
 </instances>
 <busses>
 </busses>
