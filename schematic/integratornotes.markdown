@@ -11,6 +11,8 @@ Newest calculations
 * Switch to the 0.015uF cap and this goes up to 0.0033V at 1/2000 and 0.0133V
   at 1/500. This seems ok.
 * Cap here: http://www2.mouser.com/ProductDetail/Murata-Electronics/GCM188L81H153KA37D/?qs=sGAEpiMZZMsh%252b1woXyUXj2tpDktHmw%252biMN4CL%2fjiqKI%3d
+* Plan: Time how long it takes to get to
+
 
 Old new calculations
 -----
