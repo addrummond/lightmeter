@@ -11065,8 +11065,8 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="P+7" gate="VCC" x="55.88" y="27.94" rot="R180"/>
 <instance part="U$13" gate="G$1" x="-2.54" y="33.02" rot="R90"/>
 <instance part="P+8" gate="VCC" x="-12.7" y="33.02" rot="R90"/>
-<instance part="C8" gate="G$1" x="144.78" y="45.72" rot="R90"/>
-<instance part="L1" gate="G$1" x="134.62" y="45.72"/>
+<instance part="C8" gate="G$1" x="127" y="27.94"/>
+<instance part="L1" gate="G$1" x="127" y="38.1" rot="R270"/>
 </instances>
 <busses>
 </busses>
@@ -11897,8 +11897,8 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 </segment>
 <segment>
 <pinref part="C8" gate="G$1" pin="2"/>
-<wire x1="149.86" y1="45.72" x2="152.4" y2="45.72" width="0.1524" layer="91"/>
-<label x="152.4" y="45.72" size="1.778" layer="95" xref="yes"/>
+<wire x1="127" y1="22.86" x2="132.08" y2="22.86" width="0.1524" layer="91"/>
+<label x="132.08" y="22.86" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="NRST" class="0">
@@ -12218,11 +12218,10 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="D3" gate="G$1" pin="C"/>
 <wire x1="116.84" y1="45.72" x2="127" y2="45.72" width="0.1524" layer="91"/>
 <pinref part="L1" gate="G$1" pin="1"/>
-<wire x1="127" y1="45.72" x2="129.54" y2="45.72" width="0.1524" layer="91"/>
-<wire x1="127" y1="45.72" x2="127" y2="53.34" width="0.1524" layer="91"/>
+<wire x1="127" y1="45.72" x2="127" y2="43.18" width="0.1524" layer="91"/>
 <junction x="127" y="45.72"/>
-<wire x1="127" y1="53.34" x2="134.62" y2="53.34" width="0.1524" layer="91"/>
-<label x="134.62" y="53.34" size="1.778" layer="95" xref="yes"/>
+<wire x1="127" y1="45.72" x2="137.16" y2="45.72" width="0.1524" layer="91"/>
+<label x="137.16" y="45.72" size="1.778" layer="95" xref="yes"/>
 </segment>
 <segment>
 <pinref part="U$6" gate="G$1" pin="PB3"/>
@@ -12267,7 +12266,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <segment>
 <pinref part="L1" gate="G$1" pin="2"/>
 <pinref part="C8" gate="G$1" pin="1"/>
-<wire x1="139.7" y1="45.72" x2="142.24" y2="45.72" width="0.1524" layer="91"/>
+<wire x1="127" y1="33.02" x2="127" y2="30.48" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
