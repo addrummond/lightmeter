@@ -2,8 +2,12 @@
 #include <stm32f0xx_gpio.h>
 #include <stm32f0xx_rcc.h>
 
+#include <i2c.h>
+
 int main()
 {
+    i2c_init();
+
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
 
     GPIO_InitTypeDef ledgpio;

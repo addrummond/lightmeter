@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 
+#include <stm32f0xx_gpio.h>
+#include <stm32f0xx_i2c.h>
+
 /*
 
 STM32F030K6T6 configuration.
@@ -73,15 +76,25 @@ OAOUT2   --|                       |-- SCRRES
 
 
 //
-// I2c
+// I2C
 //
 
-#define I2C_I2C              RCC_APB1Periph_I2C1
-#define I2C_SDA_PORT         GPIOA
-#define I2C_SDA_PIN_SOURCE   GPIO_PinSource_10
-#define I2C_SCL_PORT         GPIOA
-#define I2C_SCL_PIN_SOURCE   GPIO_PinSource_9
-#define I2C_SDA_PERIPH_PORT  RCC_AHBPeriph_GPIOB
-#define I2C_SCL_PERIPH_PORT  RCC_AHBPeriph_GPIOB
+#define I2C_I2C              I2C1
+#define I2C_CLK              RCC_APB1Periph_I2C1
+#define I2C_SDA_GPIO_PORT    GPIOA
+#define I2C_SDA_PIN          GPIO_Pin_10
+#define I2C_SDA_SOURCE       GPIO_PinSource10
+#define I2C_SCL_GPIO_PORT    GPIOA
+#define I2C_SCL_PIN          GPIO_Pin_9
+#define I2C_SCL_SOURCE       GPIO_PinSource9
+#define I2C_SDA_GPIO_CLK     RCC_AHBPeriph_GPIOB
+#define I2C_SCL_GPIO_CLK     RCC_AHBPeriph_GPIOB
+
+//
+// Screen
+//
+
+#define SCREEN_RESET_PORT    GPIOA
+#define SCREEN_RESET_PIN     GPIO_Pin_8
 
 #endif

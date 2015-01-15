@@ -15,6 +15,12 @@ $CC $CFLAGS -c ./stm/system_stm32f0xx.c -o ./stm/system_stm32f0xx.o
 OBJS="$OBJS ./stm/system_stm32f0xx.o"
 $CC $CFLAGS -c ./stm/startup_stm32f030.s -o ./stm/startup_stm32f030.o
 OBJS="$OBJS ./stm/startup_stm32f030.o"
+$CC $CFLAGS -c ./stm/stm32f0xx_gpio.c -o ./stm/stm32f0xx_gpio.o
+OBJS="$OBJS ./stm/stm32f0xx_gpio.o"
+$CC $CFLAGS -c ./stm/stm32f0xx_rcc.c -o ./stm/stm32f0xx_rcc.o
+OBJS="$OBJS ./stm/stm32f0xx_rcc.o"
+$CC $CFLAGS -c ./stm/stm32f0xx_i2c.c -o ./stm/stm32f0xx_i2c.o
+OBJS="$OBJS ./stm/stm32f0xx_i2c.o"
 
 $CC $CFLAGS -c tables.c -o tables.o
 OBJS="$OBJS tables.o"
@@ -26,12 +32,9 @@ $CC $CFLAGS -c exposure.c -o exposure.o
 OBJS="$OBJS exposure.o"
 $CC $CFLAGS -c bcd.c -o bcd.o
 OBJS="$OBJS bcd.o"
-$CC $CFLAGS -c ./stm/stm32f0xx_gpio.c -o ./stm/stm32f0xx_gpio.o
-OBJS="$OBJS ./stm/stm32f0xx_gpio.o"
-$CC $CFLAGS -c ./stm/stm32f0xx_rcc.c -o ./stm/stm32f0xx_rcc.o
-OBJS="$OBJS ./stm/stm32f0xx_rcc.o"
-$CC $CFLAGS -c ./stm/stm32f0xx_i2c.c -o ./stm/stm32f0xx_i2c.o
-OBJS="$OBJS ./stm/stm32f0xx_i2c.o"
+$CC $CFLAGS -c i2c.c -o i2c.o
+OBJS="$OBJS i2c.o"
+
 $CC $CFLAGS -c main.c -o main.o
 OBJS="$OBJS main.o"
 
