@@ -1,14 +1,8 @@
 #include <display.h>
-#include <avr/wdt.h>
-#include <util/delay.h>
-#include <readbyte.h>
-#include <assert.h>
+#include <myassert.h>
 #include <bitmaps/bitmaps.h>
 #include <deviceconfig.h>
-#include <shiftregister.h>
-#ifdef DEBUG
-#include <basic_serial/basic_serial.h>
-#endif
+#include <stm32f0xx_gpio.h>
 
 void display_write_byte(uint8_t d)
 {
@@ -46,21 +40,25 @@ void display_write_data_end()
 
 void display_reset()
 {
-    DISPLAY_RESET_PORT |= (1 << DISPLAY_RESET_BIT);
-    _delay_ms(1);
-    DISPLAY_RESET_PORT &= ~(1 << DISPLAY_RESET_BIT);
-    _delay_ms(10);
-    DISPLAY_RESET_PORT |= (1 << DISPLAY_RESET_BIT);
+    // Reset pin is pulled high in normal operation, set low to reset.
+    GPIO_WriteBit(DISPLAY_RESET_GPIO_PORT, DISPLAY_RESET_PIN, 1);
+    uint8_t i;
+    for (i = 0; i < 4000; ++i);
+    GPIO_WriteBit(DISPLAY_RESET_GPIO_PORT, DISPLAY_RESET_PIN, 0);
+    for (i = 0; i < 40000; ++i);
+    GPIO_WriteBit(DISPLAY_RESET_GPIO_PORT, DISPLAY_RESET_PIN, 1);
 }
 
 void display_init()
 {
-    // Setup output ports.
-    DISPLAY_DATA_DDR |= (1 << DISPLAY_DATA_BIT);
-    DISPLAY_CS_DDR |= (1 << DISPLAY_CS_BIT);
-    DISPLAY_CLK_DDR |= (1 << DISPLAY_CLK_BIT);
-    DISPLAY_DC_DDR |= (1 << DISPLAY_DC_BIT);
-    DISPLAY_RESET_DDR |= (1 << DISPLAY_RESET_BIT);
+    // Configure reset pin.
+    GPIO_InitTypeDef gpi;
+    gpi.GPIO_Pin = SCREEN_RESET_PIN;
+    gpi.GPIO_Mode = GPIO_Mode_OUT;
+    gpi.GPIO_Speed = GPIO_Speed_Level_1;
+    gpi.GPIO_OType = GPIO_OType_OD;
+    gpi.GPIO_PuPd = GPIO_PuPd_UP;
+    GPIO_Init(SCREEN_RESET_GPIO_PORT, &gpi);
 
     display_reset();
 

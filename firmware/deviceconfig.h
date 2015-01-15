@@ -90,11 +90,12 @@ OAOUT2   --|                       |-- SCRRES
 #define I2C_SDA_GPIO_CLK     RCC_AHBPeriph_GPIOB
 #define I2C_SCL_GPIO_CLK     RCC_AHBPeriph_GPIOB
 
+
 //
 // Screen
 //
 
-#define SCREEN_RESET_PORT    GPIOA
-#define SCREEN_RESET_PIN     GPIO_Pin_8
+#define SCREEN_RESET_GPIO_PORT  GPIOA
+#define SCREEN_RESET_PIN        GPIO_Pin_8
 
 #endif
