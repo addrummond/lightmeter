@@ -6,8 +6,8 @@
 #include <stm32f0xx_gpio.h>
 #include <debugging.h>
 
-#define DISPLAY_I2C_ADDR 0b0111100
-#define FLAG_TIMEOUT    ((uint32_t)0x1000)
+#define DISPLAY_I2C_ADDR 0b111101
+#define FLAG_TIMEOUT     ((uint32_t)0x1000)
 
 static void timed_out(const char *msg, uint32_t length)
 {
@@ -16,14 +16,16 @@ static void timed_out(const char *msg, uint32_t length)
     debugging_writec("\n");
 }
 
-#define WAIT_ON_FLAG(flag, msg)                                    \
+#define WAIT_ON_FLAG_(flag, msg, op)                               \
     do {                                                           \
         uint32_t to = FLAG_TIMEOUT;                                \
-        while (I2C_GetFlagStatus(I2C_I2C, (flag)) != RESET) {      \
+        while (I2C_GetFlagStatus(I2C_I2C, (flag)) op RESET) {      \
             if (to-- == 0)                                         \
                 return timed_out((msg), sizeof(msg)/sizeof(char)); \
         }                                                          \
     } while (0)
+#define WAIT_ON_FLAG_NO_RESET(flag, msg) WAIT_ON_FLAG_((flag), (msg), !=)
+#define WAIT_ON_FLAG_RESET(flag, msg)    WAIT_ON_FLAG_((flag), (msg), ==)
 
 void display_write_data_start()
 {
@@ -32,13 +34,13 @@ void display_write_data_start()
 
 void display_write_byte(uint8_t b)
 {
-    WAIT_ON_FLAG(I2C_ISR_BUSY, "display_write_byte 1");
+    WAIT_ON_FLAG_NO_RESET(I2C_ISR_BUSY, "display_write_byte 1");
     I2C_TransferHandling(I2C_I2C, DISPLAY_I2C_ADDR, 2, I2C_AutoEnd_Mode, I2C_Generate_Start_Write);
-    WAIT_ON_FLAG(I2C_ISR_TXIS, "display_write_byte 2");
+    WAIT_ON_FLAG_RESET(I2C_ISR_TXIS, "display_write_byte 2");
     I2C_SendData(I2C_I2C, 0);
-    WAIT_ON_FLAG(I2C_ISR_TXIS, "display_write_byte 3");
+    WAIT_ON_FLAG_RESET(I2C_ISR_TXIS, "display_write_byte 3");
     I2C_SendData(I2C_I2C, b);
-    WAIT_ON_FLAG(I2C_ISR_STOPF, "display_write_byte 4");
+    WAIT_ON_FLAG_RESET(I2C_ISR_STOPF, "display_write_byte 4");
     I2C_ClearFlag(I2C_I2C, I2C_ICR_STOPCF);
 }
 
@@ -49,19 +51,19 @@ void display_write_data_end()
 
 void display_command(uint8_t c)
 {
-    WAIT_ON_FLAG(I2C_ISR_BUSY, "display_command 1");
+    WAIT_ON_FLAG_NO_RESET(I2C_ISR_BUSY, "display_command 1");
     I2C_TransferHandling(I2C_I2C, DISPLAY_I2C_ADDR, 2, I2C_AutoEnd_Mode, I2C_Generate_Start_Write);
-    WAIT_ON_FLAG(I2C_ISR_TXIS, "display_command 2");
+    WAIT_ON_FLAG_RESET(I2C_ISR_TXIS, "display_command 2");
     // Send control byte.
     I2C_SendData(
         I2C_I2C,
           (1 << 7) // Not just data bytes
         | (0 << 6) // Command (not data)
     );
-    WAIT_ON_FLAG(I2C_ISR_TXIS, "display_command 3");
+    WAIT_ON_FLAG_RESET(I2C_ISR_TXIS, "display_command 3");
     // Send the command byte itself (finally!)
     I2C_SendData(I2C_I2C, c);
-    WAIT_ON_FLAG(I2C_ISR_STOPF, "display_command 4");
+    WAIT_ON_FLAG_RESET(I2C_ISR_STOPF, "display_command 4");
     I2C_ClearFlag(I2C_I2C, I2C_ICR_STOPCF);
 }
 

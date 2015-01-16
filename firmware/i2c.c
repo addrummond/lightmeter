@@ -6,12 +6,14 @@
 #include <deviceconfig.h>
 
 // See ref manual 25.4.10
-#define PRESC 1
+/*#define PRESC 1
 #define SCLDEL 0x4
 #define SDADEL 0x2
 #define SCLH 0xC3
 #define SCLL 0xC7
-#define I2C_TIMING (PRESC << 28) | (SCLDEL << 20) | (SDADEL << 16) | (SCLH << 8) | (SCLL << 0)
+#define I2C_TIMING (PRESC << 28) | (SCLDEL << 20) | (SDADEL << 16) | (SCLH << 8) | (SCLL << 0)*/
+// Taken from code for LM75.
+#define I2C_TIMING 0x1045061D
 
 void i2c_init()
 {
@@ -58,4 +60,5 @@ void i2c_init()
     i2ci.I2C_Timing = I2C_TIMING;
 
     I2C_Init(I2C_I2C, &i2ci);
+    I2C_Cmd(I2C_I2C, ENABLE);
 }
