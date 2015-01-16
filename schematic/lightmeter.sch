@@ -11625,9 +11625,9 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <junction x="-24.638" y="-85.598"/>
 </segment>
 <segment>
-<pinref part="U$6" gate="G$1" pin="PB6"/>
-<wire x1="-35.56" y1="22.86" x2="-35.56" y2="25.4" width="0.1524" layer="91"/>
-<label x="-35.56" y="25.4" size="1.778" layer="95" rot="R90" xref="yes"/>
+<pinref part="U$6" gate="G$1" pin="PA10"/>
+<wire x1="0" y1="-12.7" x2="2.54" y2="-12.7" width="0.1524" layer="91"/>
+<label x="2.54" y="-12.7" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="N$24" class="0">
@@ -11812,9 +11812,9 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="-6.858" y1="-85.598" x2="-14.478" y2="-85.598" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="U$6" gate="G$1" pin="PB7"/>
-<wire x1="-40.64" y1="22.86" x2="-40.64" y2="25.4" width="0.1524" layer="91"/>
-<label x="-40.64" y="25.4" size="1.778" layer="95" rot="R90" xref="yes"/>
+<pinref part="U$6" gate="G$1" pin="PA9"/>
+<wire x1="0" y1="-17.78" x2="2.54" y2="-17.78" width="0.1524" layer="91"/>
+<label x="2.54" y="-17.78" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="N$7" class="0">
@@ -11867,11 +11867,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <label x="20.32" y="76.2" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<pinref part="U$6" gate="G$1" pin="PA10"/>
-<wire x1="0" y1="-12.7" x2="2.54" y2="-12.7" width="0.1524" layer="91"/>
-<label x="2.54" y="-12.7" size="1.778" layer="95" xref="yes"/>
-</segment>
-<segment>
 <pinref part="IC$4" gate="G$1" pin="D1/SPI_SDIN/I2C_SDA"/>
 <wire x1="203.2" y1="7.62" x2="200.66" y2="7.62" width="0.1524" layer="91"/>
 <label x="198.12" y="7.62" size="1.4224" layer="95" rot="R180" xref="yes"/>
@@ -11880,6 +11875,11 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <junction x="200.66" y="7.62"/>
 <pinref part="IC$4" gate="G$1" pin="D2/I2C_SDA"/>
 <wire x1="200.66" y1="5.08" x2="203.2" y2="5.08" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="U$6" gate="G$1" pin="PB7"/>
+<wire x1="-40.64" y1="22.86" x2="-40.64" y2="25.4" width="0.1524" layer="91"/>
+<label x="-40.64" y="25.4" size="1.778" layer="95" rot="R90" xref="yes"/>
 </segment>
 </net>
 <net name="I2CSCL" class="0">
@@ -11894,14 +11894,14 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <label x="-12.7" y="63.5" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<pinref part="U$6" gate="G$1" pin="PA9"/>
-<wire x1="0" y1="-17.78" x2="2.54" y2="-17.78" width="0.1524" layer="91"/>
-<label x="2.54" y="-17.78" size="1.778" layer="95" xref="yes"/>
-</segment>
-<segment>
 <pinref part="IC$4" gate="G$1" pin="D0/SPI_SCLK/I2C_SCK"/>
 <wire x1="203.2" y1="10.16" x2="198.12" y2="10.16" width="0.1524" layer="91"/>
 <label x="198.12" y="10.16" size="1.4224" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="U$6" gate="G$1" pin="PB6"/>
+<wire x1="-35.56" y1="22.86" x2="-35.56" y2="25.4" width="0.1524" layer="91"/>
+<label x="-35.56" y="25.4" size="1.778" layer="95" rot="R90" xref="yes"/>
 </segment>
 </net>
 <net name="VGND" class="0">

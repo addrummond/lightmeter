@@ -114,7 +114,7 @@ void display_reset()
     for (i = 0; i < 4000; ++i);
     debugging_writec("LOW");
     GPIO_WriteBit(DISPLAY_RESET_GPIO_PORT, DISPLAY_RESET_PIN, 0);
-    for (i = 0; i < 40000000; ++i);
+    for (i = 0; i < 4000; ++i);
     debugging_writec("HIGH");
     GPIO_WriteBit(DISPLAY_RESET_GPIO_PORT, DISPLAY_RESET_PIN, 1);
 }

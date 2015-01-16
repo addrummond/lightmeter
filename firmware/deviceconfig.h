@@ -10,11 +10,12 @@
 
 STM32F030K6T6 configuration.
 
-            V  B  P  P
-            S  O  B  B
-            S  O  I  I
-               T  2  1
-               0
+                  I  I
+            V  B  2  2
+            S  O  C  C
+            S  O  S  S
+               T  D  C
+               0  A  L
             |  |  |  |  |  |  |  |
             ________________________
 VDD      --|                       |-- SWDCLK
@@ -25,9 +26,9 @@ NRST     --|                       |-- USBDM
            |                       |
 VDDA     --|                       |-- USBDP
            |                       |
-OAOUT1   --|                       |-- I2CSDA
+OAOUT1   --|                       |-- PBI$1
            |                       |
-SCRPWR   --|                       |-- I2CSCL
+SCRPWR   --|                       |-- PBI$2
            |                       |
 OAOUT2   --|                       |-- SCRRES
            |_______________________|
@@ -81,11 +82,11 @@ OAOUT2   --|                       |-- SCRRES
 
 #define I2C_I2C              I2C1
 #define I2C_CLK              RCC_APB1Periph_I2C1
-#define I2C_SDA_GPIO_PORT    GPIOA
-#define I2C_SDA_PIN          GPIO_Pin_10
+#define I2C_SDA_GPIO_PORT    GPIOB
+#define I2C_SDA_PIN          GPIO_Pin_7
 #define I2C_SDA_SOURCE       GPIO_PinSource10
-#define I2C_SCL_GPIO_PORT    GPIOA
-#define I2C_SCL_PIN          GPIO_Pin_9
+#define I2C_SCL_GPIO_PORT    GPIOB
+#define I2C_SCL_PIN          GPIO_Pin_6
 #define I2C_SCL_SOURCE       GPIO_PinSource9
 #define I2C_SDA_GPIO_CLK     RCC_AHBPeriph_GPIOB
 #define I2C_SCL_GPIO_CLK     RCC_AHBPeriph_GPIOB
