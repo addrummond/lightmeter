@@ -49,6 +49,12 @@ void i2c_init()
     //
     I2C_InitTypeDef i2ci;
     I2C_StructInit(&i2ci);
+    i2ci.I2C_Mode = I2C_Mode_SMBusHost;
+    i2ci.I2C_AnalogFilter = I2C_AnalogFilter_Enable;
+    i2ci.I2C_DigitalFilter = 0x00;
+    i2ci.I2C_OwnAddress1 = 0x00;
+    i2ci.I2C_Ack = I2C_Ack_Enable;
+    i2ci.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
     i2ci.I2C_Timing = I2C_TIMING;
 
     I2C_Init(I2C_I2C, &i2ci);
