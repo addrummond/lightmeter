@@ -801,7 +801,7 @@ int main()
         for (voltage = 0; voltage < 255; ++voltage) {
             ev_with_fracs_t evwf = get_ev100_at_voltage(voltage, stage);
             uint8_t ev8 = ev_with_fracs_get_ev8(evwf);
-            printf("    EV@100: %.2f\n", ((float)ev8)/8.0);
+            printf("    EV@100: %.2f\n", (((float)ev8)/8.0f)-5.0f);
         }
     }
 
