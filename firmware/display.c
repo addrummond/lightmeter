@@ -1,8 +1,80 @@
+#include <stdint.h>
 #include <display.h>
 #include <myassert.h>
 #include <bitmaps/bitmaps.h>
 #include <deviceconfig.h>
 #include <stm32f0xx_gpio.h>
+
+#define SCREEN_I2C_ADDR 0b0111100
+#define FLAG_TIMEOUT    ((uint32_t)0x1000)
+
+static void timed_out()
+{
+
+}
+
+void display_command(uint_fast8_t c)
+{
+    uint32_t to = FLAG_TIMEOUT;
+    while (I2C_GetFlagStatus(I2C_I2C, I2C_ISR_BUSY) != RESET) {
+        if (to-- == 0)
+            return timed_out;
+    }
+
+    // Configure slave address, nbytes, reload, end mode and start or stop generation.
+    I2C_TransferHandling(I2C_I2C, SCREEN_I2C_ADDR, 1, I2C_Reload_Mode, I2C_Generate_Start_Write);
+
+    // Wait until TXIS flag is set.
+    to = FLAG_TIMEOUT;
+    while(I2C_GetFlagStatus(I2C_I2C, I2C_ISR_TXIS) == RESET)
+    {
+        if(to-- == 0)
+            return timed_out();
+    }
+
+    // Send control byte.
+    I2C_SendData(
+        LM75_I2C,
+          (1 << 7) // Not just data bytes
+        | (0 << 6) // Command (not data)
+        | 0        // Rest is 0
+    );
+
+    // Wait until TCR flag is set.
+    to = FLAG_TIMEOUT;
+    while(I2C_GetFlagStatus(I2C_I2C, I2C_ISR_TCR) == RESET)
+    {
+        if(to-- == 0)
+            return LM75_TIMEOUT_UserCallback();
+    }
+
+    // Configure slave address, nbytes, reload, end mode and start or stop generation.
+    I2C_TransferHandling(I2C_I2C, SCREEN_I2C_ADDR, 1, I2C_AutoEnd_Mode, I2C_No_StartStop);
+
+    // Wait until TXIS flag is set.
+    to = FLAG_TIMEOUT;
+    while(I2C_GetFlagStatus(I2C_I2C, I2C_ISR_TXIS) == RESET)
+    {
+        if(to-- == 0)
+            return LM75_TIMEOUT_UserCallback();
+    }
+
+    // Send the command byte itself (finally!)
+    I2C_SendData(LM75_I2C, c);
+
+    // Wait until STOPF flag is set.
+    to = FLAG_TIMEOUT;
+    while(I2C_GetFlagStatus(I2C_I2C, I2C_ISR_STOPF) == RESET)
+    {
+        if(to-- == 0)
+            return LM75_TIMEOUT_UserCallback();
+    }
+
+    // Clear STOPF flag.
+    I2C_ClearFlag(I2C_I2C, I2C_ICR_STOPCF);
+}
+
+
 
 void display_write_byte(uint8_t d)
 {
@@ -17,6 +89,8 @@ void display_write_byte(uint8_t d)
     }
 }
 
+/*
+Old AVR SPI bitbanging code.
 void display_command(uint8_t c)
 {
     DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
@@ -24,7 +98,7 @@ void display_command(uint8_t c)
     DISPLAY_CS_PORT &= ~(1 << DISPLAY_CS_BIT);
     display_write_byte(c);
     DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
-}
+}*/
 
 void display_write_data_start()
 {

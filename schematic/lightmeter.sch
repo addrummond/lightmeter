@@ -11873,8 +11873,13 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 </segment>
 <segment>
 <pinref part="IC$4" gate="G$1" pin="D1/SPI_SDIN/I2C_SDA"/>
-<wire x1="203.2" y1="7.62" x2="198.12" y2="7.62" width="0.1524" layer="91"/>
+<wire x1="203.2" y1="7.62" x2="200.66" y2="7.62" width="0.1524" layer="91"/>
 <label x="198.12" y="7.62" size="1.4224" layer="95" rot="R180" xref="yes"/>
+<wire x1="200.66" y1="7.62" x2="198.12" y2="7.62" width="0.1524" layer="91"/>
+<wire x1="200.66" y1="7.62" x2="200.66" y2="5.08" width="0.1524" layer="91"/>
+<junction x="200.66" y="7.62"/>
+<pinref part="IC$4" gate="G$1" pin="D2/I2C_SDA"/>
+<wire x1="200.66" y1="5.08" x2="203.2" y2="5.08" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="I2CSCL" class="0">
