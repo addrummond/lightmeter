@@ -112,8 +112,10 @@ void display_reset()
     GPIO_WriteBit(DISPLAY_RESET_GPIO_PORT, DISPLAY_RESET_PIN, 1);
     uint32_t i;
     for (i = 0; i < 4000; ++i);
+    debugging_writec("LOW");
     GPIO_WriteBit(DISPLAY_RESET_GPIO_PORT, DISPLAY_RESET_PIN, 0);
-    for (i = 0; i < 40000; ++i);
+    for (i = 0; i < 40000000; ++i);
+    debugging_writec("HIGH");
     GPIO_WriteBit(DISPLAY_RESET_GPIO_PORT, DISPLAY_RESET_PIN, 1);
 }
 
@@ -124,8 +126,8 @@ void display_init()
     gpi.GPIO_Pin = DISPLAY_RESET_PIN;
     gpi.GPIO_Mode = GPIO_Mode_OUT;
     gpi.GPIO_Speed = GPIO_Speed_Level_1;
-    gpi.GPIO_OType = GPIO_OType_OD;
-    gpi.GPIO_PuPd = GPIO_PuPd_UP;
+    gpi.GPIO_OType = GPIO_OType_PP;
+    gpi.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_Init(DISPLAY_RESET_GPIO_PORT, &gpi);
 
     display_reset();

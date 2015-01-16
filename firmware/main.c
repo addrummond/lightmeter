@@ -8,6 +8,8 @@
 
 int main()
 {
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
+
     debugging_writec("Hello World!\n");
 
     i2c_init();
