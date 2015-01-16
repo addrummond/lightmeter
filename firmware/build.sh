@@ -8,6 +8,10 @@ CFLAGS="$ST $CFLAGS"
 
 python calculate_tables.py output
 
+cd bitmaps
+python process_bitmaps.py output
+cd ..
+
 OBJS=""
 
 # Arm STM stuff.
@@ -34,6 +38,10 @@ $CC $CFLAGS -c bcd.c -o bcd.o
 OBJS="$OBJS bcd.o"
 $CC $CFLAGS -c i2c.c -o i2c.o
 OBJS="$OBJS i2c.o"
+$CC $CFLAGS -c display.c -o display.o
+OBJS="$OBJS display.o"
+$CC $CFLAGS -c bitmaps/bitmaps.c -o bitmaps/bitmaps.o
+OBJS="$OBJS bitmaps/bitmaps.o"
 
 $CC $CFLAGS -c main.c -o main.o
 OBJS="$OBJS main.o"

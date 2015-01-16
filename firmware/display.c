@@ -5,7 +5,7 @@
 #include <deviceconfig.h>
 #include <stm32f0xx_gpio.h>
 
-#define SCREEN_I2C_ADDR 0b0111100
+#define DISPLAY_I2C_ADDR 0b0111100
 #define FLAG_TIMEOUT    ((uint32_t)0x1000)
 
 static void timed_out()
@@ -13,68 +13,57 @@ static void timed_out()
 
 }
 
-void display_command(uint_fast8_t c)
+#define WAIT_ON_FLAG(flag)                                    \
+    do {                                                      \
+        uint32_t to = FLAG_TIMEOUT;                           \
+        while (I2C_GetFlagStatus(I2C_I2C, (flag)) != RESET) { \
+            if (to-- == 0)                                    \
+                return timed_out();                           \
+        }                                                     \
+    } while (0)
+
+void display_write_data_start()
 {
-    uint32_t to = FLAG_TIMEOUT;
-    while (I2C_GetFlagStatus(I2C_I2C, I2C_ISR_BUSY) != RESET) {
-        if (to-- == 0)
-            return timed_out;
-    }
+    ;
+}
 
-    // Configure slave address, nbytes, reload, end mode and start or stop generation.
-    I2C_TransferHandling(I2C_I2C, SCREEN_I2C_ADDR, 1, I2C_Reload_Mode, I2C_Generate_Start_Write);
-
-    // Wait until TXIS flag is set.
-    to = FLAG_TIMEOUT;
-    while(I2C_GetFlagStatus(I2C_I2C, I2C_ISR_TXIS) == RESET)
-    {
-        if(to-- == 0)
-            return timed_out();
-    }
-
-    // Send control byte.
-    I2C_SendData(
-        LM75_I2C,
-          (1 << 7) // Not just data bytes
-        | (0 << 6) // Command (not data)
-        | 0        // Rest is 0
-    );
-
-    // Wait until TCR flag is set.
-    to = FLAG_TIMEOUT;
-    while(I2C_GetFlagStatus(I2C_I2C, I2C_ISR_TCR) == RESET)
-    {
-        if(to-- == 0)
-            return LM75_TIMEOUT_UserCallback();
-    }
-
-    // Configure slave address, nbytes, reload, end mode and start or stop generation.
-    I2C_TransferHandling(I2C_I2C, SCREEN_I2C_ADDR, 1, I2C_AutoEnd_Mode, I2C_No_StartStop);
-
-    // Wait until TXIS flag is set.
-    to = FLAG_TIMEOUT;
-    while(I2C_GetFlagStatus(I2C_I2C, I2C_ISR_TXIS) == RESET)
-    {
-        if(to-- == 0)
-            return LM75_TIMEOUT_UserCallback();
-    }
-
-    // Send the command byte itself (finally!)
-    I2C_SendData(LM75_I2C, c);
-
-    // Wait until STOPF flag is set.
-    to = FLAG_TIMEOUT;
-    while(I2C_GetFlagStatus(I2C_I2C, I2C_ISR_STOPF) == RESET)
-    {
-        if(to-- == 0)
-            return LM75_TIMEOUT_UserCallback();
-    }
-
-    // Clear STOPF flag.
+void display_write_byte(uint8_t b)
+{
+    WAIT_ON_FLAG(I2C_ISR_BUSY);
+    I2C_TransferHandling(I2C_I2C, DISPLAY_I2C_ADDR, 2, I2C_AutoEnd_Mode, I2C_Generate_Start_Write);
+    WAIT_ON_FLAG(I2C_ISR_TXIS);
+    I2C_SendData(I2C_I2C, 0);
+    WAIT_ON_FLAG(I2C_ISR_TXIS);
+    I2C_SendData(I2C_I2C, b);
+    WAIT_ON_FLAG(I2C_ISR_STOPF);
     I2C_ClearFlag(I2C_I2C, I2C_ICR_STOPCF);
 }
 
+void display_write_data_end()
+{
+    ;
+}
 
+void display_command(uint8_t c)
+{
+    WAIT_ON_FLAG(I2C_ISR_BUSY);
+    I2C_TransferHandling(I2C_I2C, DISPLAY_I2C_ADDR, 2, I2C_AutoEnd_Mode, I2C_Generate_Start_Write);
+    WAIT_ON_FLAG(I2C_ISR_TXIS);
+    // Send control byte.
+    I2C_SendData(
+        I2C_I2C,
+          (1 << 7) // Not just data bytes
+        | (0 << 6) // Command (not data)
+    );
+    WAIT_ON_FLAG(I2C_ISR_TXIS);
+    // Send the command byte itself (finally!)
+    I2C_SendData(I2C_I2C, c);
+    WAIT_ON_FLAG(I2C_ISR_STOPF);
+    I2C_ClearFlag(I2C_I2C, I2C_ICR_STOPCF);
+}
+
+/*
+// Old AVR SPO bitbanging code.
 
 void display_write_byte(uint8_t d)
 {
@@ -89,7 +78,6 @@ void display_write_byte(uint8_t d)
     }
 }
 
-/*
 Old AVR SPI bitbanging code.
 void display_command(uint8_t c)
 {
@@ -98,7 +86,7 @@ void display_command(uint8_t c)
     DISPLAY_CS_PORT &= ~(1 << DISPLAY_CS_BIT);
     display_write_byte(c);
     DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
-}*/
+}
 
 void display_write_data_start()
 {
@@ -111,6 +99,7 @@ void display_write_data_end()
 {
     DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
 }
+*/
 
 void display_reset()
 {
@@ -127,12 +116,12 @@ void display_init()
 {
     // Configure reset pin.
     GPIO_InitTypeDef gpi;
-    gpi.GPIO_Pin = SCREEN_RESET_PIN;
+    gpi.GPIO_Pin = DISPLAY_RESET_PIN;
     gpi.GPIO_Mode = GPIO_Mode_OUT;
     gpi.GPIO_Speed = GPIO_Speed_Level_1;
     gpi.GPIO_OType = GPIO_OType_OD;
     gpi.GPIO_PuPd = GPIO_PuPd_UP;
-    GPIO_Init(SCREEN_RESET_GPIO_PORT, &gpi);
+    GPIO_Init(DISPLAY_RESET_GPIO_PORT, &gpi);
 
     display_reset();
 
@@ -202,7 +191,7 @@ void display_bwrite_8px_char(const uint8_t *px_grid, uint8_t *out, uint8_t pages
     uint8_t i;
     out += page_voffset;
     for (i = 0; i < CHAR_WIDTH_8PX; ++i, out += pages_per_col) {
-        uint8_t px = pgm_read_byte(&px_grid[i]);
+        uint8_t px = px_grid[i];
         out[0] |= px << pixel_voffset;
         if (pixel_voffset > 0)
             out[1] |= px >> (8 - pixel_voffset);
@@ -221,13 +210,13 @@ void display_bwrite_12px_char(const uint8_t *char_grid, uint8_t *out, uint8_t pa
     uint8_t i;
     for (i = 0; i < 8/CHAR_12PX_BLOCK_SIZE; ++i) {
         // Top block.
-        uint8_t topi = pgm_read_byte(&char_grid[(16/CHAR_12PX_BLOCK_SIZE)+i]);
+        uint8_t topi = char_grid[(16/CHAR_12PX_BLOCK_SIZE)+i];
         const uint8_t *top = CHAR_BLOCKS_12PX + (topi << 1);
         // Middle block.
-        uint8_t middlei = pgm_read_byte(&char_grid[(8/CHAR_12PX_BLOCK_SIZE)+i]);
+        uint8_t middlei = char_grid[(8/CHAR_12PX_BLOCK_SIZE)+i];
         const uint8_t *middle = CHAR_BLOCKS_12PX + (middlei << 1);
         // Bottom block.
-        uint8_t bttmi = pgm_read_byte(&char_grid[(0/CHAR_12PX_BLOCK_SIZE)+i]);
+        uint8_t bttmi = char_grid[(0/CHAR_12PX_BLOCK_SIZE)+i];
         const uint8_t *bttm = CHAR_BLOCKS_12PX + (bttmi << 1);
 
         // One loop iteration for each column.
@@ -236,9 +225,9 @@ void display_bwrite_12px_char(const uint8_t *char_grid, uint8_t *out, uint8_t pa
             uint8_t bi = j >> 1;
             uint8_t bm = ((j & 1) ^ 1) << 2;
 
-            uint8_t top_bits = (pgm_read_byte(&top[bi]) >> bm) & 0x0F;
-            uint8_t middle_bits = (pgm_read_byte(&middle[bi]) >> bm) & 0x0F;
-            uint8_t bttm_bits = (pgm_read_byte(&bttm[bi]) >> bm) & 0x0F;
+            uint8_t top_bits = (top[bi] >> bm) & 0x0F;
+            uint8_t middle_bits = (middle[bi] >> bm) & 0x0F;
+            uint8_t bttm_bits = (bttm[bi] >> bm) & 0x0F;
 
             uint8_t topmiddle_bits = top_bits | (middle_bits << 4);
 

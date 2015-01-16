@@ -95,7 +95,7 @@ OAOUT2   --|                       |-- SCRRES
 // Screen
 //
 
-#define SCREEN_RESET_GPIO_PORT  GPIOA
-#define SCREEN_RESET_PIN        GPIO_Pin_8
+#define DISPLAY_RESET_GPIO_PORT  GPIOA
+#define DISPLAY_RESET_PIN        GPIO_Pin_8
 
 #endif

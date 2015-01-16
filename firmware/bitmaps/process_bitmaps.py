@@ -181,7 +181,6 @@ def output_tables():
     doth.write("#ifndef BITMAPS_H\n#define BITMAPS_H\n\n")
     doth.write("#include <stdint.h>\n\n")
     dotc.write("#include <stdint.h>\n")
-    dotc.write("#include <readbyte.h>\n\n")
 
     doth.write("#define CHAR_WIDTH_8PX 6\n")
     doth.write("#define CHAR_OFFSET_8PX(n) (((n) << 2) + ((n) << 1)) // I.e. n*6\n")
@@ -202,7 +201,7 @@ def output_tables():
             f.write("\n")
 
     doth.write("extern const uint8_t CHAR_BLOCKS_12PX[];\n")
-    dotc.write("const uint8_t CHAR_BLOCKS_12PX[] PROGMEM = {\n    ")
+    dotc.write("const uint8_t CHAR_BLOCKS_12PX[] = {\n    ")
     blocks_array, bitmap_count, name_to_block_grid, max_blocks_per_char = get_12px_chars()
     barray_index = 0
     bit_counter = [0]
@@ -218,7 +217,7 @@ def output_tables():
     dotc.write("\n};\n")
 
     doth.write('extern const uint8_t CHAR_12PX_GRIDS[];\n')
-    dotc.write('const uint8_t CHAR_12PX_GRIDS[] PROGMEM = {\n')
+    dotc.write('const uint8_t CHAR_12PX_GRIDS[] = {\n')
     i = 0
     code = 1
     ordered_keys = name_to_block_grid.keys()
@@ -249,7 +248,7 @@ def output_tables():
     # TABLES FOR 8PX CHARS.
     #
     doth.write("\n\nextern const uint8_t CHAR_PIXELS_8PX[];\n")
-    dotc.write("\n\nconst uint8_t CHAR_PIXELS_8PX[] PROGMEM = {\n")
+    dotc.write("\n\nconst uint8_t CHAR_PIXELS_8PX[] = {\n")
     pgrids = get_8px_chars()
     ordered_keys = pgrids.keys()
     ordered_keys.sort()

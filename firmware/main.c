@@ -3,10 +3,12 @@
 #include <stm32f0xx_rcc.h>
 
 #include <i2c.h>
+#include <display.h>
 
 int main()
 {
     i2c_init();
+    display_init();
 
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
 
