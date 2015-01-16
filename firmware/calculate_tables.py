@@ -310,7 +310,7 @@ def get_third_bit(ev):
 def get_tenth_bit(ev):
     return get_xth_bit(ev, 10.0)
 
-def output_ev_table(of, name_prefix, op_amp_resistor):
+def output_ev_table(of, name_prefix, op_amp_resistor, filter_offset):
     bitpatterns = [ ]
     vallist_abs = [ ]
     vallist_diffs = [ ]
@@ -324,6 +324,7 @@ def output_ev_table(of, name_prefix, op_amp_resistor):
         if voltage > reference_voltage:
             break
         ev = voltage_and_oa_resistor_to_ev(voltage, oar)
+        ev += filter_offset
         eight = int(round((ev+5.0) * 8.0))
         if eight < 0:
             eight = 0
@@ -338,6 +339,7 @@ def output_ev_table(of, name_prefix, op_amp_resistor):
             for k in xrange(0, 8):
                 v = ((sv + (j * 8.0) + k) * bv_to_voltage)
                 ev2 = voltage_and_oa_resistor_to_ev(v, oar)
+                ev2 += filter_offset
                 eight2 = int(round((ev2+5.0) * 8.0))
                 if eight2 < 0:
                     eight2 = 0
@@ -1138,14 +1140,14 @@ def output():
         ofh.write("#define STAGE%i_RESISTOR_NUMBER %i\n" % (i+1, op_amp_resistor_value_to_resistor_number[resistor_value]))
         ofh.write("#define STAGE%i_STOPS_SUBTRACTED %i\n" % (i+1, int(stops_subtracted)))
 
-        e, pr = output_ev_table(ofc, 'STAGE' + str(i+1), amp_stages[i][0])
+        e, pr = output_ev_table(ofc, 'STAGE' + str(i+1), amp_stages[i][0], amp_stages[i][1])
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_BITPATTERNS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_ABS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_DIFFS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_TENTHS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_THIRDS[];\n" % (i+1))
         if not e:
-            sys.stderr.write("R ERROR %.3f: (%.3f, %.3f)\n" % (amp_stages[i][0], pr[0], pr[1]))
+            sys.stderr.write("R ERROR %.3f: (%.3f, %.3f) at stage %i\n" % (amp_stages[i][0], pr[0], pr[1], i))
             break
 
     ofh.write("#define VOLTAGE_TO_EV_ABS_OFFSET " + str(b_voltage_offset) + '\n')

@@ -796,7 +796,7 @@ int main()
 
     printf("ev for voltages 0-255 at stage...\n");
     uint8_t stage, voltage;
-    for (stage = 1; stage < 3; ++stage) {
+    for (stage = 1; stage < 8; ++stage) {
         printf("Stage %i\n", stage);
         for (voltage = 0; voltage < 255; ++voltage) {
             ev_with_fracs_t evwf = get_ev100_at_voltage(voltage, stage);
