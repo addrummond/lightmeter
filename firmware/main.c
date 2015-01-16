@@ -11,11 +11,15 @@ int main()
     debugging_writec("Hello World!\n");
 
     i2c_init();
-    //display_init();
+    debugging_writec("Here1\n");
+    display_init();
+    debugging_writec("Here2\n");
 
-    //display_reset();
-    //const uint8_t page_array[] = { 0xFF, 0xFF };
-    //display_write_page_array(page_array, 2, 1, 20, 1);
+    display_reset();
+    debugging_writec("Here3\n");
+    const uint8_t page_array[] = { 0xFF, 0xFF };
+    display_write_page_array(page_array, 2, 1, 20, 1);
+    debugging_writec("Here4\n");
 
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
 
