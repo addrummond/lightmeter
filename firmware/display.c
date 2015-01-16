@@ -167,24 +167,24 @@ void display_init()
 // For example, if 'pages_per_col' is 3, then pages[0] gives the column at x+0, page_y,
 // pages[1] gives the column at x+0, page_y+1, pages[2] gives the column at x+0, page_y+2,
 // and page[3] gives the column at x+1, page_y.
-void display_write_page_array(const uint8_t *pages, uint8_t ncols, uint8_t pages_per_col, uint8_t x, uint8_t page_y)
+void display_write_page_array(const uint8_t *pages, uint_fast8_t ncols, uint_fast8_t pages_per_col, uint_fast8_t x, uint_fast8_t page_y)
 {
-    uint8_t col_start_low = x & 0x0F;
-    uint8_t col_start_high = x >> 4;
+    uint_fast8_t col_start_low = x & 0x0F;
+    uint_fast8_t col_start_high = x >> 4;
 
     // Don't go off the right edge.
     if (ncols + x > DISPLAY_LCDWIDTH)
         ncols = DISPLAY_LCDWIDTH - x;
 
-    uint8_t p;
+    uint_fast8_t p;
     for (p = 0; p < pages_per_col; ++p) {
         display_command(DISPLAY_SET_COL_START_LOW + col_start_low);
         display_command(DISPLAY_SET_COL_START_HIGH + col_start_high);
         display_command(DISPLAY_SET_PAGE_START + page_y + p);
 
         DISPLAY_WRITE_DATA {
-            uint8_t c;
-            uint8_t cc;
+            uint_fast8_t c;
+            uint_fast8_t cc;
             for (c = 0, cc = p; c < ncols; ++c, cc += pages_per_col) {
                 display_write_byte(pages[cc]);
             }
@@ -192,12 +192,12 @@ void display_write_page_array(const uint8_t *pages, uint8_t ncols, uint8_t pages
     }
 }
 
-void display_bwrite_8px_char(const uint8_t *px_grid, uint8_t *out, uint8_t pages_per_col, uint8_t voffset)
+void display_bwrite_8px_char(const uint8_t *px_grid, uint8_t *out, uint_fast8_t pages_per_col, uint_fast8_t voffset)
 {
-    uint8_t page_voffset = voffset >> 3;
-    uint8_t pixel_voffset = voffset & 7;
+    uint_fast8_t page_voffset = voffset >> 3;
+    uint_fast8_t pixel_voffset = voffset & 7;
 
-    uint8_t i;
+    uint_fast8_t i;
     out += page_voffset;
     for (i = 0; i < CHAR_WIDTH_8PX; ++i, out += pages_per_col) {
         uint8_t px = px_grid[i];
@@ -210,29 +210,29 @@ void display_bwrite_8px_char(const uint8_t *px_grid, uint8_t *out, uint8_t pages
 // Each byte of out is an 8px (i.e. one-page) column. 'pages_per_col' gives the number of (stacked) columns.
 // 'voffeset' is the pixel offset of the top of each character from the top of the highest column.
 // 'bwrite' is short for "buffered write".
-void display_bwrite_12px_char(const uint8_t *char_grid, uint8_t *out, uint8_t pages_per_col, uint8_t voffset)
+void display_bwrite_12px_char(const uint8_t *char_grid, uint8_t *out, uint_fast8_t pages_per_col, uint_fast8_t voffset)
 {
-    uint8_t page_voffset = voffset >> 3;
-    uint8_t pixel_voffset = voffset & 7;
+    uint_fast8_t page_voffset = voffset >> 3;
+    uint_fast8_t pixel_voffset = voffset & 7;
 
     out += page_voffset;
-    uint8_t i;
+    uint_fast8_t i;
     for (i = 0; i < 8/CHAR_12PX_BLOCK_SIZE; ++i) {
         // Top block.
-        uint8_t topi = char_grid[(16/CHAR_12PX_BLOCK_SIZE)+i];
+        uint_fast8_t topi = char_grid[(16/CHAR_12PX_BLOCK_SIZE)+i];
         const uint8_t *top = CHAR_BLOCKS_12PX + (topi << 1);
         // Middle block.
-        uint8_t middlei = char_grid[(8/CHAR_12PX_BLOCK_SIZE)+i];
+        uint_fast8_t middlei = char_grid[(8/CHAR_12PX_BLOCK_SIZE)+i];
         const uint8_t *middle = CHAR_BLOCKS_12PX + (middlei << 1);
         // Bottom block.
-        uint8_t bttmi = char_grid[(0/CHAR_12PX_BLOCK_SIZE)+i];
+        uint_fast8_t bttmi = char_grid[(0/CHAR_12PX_BLOCK_SIZE)+i];
         const uint8_t *bttm = CHAR_BLOCKS_12PX + (bttmi << 1);
 
         // One loop iteration for each column.
-        uint8_t j;
+        uint_fast8_t j;
         for (j = 0; j < CHAR_12PX_BLOCK_SIZE; ++j, out += pages_per_col) {
-            uint8_t bi = j >> 1;
-            uint8_t bm = ((j & 1) ^ 1) << 2;
+            uint_fast8_t bi = j >> 1;
+            uint_fast8_t bm = ((j & 1) ^ 1) << 2;
 
             uint8_t top_bits = (top[bi] >> bm) & 0x0F;
             uint8_t middle_bits = (middle[bi] >> bm) & 0x0F;
@@ -255,7 +255,7 @@ void display_clear()
     display_command(DISPLAY_HORIZONTALADDR);
 
     DISPLAY_WRITE_DATA {
-        uint16_t i;
+        uint_fast16_t i;
         for (i = 0; i < (DISPLAY_LCDWIDTH*DISPLAY_LCDHEIGHT/8); ++i) {
             display_write_byte(0x00);
         }
@@ -265,4 +265,4 @@ void display_clear()
 }
 
 // See DISPLAY_WRITE_DATA macro in display.h
-uint8_t i___;
+uint_fast8_t i___;

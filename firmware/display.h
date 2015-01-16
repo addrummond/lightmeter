@@ -9,12 +9,12 @@ void display_write_data_start(void);
 void display_write_data_end(void);
 void display_reset(void);
 void display_init(void);
-void display_write_page_array(const uint8_t *pages, uint8_t ncols, uint8_t pages_per_col, uint8_t x, uint8_t page_y);
-void display_bwrite_8px_char(const uint8_t *char_grid, uint8_t *out, uint8_t pages_per_col, uint8_t voffset);
-void display_bwrite_12px_char(const uint8_t *char_grid, uint8_t *out, uint8_t pages_per_col, uint8_t voffset);
+void display_write_page_array(const uint8_t *pages, uint_fast8_t ncols, uint_fast8_t pages_per_col, uint_fast8_t x, uint_fast8_t page_y);
+void display_bwrite_8px_char(const uint8_t *char_grid, uint8_t *out, uint_fast8_t pages_per_col, uint_fast8_t voffset);
+void display_bwrite_12px_char(const uint8_t *char_grid, uint8_t *out, uint_fast8_t pages_per_col, uint_fast8_t voffset);
 void display_clear(void);
 
-extern uint8_t i___;
+extern uint_fast8_t i___;
 #define DISPLAY_WRITE_DATA for (i___ = 0, display_write_data_start(); i___ < 1; ++i___, display_write_data_end())
 
 #define DISPLAY_LCDWIDTH                  128
