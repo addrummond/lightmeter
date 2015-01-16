@@ -5,7 +5,7 @@
 
 #include <deviceconfig.h>
 
-// See ref manual 25.4.10
+// See ref manual 25.4.10 (real processer datasheet) or 22.4.10 (protoboard processor datasheet).
 /*#define PRESC 1
 #define SCLDEL 0x4
 #define SDADEL 0x2
@@ -13,7 +13,16 @@
 #define SCLL 0xC7
 #define I2C_TIMING (PRESC << 28) | (SCLDEL << 20) | (SDADEL << 16) | (SCLH << 8) | (SCLL << 0)*/
 // Taken from code for LM75.
-#define I2C_TIMING 0x1045061D
+
+// Timing for I2C 10kHz from 8MHz clock.
+#define PRESC  0x1
+#define SCLL   0xC7
+#define SCLH   0xC3
+#define SDADEL 0x2
+#define SCLDEL 0x4
+#define I2C_TIMING ((PRESC << 28) | (SCLDEL << 20) | (SDADEL << 16) | (SCLH << 8) | (SCLL << 0))
+
+//#define I2C_TIMING 0x1045061D
 
 void i2c_init()
 {
@@ -45,6 +54,8 @@ void i2c_init()
 
     gpi.GPIO_Pin = I2C_SDA_PIN;
     GPIO_Init(I2C_SDA_GPIO_PORT, &gpi);
+
+    I2C_DeInit(I2C1);
 
     //
     // Copying from LM75_Init()

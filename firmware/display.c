@@ -6,8 +6,10 @@
 #include <stm32f0xx_gpio.h>
 #include <debugging.h>
 
-#define DISPLAY_I2C_ADDR 0b111101
-#define FLAG_TIMEOUT     ((uint32_t)0x1000)
+// Looking at LM75 data sheet an example I2C code indicates that 7-bit address
+// should be left aligned.
+#define DISPLAY_I2C_ADDR (0b0111101 << 1)
+#define FLAG_TIMEOUT     ((uint32_t)0x10000)
 
 static void timed_out(const char *msg, uint32_t length)
 {
