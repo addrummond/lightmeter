@@ -4,11 +4,18 @@
 
 #include <i2c.h>
 #include <display.h>
+#include <debugging.h>
 
 int main()
 {
+    debugging_writec("Hello World!\n");
+
     i2c_init();
-    display_init();
+    //display_init();
+
+    //display_reset();
+    //const uint8_t page_array[] = { 0xFF, 0xFF };
+    //display_write_page_array(page_array, 2, 1, 20, 1);
 
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
 

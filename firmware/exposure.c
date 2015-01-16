@@ -20,7 +20,6 @@
 #ifdef TEST
 #include <stdio.h>
 #endif
-#include <basic_serial/basic_serial.h>
 
 // See comments in calculate_tables.py for info on the way
 // temp/voltage are encoded.

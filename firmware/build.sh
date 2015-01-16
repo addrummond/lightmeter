@@ -1,6 +1,8 @@
 #!/bin/sh
 
-CFLAGS=`cat CFLAGS`
+XCFLAGS=`cat CFLAGS`
+XCFLAGS="$XCFLAGS $CFLAGS"
+CFLAGS="$XCFLAGS"
 ST=-save-temps
 
 CC=arm-none-eabi-gcc
@@ -26,6 +28,8 @@ OBJS="$OBJS ./stm/stm32f0xx_rcc.o"
 $CC $CFLAGS -c ./stm/stm32f0xx_i2c.c -o ./stm/stm32f0xx_i2c.o
 OBJS="$OBJS ./stm/stm32f0xx_i2c.o"
 
+$CC $CFLAGS -c debugging.c -o debugging.o
+OBJS="$OBJS debugging.o"
 $CC $CFLAGS -c tables.c -o tables.o
 OBJS="$OBJS tables.o"
 $CC $CFLAGS -c myassert.c -o myassert.o

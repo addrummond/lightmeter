@@ -1,1 +1,1 @@
--mcpu=cortex-m0 -mthumb -nostdlib -DSTM32F030 -DUSE_FULL_ASSERT -I ./ -I ./stm -Wall 
+-mcpu=cortex-m0 -nostdlib -mthumb -DSTM32F030 -DUSE_FULL_ASSERT -I ./ -I ./stm -Wall 
