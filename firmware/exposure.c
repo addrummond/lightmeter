@@ -15,7 +15,7 @@
 #include <exposure.h>
 #include <bcd.h>
 #include <tables.h>
-#include <deviceconfig.h>
+//#include <deviceconfig.h>
 #include <mymemset.h>
 #ifdef TEST
 #include <stdio.h>
@@ -794,6 +794,17 @@ int main()
     ev_with_fracs_init(iso100);
     ev_with_fracs_set_ev8(iso100, 4*8);
 
+    printf("ev for voltages 0-255 at stage...\n");
+    uint8_t stage, voltage;
+    for (stage = 1; stage < 3; ++stage) {
+        printf("Stage %i\n", stage);
+        for (voltage = 0; voltage < 255; ++voltage) {
+            ev_with_fracs_t evwf = get_ev100_at_voltage(voltage, stage);
+            uint8_t ev8 = ev_with_fracs_get_ev8(evwf);
+            printf("    EV@100: %.2f\n", ((float)ev8)/8.0);
+        }
+    }
+
     printf("ev_at_100_to_bcd_lux\n");
     ev_with_fracs_t evat100;
     uint_fast8_t ev8;
@@ -1042,7 +1053,7 @@ int main()
         printf("V %i ev8=%i\n", v, ev_with_fracs_get_ev8(evwf));
         uint_fast8_t compressed = evwf.ev;
         if (uncompressed != compressed) {
-            printf("Values not equal for t = %i, v = %i: compressed = %i, uncompressed = %i\n", (unsigned)t, (unsigned)v_, (unsigned)compressed, (unsigned)uncompressed);
+            printf("Values not equal for v = %i: compressed = %i, uncompressed = %i\n", (unsigned)v_, (unsigned)compressed, (unsigned)uncompressed);
             //return 1;
         }
     }
