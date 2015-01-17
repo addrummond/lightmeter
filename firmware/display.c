@@ -71,45 +71,6 @@ void display_command(uint8_t c)
     I2C_ClearFlag(I2C_I2C, I2C_ICR_STOPCF);
 }
 
-/*
-// Old AVR SPO bitbanging code.
-
-void display_write_byte(uint8_t d)
-{
-    uint8_t bit;
-    for (bit = 0x80; bit; bit >>= 1) {
-        DISPLAY_CLK_PORT &= ~(1 << DISPLAY_CLK_BIT);
-        if (d & bit)
-            DISPLAY_DATA_PORT |= (1 << DISPLAY_DATA_BIT);
-        else
-            DISPLAY_DATA_PORT &= ~(1 << DISPLAY_DATA_BIT);
-        DISPLAY_CLK_PORT |= (1 << DISPLAY_CLK_BIT);
-    }
-}
-
-Old AVR SPI bitbanging code.
-void display_command(uint8_t c)
-{
-    DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
-    DISPLAY_DC_PORT &= ~(1 << DISPLAY_DC_BIT);
-    DISPLAY_CS_PORT &= ~(1 << DISPLAY_CS_BIT);
-    display_write_byte(c);
-    DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
-}
-
-void display_write_data_start()
-{
-    DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
-    DISPLAY_DC_PORT |= (1 << DISPLAY_DC_BIT);
-    DISPLAY_CS_PORT &= ~(1 << DISPLAY_CS_BIT);
-}
-
-void display_write_data_end()
-{
-    DISPLAY_CS_PORT |= (1 << DISPLAY_CS_BIT);
-}
-*/
-
 void display_reset()
 {
     // Configure reset pin.
