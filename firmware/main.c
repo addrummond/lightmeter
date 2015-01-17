@@ -8,7 +8,8 @@
 
 int main()
 {
-    //RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
+    // Display reset pin uses GPIOA.
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
 
     debugging_writec("Hello World!\n");
 
@@ -33,7 +34,6 @@ int main()
     ledgpio.GPIO_Speed = GPIO_Speed_Level_1;
     ledgpio.GPIO_OType = GPIO_OType_PP;
     ledgpio.GPIO_PuPd = GPIO_PuPd_NOPULL;
-
     GPIO_Init(GPIOC, &ledgpio);
 
     BitAction value;
