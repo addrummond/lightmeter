@@ -5,8 +5,9 @@
 
 #include <deviceconfig.h>
 
+// I2C is being clocked by HSI and HSI is 8MHz.
+//
 // Timing for I2C 10kHz from 8MHz clock.
-// (I2C is being clocked by HSI and HSI is 8MHz.)
 //
 #define PRESC  1
 #define SCLL   0xC7
