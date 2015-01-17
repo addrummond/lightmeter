@@ -112,6 +112,15 @@ void display_write_data_end()
 
 void display_reset()
 {
+    // Configure reset pin.
+    GPIO_InitTypeDef gpi;
+    gpi.GPIO_Pin = DISPLAY_RESET_PIN;
+    gpi.GPIO_Mode = GPIO_Mode_OUT;
+    gpi.GPIO_Speed = GPIO_Speed_Level_1;
+    gpi.GPIO_OType = GPIO_OType_PP;
+    gpi.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_Init(DISPLAY_RESET_GPIO_PORT, &gpi);
+
     // Reset pin is pulled high in normal operation, set low to reset.
     GPIO_WriteBit(DISPLAY_RESET_GPIO_PORT, DISPLAY_RESET_PIN, 1);
     uint32_t i;
@@ -125,15 +134,6 @@ void display_reset()
 
 void display_init()
 {
-    // Configure reset pin.
-    GPIO_InitTypeDef gpi;
-    gpi.GPIO_Pin = DISPLAY_RESET_PIN;
-    gpi.GPIO_Mode = GPIO_Mode_OUT;
-    gpi.GPIO_Speed = GPIO_Speed_Level_1;
-    gpi.GPIO_OType = GPIO_OType_PP;
-    gpi.GPIO_PuPd = GPIO_PuPd_NOPULL;
-    GPIO_Init(DISPLAY_RESET_GPIO_PORT, &gpi);
-
     display_reset();
 
     // Display initialization sequence. No idea what most of this does.
