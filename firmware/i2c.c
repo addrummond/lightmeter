@@ -9,11 +9,11 @@
 //
 // Timing for I2C 10kHz from 8MHz clock.
 //
-#define PRESC  1
-#define SCLL   0xC7
-#define SCLH   0xC3
-#define SDADEL 0x2
-#define SCLDEL 0x4
+//#define PRESC  1
+//#define SCLL   0xC7
+//#define SCLH   0xC3
+//#define SDADEL 0x2
+//#define SCLDEL 0x4
 //
 // For I2C 100kHz
 //
@@ -25,11 +25,11 @@
 //
 // For I2C 400kHz
 //
-//#define PRESC  0
-//#define SCLL   0x9
-//#define SCLH   0x3
-//#define SDADEL 0x1
-//#define SCLDEL 0x3
+#define PRESC  0
+#define SCLL   0x9
+#define SCLH   0x3
+#define SDADEL 0x1
+#define SCLDEL 0x3
 
 #define I2C_TIMING ((PRESC << 28) | (SCLDEL << 20) | (SDADEL << 16) | (SCLH << 8) | (SCLL << 0))
 
