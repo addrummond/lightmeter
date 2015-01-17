@@ -85,10 +85,10 @@ void display_reset()
     // Reset pin is pulled high in normal operation, set low to reset.
     GPIO_WriteBit(DISPLAY_RESET_GPIO_PORT, DISPLAY_RESET_PIN, 1);
     uint32_t i;
-    for (i = 0; i < 4000; ++i);
+    for (i = 0; i < 40000; ++i);
     debugging_writec("LOW\n");
     GPIO_WriteBit(DISPLAY_RESET_GPIO_PORT, DISPLAY_RESET_PIN, 0);
-    for (i = 0; i < 4000; ++i);
+    for (i = 0; i < 40000; ++i);
     debugging_writec("HIGH\n");
     GPIO_WriteBit(DISPLAY_RESET_GPIO_PORT, DISPLAY_RESET_PIN, 1);
 }
