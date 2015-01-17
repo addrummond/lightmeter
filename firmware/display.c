@@ -9,6 +9,8 @@
 // Looking at LM75 data sheet an example I2C code indicates that 7-bit address
 // should be left aligned.
 #define DISPLAY_I2C_ADDR (0b0111101 << 1)
+// Note: At least in the present sorry state of affairs, having such a long timeout
+// appears to be necessary.
 #define FLAG_TIMEOUT     ((uint32_t)0x1000*10)
 
 static void timed_out(const char *msg, uint32_t length)
@@ -85,11 +87,9 @@ void display_reset()
     // Reset pin is pulled high in normal operation, set low to reset.
     GPIO_WriteBit(DISPLAY_RESET_GPIO_PORT, DISPLAY_RESET_PIN, 1);
     uint32_t i;
-    for (i = 0; i < 40000; ++i);
-    debugging_writec("LOW\n");
+    for (i = 0; i < 400000; ++i);
     GPIO_WriteBit(DISPLAY_RESET_GPIO_PORT, DISPLAY_RESET_PIN, 0);
     for (i = 0; i < 40000; ++i);
-    debugging_writec("HIGH\n");
     GPIO_WriteBit(DISPLAY_RESET_GPIO_PORT, DISPLAY_RESET_PIN, 1);
 }
 
