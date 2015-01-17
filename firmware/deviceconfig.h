@@ -84,10 +84,10 @@ OAOUT2   --|                       |-- SCRRES
 #define I2C_CLK              RCC_APB1Periph_I2C1
 #define I2C_SDA_GPIO_PORT    GPIOB
 #define I2C_SDA_PIN          GPIO_Pin_7
-#define I2C_SDA_SOURCE       GPIO_PinSource10
+#define I2C_SDA_SOURCE       GPIO_PinSource7
 #define I2C_SCL_GPIO_PORT    GPIOB
 #define I2C_SCL_PIN          GPIO_Pin_6
-#define I2C_SCL_SOURCE       GPIO_PinSource9
+#define I2C_SCL_SOURCE       GPIO_PinSource6
 #define I2C_SDA_GPIO_CLK     RCC_AHBPeriph_GPIOB
 #define I2C_SCL_GPIO_CLK     RCC_AHBPeriph_GPIOB
 
