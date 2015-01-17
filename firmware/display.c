@@ -12,7 +12,7 @@
 #define DISPLAY_I2C_ADDR (0b0111101 << 1)
 // Note: At least in the present sorry state of affairs, having such a long timeout
 // appears to be necessary.
-#define FLAG_TIMEOUT     ((uint32_t)0x1000*10)
+#define FLAG_TIMEOUT     ((uint32_t)0x1000)
 
 static void tof(const char *msg, uint32_t length)
 {
@@ -23,6 +23,7 @@ static void tof(const char *msg, uint32_t length)
 
 void display_write_data_start()
 {
+    debugging_writec("write data start\n");
     I2C_WAIT_ON_FLAG_NO_RESET(tof, I2C_ISR_BUSY, "display_write_byte 1");
     I2C_TransferHandling(I2C_I2C, DISPLAY_I2C_ADDR, 2, I2C_SoftEnd_Mode, I2C_Generate_Start_Write);
     I2C_WAIT_ON_FLAG_RESET(tof, I2C_ISR_TXIS, "TIMEOUT!");
@@ -43,9 +44,12 @@ void display_write_byte(uint8_t b)
 
 void display_write_data_end()
 {
-    I2C_TransferHandling(I2C_I2C, DISPLAY_I2C_ADDR, 0, I2C_SoftEnd_Mode, I2C_Generate_Stop);
-    I2C_WAIT_ON_FLAG_RESET(tof, I2C_ISR_STOPF, "display_write_byte 4");
-    I2C_ClearFlag(I2C_I2C, I2C_ICR_STOPCF);
+    debugging_writec("write data end\n");
+    I2C_GenerateSTOP(I2C_I2C, ENABLE);
+    //I2C_TransferHandling(I2C_I2C, DISPLAY_I2C_ADDR, 0, I2C_SoftEnd_Mode, I2C_Generate_Stop);
+    //I2C_WAIT_ON_FLAG_RESET(tof, I2C_ISR_STOPF, "display_write_byte 4");
+    //I2C_ClearFlag(I2C_I2C, I2C_ISR_TC);
+    //I2C_ClearFlag(I2C_I2C, I2C_ICR_STOPCF);
     debugging_writec("end\n");
 }
 
@@ -63,7 +67,7 @@ void display_command(uint8_t c)
     I2C_WAIT_ON_FLAG_RESET(tof, I2C_ISR_TXIS, "display_command 3");
     // Send the command byte itself (finally!)
     I2C_SendData(I2C_I2C, c);
-    I2C_WAIT_ON_FLAG_RESET(tof, I2C_ISR_STOPF, "display_command 4");
+    I2C_WAIT_ON_FLAG_RESET(tof, I2C_ISR_STOPF, "display_write_bytexxxxxx 4");
     I2C_ClearFlag(I2C_I2C, I2C_ICR_STOPCF);
     debugging_writec("command sent\n");
 }
