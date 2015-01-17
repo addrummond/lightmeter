@@ -9,7 +9,7 @@
 // Looking at LM75 data sheet an example I2C code indicates that 7-bit address
 // should be left aligned.
 #define DISPLAY_I2C_ADDR (0b0111101 << 1)
-#define FLAG_TIMEOUT     ((uint32_t)0x10000)
+#define FLAG_TIMEOUT     ((uint32_t)0x1000)
 
 static void timed_out(const char *msg, uint32_t length)
 {
@@ -18,16 +18,18 @@ static void timed_out(const char *msg, uint32_t length)
     debugging_writec("\n");
 }
 
-#define WAIT_ON_FLAG_(flag, msg, op)                               \
-    do {                                                           \
-        uint32_t to = FLAG_TIMEOUT;                                \
-        while (I2C_GetFlagStatus(I2C_I2C, (flag)) op RESET) {      \
-            if (to-- == 0)                                         \
-                return timed_out((msg), sizeof(msg)/sizeof(char)); \
-        }                                                          \
+#define WAIT_ON_FLAG_(flag, msg, op, ret, brk)                           \
+    do {                                                                 \
+        uint32_t to = FLAG_TIMEOUT;                                      \
+        while (I2C_GetFlagStatus(I2C_I2C, (flag)) op RESET) {            \
+            if (to-- == 0)                                               \
+                { ret timed_out((msg), sizeof(msg)/sizeof(char)); brk; } \
+        }                                                                \
     } while (0)
-#define WAIT_ON_FLAG_NO_RESET(flag, msg) WAIT_ON_FLAG_((flag), (msg), !=)
-#define WAIT_ON_FLAG_RESET(flag, msg)    WAIT_ON_FLAG_((flag), (msg), ==)
+#define WAIT_ON_FLAG_NO_RESET(flag, msg)       WAIT_ON_FLAG_((flag), (msg), !=, return, )
+#define WAIT_ON_FLAG_RESET(flag, msg)          WAIT_ON_FLAG_((flag), (msg), ==, return, )
+#define WAIT_ON_FLAG_NO_RESET_NORET(flag, msg) WAIT_ON_FLAG_((flag), (msg), !=, ,break)
+#define WAIT_ON_FLAG_RESET_NORET(flag, msg)    WAIT_ON_FLAG_((flag), (msg), ==, ,break)
 
 void display_write_data_start()
 {
@@ -38,7 +40,7 @@ void display_write_byte(uint8_t b)
 {
     WAIT_ON_FLAG_NO_RESET(I2C_ISR_BUSY, "display_write_byte 1");
     I2C_TransferHandling(I2C_I2C, DISPLAY_I2C_ADDR, 2, I2C_AutoEnd_Mode, I2C_Generate_Start_Write);
-    WAIT_ON_FLAG_RESET(I2C_ISR_TXIS, "display_write_byte 2");
+    WAIT_ON_FLAG_RESET(I2C_ISR_TXIS, "TIMEOUT!");
     I2C_SendData(I2C_I2C, 0);
     WAIT_ON_FLAG_RESET(I2C_ISR_TXIS, "display_write_byte 3");
     I2C_SendData(I2C_I2C, b);
@@ -55,7 +57,7 @@ void display_command(uint8_t c)
 {
     WAIT_ON_FLAG_NO_RESET(I2C_ISR_BUSY, "display_command 1");
     I2C_TransferHandling(I2C_I2C, DISPLAY_I2C_ADDR, 2, I2C_AutoEnd_Mode, I2C_Generate_Start_Write);
-    WAIT_ON_FLAG_RESET(I2C_ISR_TXIS, "display_command 2");
+    WAIT_ON_FLAG_RESET(I2C_ISR_TXIS, "TIMEOUT!");
     // Send control byte.
     I2C_SendData(
         I2C_I2C,
@@ -114,10 +116,10 @@ void display_reset()
     GPIO_WriteBit(DISPLAY_RESET_GPIO_PORT, DISPLAY_RESET_PIN, 1);
     uint32_t i;
     for (i = 0; i < 4000; ++i);
-    debugging_writec("LOW");
+    debugging_writec("LOW\n");
     GPIO_WriteBit(DISPLAY_RESET_GPIO_PORT, DISPLAY_RESET_PIN, 0);
     for (i = 0; i < 4000; ++i);
-    debugging_writec("HIGH");
+    debugging_writec("HIGH\n");
     GPIO_WriteBit(DISPLAY_RESET_GPIO_PORT, DISPLAY_RESET_PIN, 1);
 }
 
