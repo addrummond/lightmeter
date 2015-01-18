@@ -8,7 +8,7 @@
 #include <debugging.h>
 #include <i2c.h>
 
-// Looking at LM75 data sheet an example I2C code indicates that 7-bit address
+// Looking at LM75 data sheet and example I2C code indicates that 7-bit address
 // should be left aligned.
 #define DISPLAY_I2C_ADDR (0b0111101 << 1)
 // Note: At least in the present sorry state of affairs, having such a long timeout
