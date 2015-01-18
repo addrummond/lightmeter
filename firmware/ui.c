@@ -5,10 +5,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <mymemset.h>
-#include <assert.h>
+#include <myassert.h>
 #include <menus/menu_strings.h>
-
-#include <basic_serial/basic_serial.h>
 
 //
 // Modularizing the display code takes a little bit of care when
@@ -77,7 +75,7 @@ static uint8_t up_from(uint8_t max, uint8_t i, uint8_t up)
         return i - max;
 }
 
-const const_ptr_to_uint8_t ui_main_menu_strings[] PROGMEM = {
+const const_ptr_to_uint8_t ui_main_menu_strings[] = {
     MENU_STRING_ISO,
     MENU_STRING_PRIORITY_MODE,
     MENU_STRING_PRECISION,
@@ -85,7 +83,7 @@ const const_ptr_to_uint8_t ui_main_menu_strings[] PROGMEM = {
     MENU_STRING_SETTINGS
 };
 #define NUM_MAIN_MENU_STRINGS (sizeof(ui_main_menu_strings)/sizeof(const_ptr_to_uint8_t))
-#define MMS(i) ((const_ptr_to_uint8_t)pgm_read_word(&ui_main_menu_strings[(i)]))
+#define MMS(i) ((const_ptr_to_uint8_t)ui_main_menu_strings[(i)])
 
 static uint8_t menu_bwrite_12px_char(uint8_t code, uint8_t *buf, uint8_t voffset)
 {

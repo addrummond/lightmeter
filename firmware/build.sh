@@ -14,6 +14,10 @@ cd bitmaps
 python process_bitmaps.py output
 cd ..
 
+cd menus
+python process_strings.py strings_english
+cd ..
+
 OBJS=""
 
 # Arm STM stuff.
@@ -46,8 +50,14 @@ $CC $CFLAGS -c state.c -o state.o
 OBJS="$OBJS state.o"
 $CC $CFLAGS -c display.c -o display.o
 OBJS="$OBJS display.o"
+$CC $CFLAGS -c ui.c -o ui.o
+OBJS="$OBJS ui.o"
 $CC $CFLAGS -c bitmaps/bitmaps.c -o bitmaps/bitmaps.o
 OBJS="$OBJS bitmaps/bitmaps.o"
+$CC $CFLAGS -c menus/menu_strings.c -o menus/menu_strings.o
+OBJS="$OBJS menus/menu_strings.o"
+$CC $CFLAGS -c menus/menu_strings_table.c -o menus/menu_strings_table.o
+OBJS="$OBJS menus/menu_strings_table.o"
 
 $CC $CFLAGS -c main.c -o main.o
 OBJS="$OBJS main.o"

@@ -144,12 +144,12 @@ def output_strings_table(fh, fc, strings, defines, groups_to_lists_of_string_nam
     index = 0
     for k in defkeys:
         v = defines[k]
-        fc.write('const uint8_t MENU_DEFINE_' + str(index) + '[] PROGMEM = { ' + out(v) + '};\n')
+        fc.write('const uint8_t MENU_DEFINE_' + str(index) + '[] = { ' + out(v) + '};\n')
         index += 1
 
     fh.write('typedef const uint8_t *const_ptr_to_uint8_t;')
     fh.write('extern const const_ptr_to_uint8_t MENU_DEFINES[];\n')
-    fc.write('const const_ptr_to_uint8_t MENU_DEFINES[] PROGMEM = {\n')
+    fc.write('const const_ptr_to_uint8_t MENU_DEFINES[] = {\n')
     index = 0
     for k in defkeys:
         fc.write('    MENU_DEFINE_' + str(index) + ',\n')
@@ -162,7 +162,7 @@ def output_strings_table(fh, fc, strings, defines, groups_to_lists_of_string_nam
         sl = get_length(v, defines, long=False)
         fh.write('#define MENU_STRING_' + k + '_LONG_LENGTH ' + str(ll) + '\n')
         fh.write('#define MENU_STRING_' + k + '_SHORT_LENGTH ' + str(sl) + '\n')
-        fc.write('const uint8_t MENU_STRING_' + k + '[] PROGMEM = { ')
+        fc.write('const uint8_t MENU_STRING_' + k + '[] = { ')
         fc.write(out(v))
         fc.write('};\n\n')
 
@@ -253,7 +253,6 @@ if __name__ == '__main__':
     fc.write('#include <menus/menu_strings.h>\n\n')
     fc.write('#include <bitmaps/bitmaps.h>\n')
 
-    fh.write('#include <readbyte.h>\n')
     fh.write('#ifndef MENU_STRINGS_TABLE_H\n')
     fh.write('#define MENU_STRINGS_TABLE_H\n\n')
     fh.write('#include <bitmaps/bitmaps.h>\n\n')

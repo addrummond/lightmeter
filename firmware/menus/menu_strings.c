@@ -18,10 +18,10 @@ uint8_t menu_string_decode_(bool get_long, const uint8_t *menu_string, uint8_t *
         uint8_t bytei = i*6/8;
         uint8_t bitoff = i*6%8;
 
-        uint8_t c = (pgm_read_byte(&menu_string[bytei]) >> bitoff) & 0b111111;
+        uint8_t c = (menu_string[bytei] >> bitoff) & 0b111111;
         if (bitoff > 2) {
             uint8_t bits = 8 - (bitoff - 2);
-            uint8_t high = pgm_read_byte(&menu_string[bytei+1]) & (0xFF >> bits);
+            uint8_t high = menu_string[bytei+1] & (0xFF >> bits);
             high <<= 6-(bitoff-2);
             c |= high;
         }
