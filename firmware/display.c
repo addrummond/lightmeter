@@ -138,8 +138,8 @@ void display_init()
 // and page[3] gives the column at x+1, page_y.
 void display_write_page_array(const uint8_t *pages, uint_fast8_t ncols, uint_fast8_t pages_per_col, uint_fast8_t x, uint_fast8_t page_y)
 {
-    uint_fast8_t col_start_low = x & 0x0F;
-    uint_fast8_t col_start_high = x >> 4;
+    uint8_t col_start_low = x & 0x0F;
+    uint8_t col_start_high = x >> 4;
 
     // Don't go off the right edge.
     if (ncols + x > DISPLAY_LCDWIDTH)

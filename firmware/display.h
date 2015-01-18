@@ -19,7 +19,7 @@ extern uint_fast8_t i___;
 
 #define DISPLAY_LCDWIDTH                  128
 #define DISPLAY_LCDHEIGHT                 64
-#define DISPLAY_NUM_PAGES                 (DISPLAY_LCDWIDTH/8)
+#define DISPLAY_NUM_PAGES                 (DISPLAY_LCDHEIGHT/8)
 
 #define DISPLAY_SETCONTRAST 0x81
 #define DISPLAY_DISPLAYALLON_RESUME 0xA4

@@ -177,6 +177,7 @@ def output_tables():
     dotc.write("#include <stdint.h>\n")
 
     doth.write("#define CHAR_WIDTH_8PX 6\n")
+    doth.write('#define CHAR_WIDTH_12PX 8\n')
     doth.write("#define CHAR_OFFSET_8PX(n) (((n) << 2) + ((n) << 1)) // I.e. n*6\n")
     doth.write("#define CHAR_OFFSET_12PX(n) (((n) << 2) + ((n) << 1)) // I.e. n*6\n")
     doth.write("#define CHAR_OFFSET_FROM_CODE_8PX(n) CHAR_OFFSET_8PX(n-1)\n")

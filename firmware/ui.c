@@ -101,8 +101,6 @@ static void show_main_menu()
     assert(ms.ui_mode_state.main_menu.item_index < NUM_MAIN_MENU_STRINGS);
 
     // Selected item is in the middle, with two above it and two below it.
-    // y coord of top of selected item is 27, so y coord of top of first item
-    // is 2.
 
     // Menu item 1. 1st and 2nd pages, 2px offset
     //           2. 2nd and 3rd pages, 6px offset
@@ -125,23 +123,29 @@ static void show_main_menu()
     menu_string_decode_short(MMS(up_from(NUM_MAIN_MENU_STRINGS, ms.ui_mode_state.main_menu.item_index, 2)), bttm2_str);
 
     uint8_t i;
-    uint8_t buf[8*DISPLAY_NUM_PAGES];
+    uint8_t buf[CHAR_WIDTH_12PX*DISPLAY_NUM_PAGES];
     uint8_t finished_mask = 0;
     for (i = 0; i < DISPLAY_LCDWIDTH/8 && finished_mask != 0b11111; ++i) {
         memset8_zero(buf, sizeof(buf));
 
         if (! (finished_mask & 0b1))
-            finished_mask |= menu_bwrite_12px_char(top1_str[i], buf, 2);
+            finished_mask |= menu_bwrite_12px_char(top1_str[i], buf, 1);
         if (! (finished_mask & 0b10))
-            finished_mask |= (menu_bwrite_12px_char(top2_str[i], buf+1, 6) << 1);
+            finished_mask |= (menu_bwrite_12px_char(top2_str[i], buf+1, 5) << 1);
         if (! (finished_mask & 0b100))
-            finished_mask |= (menu_bwrite_12px_char(center_str[i], buf+3, 2) << 2);
+            finished_mask |= (menu_bwrite_12px_char(center_str[i], buf+3, 1) << 2);
         if (! (finished_mask & 0b1000))
-            finished_mask |= (menu_bwrite_12px_char(bttm1_str[i], buf+4, 6) << 3);
+            finished_mask |= (menu_bwrite_12px_char(bttm1_str[i], buf+4, 5) << 3);
         if (! (finished_mask & 0b10000))
-            finished_mask |= (menu_bwrite_12px_char(bttm2_str[i], buf+6, 2) << 4);
+            finished_mask |= (menu_bwrite_12px_char(bttm2_str[i], buf+6, 1) << 4);
 
-        display_write_page_array(buf, 8, DISPLAY_NUM_PAGES, i*8, 0);
+        display_write_page_array(
+            buf,
+            8,                    // ncols
+            DISPLAY_NUM_PAGES,    // pages_per_col
+            i*8,                  // x
+            0                     // y
+        );
     }
 }
 
