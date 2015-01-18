@@ -46,6 +46,7 @@ int main()
     ev_with_fracs_set_ev8(tms.shutter_speed, 8*8);
     tms.exposure_ready = true;
     tms.op_amp_resistor_stage = 2;
+    gms.ui_mode_state.main_menu.voffset = 0;
 #undef gms
 #undef tms
     ui_show_interface();

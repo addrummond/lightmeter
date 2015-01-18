@@ -27,6 +27,7 @@ typedef enum ui_mode {
 typedef union ui_mode_state {
     struct {
         uint8_t item_index;
+        uint8_t voffset;
     } main_menu;
 } ui_mode_state_t;
 

@@ -99,6 +99,8 @@ static void show_main_menu()
 {
     assert(NUM_MAIN_MENU_STRINGS >= 5);
     assert(ms.ui_mode_state.main_menu.item_index < NUM_MAIN_MENU_STRINGS);
+    uint8_t voffset = ms.ui_mode_state.main_menu.voffset;
+    assert(voffset < 12);
 
     // Selected item is in the middle, with two above it and two below it.
 
@@ -122,22 +124,58 @@ static void show_main_menu()
     menu_string_decode_short(MMS(up_from(NUM_MAIN_MENU_STRINGS, ms.ui_mode_state.main_menu.item_index, 1)), bttm1_str);
     menu_string_decode_short(MMS(up_from(NUM_MAIN_MENU_STRINGS, ms.ui_mode_state.main_menu.item_index, 2)), bttm2_str);
 
+    // Generated via gen_ks_in_show_main_menu_in_ui.c.py.
+    static const uint8_t ks[] = {
+        0,1,3,4,6, // page offset
+        1,5,1,5,1, // vertical offset within first page
+
+        0,1,3,4,6,
+        2,6,2,6,2,
+
+        0,1,3,4,6,
+        3,7,3,7,3,
+
+        0,2,3,5,6,
+        4,0,4,0,4,
+
+        0,2,3,5,6,
+        5,1,5,1,5,
+
+        0,2,3,5,6,
+        6,2,6,2,6,
+
+        0,2,3,5,6,
+        7,3,7,3,7,
+
+        1,2,4,5,7,
+        0,4,0,4,0,
+
+        1,2,4,5,7,
+        1,5,1,5,1,
+
+        1,2,4,5,7,
+        2,6,2,6,2,
+
+        1,2,4,5,7,
+        3,7,3,7,3,
+    };
+
     uint8_t i;
     uint8_t buf[CHAR_WIDTH_12PX*DISPLAY_NUM_PAGES];
-    uint8_t finished_mask = 0;
+    uint_fast8_t finished_mask = 0;
     for (i = 0; i < DISPLAY_LCDWIDTH/8 && finished_mask != 0b11111; ++i) {
         memset8_zero(buf, sizeof(buf));
 
         if (! (finished_mask & 0b1))
-            finished_mask |= menu_bwrite_12px_char(top1_str[i], buf, 1);
+            finished_mask |= menu_bwrite_12px_char(top1_str[i], buf+ks[(voffset*10)+0], ks[(voffset*10)+5]);
         if (! (finished_mask & 0b10))
-            finished_mask |= (menu_bwrite_12px_char(top2_str[i], buf+1, 5) << 1);
+            finished_mask |= (menu_bwrite_12px_char(top2_str[i], buf+ks[(voffset*10)+1], ks[(voffset*10)+6]) << 1);
         if (! (finished_mask & 0b100))
-            finished_mask |= (menu_bwrite_12px_char(center_str[i], buf+3, 1) << 2);
+            finished_mask |= (menu_bwrite_12px_char(center_str[i], buf+ks[(voffset*10)+2], ks[(voffset*10)+7]) << 2);
         if (! (finished_mask & 0b1000))
-            finished_mask |= (menu_bwrite_12px_char(bttm1_str[i], buf+4, 5) << 3);
+            finished_mask |= (menu_bwrite_12px_char(bttm1_str[i], buf+ks[(voffset*10)+3], ks[(voffset*10)+8]) << 3);
         if (! (finished_mask & 0b10000))
-            finished_mask |= (menu_bwrite_12px_char(bttm2_str[i], buf+6, 1) << 4);
+            finished_mask |= (menu_bwrite_12px_char(bttm2_str[i], buf+ks[(voffset*10)+4], ks[(voffset*10)+9]) << 4);
 
         display_write_page_array(
             buf,
