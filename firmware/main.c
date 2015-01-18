@@ -35,7 +35,7 @@ int main()
     ev_with_fracs_set_ev8(gms.stops_iso, 8*3);
     gms.priority = SHUTTER_PRIORITY;
     gms.exp_comp = 0;
-    gms.ui_mode = UI_MODE_READING;
+    gms.ui_mode = UI_MODE_MAIN_MENU;
     gms.meter_mode = METER_MODE_INCIDENT;
     gms.precision_mode = PRECISION_MODE_TENTH;
     ev_with_fracs_set_ev8(gms.priority_aperture, 8*8);
