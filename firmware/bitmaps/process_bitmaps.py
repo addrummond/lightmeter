@@ -49,20 +49,7 @@ def get_unique_blocks(image, offset, width=12, height=12, blocks=None):
             try:
                 index = ('original', blocks.index(block))
             except ValueError:
-<<<<<<< HEAD
                 pass
-=======
-                # Can we find the miror immage  of the block in the list of existing blocks?
-                for bli in xrange(len(blocks)):
-                    flipv = list(reversed(blocks[bli]))
-                    fliph = [list(reversed(aa)) for aa in blocks[bli]]
-                    if flipv == block:
-                        index = ('flipv', bli)
-                        break
-                    elif fliph == block:
-                        index = ('fliph', bli)
-                        break
->>>>>>> parent of d906ba6... Some initial work on updating 12px chars.
             if index is None:
                 blocks.append(block)
                 index = ('original', len(blocks)-1)
