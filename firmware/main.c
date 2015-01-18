@@ -16,18 +16,14 @@ int main()
     debugging_writec("Hello World!\n");
 
     i2c_init();
-    debugging_writec("Here1\n");
     display_init();
-    debugging_writec("Here2\n");
 
-    debugging_writec("Here3\n");
+    // Temporary test code: draw's rectangle on screen.
     display_clear();
-    debugging_writec("Here33\n");
     const uint8_t page_array[] = { 0xFF, 0xFF, 0xFF, 0xFF };
     unsigned x;
     for (x = 20; x < 40; ++x)
         display_write_page_array(page_array, 2, 2, x, 1);
-    debugging_writec("Here4\n");
 
     for (;;);
 }
