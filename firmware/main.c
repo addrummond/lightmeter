@@ -12,7 +12,6 @@ int main()
 {
     // Display reset pin uses GPIOA.
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
 
     debugging_writec("Hello World!\n");
 
