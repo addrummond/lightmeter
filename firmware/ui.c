@@ -102,11 +102,11 @@ static void show_main_menu()
 
     // Selected item is in the middle, with two above it and two below it.
 
-    // Menu item 1. 1st and 2nd pages, 2px offset
-    //           2. 2nd and 3rd pages, 6px offset
-    //           3. 3rd and 4th pages, 2px offset
-    //           4. 4th and 5th pages, 6px offset
-    //           5. 5th and 6th pages, 2px offset
+    // Menu item 1. 1st and 2nd pages, 1px offset
+    //           2. 2nd and 3rd pages, 5px offset
+    //           3. 3rd and 4th pages, 1px offset
+    //           4. 4th and 5th pages, 5px offset
+    //           5. 5th and 6th pages, 1px offset
 
     uint8_t center_str[MENU_MAX_SHORT_STRING_LENGTH+1];
     uint8_t top1_str[MENU_MAX_SHORT_STRING_LENGTH+1];
