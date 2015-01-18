@@ -110,12 +110,4 @@ typedef struct transient_meter_state {
 
 extern transient_meter_state_t global_transient_meter_state;
 
-// Check that enums are one byte (choosing an enum type at random).
-// Emums should be one byte if gcc's -fshort-enums is enabled.
-#ifdef __AVR__
-struct dummy {
-    priority_t foo[1-sizeof(priority_t)];
-};
-#endif
-
 #endif

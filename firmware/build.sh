@@ -42,6 +42,8 @@ $CC $CFLAGS -c bcd.c -o bcd.o
 OBJS="$OBJS bcd.o"
 $CC $CFLAGS -c i2c.c -o i2c.o
 OBJS="$OBJS i2c.o"
+$CC $CFLAGS -c state.c -o state.o
+OBJS="$OBJS state.o"
 $CC $CFLAGS -c display.c -o display.o
 OBJS="$OBJS display.o"
 $CC $CFLAGS -c bitmaps/bitmaps.c -o bitmaps/bitmaps.o
