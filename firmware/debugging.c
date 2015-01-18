@@ -31,3 +31,16 @@ void debugging_putc(char c)
           : "r0", "r1"
     );
 }
+
+void debugging_write_uint8(uint8_t i)
+{
+    char d1 = '0' + (i % 10);
+    char d2 = ((i/10)%10);
+    char d3 = '0' + ((i/100)%10);
+    if (d1 != '0')
+        debugging_putc(d1);
+    if (d2 != '0')
+        debugging_putc(d2);
+    if (d3 != '0')
+        debugging_putc(d3);
+}
