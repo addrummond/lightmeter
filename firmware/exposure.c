@@ -182,7 +182,7 @@ void aperture_to_string(ev_with_fracs_t evwf, aperture_string_output_t *aso, pre
 
     uint_fast8_t apev = evwf.ev;
 
-    uint_fast8_t last;
+    uint_fast8_t last = 0;
     if (precision_mode == PRECISION_MODE_THIRD) {
         uint_fast8_t thirds = ev_with_fracs_get_thirds(evwf);
         uint_fast8_t b = APERTURES_THIRD[((apev >> 3)*3) + thirds];
@@ -543,14 +543,19 @@ static int_fast16_t ev_with_fracs_to_xth(ev_with_fracs_t evwf, uint_fast8_t cons
 
     int_fast16_t whole = ev_with_fracs_get_wholes(evwf) * consts[const_offset+0];
     int_fast16_t rest;
-    if (nth == 3)
+    if (nth == 3) {
         rest = ev_with_fracs_get_thirds(evwf) * consts[const_offset+1];
-    else if (nth == 8)
+    }
+    else if (nth == 8) {
         rest = ev_with_fracs_get_eighths(evwf) * consts[const_offset+2];
-    else if (nth == 10)
+    }
+    else if (nth == 10) {
         rest = ev_with_fracs_get_tenths(evwf) * consts[const_offset+3];
-    else
+    }
+    else {
         assert(false);
+        return 0; // Get rid of warning.
+    }
 
     return whole + rest;
 }
