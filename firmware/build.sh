@@ -62,4 +62,4 @@ OBJS="$OBJS menus/menu_strings_table.o"
 $CC $CFLAGS -c main.c -o main.o
 OBJS="$OBJS main.o"
 
-$CC $CFLAGS -T ./stm/STM32F030R8_FLASH.ld $OBJS -o out.elf
+$CC $CFLAGS -gc-sections -T ./stm/STM32F030R8_FLASH.ld $OBJS -o out.elf
