@@ -126,38 +126,41 @@ static void show_main_menu()
 
     // Generated via gen_ks_in_show_main_menu_in_ui.c.py.
     static const uint8_t ks[] = {
-        0,1,3,4,6, // page offset
-        1,5,1,5,1, // vertical offset within first page
-
         0,1,3,4,6,
-        2,6,2,6,2,
+        0,5,2,7,4,
 
-        0,1,3,4,6,
-        3,7,3,7,3,
+        0,1,3,5,6,
+        1,6,3,0,5,
 
-        0,2,3,5,6,
-        4,0,4,0,4,
-
-        0,2,3,5,6,
-        5,1,5,1,5,
+        0,1,3,5,6,
+        2,7,4,1,6,
 
         0,2,3,5,6,
-        6,2,6,2,6,
+        3,0,5,2,7,
 
-        0,2,3,5,6,
-        7,3,7,3,7,
+        0,2,3,5,7,
+        4,1,6,3,0,
+
+        0,2,3,5,7,
+        5,2,7,4,1,
+
+        0,2,4,5,7,
+        6,3,0,5,2,
+
+        0,2,4,5,7,
+        7,4,1,6,3,
 
         1,2,4,5,7,
-        0,4,0,4,0,
+        0,5,2,7,4,
 
-        1,2,4,5,7,
-        1,5,1,5,1,
+        1,2,4,6,7,
+        1,6,3,0,5,
 
-        1,2,4,5,7,
-        2,6,2,6,2,
+        1,2,4,6,7,
+        2,7,4,1,6,
 
-        1,2,4,5,7,
-        3,7,3,7,3,
+        1,3,4,6,7,
+        3,0,5,2,7,
     };
 
     uint8_t i;
@@ -174,7 +177,7 @@ static void show_main_menu()
             finished_mask |= (menu_bwrite_12px_char(center_str[i], buf+ks[(voffset*10)+2], ks[(voffset*10)+7]) << 2);
         if (! (finished_mask & 0b1000))
             finished_mask |= (menu_bwrite_12px_char(bttm1_str[i], buf+ks[(voffset*10)+3], ks[(voffset*10)+8]) << 3);
-        if (! (finished_mask & 0b10000))
+        if (!(finished_mask & 0b10000))
             finished_mask |= (menu_bwrite_12px_char(bttm2_str[i], buf+ks[(voffset*10)+4], ks[(voffset*10)+9]) << 4);
 
         display_write_page_array(

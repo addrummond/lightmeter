@@ -136,8 +136,11 @@ void display_init()
 // For example, if 'pages_per_col' is 3, then pages[0] gives the column at x+0, page_y,
 // pages[1] gives the column at x+0, page_y+1, pages[2] gives the column at x+0, page_y+2,
 // and page[3] gives the column at x+1, page_y.
+//
+// Automatically clips page arrays that extend beyond the bottom of the screen.
 void display_write_page_array(const uint8_t *pages, uint_fast8_t ncols, uint_fast8_t pages_per_col, uint_fast8_t x, uint_fast8_t page_y)
 {
+    assert(page_y < DISPLAY_LCDHEIGHT);
     uint8_t col_start_low = x & 0x0F;
     uint8_t col_start_high = x >> 4;
 
@@ -146,7 +149,7 @@ void display_write_page_array(const uint8_t *pages, uint_fast8_t ncols, uint_fas
         ncols = DISPLAY_LCDWIDTH - x;
 
     uint_fast8_t p;
-    for (p = 0; p < pages_per_col; ++p) {
+    for (p = 0; p < pages_per_col && p+page_y < DISPLAY_NUM_PAGES; ++p) {
         display_command(DISPLAY_SET_COL_START_LOW + col_start_low);
         display_command(DISPLAY_SET_COL_START_HIGH + col_start_high);
         display_command(DISPLAY_SET_PAGE_START + page_y + p);
