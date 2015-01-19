@@ -164,7 +164,7 @@ static void show_main_menu()
     };
 
     uint8_t i;
-    uint8_t buf[CHAR_WIDTH_12PX*DISPLAY_NUM_PAGES];
+    uint8_t buf[CHAR_WIDTH_12PX*(DISPLAY_NUM_PAGES+1)];
     uint_fast8_t finished_mask = 0;
     for (i = 0; i < DISPLAY_LCDWIDTH/8 && finished_mask != 0b11111; ++i) {
         memset8_zero(buf, sizeof(buf));
@@ -182,9 +182,9 @@ static void show_main_menu()
 
         display_write_page_array(
             buf,
-            8,                    // ncols
+            CHAR_WIDTH_12PX,      // ncols
             DISPLAY_NUM_PAGES,    // pages_per_col
-            i*8,                  // x
+            i*CHAR_WIDTH_12PX,    // x
             0                     // y
         );
     }
