@@ -10267,6 +10267,7 @@ package type OT</description>
 <wire x1="-7.62" y1="-10.16" x2="7.62" y2="-10.16" width="0.254" layer="94"/>
 <wire x1="7.62" y1="-10.16" x2="7.62" y2="10.16" width="0.254" layer="94"/>
 <wire x1="7.62" y1="10.16" x2="-7.62" y2="10.16" width="0.254" layer="94"/>
+<text x="-2.54" y="0" size="1.778" layer="94">LP907</text>
 </symbol>
 <symbol name="MOLEXSWD">
 <wire x1="-7.62" y1="12.7" x2="2.54" y2="12.7" width="0.254" layer="94"/>
