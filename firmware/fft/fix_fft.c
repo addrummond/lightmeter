@@ -164,7 +164,7 @@ static inline int16_t FIX_MPY(int16_t a, int16_t b)
   RESULT (in-place FFT), with 0 <= n < 2**m; set inverse to
   0 for forward transform (FFT), or 1 for iFFT.
 */
-int fix_fft(short fr[], short fi[], short m, short inverse)
+int fix_fft(int16_t fr[], int16_t fi[], int16_t m, int16_t inverse)
 {
 	int mr, nn, i, j, l, k, istep, n, scale, shift;
 	int16_t qr, qi, tr, ti, wr, wi;
@@ -282,7 +282,7 @@ int fix_fft(short fr[], short fi[], short m, short inverse)
 int fix_fftr(int16_t f[], int m, int inverse)
 {
 	int i, N = 1<<(m-1), scale = 0;
-	int16_t t tt, *fr=f, *fi=&f[N];
+	int16_t tt, *fr=f, *fi=&f[N];
 
 	if (inverse)
 		scale = fix_fft(fi, fr, m-1, inverse);
