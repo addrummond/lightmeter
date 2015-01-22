@@ -36,12 +36,13 @@
   the case in your architecture, please replace "short"
   with a type definition which *is* a 16-bit word.
 */
+#include <stdint.h>
 
 /*
   Since we only use 3/4 of N_WAVE, we define only
   this many samples, in order to conserve data space.
 */
-short Sinewave[N_WAVE-N_WAVE/4] = {
+int16_t Sinewave[N_WAVE-N_WAVE/4] = {
       0,    201,    402,    603,    804,   1005,   1206,   1406,
    1607,   1808,   2009,   2209,   2410,   2610,   2811,   3011,
    3211,   3411,   3611,   3811,   4011,   4210,   4409,   4608,
@@ -146,7 +147,7 @@ short Sinewave[N_WAVE-N_WAVE/4] = {
   optimization suited to a particluar DSP processor.
   Scaling ensures that result remains 16-bit.
 */
-inline short FIX_MPY(short a, short b)
+inline int16_t FIX_MPY(int16_t a, int16_t b)
 {
 	/* shift right one less bit (i.e. 15-1) */
 	int c = ((int)a * (int)b) >> 14;
@@ -166,7 +167,7 @@ inline short FIX_MPY(short a, short b)
 int fix_fft(short fr[], short fi[], short m, short inverse)
 {
 	int mr, nn, i, j, l, k, istep, n, scale, shift;
-	short qr, qi, tr, ti, wr, wi;
+	int16_t qr, qi, tr, ti, wr, wi;
 
 	n = 1 << m;
 
@@ -278,10 +279,10 @@ int fix_fft(short fr[], short fi[], short m, short inverse)
   that fix_fft "sees" consecutive real samples as alternating
   real and imaginary samples in the complex array.
 */
-int fix_fftr(short f[], int m, int inverse)
+int fix_fftr(int16_t f[], int m, int inverse)
 {
 	int i, N = 1<<(m-1), scale = 0;
-	short tt, *fr=f, *fi=&f[N];
+	int16_t t tt, *fr=f, *fi=&f[N];
 
 	if (inverse)
 		scale = fix_fft(fi, fr, m-1, inverse);
@@ -294,4 +295,3 @@ int fix_fftr(short f[], int m, int inverse)
 		scale = fix_fft(fi, fr, m-1, inverse);
 	return scale;
 }
-
