@@ -9,8 +9,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <stdint.h>
 
-#include "fix_fft.c"
+#include <fix_fft.h>
 
 #define FFT_SIZE  128
 #define log2FFT   7
@@ -23,7 +24,7 @@ int main()
 {
 	int i, scale;
 	unsigned diff;
-	short x[N], fx[N];
+	int16_t x[N], fx[N];
 
 	for (i=0; i<N; i++){
 		x[i] = AMPLITUDE*cos(i*FREQUENCY*(2*3.1415926535)/N);
@@ -60,4 +61,3 @@ printf("%d %d\n", i, sample);
 
 	return 0;
 }
-
