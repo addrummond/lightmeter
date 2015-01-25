@@ -23,24 +23,24 @@ def get_unique_blocks(image, offset, width=12, height=12, blocks=None):
 
     block_grid = [ ]
     num_blocks = 0
-    for y in xrange(0, height, BLOCK_SIZE):
+    for y in range(0, height, BLOCK_SIZE):
         block_grid.append([ ])
-        for x in xrange(0, width, BLOCK_SIZE):
-            block = [[0 for _ in xrange(0, BLOCK_SIZE)] for __ in xrange(0, BLOCK_SIZE)]
+        for x in range(0, width, BLOCK_SIZE):
+            block = [[0 for _ in range(0, BLOCK_SIZE)] for __ in range(0, BLOCK_SIZE)]
             by = 0
-            for yy in xrange(y, y+BLOCK_SIZE):
+            for yy in range(y, y+BLOCK_SIZE):
                 if yy >= height:
                     yy -= height
                 bx = 0
-                for xx in xrange(x, x+BLOCK_SIZE):
+                for xx in range(x, x+BLOCK_SIZE):
                     if xx >= width:
                         xx -= width
-#                    print "BY %i, BX %i, yy %i, xx %i" % (by,bx, yy,xx)
+#                    print("BY %i, BX %i, yy %i, xx %i" % (by,bx, yy,xx))
                     # Note: blocks are column major.
                     block[bx][by] = image[yy][xx]
                     bx += 1
                 by += 1
-#            print "\n\n"
+#            print("\n\n")
 #            block = colmajor_block(block)
             # Invert block vertically.
             for x in block:
@@ -63,9 +63,9 @@ def get_unique_blocks(image, offset, width=12, height=12, blocks=None):
 def rgba_to_mono(pixels, width):
     pixels2 = [[0 if y else 1 for y in x] for x in pixels]
     if len(pixels[0]) == width*3:
-        return [[row[i] for i in xrange(0, len(row), 3)] for row in pixels2] # RGB -> monochrome
+        return [[row[i] for i in range(0, len(row), 3)] for row in pixels2] # RGB -> monochrome
     if len(pixels[0]) == width*4:
-        return [[row[i] for i in xrange(0, len(row), 4)] for row in pixels2] # RGBA -> monochrome
+        return [[row[i] for i in range(0, len(row), 4)] for row in pixels2] # RGBA -> monochrome
 
 def get_12px_chars():
      blocks = [ ]
@@ -85,8 +85,8 @@ def get_12px_chars():
 #             for row in pixels:
 #                 for p in row:
 #                     sys.stdout.write("%i " % p)
-#                 print
-#             print pixels
+#                 print()
+#             print(pixels)
              blocks, block_grid, num_blocks = get_unique_blocks(pixels, 0, width-4, height, blocks)
              name_to_block_grid[name] = block_grid
              max_blocks_per_char = max(max_blocks_per_char, num_blocks)
@@ -103,7 +103,7 @@ def get_8px_chars():
             height = img[1]
             pixels = rgba_to_mono(list(img[2]), 8)
             # Get in col major format vertically inverted.
-            pixels = [[pixels[j][i] for j in reversed(xrange(len(pixels)))] for i in xrange(len(pixels[0]))]
+            pixels = [[pixels[j][i] for j in reversed(range(len(pixels)))] for i in range(len(pixels[0]))]
             # Drop first and last columns for 8x6.
             pixels = pixels[1:-1]
             char_px_grids[name] = pixels
@@ -114,23 +114,23 @@ def get_stats():
 
      for blk in blocks_array:
          for row in blk:
-             print ' '.join(map(str, row))
-         print "\n============\n"
+             print(' '.join(map(str, row)))
+         print("\n============\n")
 
      blockcount = len(blocks_array)
      uncompressed = bitmap_count*12*8/8
      compressed = blockcount*BLOCK_SIZE*BLOCK_SIZE/8 + bitmap_count*(12/BLOCK_SIZE)*(8/BLOCK_SIZE)
 
-     print "There are %i blocks" % blockcount
-     print "Maximum blocks per char: %i" % max_blocks_per_char
-     print "Size uncompressed %i" % uncompressed
-     print "Size compressed %i" % compressed
+     print("There are %i blocks" % blockcount)
+     print("Maximum blocks per char: %i" % max_blocks_per_char)
+     print("Size uncompressed %i" % uncompressed)
+     print("Size compressed %i" % compressed)
 
 def print_test_chars():
     blocks_array, bitmap_count, name_to_block_grid, max_blocks_per_char = get_12px_chars()
 
     for name, grid in name_to_block_grid.iteritems():
-        print "Drawing %s:\n" % name
+        print("Drawing %s:\n" % name)
 
 #
 #        [prints individual blocks first]
@@ -138,15 +138,15 @@ def print_test_chars():
 #        for gg in grid:
 #            for b in gg:
 #                bl = blocks_array[b]
-#                for y in xrange(BLOCK_SIZE):
-#                    for x in xrange(BLOCK_SIZE):
+#                for y in range(BLOCK_SIZE):
+#                    for x in range(BLOCK_SIZE):
 #                        v = bl[x][y]
 #                        sys.stdout.write("%i " % v)
 #                    sys.stdout.write("\n")
 #                sys.stdout.write("\n\n")
 
-        for line in xrange(11, -1, -1):
-            for col in xrange(8):
+        for line in range(11, -1, -1):
+            for col in range(8):
                 flp, index = grid[line/BLOCK_SIZE][col/BLOCK_SIZE]
                 block = blocks_array[index]
                 if flp == 'flipv':
@@ -189,9 +189,9 @@ def output_tables():
 
     def output_block_comment(block, index, f):
         f.write("// index: %i\n" % index)
-        for row in xrange(BLOCK_SIZE):
+        for row in range(BLOCK_SIZE):
             f.write("//    ")
-            for col in xrange(BLOCK_SIZE):
+            for col in range(BLOCK_SIZE):
                 f.write("%s " % block[col][row])
             f.write("\n")
 

@@ -8,14 +8,14 @@ ST=-save-temps
 CC=arm-none-eabi-gcc
 CFLAGS="$ST $CFLAGS"
 
-python calculate_tables.py output
+python3 calculate_tables.py output
 
 cd bitmaps
-python process_bitmaps.py output
+python3 process_bitmaps.py output
 cd ..
 
 cd menus
-python process_strings.py strings_english
+python3 process_strings.py strings_english
 cd ..
 
 OBJS=""

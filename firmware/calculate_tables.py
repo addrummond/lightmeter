@@ -35,7 +35,7 @@ op_amp_normal_resistor = amp_stages[1][0]
 op_amp_resistor_value_to_resistor_number = { }
 rvalcount = 0
 for s in amp_stages:
-    if not op_amp_resistor_value_to_resistor_number.has_key(s[0]):
+    if s[0] not in op_amp_resistor_value_to_resistor_number:
         op_amp_resistor_value_to_resistor_number[s[0]] = rvalcount
         rvalcount += 1
 
@@ -91,10 +91,10 @@ def get_function_from_function_table(filename, inverse=False):
             return function[max]
         else:
             iup = x
-            while not function.has_key(iup):
+            while iup not in function:
                 iup += 1
             idown = x
-            while not function.has_key(idown):
+            while idown not in function:
                 idown -= 1
             diff = iup-idown
             r = None
@@ -121,7 +121,7 @@ qb12_spectral_sensitivity_func = get_function_from_function_table("tables/qb12_s
 def output_sensitivity_curves():
     f = open("sensitivity_curves.csv", "w")
     f.write("wavelength,diode relative spectral sensitivity,qb12 relative spectral sensitivity,qb11 relative spectral sensitivity,luminosity func\n")
-    for i in xrange(0,900):
+    for i in range(0,900):
         lum = luminosity_func(i)
         diode = vemd2503x01_spectral_sensitivity_func(i)
         qb12 = qb12_spectral_sensitivity_func(i)
@@ -139,7 +139,7 @@ def irrad_to_illum(irrad):
     # Assuming white light.
     if irrad_to_illum_constant is None:
         area = 0.0
-        for i in xrange(0, 900):
+        for i in range(0, 900):
             lum = luminosity_func(i)
             qb12 = qb12_spectral_sensitivity_func(i)
             area += lum * qb12
@@ -317,7 +317,7 @@ def output_ev_table(of, name_prefix, op_amp_resistor, filter_offset):
     oar = op_amp_resistor
     tenth_bits = [ ]
     third_bits = [ ]
-    for sv in xrange(b_voltage_offset, 256, 16):
+    for sv in range(b_voltage_offset, 256, 16):
         # Write the absolute 8-bit EV value.
         voltage = (sv * bv_to_voltage)
         assert voltage >= 0
@@ -333,10 +333,10 @@ def output_ev_table(of, name_prefix, op_amp_resistor, filter_offset):
         prev = eight
         num = ""
         bpis = [ None, None ]
-        for j in xrange(0, 2):
+        for j in range(0, 2):
             eight2 = None
             o = ""
-            for k in xrange(0, 8):
+            for k in range(0, 8):
                 v = ((sv + (j * 8.0) + k) * bv_to_voltage)
                 ev2 = voltage_and_oa_resistor_to_ev(v, oar)
                 ev2 += filter_offset
@@ -369,8 +369,8 @@ def output_ev_table(of, name_prefix, op_amp_resistor, filter_offset):
         vallist_abs.append(eight)
         vallist_diffs.append(bpis[0] << 4 | bpis[1])
 
-#    for v in xrange(0, 16):
-#        for t in xrange(0, 256, 16):
+#    for v in range(0, 16):
+#        for t in range(0, 256, 16):
 #            sys.stderr.write(str(vallist_abs[t + v]) + " ")
 #        sys.stderr.write("\n")
 
@@ -380,14 +380,14 @@ def output_ev_table(of, name_prefix, op_amp_resistor, filter_offset):
     of.write('\n};\n')
 
     of.write('const uint8_t ' + name_prefix + '_LIGHT_VOLTAGE_TO_EV_ABS[] = {')
-    for i in xrange(len(vallist_abs)):
+    for i in range(len(vallist_abs)):
         if i % 32 == 0:
             of.write('\n    ');
         of.write('%i,' % vallist_abs[i])
     of.write('\n};\n')
 
     of.write('const uint8_t ' + name_prefix + '_LIGHT_VOLTAGE_TO_EV_DIFFS[] = {')
-    for i in xrange(len(vallist_diffs)):
+    for i in range(len(vallist_diffs)):
         if i % 32 == 0:
             of.write('\n    ');
         of.write('%i,' % vallist_diffs[i])
@@ -399,7 +399,7 @@ def output_ev_table(of, name_prefix, op_amp_resistor, filter_offset):
         of.write('const uint8_t ' + name_prefix + ('_LIGHT_VOLTAGE_TO_EV_%s[] = { ' % name))
         bits = ['1' if x == 1 else '0' for x in xth_bits]
         bytes = [ ]
-        for i in xrange(0, len(bits), 8):
+        for i in range(0, len(bits), 8):
             bytes.append('0b' + ''.join(bits[i:i+8]))
         of.write(', '.join(bytes))
         of.write(' };\n')
@@ -414,13 +414,13 @@ def output_ev_table(of, name_prefix, op_amp_resistor, filter_offset):
 # using single input mode).
 def output_sanity_graph():
     f = open("sanitygraph.csv", "w")
-    f.write("v," + ','.join(["s" + str(n+1) for n in xrange(len(amp_stages))]) + ',')
-    f.write(','.join(["b" + str(n+1) for n in xrange(len(amp_stages))]) + '\n')
-    for v in xrange(b_voltage_offset, 256):
+    f.write("v," + ','.join(["s" + str(n+1) for n in range(len(amp_stages))]) + ',')
+    f.write(','.join(["b" + str(n+1) for n in range(len(amp_stages))]) + '\n')
+    for v in range(b_voltage_offset, 256):
         f.write("%i" % v)
         voltage = (v * bv_to_voltage)
         bins = [ ]
-        for stage in xrange(len(amp_stages)):
+        for stage in range(len(amp_stages)):
             ev = voltage_and_oa_resistor_to_ev(voltage, amp_stages[stage][0])
             ev +=  amp_stages[stage][1]
             ev8 = int(round((ev + 5.0) * 8.0))
@@ -442,7 +442,7 @@ def output_sanity_graph():
 # working correctly. (Test will currently only be performed for normal light table.)
 def output_test_table(of):
     of.write('    { ')
-    for v in xrange(b_voltage_offset, 256):
+    for v in range(b_voltage_offset, 256):
         voltage = (v * bv_to_voltage)
 #            sys.stderr.write('TAVY ' + str(temperature) + ',' + str(voltage) + '\n')
         ev = voltage_and_oa_resistor_to_ev(voltage, op_amp_normal_resistor)
@@ -1053,7 +1053,7 @@ def output_shutter_speeds(of):
         x = 0
         for spd in ss:
             indexes = [shutter_speeds_bitmap.index(c) for c in spd]
-            for i in xrange(0, 4, 2):
+            for i in range(0, 4, 2):
                 v1 = None
                 v2 = None
                 if i >= len(indexes):
@@ -1126,14 +1126,14 @@ def output():
 
     ofh.write("#define NUM_AMP_STAGES %i\n" % len(amp_stages))
     ofh.write("#define FOR_EACH_AMP_STAGE(x) ")
-    for i in xrange(1, len(amp_stages)+1):
+    for i in range(1, len(amp_stages)+1):
         ofh.write("x(%i) " % i)
     ofh.write("\n")
 
     ofc.write("#include <stdint.h>\n")
 
     e, pr = None, None
-    for i in xrange(len(amp_stages)):
+    for i in range(len(amp_stages)):
         resistor_value = amp_stages[i][0]
         stops_subtracted = amp_stages[i][1]
 
@@ -1176,7 +1176,7 @@ def output():
 
 def try_resistor_values():
     working = [ ]
-    for i in xrange(1, 2000):
+    for i in range(1, 2000):
         r = i/10.0
 #        sys.stderr.write("Trying %.3f\n" % r)
         e, pr = output_ev_table('STAGE', r)

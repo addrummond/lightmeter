@@ -56,10 +56,10 @@ def map_char_to_12px_name(c):
 def compact_string(string):
     """'string' is a sequence of characters/integers/tuples of strings [gross]"""
     out = ""
-    n_bytes = (len(string)*8/6) + 1
-    bytes = [[] for x in xrange(n_bytes)]
-    for i in xrange(len(string)+1):
-        byte_i = i*6/8
+    n_bytes = (len(string)*8//6) + 1
+    bytes = [[] for x in range(n_bytes)]
+    for i in range(len(string)+1):
+        byte_i = i*6//8
         bit_offset = i*6%8
         c = None
         if i == len(string):
@@ -127,19 +127,19 @@ def output_strings_table(fh, fc, strings, defines, groups_to_lists_of_string_nam
         return compact_string(s)
 
     # Globals max lengths.
-    short_lengths = [get_length(s, defines, long=False) for s in strings.itervalues()]
-    long_lengths = [get_length(s, defines, long=True) for s in strings.itervalues()]
+    short_lengths = [get_length(s, defines, long=False) for s in strings.values()]
+    long_lengths = [get_length(s, defines, long=True) for s in strings.values()]
     fh.write('#define MENU_MAX_SHORT_STRING_LENGTH %i\n' % max(short_lengths))
     fh.write('#define MENU_MAX_LONG_STRING_LENGTH %i\n' % max(long_lengths))
 
     # Max lengths for each group.
-    for g, lst in groups_to_lists_of_string_names.iteritems():
+    for g, lst in groups_to_lists_of_string_names.items():
         short_lengths = [get_length(strings[n], defines, long=False) for n in lst]
         long_lengths = [get_length(strings[n], defines, long=True)  for n in lst]
         fh.write('#define MENU_GROUP_%s_MAX_SHORT_STRING_LENGTH %i\n' % (g, max(short_lengths)))
         fh.write('#define MENU_GROUP_%s_MAX_LONG_STRING_LENGTH %i\n' % (g, max(long_lengths)))
 
-    defkeys = defines.keys()
+    defkeys = list(defines.keys())
     defkeys.sort()
     index = 0
     for k in defkeys:
@@ -156,7 +156,7 @@ def output_strings_table(fh, fc, strings, defines, groups_to_lists_of_string_nam
         index += 1
     fc.write('};\n\n')
 
-    for k, v in strings.iteritems():
+    for k, v in strings.items():
         fh.write('extern const uint8_t MENU_STRING_' + k + '[];\n')
         ll = get_length(v, defines, long=True)
         sl = get_length(v, defines, long=False)
@@ -234,7 +234,7 @@ def process(fh, fc, contents):
             strings[string_name] = seq
 
         for g in group_names:
-            if not groups_to_lists_of_string_names.has_key(g):
+            if g not in groups_to_lists_of_string_names:
                 groups_to_lists_of_string_names[g] = [ ]
             groups_to_lists_of_string_names[g].append(string_name)
 
