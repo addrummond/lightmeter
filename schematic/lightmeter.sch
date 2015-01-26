@@ -9921,25 +9921,26 @@ package type OT</description>
 <package name="PIEZOBENDER165">
 <circle x="0" y="0" radius="6.75" width="0.127" layer="21"/>
 <circle x="0" y="0" radius="4.999990625" width="0.127" layer="21"/>
-<smd name="P$1" x="-5.08" y="10.16" dx="2.99999375" dy="2.99999375" layer="1"/>
-<smd name="P$2" x="5.08" y="10.16" dx="2.99999375" dy="2.99999375" layer="1"/>
+<smd name="P$1" x="-5.08" y="10.16" dx="2.99999375" dy="2.99999375" layer="16"/>
+<smd name="P$2" x="5.08" y="10.16" dx="2.99999375" dy="2.99999375" layer="16"/>
 <text x="-6.35" y="6.35" size="1.27" layer="21">-</text>
 <text x="5.08" y="6.35" size="1.27" layer="21">+</text>
+<circle x="0" y="0" radius="4.3875" width="0.381" layer="21"/>
 </package>
 <package name="CUDFN6">
-<smd name="P$1" x="-0.5" y="-0.944" dx="0.25" dy="1.028" layer="1"/>
-<smd name="P$2" x="0" y="-0.944" dx="0.25" dy="1.028" layer="1"/>
-<smd name="P$3" x="0.5" y="-0.944" dx="0.25" dy="1.028" layer="1"/>
-<smd name="P$4" x="0.5" y="0.944" dx="0.25" dy="1.028" layer="1"/>
-<smd name="P$5" x="0" y="0.944" dx="0.25" dy="1.028" layer="1"/>
-<smd name="P$6" x="-0.5" y="0.944" dx="0.25" dy="1.028" layer="1"/>
-<smd name="P$7" x="0" y="0" dx="1.2" dy="0.4318" layer="1"/>
-<wire x1="-0.8" y1="0.8" x2="0.8" y2="0.8" width="0.127" layer="21"/>
-<wire x1="-0.8" y1="-0.8" x2="0.8" y2="-0.8" width="0.127" layer="21"/>
-<wire x1="-0.8" y1="0.8" x2="-0.8" y2="-0.8" width="0.127" layer="21"/>
-<wire x1="0.8" y1="0.8" x2="0.8" y2="-0.8" width="0.127" layer="21"/>
-<circle x="-0.889" y="-0.889" radius="0.127" width="0.127" layer="21"/>
-<text x="1.397" y="-1.27" size="0.508" layer="25" rot="R90">&gt;NAME</text>
+<smd name="P$1" x="-0.5" y="-0.944" dx="0.25" dy="1.028" layer="16"/>
+<smd name="P$2" x="0" y="-0.944" dx="0.25" dy="1.028" layer="16"/>
+<smd name="P$3" x="0.5" y="-0.944" dx="0.25" dy="1.028" layer="16"/>
+<smd name="P$4" x="0.5" y="0.944" dx="0.25" dy="1.028" layer="16"/>
+<smd name="P$5" x="0" y="0.944" dx="0.25" dy="1.028" layer="16"/>
+<smd name="P$6" x="-0.5" y="0.944" dx="0.25" dy="1.028" layer="16"/>
+<smd name="P$7" x="0" y="0" dx="1.2" dy="0.4318" layer="16"/>
+<wire x1="-0.8" y1="0.8" x2="0.8" y2="0.8" width="0.127" layer="22"/>
+<wire x1="-0.8" y1="-0.8" x2="0.8" y2="-0.8" width="0.127" layer="22"/>
+<wire x1="-0.8" y1="0.8" x2="-0.8" y2="-0.8" width="0.127" layer="22"/>
+<wire x1="0.8" y1="0.8" x2="0.8" y2="-0.8" width="0.127" layer="22"/>
+<circle x="-0.889" y="-0.889" radius="0.127" width="0.127" layer="22"/>
+<text x="1.397" y="-1.27" size="0.508" layer="26" rot="R90">&gt;NAME</text>
 </package>
 </packages>
 <symbols>
@@ -10696,7 +10697,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND25" library="supply1" deviceset="GND" device=""/>
 <part name="U$4" library="lightmeter" deviceset="NLAS5223B" device=""/>
 <part name="GND36" library="supply1" deviceset="GND" device=""/>
-<part name="U$6" library="lightmeter" deviceset="STM32F030K6T6" device=""/>
+<part name="U$6" library="lightmeter" deviceset="STM32F030K6T6" device="" value=""/>
 <part name="GND12" library="supply1" deviceset="GND" device=""/>
 <part name="GND37" library="supply1" deviceset="GND" device=""/>
 <part name="C20" library="rcl" deviceset="C-EU" device="C0402" value="10n"/>
