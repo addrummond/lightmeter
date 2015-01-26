@@ -11,26 +11,28 @@
 STM32F030K6T6 configuration.
 
                   I  I
-            V  B  2  2
-            S  O  C  C
-            S  O  S  S
-               T  D  C
-               0  A  L
+            V  B  2  2  P  P
+            S  O  C  C  Z  Z
+            S  O  S  S  P  N
+               T  D  C  O  E
+               0  A  L  S  H
             |  |  |  |  |  |  |  |
             ________________________
 VDD      --|                       |-- SWDCLK
            |                       |
-DIODESW  --|                       |-- SWDIO
+         --|                       |-- SWDIO
            |                       |
-NRST     --|                       |-- USBDM
+         --|                       |-- USBDM
            |                       |
-VDDA     --|                       |-- USBDP
+NRST     --|                       |-- USBDP
            |                       |
-OAOUT1   --|                       |-- PBI$1
+VDDA     --|                       |-- PBI$1
            |                       |
-SCRPWR   --|                       |-- PBI$2
+OAOUT1   --|                       |-- PBI$2
            |                       |
-OAOUT2   --|                       |-- SCRRES
+SCRPWR   --|                       |-- SCRRES
+           |                       |
+OAOUT2   --|                       |-- VDD
            |_______________________|
             |  |  |  |  |  |  |  |
             B  D  B        I  F  V
