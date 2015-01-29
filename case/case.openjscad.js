@@ -43,8 +43,9 @@ var BIG_BUTTON_HEIGHT = 8;
 var BIG_BUTTON_THICK = 1;
 var BIG_BUTTON_NOB_HEIGHT = 1;
 var BIG_BUTTON_NOB_RAD = 1.5;
-
 var BIG_BUTTON_FROM_BOTTOM = 2;
+
+var BUTTON_HOLE_MARGIN = 0.1;
 
 function make_box(w,h,t) {
     var obox2d = hull(
@@ -90,5 +91,12 @@ function main() {
         size: [ SCREEN_WIDTH, SCREEN_HEIGHT, CASE_THICK ]
     }).translate([THICK/2+CASE_THICK, -(HEIGHT-SCREEN_FROM_TOP), THICK+CASE_THICK ]));
 
-    return box.union(make_big_button().translate([30,30      ,0]));
+    var bigbuthole = make_big_button(BUTTON_HOLE_MARGIN)
+    .translate([(TOTAL_WIDTH-BIG_BUTTON_WIDTH-BUTTON_HOLE_MARGIN*2)/2, -BIG_BUTTON_FROM_BOTTOM-BIG_BUTTON_HEIGHT-BUTTON_HOLE_MARGIN, THICK]);
+    box = box.subtract(bigbuthole);
+
+    var bigbut = make_big_button(0)
+    .translate([(TOTAL_WIDTH-BIG_BUTTON_WIDTH)/2, -BIG_BUTTON_FROM_BOTTOM-BIG_BUTTON_HEIGHT, THICK]);
+
+    return box.union(bigbut);
 }
