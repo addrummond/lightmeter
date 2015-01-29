@@ -38,6 +38,14 @@ var SCREEN_HEIGHT = 19.26;
 
 var TOTAL_WIDTH = WIDTH + THICK + (CASE_THICK*2);
 
+var BIG_BUTTON_WIDTH = 13;
+var BIG_BUTTON_HEIGHT = 8;
+var BIG_BUTTON_THICK = 1;
+var BIG_BUTTON_NOB_HEIGHT = 1;
+var BIG_BUTTON_NOB_RAD = 1.5;
+
+var BIG_BUTTON_FROM_BOTTOM = 2;
+
 function make_box(w,h,t) {
     var obox2d = hull(
         circle(t/2),
@@ -45,6 +53,14 @@ function make_box(w,h,t) {
     );
     var obox = linear_extrude({ height: h }, obox2d);
     return obox.rotateX(90);
+}
+
+function make_big_button(pad){
+    var top = linear_extrude({ height: BIG_BUTTON_THICK }, square([BIG_BUTTON_WIDTH+pad, BIG_BUTTON_HEIGHT+pad]));
+    var nob = linear_extrude({ height: BIG_BUTTON_NOB_HEIGHT }, circle(BIG_BUTTON_NOB_RAD))
+    .translate([BIG_BUTTON_WIDTH/2-BIG_BUTTON_NOB_RAD, BIG_BUTTON_HEIGHT/2-BIG_BUTTON_NOB_RAD, -BIG_BUTTON_THICK]);
+    var but = top.union(nob);
+    return but;
 }
 
 function main() {
@@ -57,7 +73,7 @@ function main() {
         1.0
         ]
     }).translate([0.2, -HEIGHT, THICK-LEDGE_BOTTOM]);
-    
+
     var box = obox.subtract(ibox).union(ledge);
     var h = [ ];
     for (var i = 0; i < SENSOR_POSITIONS.length; ++i) {
@@ -74,5 +90,5 @@ function main() {
         size: [ SCREEN_WIDTH, SCREEN_HEIGHT, CASE_THICK ]
     }).translate([THICK/2+CASE_THICK, -(HEIGHT-SCREEN_FROM_TOP), THICK+CASE_THICK ]));
 
-    return box;
+    return box.union(make_big_button().translate([30,30      ,0]));
 }
