@@ -1,16 +1,16 @@
 var THICK_MARGIN = 0.25;
 var THICK =
-    1.75 + // Screen (buttons are slimmer)
-    2.75 + // USB connector (highest thing on top layer)
-    0.6 +  // Thinnest PCB we can have made cheaply.
-    THICK_MARGIN;
+1.75 + // Screen (buttons are slimmer)
+2.75 + // USB connector (highest thing on top layer)
+0.6 +  // Thinnest PCB we can have made cheaply.
+THICK_MARGIN;
 
 var PCB_WIDTH = 26.7;
 var PCB_HEIGHT = 38.1508;
 var PCB_HORIZ_MARGIN = 0.5;
 
-var BATTERY_HEIGHT = 35;
-var BATTERY_THICK = 5;
+var BATTERY_HEIGHT = 19.75;
+var BATTERY_THICK = 3.8;
 
 var WIDTH = PCB_WIDTH + PCB_HORIZ_MARGIN;
 var HEIGHT = PCB_HEIGHT + PCB_HORIZ_MARGIN;
@@ -23,10 +23,10 @@ var SCREEN_THICK = 1.75;
 var LEDGE_BOTTOM = PCB_THICK + SCREEN_THICK;
 
 var SENSOR_POSITIONS = [
-    [3.81, 4.4958],
-    [6.35, 4.4958],
-    [15.24, 4.4958],
-    [17.78, 4.4958]
+[3.81, 4.4958],
+[6.35, 4.4958],
+[15.24, 4.4958],
+[17.78, 4.4958]
 ];
 
 var SENSOR_WIDTH = 1.6;
@@ -99,12 +99,15 @@ function main() {
         size: [ SCREEN_WIDTH, SCREEN_HEIGHT, CASE_THICK ]
     }).translate([0, SCREEN_FROM_TOP, THICK ]));
 
+    var bigbutfromtop = HEIGHT - BIG_BUTTON_CENTER_FROM_BOTTOM - BIG_BUTTON_HEIGHT/BUTTON_CENTER_DIV;
+
     var bigbuthole = make_big_button(BUTTON_HOLE_MARGIN)
-    .translate([(WIDTH-BIG_BUTTON_WIDTH-BUTTON_HOLE_MARGIN*2)/2, BATTERY_HEIGHT+BIG_BUTTON_CENTER_FROM_BOTTOM-BIG_BUTTON_HEIGHT/BUTTON_CENTER_DIV-BUTTON_HOLE_MARGIN, THICK-BIG_BUTTON_THICK+CASE_THICK]);
+    .translate([(WIDTH-BIG_BUTTON_WIDTH-BUTTON_HOLE_MARGIN*2)/2, bigbutfromtop-BUTTON_HOLE_MARGIN, THICK-BIG_BUTTON_THICK+CASE_THICK]);
     box = box.subtract(bigbuthole);
 
+    var cub = cube({size: [20,20,20]});
     var bigbut = make_big_button(0)
-    .translate([(WIDTH-BIG_BUTTON_WIDTH)/2, BATTERY_HEIGHT+BIG_BUTTON_CENTER_FROM_BOTTOM-BIG_BUTTON_HEIGHT/BUTTON_CENTER_DIV, THICK-BIG_BUTTON_THICK+CASE_THICK]);
+    .translate([(WIDTH-BIG_BUTTON_WIDTH)/2, bigbutfromtop, THICK-BIG_BUTTON_THICK+CASE_THICK]);
 
     return box.union(bigbut);
 }
