@@ -33,6 +33,12 @@ var SENSOR_WIDTH = 1.6;
 var SENSOR_HEIGHT = SENSOR_WIDTH;
 var SENSOR_HOLE_EXTRA = 2;
 
+var total_incident_sensor_width = SENSOR_POSITIONS[3][0] - SENSOR_POSITIONS[2][0] + SENSOR_WIDTH;
+
+var SPHERE_HEIGHT = total_incident_sensor_width/2;
+var SPHERE_RECESS = 2;
+var SPHERE_THICK = 0.5;
+
 var SCREEN_FROM_TOP = 2;
 var SCREEN_WIDTH = 26.7;
 var SCREEN_HEIGHT = 19.26;
@@ -48,6 +54,18 @@ var BIG_BUTTON_CENTER_FROM_BOTTOM = 2.667;
 var BUTTON_CENTER_DIV = 3;
 
 var BUTTON_HOLE_MARGIN = 0.1;
+
+function make_sphere() {
+    return sphere(SPHERE_HEIGHT);
+}
+
+function make_hollow_half_sphere() {
+    var so = sphere(SPHERE_HEIGHT + SPHERE_THICK);
+    var si = make_sphere();
+    var s = so.subtract(si);
+    var cb = cube({size: [SPHERE_HEIGHT*2.7, SPHERE_HEIGHT*2.7, SPHERE_HEIGHT*2]}).translate([-SPHERE_HEIGHT*1.4,-SPHERE_HEIGHT*1.4,0]);
+    return s.subtract(cb);
+}
 
 function make_box(w,h,t,case_thick) {
     var rect = cube({size: [w,h,t]});
@@ -84,7 +102,7 @@ function make_big_button(pad){
 function main() {
     var box = make_hollow_box(WIDTH, HEIGHT+BATTERY_HEIGHT, THICK, CASE_THICK, HEIGHT);
     var h = [ ];
-    for (var i = 0; i < SENSOR_POSITIONS.length; ++i) {
+    for (var i = 0; i < 2; ++i) {
         var x = SENSOR_POSITIONS[i][0];
         var y = SENSOR_POSITIONS[i][1];
         h.push(square([SENSOR_WIDTH+SENSOR_HOLE_EXTRA, SENSOR_HEIGHT+SENSOR_HOLE_EXTRA])
@@ -109,5 +127,5 @@ function main() {
     var bigbut = make_big_button(0)
     .translate([(WIDTH-BIG_BUTTON_WIDTH)/2, bigbutfromtop, THICK-BIG_BUTTON_THICK+CASE_THICK]);
 
-    return box.union(bigbut);
+    return box.union(bigbut).union(make_hollow_half_sphere().translate([30,30,30]));
 }
