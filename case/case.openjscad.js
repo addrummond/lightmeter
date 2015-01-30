@@ -104,7 +104,14 @@ function make_big_button(pad){
     return but;
 }
 
-function main() {
+var bigbutfromtop = HEIGHT - BIG_BUTTON_CENTER_FROM_BOTTOM - BIG_BUTTON_HEIGHT/BUTTON_CENTER_DIV;
+
+function output_big_button() {
+    return make_big_button(0)
+           .translate([(WIDTH-BIG_BUTTON_WIDTH)/2, bigbutfromtop, THICK-BIG_BUTTON_THICK+CASE_THICK]);
+}
+
+function output_case() {
     var box = make_hollow_box(WIDTH, HEIGHT+BATTERY_HEIGHT, THICK, CASE_THICK);
     var h = [ ];
     for (var i = 2; i < 4; ++i) {
@@ -125,19 +132,17 @@ function main() {
     hs = hs.subtract(cube({size: [SPHERE_HEIGHT*2.6,SPHERE_HEIGHT*2.6,SPHERE_HEIGHT*2.6]}).translate(ipos).translate([-SPHERE_HEIGHT*1.3, -SPHERE_HEIGHT*1.3,0.01]));
     box = box.union(hs);
 
-
     box = box.subtract(cube({
         size: [ SCREEN_WIDTH, SCREEN_HEIGHT, CASE_THICK ]
     }).translate([0, SCREEN_FROM_TOP, THICK ]));
-
-    var bigbutfromtop = HEIGHT - BIG_BUTTON_CENTER_FROM_BOTTOM - BIG_BUTTON_HEIGHT/BUTTON_CENTER_DIV;
 
     var bigbuthole = make_big_button(BUTTON_HOLE_MARGIN)
     .translate([(WIDTH-BIG_BUTTON_WIDTH-BUTTON_HOLE_MARGIN*2)/2, bigbutfromtop-BUTTON_HOLE_MARGIN, THICK-BIG_BUTTON_THICK+CASE_THICK]);
     box = box.subtract(bigbuthole);
 
-    var bigbut = make_big_button(0)
-    .translate([(WIDTH-BIG_BUTTON_WIDTH)/2, bigbutfromtop, THICK-BIG_BUTTON_THICK+CASE_THICK]);
+    return color("red", box);
+}
 
-    return color("red", box.union(bigbut));
+function main() {
+    return output_case();
 }
