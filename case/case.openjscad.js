@@ -106,12 +106,15 @@ function main() {
         var x = SENSOR_POSITIONS[i][0];
         var y = SENSOR_POSITIONS[i][1];
         h.push(square([SENSOR_WIDTH+SENSOR_HOLE_EXTRA, SENSOR_HEIGHT+SENSOR_HOLE_EXTRA])
-        .translate([x+THICK/2+CASE_THICK,y]));
+        .translate([(WIDTH-x)+CASE_THICK-(SENSOR_WIDTH+SENSOR_HOLE_EXTRA),y+CASE_THICK-((SENSOR_HEIGHT+SENSOR_HOLE_EXTRA)/2)]));
     }
 
     var sensor_hole = linear_extrude({ height: CASE_THICK }, chain_hull(h));
-    sensor_hole = sensor_hole.translate(-CASE_THICK);
+    sensor_hole = sensor_hole.translate([0,0,-CASE_THICK]);
     box = box.subtract(sensor_hole);
+
+    var incident_hole = make_sphere().translate([((WIDTH-SENSOR_POSITIONS[2][0]) + (WIDTH-SENSOR_POSITIONS[3][0]))/2.0 + CASE_THICK, SENSOR_POSITIONS[2][1]+CASE_THICK, 0]);
+    box = box.subtract(incident_hole);
 
     box = box.subtract(cube({
         size: [ SCREEN_WIDTH, SCREEN_HEIGHT, CASE_THICK ]
