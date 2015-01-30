@@ -1,6 +1,8 @@
 var THICK_MARGIN = 0.25;
+var SCREEN_THICK = 1.75;
+
 var THICK =
-1.75 + // Screen (buttons are slimmer)
+SCREEN_THICK + // Screen (buttons are slimmer)
 2.75 + // USB connector (highest thing on top layer)
 0.6 +  // Thinnest PCB we can have made cheaply.
 THICK_MARGIN;
@@ -87,9 +89,9 @@ function make_hollow_box(w, h, t, case_thick) {
         size: [
         PCB_LEDGE_WIDTH,
         HEIGHT,
-        1.0
+        THICK-SCREEN_THICK
         ]
-    }).translate([0.2, 0, t-LEDGE_BOTTOM]);
+    }).translate([0.2, 0, 0]);
     box = box.union(ledge);
     return box;
 }
@@ -134,7 +136,6 @@ function main() {
     .translate([(WIDTH-BIG_BUTTON_WIDTH-BUTTON_HOLE_MARGIN*2)/2, bigbutfromtop-BUTTON_HOLE_MARGIN, THICK-BIG_BUTTON_THICK+CASE_THICK]);
     box = box.subtract(bigbuthole);
 
-    var cub = cube({size: [20,20,20]});
     var bigbut = make_big_button(0)
     .translate([(WIDTH-BIG_BUTTON_WIDTH)/2, bigbutfromtop, THICK-BIG_BUTTON_THICK+CASE_THICK]);
 
