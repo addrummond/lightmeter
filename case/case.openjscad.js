@@ -35,7 +35,7 @@ var SENSOR_HOLE_EXTRA = 2;
 
 var total_incident_sensor_width = SENSOR_POSITIONS[3][0] - SENSOR_POSITIONS[2][0] + SENSOR_WIDTH;
 
-var SPHERE_HEIGHT = total_incident_sensor_width/2;
+var SPHERE_HEIGHT = total_incident_sensor_width/1.25;
 var SPHERE_RECESS = 2;
 var SPHERE_THICK = 0.5;
 
@@ -92,7 +92,7 @@ function make_hollow_box(w, h, t, case_thick, ledge_height) {
 }
 
 function make_big_button(pad){
-    var top = linear_extrude({ height: BIG_BUTTON_THICK }, square([BIG_BUTTON_WIDTH+pad, BIG_BUTTON_HEIGHT+pad]));
+    var top = linear_extrude({ height: BIG_BUTTON_THICK }, expand(1, 12, square([BIG_BUTTON_WIDTH+pad, BIG_BUTTON_HEIGHT+pad])));
     var nob = linear_extrude({ height: BIG_BUTTON_NOB_HEIGHT }, circle(BIG_BUTTON_NOB_RAD))
     .translate([BIG_BUTTON_WIDTH/2-BIG_BUTTON_NOB_RAD, BIG_BUTTON_HEIGHT/2-BIG_BUTTON_NOB_RAD, -BIG_BUTTON_THICK]);
     var but = top.union(nob);
@@ -116,8 +116,8 @@ function main() {
     var ipos = [((WIDTH-SENSOR_POSITIONS[2][0]) + (WIDTH-SENSOR_POSITIONS[3][0]))/2.0 + CASE_THICK, SENSOR_POSITIONS[2][1]+CASE_THICK, 0];
     var incident_hole = make_sphere().translate(ipos);
     box = box.subtract(incident_hole);
-    var hs = make_hollow_half_sphere().translate(ipos);
-    box = box.add(hs);
+    var hs = make_hollow_half_sphere().translate(ipos).translate([0,0,SPHERE_RECESS]);
+    box = box.union(hs);
 
     box = box.subtract(cube({
         size: [ SCREEN_WIDTH, SCREEN_HEIGHT, CASE_THICK ]
@@ -133,5 +133,5 @@ function main() {
     var bigbut = make_big_button(0)
     .translate([(WIDTH-BIG_BUTTON_WIDTH)/2, bigbutfromtop, THICK-BIG_BUTTON_THICK+CASE_THICK]);
 
-    return box.union(bigbut).union(make_hollow_half_sphere().translate([30,30,30]));
+    return color("red", box.union(bigbut));
 }
