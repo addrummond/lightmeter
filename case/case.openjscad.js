@@ -55,6 +55,9 @@ var BUTTON_CENTER_DIV = 3;
 
 var BUTTON_HOLE_MARGIN = 0.1;
 
+var USB_GAP_BTM_FROM_BTM = 19.05;
+var USB_GAP_TOP_FROM_BTM = 31.115;
+
 function make_sphere() {
     return sphere(SPHERE_HEIGHT);
 }
