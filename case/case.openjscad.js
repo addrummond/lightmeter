@@ -1,3 +1,5 @@
+var NFACES = 20;
+
 var THICK_MARGIN = 0.25;
 var SCREEN_THICK = 1.75;
 
@@ -7,7 +9,11 @@ SCREEN_THICK + // Screen (buttons are slimmer)
 0.6 +  // Thinnest PCB we can have made cheaply.
 THICK_MARGIN;
 
-var PCB_WIDTH = 26.7;
+var SCREEN_FROM_TOP = 2;
+var SCREEN_WIDTH = 26.7;
+var SCREEN_HEIGHT = 19.26;
+
+var PCB_WIDTH = SCREEN_WIDTH + 1;
 var PCB_HEIGHT = 38.1508;
 var PCB_HORIZ_MARGIN = 0.5;
 
@@ -17,7 +23,7 @@ var BATTERY_THICK = 3.8;
 var WIDTH = PCB_WIDTH + PCB_HORIZ_MARGIN;
 var HEIGHT = PCB_HEIGHT + PCB_HORIZ_MARGIN;
 
-var CASE_THICK = 0.5;
+var CASE_THICK = 0.71;
 
 var PCB_LEDGE_WIDTH = 2.8;
 var PCB_THICK = 0.6;
@@ -39,13 +45,9 @@ var total_incident_sensor_width = SENSOR_POSITIONS[3][0] - SENSOR_POSITIONS[2][0
 
 var SPHERE_HEIGHT = total_incident_sensor_width/1.4;
 var SPHERE_RECESS = 1.5;
-var SPHERE_THICK = 0.5;
+var SPHERE_THICK = 0.71;
 
 var SPHERE_HOLE_HEIGHT = Math.sqrt(SPHERE_HEIGHT*SPHERE_HEIGHT - SPHERE_RECESS*SPHERE_RECESS);
-
-var SCREEN_FROM_TOP = 2;
-var SCREEN_WIDTH = 26.7;
-var SCREEN_HEIGHT = 19.26;
 
 var TOTAL_WIDTH = WIDTH + THICK + (CASE_THICK*2);
 
@@ -76,7 +78,7 @@ function make_hollow_half_sphere() {
 
 function make_box(w,h,t,case_thick) {
     var rect = cube({size: [w,h,t]});
-    rect = expand(case_thick, 12, rect);
+    rect = expand(case_thick, NFACES, rect);
     return rect;
 }
 
@@ -97,7 +99,7 @@ function make_hollow_box(w, h, t, case_thick) {
 }
 
 function make_big_button(pad){
-    var top = linear_extrude({ height: BIG_BUTTON_THICK }, expand(1, 12, square([BIG_BUTTON_WIDTH+pad, BIG_BUTTON_HEIGHT+pad])));
+    var top = linear_extrude({ height: BIG_BUTTON_THICK }, expand(1, NFACES, square([BIG_BUTTON_WIDTH+pad*2, BIG_BUTTON_HEIGHT+pad*2])));
     var nob = linear_extrude({ height: BIG_BUTTON_NOB_HEIGHT }, circle(BIG_BUTTON_NOB_RAD))
     .translate([BIG_BUTTON_WIDTH/2-BIG_BUTTON_NOB_RAD, BIG_BUTTON_HEIGHT/2-BIG_BUTTON_NOB_RAD, -BIG_BUTTON_THICK]);
     var but = top.union(nob);
@@ -107,8 +109,8 @@ function make_big_button(pad){
 var bigbutfromtop = HEIGHT - BIG_BUTTON_CENTER_FROM_BOTTOM - BIG_BUTTON_HEIGHT/BUTTON_CENTER_DIV;
 
 function output_big_button() {
-    return make_big_button(0)
-           .translate([(WIDTH-BIG_BUTTON_WIDTH)/2, bigbutfromtop, THICK-BIG_BUTTON_THICK+CASE_THICK]);
+    return color("black", make_big_button(0)
+    .translate([(WIDTH-BIG_BUTTON_WIDTH)/2, bigbutfromtop, THICK-BIG_BUTTON_THICK+CASE_THICK]));
 }
 
 function output_case() {
@@ -134,7 +136,7 @@ function output_case() {
 
     box = box.subtract(cube({
         size: [ SCREEN_WIDTH, SCREEN_HEIGHT, CASE_THICK ]
-    }).translate([0, SCREEN_FROM_TOP, THICK ]));
+    }).translate([(WIDTH-SCREEN_WIDTH)/2, SCREEN_FROM_TOP, THICK ]));
 
     var bigbuthole = make_big_button(BUTTON_HOLE_MARGIN)
     .translate([(WIDTH-BIG_BUTTON_WIDTH-BUTTON_HOLE_MARGIN*2)/2, bigbutfromtop-BUTTON_HOLE_MARGIN, THICK-BIG_BUTTON_THICK+CASE_THICK]);
@@ -144,5 +146,5 @@ function output_case() {
 }
 
 function main() {
-    return output_case();
+    return output_case().union(output_big_button());
 }
