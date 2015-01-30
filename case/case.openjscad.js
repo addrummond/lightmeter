@@ -113,8 +113,11 @@ function main() {
     sensor_hole = sensor_hole.translate([0,0,-CASE_THICK]);
     box = box.subtract(sensor_hole);
 
-    var incident_hole = make_sphere().translate([((WIDTH-SENSOR_POSITIONS[2][0]) + (WIDTH-SENSOR_POSITIONS[3][0]))/2.0 + CASE_THICK, SENSOR_POSITIONS[2][1]+CASE_THICK, 0]);
+    var ipos = [((WIDTH-SENSOR_POSITIONS[2][0]) + (WIDTH-SENSOR_POSITIONS[3][0]))/2.0 + CASE_THICK, SENSOR_POSITIONS[2][1]+CASE_THICK, 0];
+    var incident_hole = make_sphere().translate(ipos);
     box = box.subtract(incident_hole);
+    var hs = make_hollow_half_sphere().translate(ipos);
+    box = box.add(hs);
 
     box = box.subtract(cube({
         size: [ SCREEN_WIDTH, SCREEN_HEIGHT, CASE_THICK ]
