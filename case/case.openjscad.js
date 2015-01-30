@@ -35,9 +35,11 @@ var SENSOR_HOLE_EXTRA = 2;
 
 var total_incident_sensor_width = SENSOR_POSITIONS[3][0] - SENSOR_POSITIONS[2][0] + SENSOR_WIDTH;
 
-var SPHERE_HEIGHT = total_incident_sensor_width/1.25;
-var SPHERE_RECESS = 2;
+var SPHERE_HEIGHT = total_incident_sensor_width/1.4;
+var SPHERE_RECESS = 1.5;
 var SPHERE_THICK = 0.5;
+
+var SPHERE_HOLE_HEIGHT = Math.sqrt(SPHERE_HEIGHT*SPHERE_HEIGHT - SPHERE_RECESS*SPHERE_RECESS);
 
 var SCREEN_FROM_TOP = 2;
 var SCREEN_WIDTH = 26.7;
@@ -58,13 +60,13 @@ var BUTTON_HOLE_MARGIN = 0.1;
 var USB_GAP_BTM_FROM_BTM = 19.05;
 var USB_GAP_TOP_FROM_BTM = 31.115;
 
-function make_sphere() {
-    return sphere(SPHERE_HEIGHT);
+function make_sphere(h) {
+    return sphere(h);
 }
 
 function make_hollow_half_sphere() {
-    var so = sphere(SPHERE_HEIGHT + SPHERE_THICK);
-    var si = make_sphere();
+    var so = make_sphere(SPHERE_HEIGHT + SPHERE_THICK);
+    var si = make_sphere(SPHERE_HEIGHT);
     var s = so.subtract(si);
     var cb = cube({size: [SPHERE_HEIGHT*2.7, SPHERE_HEIGHT*2.7, SPHERE_HEIGHT*2]}).translate([-SPHERE_HEIGHT*1.4,-SPHERE_HEIGHT*1.4,0]);
     return s.subtract(cb);
@@ -76,21 +78,19 @@ function make_box(w,h,t,case_thick) {
     return rect;
 }
 
-function make_hollow_box(w, h, t, case_thick, ledge_height) {
+function make_hollow_box(w, h, t, case_thick) {
     var obox = make_box(w, h, t, case_thick);
     var ibox = cube({size: [w,h+case_thick,t]});
 
     var box = obox.subtract(ibox);
-    if (ledge_height) {
-        var ledge = cube({
-            size: [
-            PCB_LEDGE_WIDTH,
-            ledge_height,
-            1.0
-            ]
-        }).translate([0.2, 0, t-LEDGE_BOTTOM]);
-        box = box.union(ledge);
-    }
+    var ledge = cube({
+        size: [
+        PCB_LEDGE_WIDTH,
+        HEIGHT,
+        1.0
+        ]
+    }).translate([0.2, 0, t-LEDGE_BOTTOM]);
+    box = box.union(ledge);
     return box;
 }
 
@@ -103,9 +103,9 @@ function make_big_button(pad){
 }
 
 function main() {
-    var box = make_hollow_box(WIDTH, HEIGHT+BATTERY_HEIGHT, THICK, CASE_THICK, HEIGHT);
+    var box = make_hollow_box(WIDTH, HEIGHT+BATTERY_HEIGHT, THICK, CASE_THICK);
     var h = [ ];
-    for (var i = 0; i < 2; ++i) {
+    for (var i = 2; i < 4; ++i) {
         var x = SENSOR_POSITIONS[i][0];
         var y = SENSOR_POSITIONS[i][1];
         h.push(square([SENSOR_WIDTH+SENSOR_HOLE_EXTRA, SENSOR_HEIGHT+SENSOR_HOLE_EXTRA])
@@ -116,11 +116,13 @@ function main() {
     sensor_hole = sensor_hole.translate([0,0,-CASE_THICK]);
     box = box.subtract(sensor_hole);
 
-    var ipos = [((WIDTH-SENSOR_POSITIONS[2][0]) + (WIDTH-SENSOR_POSITIONS[3][0]))/2.0 + CASE_THICK, SENSOR_POSITIONS[2][1]+CASE_THICK, 0];
-    var incident_hole = make_sphere().translate(ipos);
+    var ipos = [((WIDTH-SENSOR_POSITIONS[0][0]) + (WIDTH-SENSOR_POSITIONS[1][0]))/2.0 + CASE_THICK, SENSOR_POSITIONS[0][1]+CASE_THICK, 0];
+    var incident_hole = make_sphere(SPHERE_HOLE_HEIGHT-0.1).translate(ipos);
     box = box.subtract(incident_hole);
     var hs = make_hollow_half_sphere().translate(ipos).translate([0,0,SPHERE_RECESS]);
+    hs = hs.subtract(cube({size: [SPHERE_HEIGHT*2.6,SPHERE_HEIGHT*2.6,SPHERE_HEIGHT*2.6]}).translate(ipos).translate([-SPHERE_HEIGHT*1.3, -SPHERE_HEIGHT*1.3,0.01]));
     box = box.union(hs);
+
 
     box = box.subtract(cube({
         size: [ SCREEN_WIDTH, SCREEN_HEIGHT, CASE_THICK ]
