@@ -5,7 +5,7 @@ var SCREEN_THICK = 1.75;
 
 var THICK =
 SCREEN_THICK + // Screen (buttons are slimmer)
-2.95 + // USB connector (highest thing on top layer; assuming that lip protrudes via cutaway)
+1.76 + // USB connector (highest thing on top layer; mid mount)
 0.6 +  // Thinnest PCB we can have made cheaply.
 THICK_MARGIN;
 
@@ -31,7 +31,6 @@ var HEIGHT = PCB_HEIGHT + PCB_HORIZ_MARGIN;
 var PCB_LEDGE_WIDTH = 2.8;
 var PCB_THICK = 0.6;
 var SCREEN_THICK = 1.75;
-var LEDGE_BOTTOM = PCB_THICK + SCREEN_THICK;
 
 var SENSOR_POSITIONS = [
 [3.81, 4.4958],
@@ -106,7 +105,7 @@ function make_hexagon(radius) {
             size: [
             PCB_LEDGE_WIDTH,
             HEIGHT,
-            THICK-SCREEN_THICK
+            THICK-SCREEN_THICK-PCB_THICK
             ]
         }).translate([0.2, 0, 0]);
         box = box.union(ledge);
