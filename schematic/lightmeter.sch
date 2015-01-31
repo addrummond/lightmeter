@@ -9923,6 +9923,48 @@ package type OT</description>
 <wire x1="1.8542" y1="0.9" x2="0.9" y2="1.651" width="0.127" layer="22"/>
 <wire x1="-1.8542" y1="-0.9" x2="-0.9" y2="-1.651" width="0.127" layer="22"/>
 </package>
+<package name="USB-AB-MICRO-MIDMOUNT">
+<smd name="D+" x="3.05" y="0" dx="0.4" dy="1.25" layer="1" rot="R90"/>
+<smd name="D-" x="3.05" y="0.65" dx="0.4" dy="1.25" layer="1" rot="R90"/>
+<smd name="VBUS" x="3.05" y="1.3" dx="0.4" dy="1.25" layer="1" rot="R90"/>
+<smd name="ID" x="3.05" y="-0.65" dx="0.4" dy="1.25" layer="1" rot="R90"/>
+<smd name="GND" x="3.05" y="-1.3" dx="0.4" dy="1.25" layer="1" rot="R90"/>
+<smd name="P$6" x="2.725" y="5.15" dx="1.5" dy="2.5" layer="1" rot="R90"/>
+<smd name="P$7" x="2.725" y="-5.15" dx="1.5" dy="2.5" layer="1" rot="R90"/>
+<wire x1="-3.425" y1="5" x2="-3.425" y2="4" width="0.2032" layer="51"/>
+<text x="-5.835" y="1.69" size="0.3048" layer="51">PCB Front</text>
+<wire x1="-3.425" y1="4" x2="-3.425" y2="-4" width="0.2032" layer="51"/>
+<wire x1="-3.425" y1="-4" x2="-3.425" y2="-5" width="0.2032" layer="51"/>
+<wire x1="-4.905" y1="1.155" x2="-4.205" y2="0.855" width="0.08" layer="51"/>
+<wire x1="-4.205" y1="0.855" x2="-4.305" y2="1.055" width="0.08" layer="51"/>
+<wire x1="-4.205" y1="0.855" x2="-4.405" y2="0.755" width="0.08" layer="51"/>
+<wire x1="2.9" y1="4" x2="2.9" y2="-4" width="0.2032" layer="51"/>
+<wire x1="-3.425" y1="4" x2="-0.6" y2="4" width="0.2032" layer="51"/>
+<wire x1="-0.6" y1="4" x2="0.6" y2="4" width="0.2032" layer="51"/>
+<wire x1="0.6" y1="4" x2="2.9" y2="4" width="0.2032" layer="51"/>
+<wire x1="-3.425" y1="-4" x2="2.9" y2="-4" width="0.2032" layer="51"/>
+<wire x1="1.2" y1="4.1" x2="3" y2="4.1" width="0.254" layer="21"/>
+<wire x1="3" y1="4.1" x2="3" y2="1.8" width="0.254" layer="21"/>
+<wire x1="3" y1="-1.8" x2="3" y2="-4.1" width="0.254" layer="21"/>
+<wire x1="3" y1="-4.1" x2="1.2" y2="-4.1" width="0.254" layer="21"/>
+<wire x1="-0.6" y1="4" x2="-0.6" y2="4.6" width="0.2032" layer="51"/>
+<wire x1="-0.6" y1="4.6" x2="0.6" y2="4.6" width="0.2032" layer="51"/>
+<wire x1="0.6" y1="4.6" x2="0.6" y2="4" width="0.2032" layer="51"/>
+<wire x1="0.6" y1="-4" x2="0.6" y2="-4.6" width="0.2032" layer="51"/>
+<wire x1="0.6" y1="-4.6" x2="-0.6" y2="-4.6" width="0.2032" layer="51"/>
+<wire x1="-0.6" y1="-4.6" x2="-0.6" y2="-4" width="0.2032" layer="51"/>
+<text x="0" y="5.969" size="0.4064" layer="25">&gt;NAME</text>
+<text x="0" y="6.731" size="0.4064" layer="27">&gt;VALUE</text>
+<smd name="P$1" x="-1.625" y="-5.15" dx="1.5" dy="2.5" layer="1" rot="R90"/>
+<smd name="P$2" x="-1.625" y="5.15" dx="1.5" dy="2.5" layer="1" rot="R90"/>
+<smd name="P$3" x="5.01" y="2.733" dx="1.5" dy="1.778" layer="1" rot="R180"/>
+<smd name="P$4" x="5.01" y="-2.733" dx="1.5" dy="1.992" layer="1" rot="R180"/>
+<wire x1="-3.425" y1="3.89999375" x2="2.1749875" y2="3.89999375" width="0.127" layer="20"/>
+<wire x1="-3.425" y1="-3.89999375" x2="2.1749875" y2="-3.89999375" width="0.127" layer="20"/>
+<wire x1="2.1749875" y1="3.89999375" x2="2.1749875" y2="-3.89999375" width="0.127" layer="20"/>
+<wire x1="-3.425" y1="-3.89999375" x2="-3.425" y2="3.89999375" width="0.127" layer="20"/>
+<text x="0" y="-2.54" size="0.762" layer="20" rot="R90">CUT OUT</text>
+</package>
 </packages>
 <symbols>
 <symbol name="P-MOS">
@@ -10307,6 +10349,18 @@ package type OT</description>
 <connect gate="G$1" pin="GND" pad="P$5"/>
 <connect gate="G$1" pin="USBID" pad="P$4"/>
 <connect gate="G$1" pin="VBUS" pad="P$1"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="USB-AB-MICRO-MIDMOUNT" package="USB-AB-MICRO-MIDMOUNT">
+<connects>
+<connect gate="G$1" pin="D+" pad="D+"/>
+<connect gate="G$1" pin="D-" pad="D-"/>
+<connect gate="G$1" pin="GND" pad="GND"/>
+<connect gate="G$1" pin="USBID" pad="ID"/>
+<connect gate="G$1" pin="VBUS" pad="VBUS"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -10716,7 +10770,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="R3" library="resistor" deviceset="R-EU_" device="R0402" value="1k"/>
 <part name="R4" library="resistor" deviceset="R-EU_" device="R0402" value="1k"/>
 <part name="C13" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
-<part name="U1" library="lightmeter" deviceset="USB-AB" device=""/>
+<part name="U1" library="lightmeter" deviceset="USB-AB" device="USB-AB-MICRO-MIDMOUNT"/>
 <part name="GND24" library="supply1" deviceset="GND" device=""/>
 <part name="C19" library="rcl" deviceset="C-EU" device="C0402" value="10u"/>
 <part name="GND25" library="supply1" deviceset="GND" device=""/>
