@@ -33,7 +33,7 @@ var USB_PORT_THICK_BELOW_PCB_CENTER = 1.52 - 0.6/2;
 var USB_PORT_THICK = 2.94;
 if (Math.abs((USB_PORT_THICK_ABOVE_PCB_CENTER + USB_PORT_THICK_BELOW_PCB_CENTER) - USB_PORT_THICK > 0.0001))
     throw new Error("Bad value!");
-var USB_CENTER_FROM_TOP = 11.3284;
+var USB_CENTER_FROM_TOP = 30.5054;
 
 var WIDTH = PCB_WIDTH + PCB_HORIZ_MARGIN;
 var HEIGHT = PCB_HEIGHT + PCB_HORIZ_MARGIN;
@@ -168,7 +168,7 @@ function output_case() {
     box = box.subtract(bigbuthole);
 
     // Hole for USB port.
-    var port = cube({size: [20, USB_PORT_WIDTH+USB_PORT_MARGIN*2, USB_PORT_THICK ], center: true })
+    var port = cube({size: [20, USB_PORT_WIDTH+USB_PORT_MARGIN, USB_PORT_THICK ], center: true })
                .translate([TOTAL_WIDTH,
                            /*HEIGHT+BATTERY_HEIGHT-*/USB_CENTER_FROM_TOP,
                            THICK-SCREEN_THICK-PCB_THICK/2-USB_PORT_THICK_BELOW_PCB_CENTER+CASE_THICK]);
