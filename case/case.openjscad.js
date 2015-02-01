@@ -25,6 +25,16 @@ var PCB_HORIZ_MARGIN = 0.5;
 var BATTERY_HEIGHT = 19.75;
 var BATTERY_THICK = 3.8;
 
+var USB_PORT_WIDTH = 7.9;
+var USB_PORT_MARGIN = 1;
+var LIP = 0.24; // Estimate from hopefully to scale drawing (!)
+var USB_PORT_THICK_ABOVE_PCB_CENTER = 1.18 + 0.6/2 + LIP;
+var USB_PORT_THICK_BELOW_PCB_CENTER = 1.52 - 0.6/2;
+var USB_PORT_THICK = 2.94;
+if (Math.abs((USB_PORT_THICK_ABOVE_PCB_CENTER + USB_PORT_THICK_BELOW_PCB_CENTER) - USB_PORT_THICK > 0.0001))
+    throw new Error("Bad value!");
+var USB_CENTER_FROM_TOP = 11.3284;
+
 var WIDTH = PCB_WIDTH + PCB_HORIZ_MARGIN;
 var HEIGHT = PCB_HEIGHT + PCB_HORIZ_MARGIN;
 
@@ -63,9 +73,6 @@ var BUTTON_CENTER_DIV = 3;
 
 var BUTTON_HOLE_MARGIN = 0.1;
 
-var USB_GAP_BTM_FROM_BTM = 19.05;
-var USB_GAP_TOP_FROM_BTM = 31.115;
-
 function make_hexagon(radius) {
     var sqrt3 = Math.sqrt(3)/2;
     var hex = CSG.Polygon.createFromPoints([
@@ -75,97 +82,108 @@ function make_hexagon(radius) {
         [-radius, 0, 0],
         [-radius / 2, -radius * sqrt3, 0],
         [radius / 2, -radius * sqrt3, 0]
-        ]);
+    ]);
+}
+
+function make_sphere(h) {
+    return sphere(h);
+}
+
+function make_hollow_half_sphere() {
+    var so = make_sphere(SPHERE_HEIGHT + SPHERE_THICK);
+    var si = make_sphere(SPHERE_HEIGHT);
+    var s = so.subtract(si);
+    var cb = cube({size: [SPHERE_HEIGHT*2.7, SPHERE_HEIGHT*2.7, SPHERE_HEIGHT*2]}).translate([-SPHERE_HEIGHT*1.4,-SPHERE_HEIGHT*1.4,0]);
+    return s.subtract(cb);
+}
+
+function make_box(w,h,t,case_thick) {
+    var rect = cube({size: [w,h,t]});
+    rect = expand(case_thick, NFACES, rect);
+    return rect;
+}
+
+function make_hollow_box(w, h, t, case_thick) {
+    var obox = make_box(w, h, t, case_thick);
+    var ibox = cube({size: [w,h+case_thick,t]});
+
+    var box = obox.subtract(ibox);
+    var ledge = cube({
+        size: [
+        PCB_LEDGE_WIDTH,
+        HEIGHT,
+        THICK-SCREEN_THICK-PCB_THICK
+        ]
+    }).translate([0.2, 0, 0]);
+    box = box.union(ledge);
+    return box;
+}
+
+function make_big_button(pad){
+    var top = linear_extrude({ height: BIG_BUTTON_THICK }, expand(1, NFACES, square([BIG_BUTTON_WIDTH+pad*2, BIG_BUTTON_HEIGHT+pad*2])));
+    var nob = linear_extrude({ height: BIG_BUTTON_NOB_HEIGHT }, circle(BIG_BUTTON_NOB_RAD))
+    .translate([BIG_BUTTON_WIDTH/2-BIG_BUTTON_NOB_RAD, BIG_BUTTON_HEIGHT/2-BIG_BUTTON_NOB_RAD, -BIG_BUTTON_THICK]);
+    var but = top.union(nob);
+    return but;
+}
+
+var bigbutfromtop = HEIGHT - BIG_BUTTON_CENTER_FROM_BOTTOM - BIG_BUTTON_HEIGHT/BUTTON_CENTER_DIV;
+
+function output_big_button() {
+    return color("black", make_big_button(0)
+    .translate([(WIDTH-BIG_BUTTON_WIDTH)/2, bigbutfromtop, THICK-BIG_BUTTON_THICK+CASE_THICK]));
+}
+
+function output_case() {
+    var box = make_hollow_box(WIDTH, HEIGHT+BATTERY_HEIGHT, THICK, CASE_THICK);
+    var h = [ ];
+    for (var i = 2; i < 4; ++i) {
+        var x = SENSOR_POSITIONS[i][0];
+        var y = SENSOR_POSITIONS[i][1];
+        h.push(square([SENSOR_WIDTH+SENSOR_HOLE_EXTRA, SENSOR_HEIGHT+SENSOR_HOLE_EXTRA])
+        .translate([(WIDTH-x)+CASE_THICK-(SENSOR_WIDTH+SENSOR_HOLE_EXTRA),y+CASE_THICK-((SENSOR_HEIGHT+SENSOR_HOLE_EXTRA)/2)]));
     }
 
-    function make_sphere(h) {
-        return sphere(h);
-    }
+    // Hole for reflective sensors.
+    var sensor_hole = linear_extrude({ height: CASE_THICK }, chain_hull(h));
+    sensor_hole = sensor_hole.translate([0,0,-CASE_THICK]);
+    box = box.subtract(sensor_hole);
 
-    function make_hollow_half_sphere() {
-        var so = make_sphere(SPHERE_HEIGHT + SPHERE_THICK);
-        var si = make_sphere(SPHERE_HEIGHT);
-        var s = so.subtract(si);
-        var cb = cube({size: [SPHERE_HEIGHT*2.7, SPHERE_HEIGHT*2.7, SPHERE_HEIGHT*2]}).translate([-SPHERE_HEIGHT*1.4,-SPHERE_HEIGHT*1.4,0]);
-        return s.subtract(cb);
-    }
+    // Hole for incident sensors.
+    var ipos = [((WIDTH-SENSOR_POSITIONS[0][0]) + (WIDTH-SENSOR_POSITIONS[1][0]))/2.0 + CASE_THICK, SENSOR_POSITIONS[0][1]+CASE_THICK, 0];
+    var incident_hole = make_sphere(SPHERE_HOLE_HEIGHT-0.1).translate(ipos);
+    box = box.subtract(incident_hole);
+    var hs = make_hollow_half_sphere().translate(ipos).translate([0,0,SPHERE_RECESS]);
+    hs = hs.subtract(cube({size: [SPHERE_HEIGHT*2.6,SPHERE_HEIGHT*2.6,SPHERE_HEIGHT*2.6]}).translate(ipos).translate([-SPHERE_HEIGHT*1.3, -SPHERE_HEIGHT*1.3,0.01]));
+    box = box.union(hs);
 
-    function make_box(w,h,t,case_thick) {
-        var rect = cube({size: [w,h,t]});
-        rect = expand(case_thick, NFACES, rect);
-        return rect;
-    }
+    // Hole for screen.
+    box = box.subtract(cube({
+        size: [ SCREEN_WIDTH, SCREEN_HEIGHT, CASE_THICK ]
+    }).translate([(WIDTH-SCREEN_WIDTH)/2, SCREEN_FROM_TOP, THICK ]));
 
-    function make_hollow_box(w, h, t, case_thick) {
-        var obox = make_box(w, h, t, case_thick);
-        var ibox = cube({size: [w,h+case_thick,t]});
+    // Hole for large center button.
+    var bigbuthole = make_big_button(BUTTON_HOLE_MARGIN)
+    .translate([(WIDTH-BIG_BUTTON_WIDTH-BUTTON_HOLE_MARGIN*2)/2, bigbutfromtop-BUTTON_HOLE_MARGIN, THICK-BIG_BUTTON_THICK+CASE_THICK]);
+    box = box.subtract(bigbuthole);
 
-        var box = obox.subtract(ibox);
-        var ledge = cube({
-            size: [
-            PCB_LEDGE_WIDTH,
-            HEIGHT,
-            THICK-SCREEN_THICK-PCB_THICK
-            ]
-        }).translate([0.2, 0, 0]);
-        box = box.union(ledge);
-        return box;
-    }
+    // Hole for USB port.
+    var port = cube({size: [20, USB_PORT_WIDTH+USB_PORT_MARGIN*2, USB_PORT_THICK ], center: true })
+               .translate([TOTAL_WIDTH,
+                           /*HEIGHT+BATTERY_HEIGHT-*/USB_CENTER_FROM_TOP,
+                           THICK-SCREEN_THICK-PCB_THICK/2-USB_PORT_THICK_BELOW_PCB_CENTER+CASE_THICK]);
+    box = box.subtract(port);
 
-    function make_big_button(pad){
-        var top = linear_extrude({ height: BIG_BUTTON_THICK }, expand(1, NFACES, square([BIG_BUTTON_WIDTH+pad*2, BIG_BUTTON_HEIGHT+pad*2])));
-        var nob = linear_extrude({ height: BIG_BUTTON_NOB_HEIGHT }, circle(BIG_BUTTON_NOB_RAD))
-        .translate([BIG_BUTTON_WIDTH/2-BIG_BUTTON_NOB_RAD, BIG_BUTTON_HEIGHT/2-BIG_BUTTON_NOB_RAD, -BIG_BUTTON_THICK]);
-        var but = top.union(nob);
-        return but;
-    }
+    return color("red", box);
+}
 
-    var bigbutfromtop = HEIGHT - BIG_BUTTON_CENTER_FROM_BOTTOM - BIG_BUTTON_HEIGHT/BUTTON_CENTER_DIV;
+function output_height_reference() {
+    return cube({size: [10, 10, TOTAL_THICKNESS] })
+    .translate([-11,-11,-CASE_THICK]);
+}
 
-    function output_big_button() {
-        return color("black", make_big_button(0)
-        .translate([(WIDTH-BIG_BUTTON_WIDTH)/2, bigbutfromtop, THICK-BIG_BUTTON_THICK+CASE_THICK]));
-    }
-
-    function output_case() {
-        var box = make_hollow_box(WIDTH, HEIGHT+BATTERY_HEIGHT, THICK, CASE_THICK);
-        var h = [ ];
-        for (var i = 2; i < 4; ++i) {
-            var x = SENSOR_POSITIONS[i][0];
-            var y = SENSOR_POSITIONS[i][1];
-            h.push(square([SENSOR_WIDTH+SENSOR_HOLE_EXTRA, SENSOR_HEIGHT+SENSOR_HOLE_EXTRA])
-            .translate([(WIDTH-x)+CASE_THICK-(SENSOR_WIDTH+SENSOR_HOLE_EXTRA),y+CASE_THICK-((SENSOR_HEIGHT+SENSOR_HOLE_EXTRA)/2)]));
-        }
-
-        var sensor_hole = linear_extrude({ height: CASE_THICK }, chain_hull(h));
-        sensor_hole = sensor_hole.translate([0,0,-CASE_THICK]);
-        box = box.subtract(sensor_hole);
-
-        var ipos = [((WIDTH-SENSOR_POSITIONS[0][0]) + (WIDTH-SENSOR_POSITIONS[1][0]))/2.0 + CASE_THICK, SENSOR_POSITIONS[0][1]+CASE_THICK, 0];
-        var incident_hole = make_sphere(SPHERE_HOLE_HEIGHT-0.1).translate(ipos);
-        box = box.subtract(incident_hole);
-        var hs = make_hollow_half_sphere().translate(ipos).translate([0,0,SPHERE_RECESS]);
-        hs = hs.subtract(cube({size: [SPHERE_HEIGHT*2.6,SPHERE_HEIGHT*2.6,SPHERE_HEIGHT*2.6]}).translate(ipos).translate([-SPHERE_HEIGHT*1.3, -SPHERE_HEIGHT*1.3,0.01]));
-        box = box.union(hs);
-
-        box = box.subtract(cube({
-            size: [ SCREEN_WIDTH, SCREEN_HEIGHT, CASE_THICK ]
-        }).translate([(WIDTH-SCREEN_WIDTH)/2, SCREEN_FROM_TOP, THICK ]));
-
-        var bigbuthole = make_big_button(BUTTON_HOLE_MARGIN)
-        .translate([(WIDTH-BIG_BUTTON_WIDTH-BUTTON_HOLE_MARGIN*2)/2, bigbutfromtop-BUTTON_HOLE_MARGIN, THICK-BIG_BUTTON_THICK+CASE_THICK]);
-        box = box.subtract(bigbuthole);
-
-        return color("red", box);
-    }
-
-    function output_height_reference() {
-        return cube({size: [10, 10, TOTAL_THICKNESS] })
-        .translate([-11,-11,-CASE_THICK]);
-    }
-
-    function main() {
-        return output_case()
-        .union(output_big_button())
-        .union(output_height_reference());
-    }
+function main() {
+    return output_case()
+    .union(output_big_button())
+    .union(output_height_reference());
+}
