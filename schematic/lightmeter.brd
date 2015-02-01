@@ -2764,29 +2764,20 @@ chip</description>
 <description>&lt;b&gt;Pin Header Connectors&lt;/b&gt;&lt;p&gt;
 &lt;author&gt;Created by librarian@cadsoft.de&lt;/author&gt;</description>
 <packages>
-<package name="1X02">
+<package name="1X01">
 <description>&lt;b&gt;PIN HEADER&lt;/b&gt;</description>
-<wire x1="-1.905" y1="1.27" x2="-0.635" y2="1.27" width="0.1524" layer="21"/>
-<wire x1="-0.635" y1="1.27" x2="0" y2="0.635" width="0.1524" layer="21"/>
-<wire x1="0" y1="0.635" x2="0" y2="-0.635" width="0.1524" layer="21"/>
-<wire x1="0" y1="-0.635" x2="-0.635" y2="-1.27" width="0.1524" layer="21"/>
-<wire x1="-2.54" y1="0.635" x2="-2.54" y2="-0.635" width="0.1524" layer="21"/>
-<wire x1="-1.905" y1="1.27" x2="-2.54" y2="0.635" width="0.1524" layer="21"/>
-<wire x1="-2.54" y1="-0.635" x2="-1.905" y2="-1.27" width="0.1524" layer="21"/>
-<wire x1="-0.635" y1="-1.27" x2="-1.905" y2="-1.27" width="0.1524" layer="21"/>
-<wire x1="0" y1="0.635" x2="0.635" y2="1.27" width="0.1524" layer="21"/>
-<wire x1="0.635" y1="1.27" x2="1.905" y2="1.27" width="0.1524" layer="21"/>
-<wire x1="1.905" y1="1.27" x2="2.54" y2="0.635" width="0.1524" layer="21"/>
-<wire x1="2.54" y1="0.635" x2="2.54" y2="-0.635" width="0.1524" layer="21"/>
-<wire x1="2.54" y1="-0.635" x2="1.905" y2="-1.27" width="0.1524" layer="21"/>
-<wire x1="1.905" y1="-1.27" x2="0.635" y2="-1.27" width="0.1524" layer="21"/>
-<wire x1="0.635" y1="-1.27" x2="0" y2="-0.635" width="0.1524" layer="21"/>
-<pad name="1" x="-1.27" y="0" drill="1.016" shape="long" rot="R90"/>
-<pad name="2" x="1.27" y="0" drill="1.016" shape="long" rot="R90"/>
-<text x="-2.6162" y="1.8288" size="1.27" layer="25" ratio="10">&gt;NAME</text>
-<text x="-2.54" y="-3.175" size="1.27" layer="27">&gt;VALUE</text>
-<rectangle x1="-1.524" y1="-0.254" x2="-1.016" y2="0.254" layer="51"/>
-<rectangle x1="1.016" y1="-0.254" x2="1.524" y2="0.254" layer="51"/>
+<wire x1="-0.635" y1="1.27" x2="0.635" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="0.635" y1="1.27" x2="1.27" y2="0.635" width="0.1524" layer="21"/>
+<wire x1="1.27" y1="0.635" x2="1.27" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="1.27" y1="-0.635" x2="0.635" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="-1.27" y1="0.635" x2="-1.27" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="-0.635" y1="1.27" x2="-1.27" y2="0.635" width="0.1524" layer="21"/>
+<wire x1="-1.27" y1="-0.635" x2="-0.635" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="0.635" y1="-1.27" x2="-0.635" y2="-1.27" width="0.1524" layer="21"/>
+<pad name="1" x="0" y="0" drill="1.016" shape="octagon"/>
+<text x="-1.3462" y="1.8288" size="1.27" layer="25" ratio="10">&gt;NAME</text>
+<text x="-1.27" y="-3.175" size="1.27" layer="27">&gt;VALUE</text>
+<rectangle x1="-0.254" y1="-0.254" x2="0.254" y2="0.254" layer="51"/>
 </package>
 </packages>
 </library>
@@ -3086,12 +3077,12 @@ design rules under a new name.</description>
 <element name="S$1" library="lightmeter" package="PTS540BTM" value="PTS540" x="13.35" y="3.302"/>
 <element name="S$2" library="lightmeter" package="PTS540BTM" value="PTS540" x="5.08" y="3.302"/>
 <element name="S$3" library="lightmeter" package="PTS540BTM" value="PTS540" x="21.62" y="3.302"/>
-<element name="JP1" library="pinhead" package="1X02" value="" x="4.445" y="10.5156" rot="R90"/>
 <element name="D1" library="lightmeter" package="SOD-723" value="" x="25.4" y="19.05" rot="R90"/>
 <element name="D2" library="lightmeter" package="SOD-723" value="" x="24.13" y="19.05" rot="R90"/>
 <element name="D4" library="lightmeter" package="SOD-723" value="" x="12.446" y="5.2832"/>
 <element name="J1" library="lightmeter" package="JUMPER_R0402" value="CONNECTEDJUMPER" x="13.6906" y="32.2072"/>
 <element name="J2" library="lightmeter" package="JUMPER_R0402" value="CONNECTEDJUMPER" x="13.6906" y="31.1912"/>
+<element name="H1" library="pinhead" package="1X01" value="" x="4.2164" y="9.652"/>
 </elements>
 <signals>
 <signal name="GND">
@@ -3550,12 +3541,12 @@ design rules under a new name.</description>
 <signal name="NRST">
 <contactref element="IC$1" pad="4"/>
 <contactref element="R5" pad="1"/>
-<contactref element="JP1" pad="1"/>
+<contactref element="U1" pad="ID"/>
 <wire x1="4.4346" y1="17.272" x2="13.081" y2="22.43" width="0" layer="19" extent="1-1"/>
-<wire x1="4.445" y1="9.2456" x2="4.4346" y2="17.272" width="0" layer="19" extent="1-1"/>
+<wire x1="19.2512" y1="10.0226" x2="13.081" y2="22.43" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="SWDIO">
-<contactref element="JP1" pad="2"/>
+<contactref element="H1" pad="1"/>
 </signal>
 <signal name="INTEGCLR">
 <contactref element="IC$1" pad="14"/>
