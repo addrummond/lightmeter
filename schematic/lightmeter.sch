@@ -9204,7 +9204,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="P+1" library="supply1" deviceset="VCC" device=""/>
 <part name="IC$5" library="adafruit" deviceset="MCP73831" device="/OT"/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
-<part name="R1200" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
 <part name="R1100" library="resistor" deviceset="R-EU_" device="R0402" value="10k%"/>
 <part name="GND26" library="supply1" deviceset="GND" device=""/>
 <part name="IC$2" library="lightmeter" deviceset="LM3671" device=""/>
@@ -9342,7 +9341,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="P+1" gate="VCC" x="-114.3" y="-33.02" rot="R270"/>
 <instance part="IC$5" gate="G$1" x="-19.558" y="-131.318"/>
 <instance part="GND6" gate="1" x="19.304" y="-136.398" rot="R90"/>
-<instance part="R1200" gate="G$1" x="-22.098" y="-146.558"/>
 <instance part="R1100" gate="G$1" x="3.302" y="-131.318"/>
 <instance part="GND26" gate="1" x="-148.844" y="-12.7" rot="R270"/>
 <instance part="IC$2" gate="G$1" x="-28.702" y="88.9"/>
@@ -10008,11 +10006,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <junction x="-39.37" y="-126.238"/>
 </segment>
 <segment>
-<pinref part="R1200" gate="G$1" pin="2"/>
-<wire x1="-17.018" y1="-146.558" x2="-11.938" y2="-146.558" width="0.1524" layer="91"/>
-<label x="-11.938" y="-146.558" size="1.778" layer="95" xref="yes"/>
-</segment>
-<segment>
 <label x="-96.52" y="83.82" size="1.778" layer="95" rot="R270" xref="yes"/>
 <pinref part="U1" gate="G$1" pin="VBUS"/>
 <wire x1="-88.9" y1="83.82" x2="-96.52" y2="83.82" width="0.1524" layer="91"/>
@@ -10023,18 +10016,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="D2" gate="G$1" pin="A"/>
 <wire x1="-132.08" y1="-38.1" x2="-137.16" y2="-38.1" width="0.1524" layer="91"/>
 <label x="-139.7" y="-48.26" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
-</net>
-<net name="BATSTAT" class="0">
-<segment>
-<pinref part="IC$5" gate="G$1" pin="STAT"/>
-<wire x1="-32.258" y1="-136.398" x2="-34.798" y2="-136.398" width="0.1524" layer="91"/>
-<label x="-37.338" y="-136.398" size="1.778" layer="95" rot="R270" xref="yes"/>
-<wire x1="-34.798" y1="-136.398" x2="-37.338" y2="-136.398" width="0.1524" layer="91"/>
-<wire x1="-34.798" y1="-136.398" x2="-34.798" y2="-146.558" width="0.1524" layer="91"/>
-<junction x="-34.798" y="-136.398"/>
-<pinref part="R1200" gate="G$1" pin="1"/>
-<wire x1="-27.178" y1="-146.558" x2="-34.798" y2="-146.558" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$5" class="0">
