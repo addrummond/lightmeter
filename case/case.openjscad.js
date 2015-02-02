@@ -73,13 +73,13 @@ var SPHERE_HOLE_HEIGHT = Math.sqrt(SPHERE_HEIGHT*SPHERE_HEIGHT - SPHERE_RECESS*S
 var TOTAL_WIDTH = WIDTH + THICK + (CASE_THICK*2);
 
 var BIG_BUTTON_WIDTH = 11;
-var BIG_BUTTON_HEIGHT = 8;
-var BIG_BUTTON_THICK = 1;
-var BIG_BUTTON_NOB_HEIGHT = 1;
-var BIG_BUTTON_NOB_RAD = 1.5;
+var BUTTON_HEIGHT = 8;
+var BUTTON_THICK = 1;
+var BUTTON_NOB_HEIGHT = 1;
+var BUTTON_NOB_RAD = 1.5;
 var BIG_BUTTON_CENTER_FROM_BOTTOM = 2.667;
 var BUTTON_CENTER_DIV = 3;
-
+var SMALL_BUTTON_WIDTH = 3;
 var BUTTON_HOLE_MARGIN = 0.1;
 
 function make_hexagon(radius) {
@@ -128,19 +128,36 @@ function make_hollow_box(w, h, t, case_thick) {
     return box;
 }
 
-function make_big_button(pad){
-    var top = linear_extrude({ height: BIG_BUTTON_THICK }, expand(0.5, NFACES, square([BIG_BUTTON_WIDTH+pad*2, BIG_BUTTON_HEIGHT+pad*2])));
-    var nob = linear_extrude({ height: BIG_BUTTON_NOB_HEIGHT }, circle(BIG_BUTTON_NOB_RAD))
-    .translate([BIG_BUTTON_WIDTH/2-BIG_BUTTON_NOB_RAD, BIG_BUTTON_HEIGHT/2-BIG_BUTTON_NOB_RAD, -BIG_BUTTON_THICK]);
+function make_button(width, pad){
+    var top = linear_extrude({ height: BUTTON_THICK }, expand(0.5, NFACES, square([width+pad*2, BUTTON_HEIGHT+pad*2])));
+    var nob = linear_extrude({ height: BUTTON_NOB_HEIGHT }, circle(BUTTON_NOB_RAD))
+    .translate([width/2-BUTTON_NOB_RAD, BUTTON_HEIGHT/2-BUTTON_NOB_RAD, -BUTTON_THICK]);
     var but = top.union(nob);
     return but;
 }
 
-var bigbutfromtop = HEIGHT - BIG_BUTTON_CENTER_FROM_BOTTOM - BIG_BUTTON_HEIGHT/BUTTON_CENTER_DIV;
+function make_big_button(pad) {
+    return make_button(BIG_BUTTON_WIDTH, pad)
+}
+
+function make_small_button(pad) {
+    return make_button(SMALL_BUTTON_WIDTH, pad);
+}
+
+var bigbutfromtop = HEIGHT - BIG_BUTTON_CENTER_FROM_BOTTOM - BUTTON_HEIGHT/BUTTON_CENTER_DIV;
 
 function output_big_button() {
-    return color("black", make_big_button(0)
-    .translate([(WIDTH-BIG_BUTTON_WIDTH)/2, bigbutfromtop, THICK-BIG_BUTTON_THICK+CASE_THICK]));
+    var big = make_big_button(0)
+              .translate([(WIDTH-BIG_BUTTON_WIDTH)/2, bigbutfromtop, THICK-BUTTON_THICK+CASE_THICK]);
+    var smallleft = make_small_button(0)
+                    .translate([WIDTH-CASE_THICK*1.5-SMALL_BUTTON_WIDTH,
+                                bigbutfromtop,
+                                THICK-BUTTON_THICK+CASE_THICK]);
+    var smallright = make_small_button(0)
+                     .translate([CASE_THICK*1.5+BUTTON_HOLE_MARGIN,
+                                 bigbutfromtop,
+                                 THICK-BUTTON_THICK+CASE_THICK]);
+    return color("white", big.union(smallleft).union(smallright));
 }
 
 function output_case() {
@@ -162,7 +179,7 @@ function output_case() {
     var ipos = [((WIDTH-SENSOR_POSITIONS[0][0]) + (WIDTH-SENSOR_POSITIONS[1][0]))/2.0 + CASE_THICK, SENSOR_POSITIONS[0][1]+CASE_THICK, 0];
     var incident_hole = make_sphere(SPHERE_HOLE_HEIGHT-0.1).translate(ipos);
     box = box.subtract(incident_hole);
-    var hs = make_hollow_half_sphere().translate(ipos).translate([0,0,SPHERE_RECESS]);
+    var hs = color("white", make_hollow_half_sphere().translate(ipos).translate([0,0,SPHERE_RECESS]));
     hs = hs.subtract(cube({size: [SPHERE_HEIGHT*2.6,SPHERE_HEIGHT*2.6,SPHERE_HEIGHT*2.6]}).translate(ipos).translate([-SPHERE_HEIGHT*1.3, -SPHERE_HEIGHT*1.3,0.01]));
     box = box.union(hs);
 
@@ -173,8 +190,21 @@ function output_case() {
 
     // Hole for large center button.
     var bigbuthole = make_big_button(BUTTON_HOLE_MARGIN)
-    .translate([(WIDTH-BIG_BUTTON_WIDTH-BUTTON_HOLE_MARGIN*2)/2, bigbutfromtop-BUTTON_HOLE_MARGIN, THICK-BIG_BUTTON_THICK+CASE_THICK]);
+                     .translate([(WIDTH-BIG_BUTTON_WIDTH-BUTTON_HOLE_MARGIN*2)/2,
+                                 bigbutfromtop-BUTTON_HOLE_MARGIN,
+                                 THICK-BUTTON_THICK+CASE_THICK]);
     box = box.subtract(bigbuthole);
+
+    // Hole for small left/right buttons.
+    var smallbutholeright = make_small_button(BUTTON_HOLE_MARGIN)
+                           .translate([CASE_THICK*1.5,
+                                       bigbutfromtop-BUTTON_HOLE_MARGIN,
+                                       THICK-BUTTON_THICK+CASE_THICK]);
+    var smallbutholeleft = make_small_button(BUTTON_HOLE_MARGIN)
+                           .translate([WIDTH-CASE_THICK*1.5-SMALL_BUTTON_WIDTH-BUTTON_HOLE_MARGIN,
+                                       bigbutfromtop-BUTTON_HOLE_MARGIN,
+                                       THICK-BUTTON_THICK+CASE_THICK]);
+    box = box.subtract(smallbutholeright).subtract(smallbutholeleft);
 
     // Hole for USB port.
     var port = cube({size: [20, USB_PORT_WIDTH+USB_PORT_MARGIN, USB_PORT_THICK ], center: true })
@@ -194,5 +224,5 @@ function output_height_reference() {
 function main() {
     return output_case()
     .union(output_big_button())
-    .union(output_height_reference());
+    ;//.union(output_height_reference());
 }
