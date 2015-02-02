@@ -1,3 +1,12 @@
+//
+// TODO:
+//
+// * Determine exactly how high button nobs should be.
+// * Add side buttons.
+// * Separate out incident dome into separate piece.
+// * Make body thinner around incident dome.
+//
+
 var NFACES = 20;
 
 var THICK_MARGIN = 0.15;
@@ -120,7 +129,7 @@ function make_hollow_box(w, h, t, case_thick) {
 }
 
 function make_big_button(pad){
-    var top = linear_extrude({ height: BIG_BUTTON_THICK }, expand(1, NFACES, square([BIG_BUTTON_WIDTH+pad*2, BIG_BUTTON_HEIGHT+pad*2])));
+    var top = linear_extrude({ height: BIG_BUTTON_THICK }, expand(0.5, NFACES, square([BIG_BUTTON_WIDTH+pad*2, BIG_BUTTON_HEIGHT+pad*2])));
     var nob = linear_extrude({ height: BIG_BUTTON_NOB_HEIGHT }, circle(BIG_BUTTON_NOB_RAD))
     .translate([BIG_BUTTON_WIDTH/2-BIG_BUTTON_NOB_RAD, BIG_BUTTON_HEIGHT/2-BIG_BUTTON_NOB_RAD, -BIG_BUTTON_THICK]);
     var but = top.union(nob);
