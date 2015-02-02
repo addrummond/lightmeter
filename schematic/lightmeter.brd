@@ -38,7 +38,7 @@
 <layer number="42" name="bRestrict" color="1" fill="10" visible="yes" active="yes"/>
 <layer number="43" name="vRestrict" color="2" fill="10" visible="yes" active="yes"/>
 <layer number="44" name="Drills" color="7" fill="1" visible="no" active="yes"/>
-<layer number="45" name="Holes" color="7" fill="1" visible="no" active="yes"/>
+<layer number="45" name="Holes" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="46" name="Milling" color="3" fill="1" visible="no" active="yes"/>
 <layer number="47" name="Measures" color="7" fill="1" visible="no" active="yes"/>
 <layer number="48" name="Document" color="7" fill="1" visible="yes" active="yes"/>
@@ -130,6 +130,8 @@
 <wire x1="26.699996875" y1="0.635" x2="26.699996875" y2="38.7858" width="0" layer="20"/>
 <wire x1="26.699996875" y1="38.7858" x2="0" y2="38.7858" width="0" layer="20"/>
 <wire x1="0" y1="38.7858" x2="0" y2="0.635" width="0" layer="20"/>
+<hole x="1.27" y="3.81" drill="0.6"/>
+<hole x="25.0698" y="2.4638" drill="0.6"/>
 </plain>
 <libraries>
 <library name="rcl">
