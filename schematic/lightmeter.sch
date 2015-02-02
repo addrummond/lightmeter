@@ -9294,6 +9294,9 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="J1" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
 <part name="J2" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
 <part name="H1" library="pinhead" deviceset="PINHD-1X1" device=""/>
+<part name="J3" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
+<part name="J4" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
+<part name="J5" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -9429,6 +9432,9 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="J1" gate="G$1" x="190.5" y="-106.68"/>
 <instance part="J2" gate="G$1" x="190.5" y="-132.08"/>
 <instance part="H1" gate="G$1" x="-63.5" y="48.26"/>
+<instance part="J3" gate="G$1" x="38.1" y="-2.032" rot="R90"/>
+<instance part="J4" gate="G$1" x="142.24" y="-106.68"/>
+<instance part="J5" gate="G$1" x="124.46" y="-106.68"/>
 </instances>
 <busses>
 </busses>
@@ -10338,11 +10344,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <junction x="-88.9" y="-12.7"/>
 </segment>
 <segment>
-<pinref part="IC$3P" gate="P" pin="V+"/>
-<wire x1="38.1" y1="-12.7" x2="38.1" y2="-7.62" width="0.1524" layer="91"/>
-<label x="38.1" y="-7.62" size="1.778" layer="95" rot="R90" xref="yes"/>
-</segment>
-<segment>
 <pinref part="IC$3" gate="G$1" pin="OUT"/>
 <wire x1="-78.74" y1="-71.12" x2="-76.2" y2="-71.12" width="0.1524" layer="91"/>
 <label x="-71.12" y="-71.12" size="1.778" layer="95" rot="R90" xref="yes"/>
@@ -10362,14 +10363,34 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <label x="149.86" y="-81.28" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<pinref part="IC$9" gate="G$1" pin="VDD"/>
-<wire x1="154.94" y1="-106.68" x2="149.86" y2="-106.68" width="0.1524" layer="91"/>
-<label x="149.86" y="-106.68" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
-<segment>
 <pinref part="IC$10" gate="G$1" pin="VDD"/>
 <wire x1="154.94" y1="-132.08" x2="149.86" y2="-132.08" width="0.1524" layer="91"/>
 <label x="149.86" y="-132.08" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="J3" gate="G$1" pin="1"/>
+<wire x1="38.1" y1="5.588" x2="38.1" y2="10.16" width="0.1524" layer="91"/>
+<label x="38.1" y="10.16" size="1.778" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="J5" gate="G$1" pin="2"/>
+<label x="114.3" y="-106.68" size="1.778" layer="95" rot="R180" xref="yes"/>
+<wire x1="114.3" y1="-106.68" x2="116.84" y2="-106.68" width="0.1524" layer="91"/>
+<wire x1="116.84" y1="-106.68" x2="116.84" y2="-101.6" width="0.1524" layer="91"/>
+<wire x1="116.84" y1="-101.6" x2="132.08" y2="-101.6" width="0.1524" layer="91"/>
+<pinref part="J4" gate="G$1" pin="2"/>
+<pinref part="J5" gate="G$1" pin="1"/>
+<wire x1="134.62" y1="-106.68" x2="132.08" y2="-106.68" width="0.1524" layer="91"/>
+<wire x1="132.08" y1="-101.6" x2="132.08" y2="-106.68" width="0.1524" layer="91"/>
+<junction x="132.08" y="-106.68"/>
+<wire x1="132.08" y1="-101.6" x2="152.4" y2="-101.6" width="0.1524" layer="91"/>
+<junction x="132.08" y="-101.6"/>
+<pinref part="IC$9" gate="G$1" pin="VDD"/>
+<pinref part="J4" gate="G$1" pin="1"/>
+<wire x1="154.94" y1="-106.68" x2="152.4" y2="-106.68" width="0.1524" layer="91"/>
+<wire x1="152.4" y1="-106.68" x2="149.86" y2="-106.68" width="0.1524" layer="91"/>
+<wire x1="152.4" y1="-101.6" x2="152.4" y2="-106.68" width="0.1524" layer="91"/>
+<junction x="152.4" y="-106.68"/>
 </segment>
 </net>
 <net name="USBDM" class="0">
@@ -10460,6 +10481,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <segment>
 <wire x1="154.94" y1="-116.84" x2="152.4" y2="-116.84" width="0.1524" layer="91"/>
 <label x="152.4" y="-116.84" size="1.778" layer="95" rot="R180" xref="yes"/>
+<pinref part="IC$9" gate="G$1" pin="GB1"/>
 </segment>
 <segment>
 <pinref part="IC$10" gate="G$1" pin="GB1"/>
@@ -10577,6 +10599,13 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="IC$10" gate="G$1" pin="IOUT"/>
 <pinref part="J2" gate="G$1" pin="2"/>
 <wire x1="180.34" y1="-132.08" x2="182.88" y2="-132.08" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$3" class="0">
+<segment>
+<pinref part="IC$3P" gate="P" pin="V+"/>
+<wire x1="38.1" y1="-12.7" x2="38.1" y2="-9.652" width="0.1524" layer="91"/>
+<pinref part="J3" gate="G$1" pin="2"/>
 </segment>
 </net>
 </nets>
