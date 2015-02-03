@@ -126,10 +126,10 @@
 </layers>
 <board>
 <plain>
-<wire x1="1.27" y1="1.27" x2="27.969996875" y2="1.27" width="0" layer="20"/>
-<wire x1="27.969996875" y1="1.27" x2="27.969996875" y2="40.4368" width="0" layer="20"/>
+<wire x1="1.27" y1="1.397" x2="27.969996875" y2="1.397" width="0" layer="20"/>
+<wire x1="27.969996875" y1="1.397" x2="27.969996875" y2="40.4368" width="0" layer="20"/>
 <wire x1="27.969996875" y1="40.4368" x2="1.27" y2="40.4368" width="0" layer="20"/>
-<wire x1="1.27" y1="40.4368" x2="1.27" y2="1.27" width="0" layer="20"/>
+<wire x1="1.27" y1="40.4368" x2="1.27" y2="1.397" width="0" layer="20"/>
 </plain>
 <libraries>
 <library name="rcl">
@@ -3047,9 +3047,9 @@ design rules under a new name.</description>
 <element name="R500" library="resistor" package="R0402" value="1k2" x="21.7424" y="30.8102" rot="R180">
 <attribute name="SPICEPREFIX" value="R" x="21.7424" y="30.8102" size="1.778" layer="27" rot="R180" display="off"/>
 </element>
-<element name="S$1" library="lightmeter" package="PTS540BTM" value="PTS540" x="14.62" y="3.302"/>
-<element name="S$2" library="lightmeter" package="PTS540BTM" value="PTS540" x="6.35" y="3.302"/>
-<element name="S$3" library="lightmeter" package="PTS540BTM" value="PTS540" x="22.89" y="3.302"/>
+<element name="S$1" library="lightmeter" package="PTS540BTM" value="PTS540" x="14.62" y="3.4544"/>
+<element name="S$2" library="lightmeter" package="PTS540BTM" value="PTS540" x="6.35" y="3.4544"/>
+<element name="S$3" library="lightmeter" package="PTS540BTM" value="PTS540" x="22.89" y="3.4544"/>
 <element name="D1" library="lightmeter" package="SOD-723" value="" x="22.3012" y="25.2984" rot="R90"/>
 <element name="D2" library="lightmeter" package="SOD-723" value="" x="23.5204" y="25.2984" rot="R90"/>
 <element name="D4" library="lightmeter" package="SOD-723" value="" x="17.4752" y="6.7564"/>
@@ -3295,15 +3295,15 @@ design rules under a new name.</description>
 <wire x1="6.639" y1="8.7076" x2="5.17" y2="6.72576875" width="0" layer="19" extent="1-16"/>
 <wire x1="22.2354" y1="21.336" x2="23.495" y2="23.495" width="0" layer="19" extent="1-16"/>
 <wire x1="7.62" y1="35.886" x2="9.2084" y2="32.8764" width="0" layer="19" extent="1-1"/>
-<wire x1="24.44" y1="1.927" x2="24.5618" y2="5.334" width="0" layer="19" extent="16-16"/>
-<wire x1="21.34" y1="1.927" x2="24.44" y2="1.927" width="0" layer="19" extent="16-16"/>
+<wire x1="24.44" y1="2.0794" x2="24.5618" y2="5.334" width="0" layer="19" extent="16-16"/>
+<wire x1="21.34" y1="2.0794" x2="24.44" y2="2.0794" width="0" layer="19" extent="16-16"/>
 <wire x1="12.442190625" y1="36.753559375" x2="12.3024" y2="32.8764" width="0" layer="19" extent="1-1"/>
 <wire x1="21.0312" y1="15.4686" x2="22.2354" y2="19.9898" width="0" layer="19" extent="1-1"/>
 <wire x1="23.1798" y1="12.7508" x2="20.9804" y2="13.716" width="0" layer="19" extent="1-16"/>
-<wire x1="4.8" y1="1.927" x2="4.47" y2="6.72576875" width="0" layer="19" extent="16-16"/>
-<wire x1="7.9" y1="1.927" x2="4.8" y2="1.927" width="0" layer="19" extent="16-16"/>
-<wire x1="16.17" y1="1.927" x2="17.07" y2="6.72576875" width="0" layer="19" extent="16-16"/>
-<wire x1="13.07" y1="1.927" x2="16.17" y2="1.927" width="0" layer="19" extent="16-16"/>
+<wire x1="4.8" y1="2.0794" x2="4.47" y2="6.72576875" width="0" layer="19" extent="16-16"/>
+<wire x1="7.9" y1="2.0794" x2="4.8" y2="2.0794" width="0" layer="19" extent="16-16"/>
+<wire x1="16.17" y1="2.0794" x2="17.07" y2="6.72576875" width="0" layer="19" extent="16-16"/>
+<wire x1="13.07" y1="2.0794" x2="16.17" y2="2.0794" width="0" layer="19" extent="16-16"/>
 <wire x1="30.9014" y1="6.4516" x2="24.77" y2="6.72576875" width="0" layer="19" extent="16-16"/>
 <wire x1="30.8252" y1="11.43" x2="30.9014" y2="6.4516" width="0" layer="19" extent="16-16"/>
 </signal>
@@ -3508,11 +3508,11 @@ design rules under a new name.</description>
 <wire x1="9.9822" y1="12.9286" x2="9.9314" y2="12.9286" width="0.254" layer="1"/>
 <wire x1="9.9314" y1="12.9286" x2="9.2964" y2="12.2936" width="0.254" layer="1"/>
 <wire x1="9.2964" y1="12.2936" x2="9.2964" y2="9.4234" width="0.254" layer="1"/>
-<wire x1="9.2964" y1="9.4234" x2="13.1318" y2="5.588" width="0.254" layer="1"/>
-<via x="13.1318" y="5.588" extent="1-16" drill="0.3556" shape="square"/>
-<wire x1="16.17" y1="4.677" x2="16.7894" y2="6.7564" width="0" layer="19" extent="1-16"/>
-<wire x1="13.07" y1="4.677" x2="16.17" y2="4.677" width="0" layer="19" extent="16-16"/>
-<wire x1="13.1318" y1="5.588" x2="13.07" y2="4.677" width="0" layer="19" extent="16-16"/>
+<wire x1="9.2964" y1="9.4234" x2="11.938" y2="4.9276" width="0.254" layer="1"/>
+<via x="11.938" y="4.9276" extent="1-16" drill="0.3556" shape="square"/>
+<wire x1="16.17" y1="4.8294" x2="16.7894" y2="6.7564" width="0" layer="19" extent="1-16"/>
+<wire x1="13.07" y1="4.8294" x2="16.17" y2="4.8294" width="0" layer="19" extent="16-16"/>
+<wire x1="11.938" y1="4.9276" x2="13.07" y2="4.8294" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="N$24">
 <contactref element="C16" pad="1"/>
@@ -3648,11 +3648,11 @@ design rules under a new name.</description>
 <wire x1="10.16" y1="13.7922" x2="8.89" y2="12.5222" width="0.254" layer="1"/>
 <wire x1="8.89" y1="12.5222" x2="8.89" y2="6.8326" width="0.254" layer="1"/>
 <wire x1="8.89" y1="6.8326" x2="7.6454" y2="5.588" width="0.254" layer="1"/>
-<wire x1="21.34" y1="4.677" x2="24.44" y2="4.677" width="0" layer="19" extent="16-16"/>
-<wire x1="18.161" y1="6.7564" x2="21.34" y2="4.677" width="0" layer="19" extent="1-16"/>
+<wire x1="21.34" y1="4.8294" x2="24.44" y2="4.8294" width="0" layer="19" extent="16-16"/>
+<wire x1="18.161" y1="6.7564" x2="21.34" y2="4.8294" width="0" layer="19" extent="1-16"/>
 <wire x1="8.89" y1="6.8326" x2="18.161" y2="6.7564" width="0" layer="19" extent="1-1"/>
-<wire x1="7.9" y1="4.677" x2="7.6454" y2="5.588" width="0" layer="19" extent="1-16"/>
-<wire x1="4.8" y1="4.677" x2="7.6454" y2="5.588" width="0" layer="19" extent="1-16"/>
+<wire x1="7.9" y1="4.8294" x2="7.6454" y2="5.588" width="0" layer="19" extent="1-16"/>
+<wire x1="4.8" y1="4.8294" x2="7.6454" y2="5.588" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="N$7">
 <contactref element="IC$6" pad="P$4"/>

@@ -29,7 +29,7 @@ var SCREEN_WIDTH = 26.7;
 var SCREEN_HEIGHT = 19.26;
 
 var PCB_WIDTH = SCREEN_WIDTH + 1;
-var PCB_HEIGHT = 39.1668;
+var PCB_HEIGHT = 39.039799999999999613;
 var PCB_HORIZ_MARGIN = 0.5;
 
 var BATTERY_HEIGHT = 19.75;
@@ -78,7 +78,7 @@ var BUTTON_HEIGHT = 8;
 var BUTTON_THICK = 1;
 var BUTTON_NOB_HEIGHT = 1;
 var BUTTON_NOB_RAD = 1.5;
-var BIG_BUTTON_CENTER_FROM_BOTTOM = 2.667;
+var BUTTON_CENTER_FROM_BOTTOM = 2.0574000000000003396;
 var BUTTON_CENTER_DIV = 3;
 var SMALL_BUTTON_WIDTH = 3;
 var BUTTON_HOLE_MARGIN = 0.1;
@@ -145,18 +145,18 @@ function make_small_button(pad) {
     return make_button(SMALL_BUTTON_WIDTH, pad);
 }
 
-var bigbutfromtop = HEIGHT - BIG_BUTTON_CENTER_FROM_BOTTOM - BUTTON_HEIGHT/BUTTON_CENTER_DIV;
+var butfromtop = HEIGHT - BUTTON_CENTER_FROM_BOTTOM - BUTTON_HEIGHT/BUTTON_CENTER_DIV;
 
 function output_big_button() {
     var big = make_big_button(0)
-              .translate([(WIDTH-BIG_BUTTON_WIDTH)/2, bigbutfromtop, THICK-BUTTON_THICK+CASE_THICK]);
+              .translate([(WIDTH-BIG_BUTTON_WIDTH)/2, butfromtop, THICK-BUTTON_THICK+CASE_THICK]);
     var smallleft = make_small_button(0)
                     .translate([WIDTH-CASE_THICK*1.5-SMALL_BUTTON_WIDTH,
-                                bigbutfromtop,
+                                butfromtop,
                                 THICK-BUTTON_THICK+CASE_THICK]);
     var smallright = make_small_button(0)
                      .translate([CASE_THICK*1.5+BUTTON_HOLE_MARGIN,
-                                 bigbutfromtop,
+                                 butfromtop,
                                  THICK-BUTTON_THICK+CASE_THICK]);
     return color("white", big.union(smallleft).union(smallright));
 }
@@ -192,18 +192,18 @@ function output_case() {
     // Hole for large center button.
     var bigbuthole = make_big_button(BUTTON_HOLE_MARGIN)
                      .translate([(WIDTH-BIG_BUTTON_WIDTH-BUTTON_HOLE_MARGIN*2)/2,
-                                 bigbutfromtop-BUTTON_HOLE_MARGIN,
+                                 butfromtop-BUTTON_HOLE_MARGIN,
                                  THICK-BUTTON_THICK+CASE_THICK]);
     box = box.subtract(bigbuthole);
 
     // Hole for small left/right buttons.
     var smallbutholeright = make_small_button(BUTTON_HOLE_MARGIN)
                            .translate([CASE_THICK*1.5,
-                                       bigbutfromtop-BUTTON_HOLE_MARGIN,
+                                       butfromtop-BUTTON_HOLE_MARGIN,
                                        THICK-BUTTON_THICK+CASE_THICK]);
     var smallbutholeleft = make_small_button(BUTTON_HOLE_MARGIN)
                            .translate([WIDTH-CASE_THICK*1.5-SMALL_BUTTON_WIDTH-BUTTON_HOLE_MARGIN,
-                                       bigbutfromtop-BUTTON_HOLE_MARGIN,
+                                       butfromtop-BUTTON_HOLE_MARGIN,
                                        THICK-BUTTON_THICK+CASE_THICK]);
     box = box.subtract(smallbutholeright).subtract(smallbutholeleft);
 
