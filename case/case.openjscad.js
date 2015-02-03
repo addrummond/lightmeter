@@ -22,13 +22,14 @@ var CASE_THICK = 0.71;
 
 var TOTAL_THICKNESS = THICK + CASE_THICK*2;
 console.log("Total thickness: " + TOTAL_THICKNESS);
+console.log("Inner thickness: " + THICK);
 
 var SCREEN_FROM_TOP = 2;
 var SCREEN_WIDTH = 26.7;
 var SCREEN_HEIGHT = 19.26;
 
 var PCB_WIDTH = SCREEN_WIDTH + 1;
-var PCB_HEIGHT = 38.1508;
+var PCB_HEIGHT = 39.1668;
 var PCB_HORIZ_MARGIN = 0.5;
 
 var BATTERY_HEIGHT = 19.75;
