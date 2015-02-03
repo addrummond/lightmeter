@@ -9122,56 +9122,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 </deviceset>
 </devicesets>
 </library>
-<library name="pinhead">
-<description>&lt;b&gt;Pin Header Connectors&lt;/b&gt;&lt;p&gt;
-&lt;author&gt;Created by librarian@cadsoft.de&lt;/author&gt;</description>
-<packages>
-<package name="1X01">
-<description>&lt;b&gt;PIN HEADER&lt;/b&gt;</description>
-<wire x1="-0.635" y1="1.27" x2="0.635" y2="1.27" width="0.1524" layer="21"/>
-<wire x1="0.635" y1="1.27" x2="1.27" y2="0.635" width="0.1524" layer="21"/>
-<wire x1="1.27" y1="0.635" x2="1.27" y2="-0.635" width="0.1524" layer="21"/>
-<wire x1="1.27" y1="-0.635" x2="0.635" y2="-1.27" width="0.1524" layer="21"/>
-<wire x1="-1.27" y1="0.635" x2="-1.27" y2="-0.635" width="0.1524" layer="21"/>
-<wire x1="-0.635" y1="1.27" x2="-1.27" y2="0.635" width="0.1524" layer="21"/>
-<wire x1="-1.27" y1="-0.635" x2="-0.635" y2="-1.27" width="0.1524" layer="21"/>
-<wire x1="0.635" y1="-1.27" x2="-0.635" y2="-1.27" width="0.1524" layer="21"/>
-<pad name="1" x="0" y="0" drill="1.016" shape="octagon"/>
-<text x="-1.3462" y="1.8288" size="1.27" layer="25" ratio="10">&gt;NAME</text>
-<text x="-1.27" y="-3.175" size="1.27" layer="27">&gt;VALUE</text>
-<rectangle x1="-0.254" y1="-0.254" x2="0.254" y2="0.254" layer="51"/>
-</package>
-</packages>
-<symbols>
-<symbol name="PINHD1">
-<wire x1="-6.35" y1="-2.54" x2="1.27" y2="-2.54" width="0.4064" layer="94"/>
-<wire x1="1.27" y1="-2.54" x2="1.27" y2="2.54" width="0.4064" layer="94"/>
-<wire x1="1.27" y1="2.54" x2="-6.35" y2="2.54" width="0.4064" layer="94"/>
-<wire x1="-6.35" y1="2.54" x2="-6.35" y2="-2.54" width="0.4064" layer="94"/>
-<text x="-6.35" y="3.175" size="1.778" layer="95">&gt;NAME</text>
-<text x="-6.35" y="-5.08" size="1.778" layer="96">&gt;VALUE</text>
-<pin name="1" x="-2.54" y="0" visible="pad" length="short" direction="pas" function="dot"/>
-</symbol>
-</symbols>
-<devicesets>
-<deviceset name="PINHD-1X1" prefix="JP" uservalue="yes">
-<description>&lt;b&gt;PIN HEADER&lt;/b&gt;</description>
-<gates>
-<gate name="G$1" symbol="PINHD1" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="1X01">
-<connects>
-<connect gate="G$1" pin="1" pad="1"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-</devicesets>
-</library>
 </libraries>
 <attributes>
 </attributes>
@@ -9291,7 +9241,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="D4" library="lightmeter" deviceset="SCHOTTKY-DIODE" device=""/>
 <part name="J1" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
 <part name="J2" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
-<part name="H1" library="pinhead" deviceset="PINHD-1X1" device=""/>
 <part name="J3" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
 <part name="J4" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
 <part name="J5" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
@@ -9428,7 +9377,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="D4" gate="G$1" x="-15.24" y="-86.36"/>
 <instance part="J1" gate="G$1" x="190.5" y="-106.68"/>
 <instance part="J2" gate="G$1" x="190.5" y="-132.08"/>
-<instance part="H1" gate="G$1" x="-63.5" y="48.26"/>
 <instance part="J3" gate="G$1" x="38.1" y="-2.032" rot="R90"/>
 <instance part="J4" gate="G$1" x="142.24" y="-106.68"/>
 <instance part="J5" gate="G$1" x="124.46" y="-106.68"/>
@@ -10187,13 +10135,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="U1" gate="G$1" pin="USBID"/>
 <wire x1="-88.9" y1="91.44" x2="-90.17" y2="91.44" width="0.1524" layer="91"/>
 <label x="-90.17" y="91.44" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
-</net>
-<net name="SWDIO" class="0">
-<segment>
-<pinref part="H1" gate="G$1" pin="1"/>
-<wire x1="-66.04" y1="48.26" x2="-73.66" y2="48.26" width="0.1524" layer="91"/>
-<label x="-73.66" y="48.26" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="INTEGCLR" class="0">
