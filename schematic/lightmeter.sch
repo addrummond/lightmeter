@@ -9245,6 +9245,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="J4" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
 <part name="J5" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
 <part name="J6" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
+<part name="J7" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -9381,6 +9382,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="J4" gate="G$1" x="142.24" y="-106.68"/>
 <instance part="J5" gate="G$1" x="124.46" y="-106.68"/>
 <instance part="J6" gate="G$1" x="-53.34" y="101.6"/>
+<instance part="J7" gate="G$1" x="127" y="-119.38"/>
 </instances>
 <busses>
 </busses>
@@ -10294,23 +10296,38 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 </segment>
 <segment>
 <pinref part="J5" gate="G$1" pin="2"/>
-<label x="114.3" y="-106.68" size="1.778" layer="95" rot="R180" xref="yes"/>
 <wire x1="114.3" y1="-106.68" x2="116.84" y2="-106.68" width="0.1524" layer="91"/>
+<label x="114.3" y="-106.68" size="1.778" layer="95" rot="R180" xref="yes"/>
 <wire x1="116.84" y1="-106.68" x2="116.84" y2="-101.6" width="0.1524" layer="91"/>
-<wire x1="116.84" y1="-101.6" x2="132.08" y2="-101.6" width="0.1524" layer="91"/>
-<pinref part="J4" gate="G$1" pin="2"/>
-<pinref part="J5" gate="G$1" pin="1"/>
-<wire x1="134.62" y1="-106.68" x2="132.08" y2="-106.68" width="0.1524" layer="91"/>
-<wire x1="132.08" y1="-101.6" x2="132.08" y2="-106.68" width="0.1524" layer="91"/>
-<junction x="132.08" y="-106.68"/>
-<wire x1="132.08" y1="-101.6" x2="152.4" y2="-101.6" width="0.1524" layer="91"/>
-<junction x="132.08" y="-101.6"/>
+<junction x="116.84" y="-106.68"/>
 <pinref part="IC$9" gate="G$1" pin="VDD"/>
 <pinref part="J4" gate="G$1" pin="1"/>
 <wire x1="154.94" y1="-106.68" x2="152.4" y2="-106.68" width="0.1524" layer="91"/>
 <wire x1="152.4" y1="-106.68" x2="149.86" y2="-106.68" width="0.1524" layer="91"/>
-<wire x1="152.4" y1="-101.6" x2="152.4" y2="-106.68" width="0.1524" layer="91"/>
+<wire x1="152.4" y1="-106.68" x2="152.4" y2="-99.06" width="0.1524" layer="91"/>
 <junction x="152.4" y="-106.68"/>
+<wire x1="152.4" y1="-99.06" x2="134.62" y2="-99.06" width="0.1524" layer="91"/>
+<pinref part="J5" gate="G$1" pin="1"/>
+<pinref part="J4" gate="G$1" pin="2"/>
+<wire x1="134.62" y1="-106.68" x2="132.08" y2="-106.68" width="0.1524" layer="91"/>
+<junction x="134.62" y="-106.68"/>
+<wire x1="137.16" y1="-106.68" x2="134.62" y2="-106.68" width="0.1524" layer="91"/>
+<wire x1="134.62" y1="-106.68" x2="134.62" y2="-101.6" width="0.1524" layer="91"/>
+<wire x1="134.62" y1="-101.6" x2="134.62" y2="-99.06" width="0.1524" layer="91"/>
+<wire x1="116.84" y1="-101.6" x2="134.62" y2="-101.6" width="0.1524" layer="91"/>
+<junction x="134.62" y="-101.6"/>
+<pinref part="J7" gate="G$1" pin="1"/>
+<wire x1="134.62" y1="-106.68" x2="134.62" y2="-119.38" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="U$2" gate="G$1" pin="VCC"/>
+<wire x1="99.06" y1="-58.42" x2="99.06" y2="-53.34" width="0.1524" layer="91"/>
+<label x="99.06" y="-53.34" size="1.778" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="J7" gate="G$1" pin="2"/>
+<wire x1="119.38" y1="-119.38" x2="114.3" y2="-119.38" width="0.1524" layer="91"/>
+<label x="114.3" y="-119.38" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="USBDM" class="0">
