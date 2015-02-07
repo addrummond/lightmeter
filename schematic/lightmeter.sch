@@ -7892,8 +7892,8 @@ package type OT</description>
 <package name="PIEZOBENDER165">
 <circle x="0" y="0" radius="6.75" width="0.127" layer="52"/>
 <circle x="0" y="0" radius="4.999990625" width="0.127" layer="52"/>
-<smd name="P$1" x="-5.08" y="10.16" dx="2.99999375" dy="2.99999375" layer="16"/>
-<smd name="P$2" x="5.08" y="10.16" dx="2.99999375" dy="2.99999375" layer="16"/>
+<smd name="P$1" x="-5.08" y="10.16" dx="2.54" dy="2.54" layer="16"/>
+<smd name="P$2" x="5.08" y="10.16" dx="2.54" dy="2.54" layer="16"/>
 <text x="-6.35" y="6.35" size="1.27" layer="22">-</text>
 <text x="5.08" y="6.35" size="1.27" layer="22">+</text>
 <circle x="0" y="0" radius="4.3875" width="0.381" layer="52"/>
