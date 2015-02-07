@@ -1557,11 +1557,14 @@ package type OT</description>
 <wire x1="-6.35" y1="-2.54" x2="6.35" y2="-2.54" width="0.127" layer="51"/>
 </package>
 <package name="78171-0002">
-<smd name="P$1" x="-0.6" y="3.145" dx="0.7" dy="2.54" layer="1"/>
-<smd name="P$2" x="0.6" y="3.145" dx="0.7" dy="2.54" layer="1"/>
-<smd name="P$300" x="-2.80000625" y="-1.475" dx="2.1" dy="0.8" layer="1"/>
-<smd name="P$400" x="2.80000625" y="-1.475" dx="2.1" dy="0.8" layer="1"/>
-<wire x1="-5.08" y1="-2.54" x2="5.08" y2="-2.54" width="0.127" layer="51"/>
+<smd name="P$1" x="-0.6" y="2.9035" dx="0.6" dy="2.882" layer="1" cream="no"/>
+<smd name="P$2" x="0.6" y="2.9035" dx="0.6" dy="2.882" layer="1"/>
+<smd name="P$300" x="-3.02" y="-1.8875" dx="2.732" dy="0.8" layer="1"/>
+<smd name="P$400" x="3.02" y="-1.8875" dx="2.732" dy="0.8" layer="1"/>
+<wire x1="-3.175" y1="-3.175" x2="-3.175" y2="3.175" width="0.127" layer="21"/>
+<wire x1="-3.175" y1="3.175" x2="3.175" y2="3.175" width="0.127" layer="21"/>
+<wire x1="3.175" y1="3.175" x2="3.175" y2="-3.175" width="0.127" layer="21"/>
+<wire x1="3.175" y1="-3.175" x2="-3.175" y2="-3.175" width="0.127" layer="21"/>
 </package>
 <package name="PIEZOBENDER165">
 <circle x="0" y="0" radius="6.75" width="0.127" layer="52"/>

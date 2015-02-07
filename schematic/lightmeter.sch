@@ -7880,11 +7880,14 @@ package type OT</description>
 <rectangle x1="-1.2" y1="0.85" x2="-0.7" y2="1.5" layer="51"/>
 </package>
 <package name="78171-0002">
-<smd name="P$1" x="-0.6" y="3.145" dx="0.7" dy="2.54" layer="1"/>
-<smd name="P$2" x="0.6" y="3.145" dx="0.7" dy="2.54" layer="1"/>
-<smd name="P$300" x="-2.80000625" y="-1.475" dx="2.1" dy="0.8" layer="1"/>
-<smd name="P$400" x="2.80000625" y="-1.475" dx="2.1" dy="0.8" layer="1"/>
-<wire x1="-5.08" y1="-2.54" x2="5.08" y2="-2.54" width="0.127" layer="51"/>
+<smd name="P$1" x="-0.6" y="2.9035" dx="0.6" dy="2.882" layer="1" cream="no"/>
+<smd name="P$2" x="0.6" y="2.9035" dx="0.6" dy="2.882" layer="1"/>
+<smd name="P$300" x="-3.02" y="-1.8875" dx="2.732" dy="0.8" layer="1"/>
+<smd name="P$400" x="3.02" y="-1.8875" dx="2.732" dy="0.8" layer="1"/>
+<wire x1="-3.175" y1="-3.175" x2="-3.175" y2="3.175" width="0.127" layer="21"/>
+<wire x1="-3.175" y1="3.175" x2="3.175" y2="3.175" width="0.127" layer="21"/>
+<wire x1="3.175" y1="3.175" x2="3.175" y2="-3.175" width="0.127" layer="21"/>
+<wire x1="3.175" y1="-3.175" x2="-3.175" y2="-3.175" width="0.127" layer="21"/>
 </package>
 <package name="PIEZOBENDER165">
 <circle x="0" y="0" radius="6.75" width="0.127" layer="52"/>
@@ -7903,11 +7906,11 @@ package type OT</description>
 <smd name="P$5" x="0" y="0.944" dx="0.25" dy="1.028" layer="1"/>
 <smd name="P$6" x="-0.5" y="0.944" dx="0.25" dy="1.028" layer="1"/>
 <smd name="P$7" x="0" y="0" dx="1.2" dy="0.4318" layer="1"/>
-<wire x1="-0.8" y1="0.8" x2="0.8" y2="0.8" width="0.127" layer="22"/>
-<wire x1="-0.8" y1="-0.8" x2="0.8" y2="-0.8" width="0.127" layer="22"/>
-<wire x1="-0.8" y1="0.8" x2="-0.8" y2="-0.8" width="0.127" layer="22"/>
-<wire x1="0.8" y1="0.8" x2="0.8" y2="-0.8" width="0.127" layer="22"/>
-<circle x="-0.889" y="-0.889" radius="0.127" width="0.127" layer="22"/>
+<wire x1="-0.8" y1="0.8" x2="0.8" y2="0.8" width="0.127" layer="21"/>
+<wire x1="-0.8" y1="-0.8" x2="0.8" y2="-0.8" width="0.127" layer="21"/>
+<wire x1="-0.8" y1="0.8" x2="-0.8" y2="-0.8" width="0.127" layer="21"/>
+<wire x1="0.8" y1="0.8" x2="0.8" y2="-0.8" width="0.127" layer="21"/>
+<circle x="-0.889" y="-0.889" radius="0.127" width="0.127" layer="21"/>
 <text x="1.397" y="-1.27" size="0.508" layer="26" rot="R90">&gt;NAME</text>
 </package>
 <package name="PTS540BTM">
