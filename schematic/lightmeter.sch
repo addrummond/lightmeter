@@ -8860,6 +8860,15 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <technology name=""/>
 </technologies>
 </device>
+<device name="78171-0002" package="78171-0002">
+<connects>
+<connect gate="G$1" pin="+" pad="P$2"/>
+<connect gate="G$1" pin="-" pad="P$1"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
 </devices>
 </deviceset>
 <deviceset name="NOA1212">
@@ -9222,7 +9231,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="R14" library="resistor" deviceset="R-EU_" device="R0402" value="500k"/>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
 <part name="P+4" library="supply1" deviceset="VCC" device=""/>
-<part name="U$1" library="lightmeter" deviceset="PIEZOBENDER165" device=""/>
+<part name="U$1" library="lightmeter" deviceset="PIEZOBENDER165" device="78171-0002" value="PIEZOBENDER16578171-0002"/>
 <part name="D3" library="lightmeter" deviceset="GSOT04-E3-08" device=""/>
 <part name="GND32" library="supply1" deviceset="GND" device=""/>
 <part name="IC$7" library="lightmeter" deviceset="NOA1212" device=""/>
@@ -10481,8 +10490,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="R500" gate="G$1" pin="1"/>
 <wire x1="111.76" y1="45.72" x2="116.84" y2="45.72" width="0.1524" layer="91"/>
 </segment>
-</net>
-<net name="PIEZOPOZ" class="0">
 <segment>
 <pinref part="IC$1" gate="G$1" pin="PB5"/>
 <wire x1="-30.48" y1="22.86" x2="-30.48" y2="25.4" width="0.1524" layer="91"/>
