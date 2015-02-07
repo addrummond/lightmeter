@@ -9231,7 +9231,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="R14" library="resistor" deviceset="R-EU_" device="R0402" value="500k"/>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
 <part name="P+4" library="supply1" deviceset="VCC" device=""/>
-<part name="U$1" library="lightmeter" deviceset="PIEZOBENDER165" device="78171-0002" value="PIEZOBENDER16578171-0002"/>
+<part name="U$1" library="lightmeter" deviceset="PIEZOBENDER165" device="" value="PIEZOBENDER165"/>
 <part name="D3" library="lightmeter" deviceset="GSOT04-E3-08" device=""/>
 <part name="GND32" library="supply1" deviceset="GND" device=""/>
 <part name="IC$7" library="lightmeter" deviceset="NOA1212" device=""/>
