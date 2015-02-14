@@ -31,9 +31,10 @@ unsigned encode_message(const uint8_t *message, int16_t *out)
     // Each iteration is 1/8 * (1/20000) of a second = 6.25e-06 seconds.
 
     unsigned i;
-    for (i = 0, i < 256; i += 2) {
+    for (i = 0, i < 256; i += 4) {
         unsigned mi = i / 8;
 
-
+        // Clock low, data null.
+        
     }
 }
