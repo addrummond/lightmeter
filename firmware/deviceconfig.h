@@ -74,7 +74,7 @@ OAOUT2   --|                       |-- VDD
 #define STG1_PORT            GPIOB
 #define STG1_PIN             GPIO_Pin_0
 
-#define STG2_POTY            GPIOB
+#define STG2_PORT            GPIOB
 #define STG2_PIN             GPIO_Pin_1
 
 
