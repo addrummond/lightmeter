@@ -7928,11 +7928,11 @@ package type OT</description>
 <wire x1="-1.8542" y1="-0.9" x2="-0.9" y2="-1.651" width="0.127" layer="22"/>
 </package>
 <package name="USB-AB-MICRO-MIDMOUNT">
-<smd name="D+" x="4.1041" y="0" dx="0.4" dy="3.2058" layer="1" rot="R90"/>
-<smd name="D-" x="4.1041" y="0.65" dx="0.4" dy="3.2058" layer="1" rot="R90"/>
-<smd name="VBUS" x="4.1041" y="1.3" dx="0.4" dy="3.2058" layer="1" rot="R90"/>
-<smd name="ID" x="4.1041" y="-0.65" dx="0.4" dy="3.2058" layer="1" rot="R90"/>
-<smd name="GND" x="4.1041" y="-1.3" dx="0.4" dy="3.2058" layer="1" rot="R90"/>
+<smd name="D+" x="4.1676" y="0" dx="0.4" dy="3.0788" layer="1" rot="R90"/>
+<smd name="D-" x="4.1676" y="0.65" dx="0.4" dy="3.0788" layer="1" rot="R90"/>
+<smd name="VBUS" x="4.1676" y="1.3" dx="0.4" dy="3.0788" layer="1" rot="R90"/>
+<smd name="ID" x="4.1676" y="-0.65" dx="0.4" dy="3.0788" layer="1" rot="R90"/>
+<smd name="GND" x="4.1676" y="-1.3" dx="0.4" dy="3.0788" layer="1" rot="R90"/>
 <smd name="P$6" x="2.725" y="5.15" dx="1.5" dy="2.5" layer="1" rot="R90"/>
 <smd name="P$7" x="2.725" y="-5.15" dx="1.5" dy="2.5" layer="1" rot="R90"/>
 <wire x1="-3.425" y1="5" x2="-3.425" y2="4" width="0.2032" layer="51"/>
