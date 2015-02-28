@@ -54,6 +54,10 @@ var PCB_LEDGE_WIDTH = 2.8;
 var PCB_THICK = 0.6;
 var SCREEN_THICK = 1.75;
 
+// See http://www.engineershandbook.com/Tables/nuts2.htm
+var BOLT_FLATS_WIDTH = 2.188;
+var BOLT_HEIGHT = 1.378;
+
 var SENSOR_POSITIONS = [
 [3.81, 4.4958],
 [6.35, 4.4958],
@@ -88,7 +92,7 @@ var BUTTON_HOLE_MARGIN = 0.1;
 
 function make_hexagon(radius) {
     var sqrt3 = Math.sqrt(3)/2;
-    var hex = CSG.Polygon.createFromPoints([
+    return polygon([
         [radius, 0, 0],
         [radius / 2, radius * sqrt3, 0],
         [-radius / 2, radius * sqrt3, 0],
@@ -108,6 +112,12 @@ function make_hollow_half_sphere() {
     var s = so.subtract(si);
     var cb = cube({size: [SPHERE_HEIGHT*2.7, SPHERE_HEIGHT*2.7, SPHERE_HEIGHT*2]}).translate([-SPHERE_HEIGHT*1.4,-SPHERE_HEIGHT*1.4,0]);
     return s.subtract(cb);
+}
+
+function make_bolt_hole() {
+    var hex = make_hexagon(Math.acos((30*Math.PI)/180) * BOLT_FLATS_WIDTH/2);
+    var hole = linear_extrude({ height: BOLT_HEIGHT }, hex);
+    return hole;
 }
 
 function make_box(w,h,t,case_thick) {
@@ -151,16 +161,17 @@ function make_small_button(pad) {
 var butfromtop = HEIGHT - BUTTON_CENTER_FROM_BOTTOM - BUTTON_HEIGHT/BUTTON_CENTER_DIV;
 
 function output_big_button() {
+    var z = separated ? 10 : 0;
     var big = make_big_button(0)
-              .translate([(WIDTH-BIG_BUTTON_WIDTH)/2, butfromtop, THICK-BUTTON_THICK+CASE_THICK]);
+              .translate([(WIDTH-BIG_BUTTON_WIDTH)/2, butfromtop, THICK-BUTTON_THICK+CASE_THICK + z]);
     var smallleft = make_small_button(0)
                     .translate([WIDTH-CASE_THICK*1.5-SMALL_BUTTON_WIDTH,
                                 butfromtop,
-                                THICK-BUTTON_THICK+CASE_THICK]);
+                                THICK-BUTTON_THICK+CASE_THICK + z]);
     var smallright = make_small_button(0)
                      .translate([CASE_THICK*1.5+BUTTON_HOLE_MARGIN,
                                  butfromtop,
-                                 THICK-BUTTON_THICK+CASE_THICK]);
+                                 THICK-BUTTON_THICK+CASE_THICK + z]);
     return color("white", big.union(smallleft).union(smallright));
 }
 
@@ -220,6 +231,8 @@ function output_case() {
                            USB_CENTER_FROM_TOP,
                            THICK-SCREEN_THICK-PCB_THICK/2-USB_PORT_THICK_BELOW_PCB_CENTER+CASE_THICK]);
     box = box.subtract(port);
+
+    box.union(make_bolt_hole().translate([0,0,20]));
 
     return box;
 }
