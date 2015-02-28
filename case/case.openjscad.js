@@ -7,6 +7,8 @@
 // * Make body thinner around incident dome.
 //
 
+var separated = true;
+
 var NFACES = 20;
 
 var THICK_MARGIN = 0.15;
@@ -68,7 +70,8 @@ var total_incident_sensor_width = SENSOR_POSITIONS[3][0] - SENSOR_POSITIONS[2][0
 var SPHERE_HEIGHT = total_incident_sensor_width/1.4;
 var SPHERE_RECESS = 1.5;
 var SPHERE_THICK = 0.71;
-
+var SPHERE_BAND_THICK = 0.2;
+var SPHERE_BAND_DIAM = 2;
 var SPHERE_HOLE_HEIGHT = Math.sqrt(SPHERE_HEIGHT*SPHERE_HEIGHT - SPHERE_RECESS*SPHERE_RECESS);
 
 var TOTAL_WIDTH = WIDTH + THICK + (CASE_THICK*2);
@@ -104,7 +107,7 @@ function make_hollow_half_sphere() {
     var si = make_sphere(SPHERE_HEIGHT);
     var s = so.subtract(si);
     var cb = cube({size: [SPHERE_HEIGHT*2.7, SPHERE_HEIGHT*2.7, SPHERE_HEIGHT*2]}).translate([-SPHERE_HEIGHT*1.4,-SPHERE_HEIGHT*1.4,0]);
-    return s.subtract(cb);
+    return color("white", s.subtract(cb));
 }
 
 function make_box(w,h,t,case_thick) {
@@ -178,10 +181,14 @@ function output_case() {
 
     // Hole for incident sensors.
     var ipos = [((WIDTH-SENSOR_POSITIONS[0][0]) + (WIDTH-SENSOR_POSITIONS[1][0]))/2.0 + CASE_THICK, SENSOR_POSITIONS[0][1]+CASE_THICK, 0];
-    var incident_hole = make_sphere(SPHERE_HOLE_HEIGHT-0.1).translate(ipos);
+    var incident_hole = make_sphere(SPHERE_HOLE_HEIGHT).translate(ipos);
     box = box.subtract(incident_hole);
-    var hs = color("white", make_hollow_half_sphere().translate(ipos).translate([0,0,SPHERE_RECESS]));
+    var hs = make_hollow_half_sphere();
+    hs = hs.union(linear_extrude({ height: SPHERE_BAND_THICK }, circle({ center:true, r: SPHERE_HOLE_HEIGHT+SPHERE_BAND_DIAM })
+                                                                .subtract(circle({ center: true, r: SPHERE_HOLE_HEIGHT })))
+                  .translate([0, 0, SPHERE_BAND_THICK-0.01]));
     hs = hs.subtract(cube({size: [SPHERE_HEIGHT*2.6,SPHERE_HEIGHT*2.6,SPHERE_HEIGHT*2.6]}).translate(ipos).translate([-SPHERE_HEIGHT*1.3, -SPHERE_HEIGHT*1.3,0.01]));
+    hs = hs.translate(ipos).translate([0,0,separated ? -10 : SPHERE_RECESS]);
     box = box.union(hs);
 
     // Hole for screen.
@@ -210,7 +217,7 @@ function output_case() {
     // Hole for USB port.
     var port = cube({size: [20, USB_PORT_WIDTH+USB_PORT_MARGIN, USB_PORT_THICK ], center: true })
                .translate([TOTAL_WIDTH,
-                           /*HEIGHT+BATTERY_HEIGHT-*/USB_CENTER_FROM_TOP,
+                           USB_CENTER_FROM_TOP,
                            THICK-SCREEN_THICK-PCB_THICK/2-USB_PORT_THICK_BELOW_PCB_CENTER+CASE_THICK]);
     box = box.subtract(port);
 
