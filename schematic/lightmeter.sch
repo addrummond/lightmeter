@@ -10570,7 +10570,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="Q1" gate="G$1" x="86.36" y="-45.72" rot="R270"/>
 <instance part="GND5" gate="1" x="114.3" y="2.54" rot="R180"/>
 <instance part="C21" gate="G$1" x="121.92" y="-20.32" rot="R270"/>
-<instance part="R10" gate="G$1" x="124.46" y="-27.94"/>
+<instance part="R10" gate="G$1" x="124.46" y="-30.48"/>
 <instance part="Q2" gate="G$1" x="124.46" y="-45.72" rot="R270"/>
 <instance part="IC$3" gate="G$1" x="-91.44" y="-78.74"/>
 <instance part="P+2" gate="VCC" x="-111.76" y="-71.12" rot="R90"/>
@@ -11391,11 +11391,11 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="109.22" y1="-20.32" x2="116.84" y2="-20.32" width="0.1524" layer="91"/>
 <pinref part="C21" gate="G$1" pin="2"/>
 <pinref part="R10" gate="G$1" pin="1"/>
-<wire x1="119.38" y1="-27.94" x2="109.22" y2="-27.94" width="0.1524" layer="91"/>
-<wire x1="109.22" y1="-27.94" x2="109.22" y2="-20.32" width="0.1524" layer="91"/>
+<wire x1="119.38" y1="-30.48" x2="109.22" y2="-30.48" width="0.1524" layer="91"/>
+<wire x1="109.22" y1="-30.48" x2="109.22" y2="-20.32" width="0.1524" layer="91"/>
 <junction x="109.22" y="-20.32"/>
-<wire x1="109.22" y1="-45.72" x2="109.22" y2="-27.94" width="0.1524" layer="91"/>
-<junction x="109.22" y="-27.94"/>
+<wire x1="109.22" y1="-45.72" x2="109.22" y2="-30.48" width="0.1524" layer="91"/>
+<junction x="109.22" y="-30.48"/>
 <pinref part="Q2" gate="G$1" pin="S"/>
 <wire x1="109.22" y1="-45.72" x2="119.38" y2="-45.72" width="0.1524" layer="91"/>
 <wire x1="109.22" y1="-12.7" x2="109.22" y2="-5.08" width="0.1524" layer="91"/>
@@ -11446,11 +11446,11 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <label x="134.62" y="5.08" size="1.778" layer="95" rot="R180" xref="yes"/>
 <pinref part="C21" gate="G$1" pin="1"/>
 <wire x1="124.46" y1="-20.32" x2="132.08" y2="-20.32" width="0.1524" layer="91"/>
-<wire x1="132.08" y1="-20.32" x2="132.08" y2="-27.94" width="0.1524" layer="91"/>
+<wire x1="132.08" y1="-20.32" x2="132.08" y2="-30.48" width="0.1524" layer="91"/>
 <pinref part="R10" gate="G$1" pin="2"/>
-<wire x1="132.08" y1="-27.94" x2="129.54" y2="-27.94" width="0.1524" layer="91"/>
-<wire x1="132.08" y1="-45.72" x2="132.08" y2="-27.94" width="0.1524" layer="91"/>
-<junction x="132.08" y="-27.94"/>
+<wire x1="132.08" y1="-30.48" x2="129.54" y2="-30.48" width="0.1524" layer="91"/>
+<wire x1="132.08" y1="-45.72" x2="132.08" y2="-30.48" width="0.1524" layer="91"/>
+<junction x="132.08" y="-30.48"/>
 <pinref part="Q2" gate="G$1" pin="D"/>
 <wire x1="129.54" y1="-45.72" x2="132.08" y2="-45.72" width="0.1524" layer="91"/>
 <wire x1="132.08" y1="-10.16" x2="132.08" y2="-20.32" width="0.1524" layer="91"/>
