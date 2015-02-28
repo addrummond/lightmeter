@@ -18,9 +18,9 @@ STM32F030K6T6 configuration.
                0  A  L  S  H  1  2
             |  |  |  |  |  |  |  |
             ________________________
-VDD      --|                       |-- SWDCLK
+VDD      --|                       |-- SWDCLK/USBD+
            |                       |
-         --|                       |-- SWDIO
+         --|                       |-- SWDIO/USBD-
            |                       |
          --|                       |-- USBDM
            |                       |
