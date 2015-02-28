@@ -70,8 +70,8 @@ var total_incident_sensor_width = SENSOR_POSITIONS[3][0] - SENSOR_POSITIONS[2][0
 var SPHERE_HEIGHT = total_incident_sensor_width/1.4;
 var SPHERE_RECESS = 1.5;
 var SPHERE_THICK = 0.71;
-var SPHERE_BAND_THICK = 0.2;
-var SPHERE_BAND_DIAM = 2;
+var SPHERE_BAND_THICK = 0.5;
+var SPHERE_BAND_DIAM = 1;
 var SPHERE_HOLE_HEIGHT = Math.sqrt(SPHERE_HEIGHT*SPHERE_HEIGHT - SPHERE_RECESS*SPHERE_RECESS);
 
 var TOTAL_WIDTH = WIDTH + THICK + (CASE_THICK*2);
@@ -107,7 +107,7 @@ function make_hollow_half_sphere() {
     var si = make_sphere(SPHERE_HEIGHT);
     var s = so.subtract(si);
     var cb = cube({size: [SPHERE_HEIGHT*2.7, SPHERE_HEIGHT*2.7, SPHERE_HEIGHT*2]}).translate([-SPHERE_HEIGHT*1.4,-SPHERE_HEIGHT*1.4,0]);
-    return color("white", s.subtract(cb));
+    return s.subtract(cb);
 }
 
 function make_box(w,h,t,case_thick) {
@@ -165,7 +165,7 @@ function output_big_button() {
 }
 
 function output_case() {
-    var box = make_hollow_box(WIDTH, HEIGHT+BATTERY_HEIGHT, THICK, CASE_THICK);
+    var box = color("red", make_hollow_box(WIDTH, HEIGHT+BATTERY_HEIGHT, THICK, CASE_THICK));
     var h = [ ];
     for (var i = 2; i < 4; ++i) {
         var x = SENSOR_POSITIONS[i][0];
@@ -186,10 +186,10 @@ function output_case() {
     var hs = make_hollow_half_sphere();
     hs = hs.union(linear_extrude({ height: SPHERE_BAND_THICK }, circle({ center:true, r: SPHERE_HOLE_HEIGHT+SPHERE_BAND_DIAM })
                                                                 .subtract(circle({ center: true, r: SPHERE_HOLE_HEIGHT })))
-                  .translate([0, 0, SPHERE_BAND_THICK-0.01]));
-    hs = hs.subtract(cube({size: [SPHERE_HEIGHT*2.6,SPHERE_HEIGHT*2.6,SPHERE_HEIGHT*2.6]}).translate(ipos).translate([-SPHERE_HEIGHT*1.3, -SPHERE_HEIGHT*1.3,0.01]));
+                  .translate([0, 0, -SPHERE_RECESS+0.01]));
+    hs = hs.subtract(cube({ center: true, size: [SPHERE_HEIGHT*4, SPHERE_HEIGHT*4, SPHERE_RECESS-SPHERE_BAND_THICK ]}).translate([0, 0, -(SPHERE_RECESS-SPHERE_BAND_THICK)/2]));
     hs = hs.translate(ipos).translate([0,0,separated ? -10 : SPHERE_RECESS]);
-    box = box.union(hs);
+    box = box.union(color("white", hs));
 
     // Hole for screen.
     box = box.subtract(cube({
@@ -221,7 +221,7 @@ function output_case() {
                            THICK-SCREEN_THICK-PCB_THICK/2-USB_PORT_THICK_BELOW_PCB_CENTER+CASE_THICK]);
     box = box.subtract(port);
 
-    return color("red", box);
+    return box;
 }
 
 function output_height_reference() {
