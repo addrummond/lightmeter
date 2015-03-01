@@ -3002,7 +3002,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="16.7386" y="13.3858" size="0.762" layer="25" rot="R180"/>
 <attribute name="VALUE" x="14.1986" y="14.8844" size="1.27" layer="27" rot="R180"/>
 </element>
-<element name="C12" library="rcl" package="C0402" value="2µ2" x="2.1844" y="9.7028" smashed="yes" rot="MR270">
+<element name="C12" library="rcl" package="C0402" value="2u2" x="2.1844" y="9.7028" smashed="yes" rot="MR270">
 <attribute name="NAME" x="2.5908" y="12.3952" size="0.762" layer="26" rot="MR270"/>
 <attribute name="VALUE" x="4.0894" y="10.3378" size="1.27" layer="28" rot="MR270"/>
 </element>
@@ -3038,11 +3038,11 @@ design rules under a new name.</description>
 <attribute name="NAME" x="5.7912" y="25.1714" size="0.762" layer="25" rot="R180"/>
 <attribute name="VALUE" x="7.62" y="26.0604" size="1.27" layer="27" rot="R180"/>
 </element>
-<element name="C15" library="rcl" package="C0603" value="0u015" x="15.7734" y="31.3944" smashed="yes" rot="R90">
+<element name="C15" library="rcl" package="C0603" value="0u015%" x="15.7734" y="31.3944" smashed="yes" rot="R90">
 <attribute name="NAME" x="15.1384" y="30.7594" size="0.762" layer="25" rot="R90"/>
 <attribute name="VALUE" x="17.6784" y="30.7594" size="1.27" layer="27" rot="R90"/>
 </element>
-<element name="C16" library="rcl" package="C0603" value="0u015" x="7.3406" y="32.1818" smashed="yes" rot="R90">
+<element name="C16" library="rcl" package="C0603" value="0u015%" x="7.3406" y="32.1818" smashed="yes" rot="R90">
 <attribute name="NAME" x="6.7056" y="31.5468" size="0.762" layer="25" rot="R90"/>
 <attribute name="VALUE" x="9.2456" y="31.5468" size="1.27" layer="27" rot="R90"/>
 </element>
@@ -3119,12 +3119,12 @@ design rules under a new name.</description>
 <attribute name="NAME" x="15.4432" y="28.9814" size="0.762" layer="25" rot="R270"/>
 <attribute name="VALUE" x="14.7828" y="28.829" size="1.27" layer="27" rot="R270"/>
 </element>
-<element name="R10" library="resistor" package="R0402" value="500k%" x="5.5118" y="32.2326" smashed="yes" rot="R270">
+<element name="R10" library="resistor" package="R0402" value="500k" x="5.5118" y="32.2326" smashed="yes" rot="R270">
 <attribute name="SPICEPREFIX" value="R" x="5.5118" y="32.2326" size="1.778" layer="27" rot="R270" display="off"/>
 <attribute name="NAME" x="4.0894" y="33.3756" size="0.762" layer="25" rot="R270"/>
 <attribute name="VALUE" x="3.4798" y="32.8676" size="1.27" layer="27" rot="R270"/>
 </element>
-<element name="R9" library="resistor" package="R0402" value="500k%" x="17.2974" y="31.4452" smashed="yes" rot="R270">
+<element name="R9" library="resistor" package="R0402" value="500k" x="17.2974" y="31.4452" smashed="yes" rot="R270">
 <attribute name="SPICEPREFIX" value="R" x="17.2974" y="31.4452" size="1.778" layer="27" rot="R270" display="off"/>
 <attribute name="NAME" x="18.0086" y="33.2994" size="0.762" layer="25" rot="R180"/>
 <attribute name="VALUE" x="15.2654" y="32.0802" size="1.27" layer="27" rot="R270"/>

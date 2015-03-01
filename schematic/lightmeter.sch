@@ -10399,7 +10399,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND33" library="supply1" deviceset="GND" device=""/>
 <part name="C22" library="rcl" deviceset="C-EU" device="C0402" value="4u7"/>
 <part name="GND34" library="supply1" deviceset="GND" device=""/>
-<part name="C12" library="rcl" deviceset="C-EU" device="C0402" value="2µ2"/>
+<part name="C12" library="rcl" deviceset="C-EU" device="C0402" value="2u2"/>
 <part name="C11" library="rcl" deviceset="C-EU" device="C0402" value="2u2"/>
 <part name="IC$2" library="lightmeter" deviceset="MMA8653" device=""/>
 <part name="C4" library="rcl" deviceset="C-EU" device="C0402" value="1u"/>
@@ -10425,13 +10425,13 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND40" library="supply1" deviceset="GND" device=""/>
 <part name="C10" library="rcl" deviceset="C-EU" device="C0402" value="100n"/>
 <part name="GND41" library="supply1" deviceset="GND" device=""/>
-<part name="C15" library="rcl" deviceset="C-EU" device="C0603" value="0u015"/>
+<part name="C15" library="rcl" deviceset="C-EU" device="C0603" value="0u015%"/>
 <part name="GND29" library="supply1" deviceset="GND" device=""/>
-<part name="R9" library="resistor" deviceset="R-EU_" device="R0402" value="500k%"/>
+<part name="R9" library="resistor" deviceset="R-EU_" device="R0402" value="500k"/>
 <part name="Q2" library="lightmeter" deviceset="NCHANNELMOSFET" device="SOT-523-3" value="NCHANNELMOSFETSOT-523-3"/>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
-<part name="C16" library="rcl" deviceset="C-EU" device="C0603" value="0u015"/>
-<part name="R10" library="resistor" deviceset="R-EU_" device="R0402" value="500k%"/>
+<part name="C16" library="rcl" deviceset="C-EU" device="C0603" value="0u015%"/>
+<part name="R10" library="resistor" deviceset="R-EU_" device="R0402" value="500k"/>
 <part name="Q3" library="lightmeter" deviceset="NCHANNELMOSFET" device="SOT-523-3" value="NCHANNELMOSFETSOT-523-3"/>
 <part name="IC$7" library="lightmeter" deviceset="LP5907" device=""/>
 <part name="P+2" library="supply1" deviceset="VCC" device=""/>
