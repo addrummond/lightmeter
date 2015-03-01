@@ -115,9 +115,9 @@ function make_hollow_half_sphere() {
 }
 
 function make_bolt_hole() {
-    var hex = make_hexagon(Math.acos((30*Math.PI)/180) * BOLT_FLATS_WIDTH/2);
+    var hex = make_hexagon(Math.acos((30*Math.PI)/180) * BOLT_FLATS_WIDTH/2).rotateZ(90);
     var hole = linear_extrude({ height: BOLT_HEIGHT }, hex);
-    return hole;
+    return color("pink", hole);
 }
 
 function make_box(w,h,t,case_thick) {
@@ -232,7 +232,7 @@ function output_case() {
                            THICK-SCREEN_THICK-PCB_THICK/2-USB_PORT_THICK_BELOW_PCB_CENTER+CASE_THICK]);
     box = box.subtract(port);
 
-    box.union(make_bolt_hole().translate([0,0,20]));
+    box = box.union(make_bolt_hole().translate([0,0,10]));
 
     return box;
 }
