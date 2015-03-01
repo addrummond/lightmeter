@@ -89,9 +89,10 @@ var SMALL_BUTTON_WIDTH = 3;
 var BUTTON_HOLE_MARGIN = 0.1;
 
 // Mouser part no. 749-901-050
-var SPACER_OUTER_DIAM = 2.2;
+var SPACER_OUTER_DIAM = 1;
 var SPACER_MARGIN = 0.2;
 var SPACER_HOLE_FROM_TOP = 7.4168;
+var SPACER_DEPTH = 3;
 
 function make_hexagon(radius) {
     var sqrt3 = Math.sqrt(3)/2;
@@ -119,10 +120,11 @@ function make_hollow_half_sphere() {
 
 function make_spacer_hole() {
     var circ = circle({center: true, r: (SPACER_OUTER_DIAM + SPACER_MARGIN)/2 });
-    var hole = linear_extrude({ height: PCB_LEDGE_THICK+0.1 }, circ);
-    var leftedge = cube({ size: [0.5, SPACER_OUTER_DIAM/2, PCB_LEDGE_THICK+0.1], center: true })
-                   .translate([PCB_LEDGE_WIDTH/2.0, 0, (PCB_LEDGE_THICK+0.1)/2.0]);
-    hole = hole.union(leftedge);
+    var hole = linear_extrude({ height: SPACER_DEPTH }, circ);
+    //var leftedge = cube({ size: [0.5, SPACER_OUTER_DIAM/2, PCB_LEDGE_THICK+0.1], center: true })
+    //               .translate([PCB_LEDGE_WIDTH/2.0, 0, (PCB_LEDGE_THICK+0.1)/2.0]);
+    //hole = hole.union(leftedge);
+    hole = hole.rotateX(90);
     return color("pink", hole);
 }
 
@@ -238,7 +240,7 @@ function output_case() {
                            THICK-SCREEN_THICK-PCB_THICK/2-USB_PORT_THICK_BELOW_PCB_CENTER+CASE_THICK]);
     box = box.subtract(port);
 
-    box = box.subtract(make_spacer_hole().translate([PCB_LEDGE_WIDTH/2,SPACER_HOLE_FROM_TOP,0]));
+    box = box.subtract(make_spacer_hole().translate([PCB_LEDGE_WIDTH/2,HEIGHT+0.001,PCB_LEDGE_THICK/2]));
 
     return box;
 }
