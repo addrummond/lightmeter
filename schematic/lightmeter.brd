@@ -3038,11 +3038,11 @@ design rules under a new name.</description>
 <attribute name="NAME" x="5.7912" y="25.1714" size="0.762" layer="25" rot="R180"/>
 <attribute name="VALUE" x="7.62" y="26.0604" size="1.27" layer="27" rot="R180"/>
 </element>
-<element name="C15" library="rcl" package="C0603" value="0u015%" x="15.7734" y="31.3944" smashed="yes" rot="R90">
+<element name="C15" library="rcl" package="C0603" value="u03%" x="15.7734" y="31.3944" smashed="yes" rot="R90">
 <attribute name="NAME" x="15.1384" y="30.7594" size="0.762" layer="25" rot="R90"/>
 <attribute name="VALUE" x="17.6784" y="30.7594" size="1.27" layer="27" rot="R90"/>
 </element>
-<element name="C16" library="rcl" package="C0603" value="0u015%" x="7.3406" y="32.1818" smashed="yes" rot="R90">
+<element name="C16" library="rcl" package="C0603" value="u03%" x="7.3406" y="32.1818" smashed="yes" rot="R90">
 <attribute name="NAME" x="6.7056" y="31.5468" size="0.762" layer="25" rot="R90"/>
 <attribute name="VALUE" x="9.2456" y="31.5468" size="1.27" layer="27" rot="R90"/>
 </element>
