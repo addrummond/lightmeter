@@ -56,10 +56,6 @@ var PCB_LEDGE_WIDTH = 2.7;
 var PCB_LEDGE_THICK = THICK-SCREEN_THICK-PCB_THICK;
 console.log("Ledge thickness: " + PCB_LEDGE_THICK);
 
-// See http://www.engineershandbook.com/Tables/nuts2.htm
-var BOLT_FLATS_WIDTH = 2.188;
-var BOLT_HEIGHT = 1.378;
-
 var SENSOR_POSITIONS = [
 [3.81, 4.4958],
 [6.35, 4.4958],
@@ -240,7 +236,7 @@ function output_case() {
                            THICK-SCREEN_THICK-PCB_THICK/2-USB_PORT_THICK_BELOW_PCB_CENTER+CASE_THICK]);
     box = box.subtract(port);
 
-    box = box.union(make_spacer_hole().translate([PCB_LEDGE_WIDTH/2,SPACER_HOLE_FROM_TOP,0]));
+    box = box.subtract(make_spacer_hole().translate([PCB_LEDGE_WIDTH/2,SPACER_HOLE_FROM_TOP,0]));
 
     return box;
 }
