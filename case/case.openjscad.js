@@ -118,11 +118,13 @@ function make_hollow_half_sphere() {
 }
 
 function make_spacer_hole() {
-    var circ = circle({center: true, r: SPACER_OUTER_DIAM/2 + SPACER_MARGIN});
+    var circ = circle({center: true, r: (SPACER_OUTER_DIAM + SPACER_MARGIN)/2 });
     var hole = linear_extrude({ height: PCB_LEDGE_THICK+0.1 }, circ);
+    var leftedge = cube({ size: [0.5, SPACER_OUTER_DIAM/2, PCB_LEDGE_THICK+0.1], center: true })
+                   .translate([PCB_LEDGE_WIDTH/2.0, 0, (PCB_LEDGE_THICK+0.1)/2.0]);
+    hole = hole.union(leftedge);
     return color("pink", hole);
 }
-
 
 function make_box(w,h,t,case_thick) {
     var rect = cube({size: [w,h,t]});
@@ -141,7 +143,7 @@ function make_hollow_box(w, h, t, case_thick) {
             HEIGHT,
             PCB_LEDGE_THICK
         ]
-    }).translate([0.2, 0, 0]);
+    }).translate([0, 0, 0]);
     box = box.union(ledge);
     return box;
 }
