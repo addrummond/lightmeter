@@ -50,9 +50,11 @@ var USB_CENTER_FROM_TOP = 28.2702;
 var WIDTH = PCB_WIDTH + PCB_HORIZ_MARGIN;
 var HEIGHT = PCB_HEIGHT + PCB_HORIZ_MARGIN;
 
-var PCB_LEDGE_WIDTH = 2.8;
 var PCB_THICK = 0.6;
 var SCREEN_THICK = 1.75;
+var PCB_LEDGE_WIDTH = 2.7;
+var PCB_LEDGE_THICK = THICK-SCREEN_THICK-PCB_THICK;
+console.log("Ledge thickness: " + PCB_LEDGE_THICK);
 
 // See http://www.engineershandbook.com/Tables/nuts2.htm
 var BOLT_FLATS_WIDTH = 2.188;
@@ -90,6 +92,11 @@ var BUTTON_CENTER_DIV = 3;
 var SMALL_BUTTON_WIDTH = 3;
 var BUTTON_HOLE_MARGIN = 0.1;
 
+// Mouser part no. 749-901-050
+var SPACER_OUTER_DIAM = 2.2;
+var SPACER_MARGIN = 0.2;
+var SPACER_HOLE_FROM_TOP = 7.4168;
+
 function make_hexagon(radius) {
     var sqrt3 = Math.sqrt(3)/2;
     return polygon([
@@ -114,11 +121,12 @@ function make_hollow_half_sphere() {
     return s.subtract(cb);
 }
 
-function make_bolt_hole() {
-    var hex = make_hexagon(Math.acos((30*Math.PI)/180) * BOLT_FLATS_WIDTH/2).rotateZ(90);
-    var hole = linear_extrude({ height: BOLT_HEIGHT }, hex);
+function make_spacer_hole() {
+    var circ = circle({center: true, r: SPACER_OUTER_DIAM/2 + SPACER_MARGIN});
+    var hole = linear_extrude({ height: PCB_LEDGE_THICK+0.1 }, circ);
     return color("pink", hole);
 }
+
 
 function make_box(w,h,t,case_thick) {
     var rect = cube({size: [w,h,t]});
@@ -133,9 +141,9 @@ function make_hollow_box(w, h, t, case_thick) {
     var box = obox.subtract(ibox);
     var ledge = cube({
         size: [
-        PCB_LEDGE_WIDTH,
-        HEIGHT,
-        THICK-SCREEN_THICK-PCB_THICK
+            PCB_LEDGE_WIDTH,
+            HEIGHT,
+            PCB_LEDGE_THICK
         ]
     }).translate([0.2, 0, 0]);
     box = box.union(ledge);
@@ -232,7 +240,7 @@ function output_case() {
                            THICK-SCREEN_THICK-PCB_THICK/2-USB_PORT_THICK_BELOW_PCB_CENTER+CASE_THICK]);
     box = box.subtract(port);
 
-    box = box.union(make_bolt_hole().translate([0,0,10]));
+    box = box.union(make_spacer_hole().translate([PCB_LEDGE_WIDTH/2,SPACER_HOLE_FROM_TOP,0]));
 
     return box;
 }
