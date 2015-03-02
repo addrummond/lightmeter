@@ -10367,13 +10367,13 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND2" library="supply1" deviceset="GND" device=""/>
 <part name="IC$3" library="microbuilder" deviceset="DISP_OLED_UG-2864HSWEG01" device="0.96&quot;"/>
 <part name="GND11" library="supply1" deviceset="GND" device=""/>
-<part name="C17" library="rcl" deviceset="C-EU" device="C0402" value="100n"/>
+<part name="C17" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
 <part name="GND15" library="supply1" deviceset="GND" device=""/>
 <part name="R7" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
 <part name="GND8" library="supply1" deviceset="GND" device=""/>
 <part name="R8" library="resistor" deviceset="R-EU_" device="R0402" value="390k"/>
-<part name="C7" library="rcl" deviceset="C-EU" device="C0402" value="1u"/>
-<part name="C8" library="rcl" deviceset="C-EU" device="C0402" value="1u"/>
+<part name="C7" library="rcl" deviceset="C-EU" device="C0603" value="1u"/>
+<part name="C8" library="rcl" deviceset="C-EU" device="C0603" value="1u"/>
 <part name="GND17" library="supply1" deviceset="GND" device=""/>
 <part name="GND21" library="supply1" deviceset="GND" device=""/>
 <part name="GND22" library="supply1" deviceset="GND" device=""/>
@@ -10403,10 +10403,10 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="C11" library="rcl" deviceset="C-EU" device="C0402" value="2u2"/>
 <part name="IC$2" library="lightmeter" deviceset="MMA8653" device=""/>
 <part name="C4" library="rcl" deviceset="C-EU" device="C0402" value="1u"/>
-<part name="C3" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
+<part name="C3" library="rcl" deviceset="C-EU" device="C0603" value="u1"/>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
 <part name="GND4" library="supply1" deviceset="GND" device=""/>
-<part name="C5" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
+<part name="C5" library="rcl" deviceset="C-EU" device="C0603" value="u1"/>
 <part name="GND16" library="supply1" deviceset="GND" device=""/>
 <part name="R4" library="resistor" deviceset="R-EU_" device="R0402" value="1k"/>
 <part name="R3" library="resistor" deviceset="R-EU_" device="R0402" value="1k"/>
@@ -10423,7 +10423,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND38" library="supply1" deviceset="GND" device=""/>
 <part name="R6" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
 <part name="GND40" library="supply1" deviceset="GND" device=""/>
-<part name="C10" library="rcl" deviceset="C-EU" device="C0402" value="100n"/>
+<part name="C10" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
 <part name="GND41" library="supply1" deviceset="GND" device=""/>
 <part name="C15" library="rcl" deviceset="C-EU" device="C0603" value="u03%"/>
 <part name="GND29" library="supply1" deviceset="GND" device=""/>
@@ -10435,7 +10435,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="Q3" library="lightmeter" deviceset="NCHANNELMOSFET" device="SOT-523-3" value="NCHANNELMOSFETSOT-523-3"/>
 <part name="IC$7" library="lightmeter" deviceset="LP5907" device=""/>
 <part name="P+2" library="supply1" deviceset="VCC" device=""/>
-<part name="C19" library="rcl" deviceset="C-EU" device="C0402" value="1u"/>
+<part name="C19" library="rcl" deviceset="C-EU" device="C0603" value="1u"/>
 <part name="GND27" library="supply1" deviceset="GND" device=""/>
 <part name="GND35" library="supply1" deviceset="GND" device=""/>
 <part name="C20" library="rcl" deviceset="C-EU" device="C0402" value="1u"/>
@@ -10470,7 +10470,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="J1" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
 <part name="J6" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
 <part name="C18" library="rcl" deviceset="C-EU" device="C0402" value="4u7"/>
-<part name="C13" library="lightmeter" deviceset="C" device="GAP0402" value="10n"/>
+<part name="C13" library="lightmeter" deviceset="C" device="GAP0402" value="u01"/>
 <part name="C14" library="lightmeter" deviceset="C" device="GAP0402" value="1u"/>
 </parts>
 <sheets>
@@ -10491,6 +10491,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <text x="177.8" y="-76.2" size="1.778" layer="91">REFL,ND</text>
 <text x="177.8" y="-101.6" size="1.778" layer="91">INC,NOND</text>
 <text x="177.8" y="-127" size="1.778" layer="91">INC,ND</text>
+<text x="99.06" y="35.56" size="1.778" layer="91">6.1V breakdown</text>
 </plain>
 <instances>
 <instance part="IC$5" gate="A" x="81.28" y="-10.16"/>
