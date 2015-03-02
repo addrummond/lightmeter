@@ -134,7 +134,6 @@
 <wire x1="2.54" y1="38.4368" x2="26.67" y2="38.4368" width="0.4064" layer="22"/>
 <wire x1="3.969765625" y1="45.72" x2="3.969765625" y2="0" width="0.4064" layer="51"/>
 <text x="-25.4" y="46.99" size="1.778" layer="51">No top layer components left of this line</text>
-<hole x="2.62" y="33.02" drill="0.7112"/>
 </plain>
 <libraries>
 <library name="rcl">
@@ -3017,12 +3016,12 @@ design rules under a new name.</description>
 <attribute name="VALUE" x="7.8232" y="26.035" size="1.27" layer="27" rot="R180"/>
 </element>
 <element name="C15" library="rcl" package="C0603" value="u03%" x="16.3068" y="31.4198" smashed="yes" rot="R270">
-<attribute name="NAME" x="16.9418" y="32.0548" size="0.762" layer="25" rot="R270"/>
+<attribute name="NAME" x="14.9352" y="32.3596" size="0.762" layer="25" rot="R270"/>
 <attribute name="VALUE" x="14.4018" y="32.0548" size="1.27" layer="27" rot="R270"/>
 </element>
-<element name="C16" library="rcl" package="C0603" value="u03%" x="5.7658" y="32.0802" smashed="yes" rot="R270">
-<attribute name="NAME" x="6.4008" y="32.7152" size="0.762" layer="25" rot="R270"/>
-<attribute name="VALUE" x="3.8608" y="32.7152" size="1.27" layer="27" rot="R270"/>
+<element name="C16" library="rcl" package="C0603" value="u03%" x="5.5372" y="32.1056" smashed="yes" rot="R270">
+<attribute name="NAME" x="4.1656" y="33.02" size="0.762" layer="25" rot="R270"/>
+<attribute name="VALUE" x="3.6322" y="32.7406" size="1.27" layer="27" rot="R270"/>
 </element>
 <element name="IC$1" library="lightmeter" package="SOT23-5" value="LM3671" x="25.2476" y="27.9654" smashed="yes">
 <attribute name="VALUE" x="23.8506" y="25.2934" size="1.016" layer="27" ratio="10"/>
@@ -3168,11 +3167,11 @@ design rules under a new name.</description>
 <attribute name="VALUE" x="6.8072" y="15.3416" size="1.27" layer="27" rot="R180"/>
 </element>
 <element name="C13" library="lightmeter" package="GAP0402" value="u01" x="11.1252" y="27.5336" smashed="yes" rot="R180">
-<attribute name="NAME" x="13.5636" y="27.8384" size="0.762" layer="25" rot="R180"/>
+<attribute name="NAME" x="14.0462" y="27.813" size="0.762" layer="25" rot="R180"/>
 <attribute name="VALUE" x="11.7602" y="29.4386" size="1.27" layer="27" rot="R180"/>
 </element>
 <element name="C14" library="lightmeter" package="GAP0402" value="1u" x="11.1252" y="28.6004" smashed="yes" rot="R180">
-<attribute name="NAME" x="13.589" y="28.6258" size="0.762" layer="25" rot="R180"/>
+<attribute name="NAME" x="10.2362" y="28.8798" size="0.762" layer="25" rot="R180"/>
 <attribute name="VALUE" x="11.7602" y="30.5054" size="1.27" layer="27" rot="R180"/>
 </element>
 <element name="C23" library="rcl" package="C0402" value="u1" x="5.5372" y="34.1122" smashed="yes" rot="R180">
@@ -3183,15 +3182,28 @@ design rules under a new name.</description>
 <attribute name="NAME" x="16.9926" y="33.3502" size="0.762" layer="25"/>
 <attribute name="VALUE" x="18.415" y="32.6898" size="1.27" layer="27"/>
 </element>
-<element name="Q2" library="adafruit" package="SOT23" value="" x="13.0556" y="31.5722"/>
-<element name="Q3" library="adafruit" package="SOT23" value="" x="8.0264" y="31.9278"/>
-<element name="R19" library="resistor" package="R0402" value="10k" x="17.5006" y="31.242" rot="R270">
+<element name="Q2" library="adafruit" package="SOT23" value="" x="13.0556" y="31.5722" smashed="yes">
+<attribute name="NAME" x="11.049" y="32.6898" size="0.762" layer="25"/>
+<attribute name="VALUE" x="11.1506" y="28.3972" size="1.27" layer="27"/>
+</element>
+<element name="Q3" library="adafruit" package="SOT23" value="" x="8.0264" y="31.9278" smashed="yes">
+<attribute name="NAME" x="6.1214" y="32.766" size="0.762" layer="25"/>
+<attribute name="VALUE" x="6.1214" y="28.7528" size="1.27" layer="27"/>
+</element>
+<element name="R19" library="resistor" package="R0402" value="10k" x="17.5006" y="31.242" smashed="yes" rot="R270">
 <attribute name="SPICEPREFIX" value="R" x="17.5006" y="31.242" size="1.778" layer="27" rot="R270" display="off"/>
+<attribute name="NAME" x="16.9672" y="32.3342" size="0.762" layer="25"/>
+<attribute name="VALUE" x="15.4686" y="31.877" size="1.27" layer="27" rot="R270"/>
 </element>
-<element name="R9" library="resistor" package="R0402" value="10k" x="13.9954" y="28.575">
+<element name="R9" library="resistor" package="R0402" value="10k" x="13.9954" y="28.575" smashed="yes">
 <attribute name="SPICEPREFIX" value="R" x="13.9954" y="28.575" size="1.778" layer="27" display="off"/>
+<attribute name="NAME" x="13.6652" y="27.2542" size="0.762" layer="25"/>
+<attribute name="VALUE" x="13.3604" y="26.543" size="1.27" layer="27"/>
 </element>
-<element name="R20" library="lightmeter" package="GAP0402" value="10k" x="10.1854" y="32.385" rot="R90"/>
+<element name="R20" library="lightmeter" package="GAP0402" value="10k" x="10.1854" y="32.385" smashed="yes" rot="R90">
+<attribute name="NAME" x="10.2616" y="29.3878" size="0.762" layer="25" rot="R90"/>
+<attribute name="VALUE" x="12.0904" y="31.75" size="1.27" layer="27" rot="R90"/>
+</element>
 </elements>
 <signals>
 <signal name="GND">
@@ -4149,7 +4161,7 @@ design rules under a new name.</description>
 <wire x1="9.7536" y1="27.051" x2="9.7536" y2="28.4734" width="0.4064" layer="1"/>
 <contactref element="Q3" pad="3"/>
 <wire x1="9.1567" y1="33.5153" x2="8.0264" y2="33.0278" width="0.4064" layer="1"/>
-<wire x1="5.7658" y1="32.9302" x2="8.0264" y2="33.0278" width="0.4064" layer="1"/>
+<wire x1="5.5372" y1="32.9556" x2="8.0264" y2="33.0278" width="0.4064" layer="1"/>
 <wire x1="8.0264" y1="33.0278" x2="9.0678" y2="32.385" width="0.4064" layer="1"/>
 <wire x1="9.0678" y1="32.385" x2="11.049" y2="32.385" width="0.4064" layer="1"/>
 <wire x1="11.049" y1="32.385" x2="11.049" y2="31.4706" width="0.4064" layer="1"/>
@@ -4281,11 +4293,11 @@ design rules under a new name.</description>
 <wire x1="6.1872" y1="34.1122" x2="7.119928125" y2="34.525234375" width="0.4064" layer="1"/>
 <contactref element="C24" pad="1"/>
 <wire x1="18.4" y1="34.5948" x2="17.7019375" y2="34.7682" width="0.3048" layer="1"/>
+<wire x1="9.7536" y1="36.9062" x2="8.9154" y2="37.2364" width="0.6096" layer="1"/>
 <wire x1="14.6558" y1="38.5318" x2="14.5946" y2="38.7604" width="0" layer="19" extent="1-1"/>
 <wire x1="13.2946" y1="38.7604" x2="14.5946" y2="38.7604" width="0" layer="19" extent="1-1"/>
 <wire x1="19.328196875" y1="33.4709125" x2="20.5498" y2="33.026284375" width="0" layer="19" extent="1-1"/>
 <wire x1="9.7132" y1="38.354" x2="11.0132" y2="38.354" width="0" layer="19" extent="1-1"/>
-<wire x1="9.7536" y1="36.9062" x2="8.9154" y2="37.2364" width="0.6096" layer="1"/>
 </signal>
 <signal name="BATVOLTAGE">
 <contactref element="R11" pad="2"/>
@@ -4461,11 +4473,11 @@ design rules under a new name.</description>
 <wire x1="4.6736" y1="38.5826" x2="4.58" y2="37.774" width="0.254" layer="1"/>
 <wire x1="12.4714" y1="39.98468125" x2="13.1064" y2="39.624" width="0.3937" layer="1"/>
 <wire x1="13.1064" y1="39.624" x2="13.9446" y2="39.624" width="0.4064" layer="1"/>
-<wire x1="13.9446" y1="39.624" x2="13.927790625" y2="38.030065625" width="0.254" layer="1"/>
-<wire x1="13.927790625" y1="38.030065625" x2="13.9192" y2="37.34538125" width="0.254" layer="1"/>
+<wire x1="13.9446" y1="39.624" x2="13.9446" y2="38.030065625" width="0.381" layer="1"/>
+<wire x1="13.9446" y1="38.030065625" x2="13.9192" y2="37.34538125" width="0.254" layer="1"/>
 <wire x1="13.2842" y1="36.32938125" x2="13.8176" y2="36.3728" width="0.2032" layer="1"/>
 <wire x1="13.8176" y1="36.3728" x2="13.8938" y2="36.5506" width="0.2032" layer="1"/>
-<wire x1="13.8938" y1="36.5506" x2="13.927790625" y2="38.030065625" width="0.2794" layer="1"/>
+<wire x1="13.8938" y1="36.5506" x2="13.9446" y2="38.030065625" width="0.381" layer="1"/>
 </signal>
 <signal name="IOUT2">
 <contactref element="IC$8" pad="P$6"/>
@@ -4604,7 +4616,7 @@ design rules under a new name.</description>
 <signal name="N$6">
 <contactref element="Q3" pad="2"/>
 <contactref element="C16" pad="2"/>
-<wire x1="5.7658" y1="31.2302" x2="6.1976" y2="31.9278" width="0.4064" layer="1"/>
+<wire x1="5.5372" y1="31.2556" x2="6.1976" y2="31.9278" width="0.4064" layer="1"/>
 <wire x1="6.1976" y1="31.9278" x2="8.4074" y2="31.9278" width="0.4064" layer="1"/>
 <wire x1="8.4074" y1="31.9278" x2="8.9764" y2="30.8278" width="0.4064" layer="1"/>
 <contactref element="R20" pad="1"/>
