@@ -75,7 +75,7 @@ def get_12px_chars():
      for name in os.listdir("./"):
          if name.startswith("12px_") and name.endswith(".png"):
              bitmap_count += 1
-             r = png.Reader(file=open(name))
+             r = png.Reader(file=open(name, mode='rb'))
              img = r.read()
              width = img[0]
              height = img[1]
@@ -97,7 +97,7 @@ def get_8px_chars():
     char_px_grids = { }
     for name in os.listdir("./"):
         if name.startswith("8px_") and name.endswith(".png"):
-            r = png.Reader(file=open(name))
+            r = png.Reader(file=open(name, mode='rb'))
             img = r.read()
             width = img[0]
             height = img[1]
@@ -215,16 +215,16 @@ def output_tables():
     dotc.write('const uint8_t CHAR_12PX_GRIDS[] = {\n')
     i = 0
     code = 1
-    ordered_keys = name_to_block_grid.keys()
+    ordered_keys = list(name_to_block_grid.keys())
     ordered_keys.sort()
     for name in ordered_keys:
         grid = name_to_block_grid[name]
         m = re.match(r"^12px_([^.]+)\.png$", name)
         assert m
         cname = 'CHAR_12PX_' + m.group(1).upper()
-        doth.write('#define ' + cname + ' (CHAR_12PX_GRIDS + ' + str(i) + ')\n')
-        doth.write('#define ' + cname + '_O ' + str(i) + '\n')
-        doth.write('#define ' + cname + '_CODE ' + str(code) + '\n')
+        doth.write('#define ' + cname + ' (CHAR_12PX_GRIDS + ' + str(int(i)) + ')\n')
+        doth.write('#define ' + cname + '_O ' + str(int(i)) + '\n')
+        doth.write('#define ' + cname + '_CODE ' + str(int(code)) + '\n')
         dotc.write("// " + cname + "\n")
         for row in grid:
             assert BLOCK_SIZE == 4
@@ -245,7 +245,7 @@ def output_tables():
     doth.write("\n\nextern const uint8_t CHAR_PIXELS_8PX[];\n")
     dotc.write("\n\nconst uint8_t CHAR_PIXELS_8PX[] = {\n")
     pgrids = get_8px_chars()
-    ordered_keys = pgrids.keys()
+    ordered_keys = list(pgrids.keys())
     ordered_keys.sort()
     bit_counter = [0]
     i = 0
