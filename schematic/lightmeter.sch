@@ -1278,6 +1278,10 @@ chip</description>
 <rectangle x1="-0.554" y1="-0.3048" x2="-0.254" y2="0.2951" layer="51"/>
 <rectangle x1="0.2588" y1="-0.3048" x2="0.5588" y2="0.2951" layer="51"/>
 <rectangle x1="-0.1999" y1="-0.4001" x2="0.1999" y2="0.4001" layer="35"/>
+<wire x1="-1.1938" y1="0.635" x2="1.1938" y2="0.635" width="0.127" layer="21"/>
+<wire x1="1.1938" y1="0.635" x2="1.1938" y2="-0.6096" width="0.127" layer="21"/>
+<wire x1="1.1938" y1="-0.6096" x2="-1.1938" y2="-0.6096" width="0.127" layer="21"/>
+<wire x1="-1.1938" y1="-0.6096" x2="-1.1938" y2="0.635" width="0.127" layer="21"/>
 </package>
 <package name="R0603">
 <description>&lt;b&gt;RESISTOR&lt;/b&gt;&lt;p&gt;
@@ -4412,6 +4416,10 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <rectangle x1="-0.554" y1="-0.3048" x2="-0.254" y2="0.2951" layer="51"/>
 <rectangle x1="0.2588" y1="-0.3048" x2="0.5588" y2="0.2951" layer="51"/>
 <rectangle x1="-0.1999" y1="-0.3" x2="0.1999" y2="0.3" layer="35"/>
+<wire x1="-1.1938" y1="0.635" x2="-1.1938" y2="-0.635" width="0.127" layer="21"/>
+<wire x1="1.143" y1="0.635" x2="-1.1938" y2="0.635" width="0.127" layer="21"/>
+<wire x1="-1.1938" y1="-0.635" x2="1.143" y2="-0.635" width="0.127" layer="21"/>
+<wire x1="1.143" y1="-0.635" x2="1.143" y2="0.635" width="0.127" layer="21"/>
 </package>
 <package name="C0504">
 <description>&lt;b&gt;CAPACITOR&lt;/b&gt;</description>
@@ -4444,6 +4452,10 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <rectangle x1="-0.8382" y1="-0.4699" x2="-0.3381" y2="0.4801" layer="51"/>
 <rectangle x1="0.3302" y1="-0.4699" x2="0.8303" y2="0.4801" layer="51"/>
 <rectangle x1="-0.1999" y1="-0.3" x2="0.1999" y2="0.3" layer="35"/>
+<wire x1="-1.524" y1="0.635" x2="-1.524" y2="-0.635" width="0.127" layer="21"/>
+<wire x1="-1.524" y1="-0.635" x2="1.524" y2="-0.635" width="0.127" layer="21"/>
+<wire x1="1.524" y1="-0.635" x2="1.524" y2="0.635" width="0.127" layer="21"/>
+<wire x1="1.524" y1="0.635" x2="-1.524" y2="0.635" width="0.127" layer="21"/>
 </package>
 <package name="C0805">
 <description>&lt;b&gt;CAPACITOR&lt;/b&gt;&lt;p&gt;</description>
@@ -8096,10 +8108,10 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <package name="SOD-723">
 <smd name="P$1" x="-0.6858" y="0" dx="0.762" dy="0.762" layer="1"/>
 <smd name="P$2" x="0.6858" y="0" dx="0.762" dy="0.762" layer="1"/>
-<wire x1="-0.4953" y1="0.3048" x2="-0.4953" y2="-0.3048" width="0.127" layer="21"/>
-<wire x1="-0.4953" y1="-0.3048" x2="0.4953" y2="-0.3048" width="0.127" layer="21"/>
-<wire x1="0.4953" y1="-0.3048" x2="0.4953" y2="0.3048" width="0.127" layer="21"/>
-<wire x1="0.4953" y1="0.3048" x2="-0.4953" y2="0.3048" width="0.127" layer="21"/>
+<wire x1="-1.2319" y1="0.508" x2="-1.2319" y2="-0.508" width="0.127" layer="21"/>
+<wire x1="-1.2319" y1="-0.508" x2="1.2319" y2="-0.508" width="0.127" layer="21"/>
+<wire x1="1.2319" y1="-0.508" x2="1.2319" y2="0.508" width="0.127" layer="21"/>
+<wire x1="1.2319" y1="0.508" x2="-1.2319" y2="0.508" width="0.127" layer="21"/>
 <wire x1="1.27" y1="0.635" x2="1.27" y2="-0.635" width="0.127" layer="21"/>
 <wire x1="-0.1016" y1="0.1778" x2="-0.1016" y2="-0.1778" width="0.127" layer="21"/>
 <wire x1="-0.1016" y1="-0.1778" x2="0.0762" y2="-0.0254" width="0.127" layer="21"/>
@@ -8121,6 +8133,10 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <rectangle x1="-0.554" y1="-0.3048" x2="-0.254" y2="0.2951" layer="51"/>
 <rectangle x1="0.2588" y1="-0.3048" x2="0.5588" y2="0.2951" layer="51"/>
 <rectangle x1="-0.1999" y1="-0.4001" x2="0.1999" y2="0.4001" layer="35"/>
+<wire x1="-1.143" y1="0.6604" x2="-1.143" y2="-0.6096" width="0.127" layer="21"/>
+<wire x1="-1.143" y1="0.6604" x2="1.143" y2="0.6604" width="0.127" layer="21"/>
+<wire x1="1.143" y1="0.6604" x2="1.143" y2="-0.6096" width="0.127" layer="21"/>
+<wire x1="1.143" y1="-0.6096" x2="-1.143" y2="-0.6096" width="0.127" layer="21"/>
 </package>
 <package name="C10B4">
 <description>&lt;B&gt;MKS4&lt;/B&gt;, 13.4 x 4 mm, grid 10.16 mm</description>
@@ -8939,6 +8955,10 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <text x="-0.635" y="-1.905" size="1.27" layer="27">&gt;VALUE</text>
 <rectangle x1="-0.554" y1="-0.3048" x2="-0.254" y2="0.2951" layer="51"/>
 <rectangle x1="0.2588" y1="-0.3048" x2="0.5588" y2="0.2951" layer="51"/>
+<wire x1="-1.143" y1="0.635" x2="-1.143" y2="-0.635" width="0.127" layer="21"/>
+<wire x1="-1.143" y1="-0.635" x2="1.143" y2="-0.635" width="0.127" layer="21"/>
+<wire x1="1.143" y1="-0.635" x2="1.143" y2="0.635" width="0.127" layer="21"/>
+<wire x1="1.143" y1="0.635" x2="-1.143" y2="0.635" width="0.127" layer="21"/>
 </package>
 <package name="SOT-523-3">
 <smd name="P$1" x="0" y="0.6477" dx="0.3556" dy="0.508" layer="1"/>
@@ -9187,18 +9207,6 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <rectangle x1="-2.032" y1="-2.032" x2="2.032" y2="-1.524" layer="94"/>
 <pin name="1" x="0" y="2.54" visible="off" length="short" direction="pas" swaplevel="1" rot="R270"/>
 <pin name="2" x="0" y="-5.08" visible="off" length="short" direction="pas" swaplevel="1" rot="R90"/>
-</symbol>
-<symbol name="RESISTOR">
-<wire x1="-2.54" y1="-0.889" x2="2.54" y2="-0.889" width="0.254" layer="94"/>
-<wire x1="2.54" y1="0.889" x2="-2.54" y2="0.889" width="0.254" layer="94"/>
-<wire x1="2.54" y1="-0.889" x2="2.54" y2="0.889" width="0.254" layer="94"/>
-<wire x1="-2.54" y1="-0.889" x2="-2.54" y2="0.889" width="0.254" layer="94"/>
-<text x="-3.81" y="1.4986" size="1.778" layer="95">&gt;NAME</text>
-<text x="-3.81" y="-3.302" size="1.778" layer="96">&gt;VALUE</text>
-<pin name="2" x="5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1" rot="R180"/>
-<pin name="1" x="-5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1"/>
-<text x="-5.08" y="0" size="0.4064" layer="99" align="center">SpiceOrder 1</text>
-<text x="5.08" y="0" size="0.4064" layer="99" align="center">SpiceOrder 2</text>
 </symbol>
 </symbols>
 <devicesets>
@@ -10033,22 +10041,6 @@ naming: grid - package width</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="RESISTOR">
-<gates>
-<gate name="G$1" symbol="RESISTOR" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="GAP0402">
-<connects>
-<connect gate="G$1" pin="1" pad="1"/>
-<connect gate="G$1" pin="2" pad="2"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
 </devicesets>
 </library>
 <library name="adafruit">
@@ -10100,10 +10092,10 @@ package type OT</description>
 </package>
 <package name="SOT23">
 <description>&lt;b&gt;SOT-23&lt;/b&gt;</description>
-<wire x1="1.4224" y1="0.6604" x2="1.4224" y2="-0.6604" width="0.1524" layer="51"/>
-<wire x1="1.4224" y1="-0.6604" x2="-1.4224" y2="-0.6604" width="0.1524" layer="51"/>
-<wire x1="-1.4224" y1="-0.6604" x2="-1.4224" y2="0.6604" width="0.1524" layer="51"/>
-<wire x1="-1.4224" y1="0.6604" x2="1.4224" y2="0.6604" width="0.1524" layer="51"/>
+<wire x1="1.4224" y1="0.6604" x2="1.4224" y2="-0.6604" width="0.1524" layer="21"/>
+<wire x1="1.4224" y1="-0.6604" x2="-1.4224" y2="-0.6604" width="0.1524" layer="21"/>
+<wire x1="-1.4224" y1="-0.6604" x2="-1.4224" y2="0.6604" width="0.1524" layer="21"/>
+<wire x1="-1.4224" y1="0.6604" x2="1.4224" y2="0.6604" width="0.1524" layer="21"/>
 <smd name="3" x="0" y="1.1" dx="1" dy="1.4" layer="1"/>
 <smd name="2" x="0.95" y="-1.1" dx="1" dy="1.4" layer="1"/>
 <smd name="1" x="-0.95" y="-1.1" dx="1" dy="1.4" layer="1"/>
@@ -10385,7 +10377,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="R8" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
 <part name="R11" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
 <part name="GND2" library="supply1" deviceset="GND" device=""/>
-<part name="R9" library="lightmeter" deviceset="RESISTOR" device="" value="10k"/>
+<part name="R9" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
 </parts>
 <sheets>
 <sheet>
@@ -10778,14 +10770,14 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="76.2" y1="-2.54" x2="76.2" y2="0" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="GND5" gate="1" pin="GND"/>
-<wire x1="109.22" y1="-2.54" x2="109.22" y2="0" width="0.1524" layer="91"/>
-<pinref part="R9" gate="G$1" pin="2"/>
-</segment>
-<segment>
 <pinref part="R11" gate="G$1" pin="2"/>
 <pinref part="GND2" gate="1" pin="GND"/>
 <wire x1="58.42" y1="-30.48" x2="55.88" y2="-30.48" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="GND5" gate="1" pin="GND"/>
+<pinref part="R9" gate="G$1" pin="2"/>
+<wire x1="109.22" y1="0" x2="109.22" y2="-2.54" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="VCC" class="0">
@@ -11611,9 +11603,9 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="109.22" y1="-35.56" x2="109.22" y2="-20.32" width="0.1524" layer="91"/>
 <pinref part="Q3" gate="G$1" pin="S"/>
 <wire x1="109.22" y1="-35.56" x2="114.3" y2="-35.56" width="0.1524" layer="91"/>
-<wire x1="109.22" y1="-20.32" x2="109.22" y2="-12.7" width="0.1524" layer="91"/>
-<junction x="109.22" y="-20.32"/>
 <pinref part="R9" gate="G$1" pin="1"/>
+<wire x1="109.22" y1="-12.7" x2="109.22" y2="-20.32" width="0.1524" layer="91"/>
+<junction x="109.22" y="-20.32"/>
 </segment>
 </net>
 </nets>
