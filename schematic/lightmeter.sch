@@ -10459,10 +10459,10 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND40" library="supply1" deviceset="GND" device=""/>
 <part name="C10" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
 <part name="GND41" library="supply1" deviceset="GND" device=""/>
-<part name="C15" library="rcl" deviceset="C-EU" device="C0603" value="u03%"/>
+<part name="C15" library="rcl" deviceset="C-EU" device="C0603" value="3300p%"/>
 <part name="GND29" library="supply1" deviceset="GND" device=""/>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
-<part name="C16" library="rcl" deviceset="C-EU" device="C0603" value="u03%"/>
+<part name="C16" library="rcl" deviceset="C-EU" device="C0603" value="3300p%"/>
 <part name="IC$6" library="lightmeter" deviceset="LP5907" device=""/>
 <part name="P+2" library="supply1" deviceset="VCC" device=""/>
 <part name="C20" library="rcl" deviceset="C-EU" device="C0603" value="1u"/>
