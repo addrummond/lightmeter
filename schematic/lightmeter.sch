@@ -10644,7 +10644,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="GND14" gate="1" x="200.66" y="-71.12" rot="R90"/>
 <instance part="Q2" gate="G$1" x="86.36" y="-35.56" rot="R270"/>
 <instance part="Q3" gate="G$1" x="119.38" y="-35.56" rot="R270"/>
-<instance part="P+5" gate="VCC" x="-118.618" y="76.454" rot="R180"/>
+<instance part="P+5" gate="VCC" x="-125.476" y="86.36" rot="R90"/>
 </instances>
 <busses>
 </busses>
@@ -10958,7 +10958,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <segment>
 <pinref part="R1" gate="G$1" pin="1"/>
 <pinref part="P+5" gate="VCC" pin="VCC"/>
-<wire x1="-118.618" y1="78.994" x2="-118.618" y2="86.36" width="0.1524" layer="91"/>
+<wire x1="-122.936" y1="86.36" x2="-118.618" y2="86.36" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="VREG" class="0">
