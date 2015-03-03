@@ -30,6 +30,16 @@ void sensor_init_adc()
     adci.ADC_DataAlign = ADC_DataAlign_Right;
     adci.ADC_ScanDirection = ADC_ScanDirection_Upward;
     ADC_Init(ADC1, &adci);
+    ADC_Init(ADC2, &adci);
+
+    ADC_ChannelConfig(ADC1, MEASURE1_ADC_CHANNEL, ADC_SampleTime_239_5Cycles);
+    ADC_ChannelConfig(ADC2, MEASURE2_ADC_CHANNEL, ADC_SampleTime_239_5Cycles);
+
+    ADC_GetCalibrationFactor(ADC1);
+    ADC_GetCalibrationFactor(ADC2);
+
+    ADC_Cmd(ADC1, ENABLE);
+    ADC_Cmd(ADC2, ENABLE);
 }
 
 // 0 is power down mode.
