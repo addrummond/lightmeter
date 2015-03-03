@@ -2988,15 +2988,15 @@ design rules under a new name.</description>
 <attribute name="VALUE" x="18.415" y="6.477" size="1.27" layer="28" rot="MR180"/>
 </element>
 <element name="C6" library="rcl" package="C0402" value="u1" x="4.6482" y="29.5148" smashed="yes" rot="R90">
-<attribute name="NAME" x="4.0132" y="28.8798" size="0.762" layer="25" rot="R90"/>
+<attribute name="NAME" x="2.3876" y="28.7274" size="0.762" layer="25"/>
 <attribute name="VALUE" x="6.5532" y="28.8798" size="1.27" layer="27" rot="R90"/>
 </element>
 <element name="C22" library="rcl" package="C0402" value="4u7" x="11.1252" y="11.9634" smashed="yes" rot="R270">
-<attribute name="NAME" x="9.7028" y="12.9286" size="0.762" layer="25" rot="R270"/>
+<attribute name="NAME" x="9.5758" y="12.9794" size="0.762" layer="25" rot="R270"/>
 <attribute name="VALUE" x="9.2202" y="12.5984" size="1.27" layer="27" rot="R270"/>
 </element>
 <element name="C17" library="rcl" package="C0402" value="u1" x="6.1468" y="12.2174" smashed="yes" rot="R180">
-<attribute name="NAME" x="6.7818" y="11.5824" size="0.762" layer="25" rot="R180"/>
+<attribute name="NAME" x="6.9596" y="11.4808" size="0.762" layer="25" rot="R180"/>
 <attribute name="VALUE" x="6.7818" y="14.1224" size="1.27" layer="27" rot="R180"/>
 </element>
 <element name="C23" library="rcl" package="C0402" value="4u7" x="13.5636" y="12.9794" smashed="yes" rot="R180">
@@ -3028,15 +3028,15 @@ design rules under a new name.</description>
 <attribute name="VALUE" x="23.9268" y="35.1028" size="1.27" layer="27"/>
 </element>
 <element name="C4" library="rcl" package="C0402" value="1u" x="4.953" y="23.241" smashed="yes" rot="R270">
-<attribute name="NAME" x="3.5052" y="24.257" size="0.762" layer="25" rot="R270"/>
+<attribute name="NAME" x="2.9464" y="24.2062" size="0.762" layer="25" rot="R270"/>
 <attribute name="VALUE" x="3.048" y="23.876" size="1.27" layer="27" rot="R270"/>
 </element>
 <element name="C3" library="rcl" package="C0603" value="u1" x="4.4196" y="26.5049" smashed="yes" rot="R90">
-<attribute name="NAME" x="3.81" y="25.6413" size="0.762" layer="25" rot="R90"/>
+<attribute name="NAME" x="3.683" y="25.6667" size="0.762" layer="25" rot="R90"/>
 <attribute name="VALUE" x="6.3246" y="25.8699" size="1.27" layer="27" rot="R90"/>
 </element>
 <element name="C5" library="rcl" package="C0603" value="u1" x="7.1882" y="24.13" smashed="yes" rot="R180">
-<attribute name="NAME" x="5.9944" y="25.146" size="0.762" layer="25" rot="R180"/>
+<attribute name="NAME" x="8.7376" y="25.6286" size="0.508" layer="25" rot="R270"/>
 <attribute name="VALUE" x="7.8232" y="26.035" size="1.27" layer="27" rot="R180"/>
 </element>
 <element name="C15" library="rcl" package="C0603" value="u03%" x="15.9766" y="31.3944" smashed="yes" rot="R270">
@@ -3113,7 +3113,7 @@ design rules under a new name.</description>
 </element>
 <element name="R12" library="resistor" package="R0402" value="500k" x="4.5466" y="20.0152" smashed="yes" rot="R90">
 <attribute name="SPICEPREFIX" value="R" x="4.5466" y="20.0152" size="1.778" layer="27" rot="R90" display="off"/>
-<attribute name="NAME" x="3.937" y="19.05" size="0.762" layer="25" rot="R90"/>
+<attribute name="NAME" x="3.683" y="19.0754" size="0.762" layer="25" rot="R90"/>
 <attribute name="VALUE" x="6.5786" y="19.3802" size="1.27" layer="27" rot="R90"/>
 </element>
 <element name="U$2" library="lightmeter" package="78171-0002" value="LIBAT" x="8.3566" y="5.5372"/>
@@ -3186,7 +3186,7 @@ design rules under a new name.</description>
 <attribute name="VALUE" x="21.2306875" y="34.940871875" size="1.27" layer="27" rot="R160"/>
 </element>
 <element name="C19" library="rcl" package="C0402" value="4u7" x="6.1722" y="13.4366" smashed="yes" rot="R180">
-<attribute name="NAME" x="7.3152" y="14.7574" size="0.762" layer="25" rot="R180"/>
+<attribute name="NAME" x="7.8994" y="15.0622" size="0.762" layer="25" rot="R180"/>
 <attribute name="VALUE" x="6.8072" y="15.3416" size="1.27" layer="27" rot="R180"/>
 </element>
 <element name="C13" library="lightmeter" package="GAP0402" value="u01" x="11.1252" y="27.5336" smashed="yes" rot="R180">
