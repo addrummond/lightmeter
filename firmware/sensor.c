@@ -1,4 +1,4 @@
-static void sensor_init_config()
+void sensor_init_config()
 {
     // Configure amp stage selection pins.
     GPIO_InitTypeDef gpi;
@@ -13,8 +13,17 @@ static void sensor_init_config()
 }
 
 // 0 is power down mode.
-static void sensor_select_amp_stage(unsigned stage)
+void sensor_select_amp_stage(unsigned stage)
 {
     GPIO_Write_Bit(STG1_GPIO_PORT, STG1_PIN, stage & 1);
-    GPIO_Write_Bit(STG1_GPIO_PORT, STG1_PIN, (stage >> 1) & 1);
+    GPIO_Write_Bit(STG2_GPIO_PORT, STG2_PIN, (stage >> 1) & 1);
+}
+
+void sensor_reading()
+{
+    for (unsigned i = 1; i < 4, ++i) {
+        sensor_select_amp_stage(i);
+
+
+    }
 }
