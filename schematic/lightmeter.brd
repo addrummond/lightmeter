@@ -1517,11 +1517,11 @@ package type OT</description>
 <package name="X3-DFN0603-2">
 <smd name="P$1" x="-0.19" y="0" dx="0.2286" dy="0.3" layer="1"/>
 <smd name="P$2" x="0.19" y="0" dx="0.2286" dy="0.3" layer="1"/>
-<wire x1="-0.3556" y1="0.180340625" x2="0.3556" y2="0.180340625" width="0.0635" layer="21"/>
-<wire x1="-0.3556" y1="-0.180340625" x2="0.3556" y2="-0.180340625" width="0.0635" layer="21"/>
-<wire x1="-0.3556" y1="0.180340625" x2="-0.3556" y2="-0.180340625" width="0.0635" layer="22"/>
-<wire x1="0.3556" y1="0.180340625" x2="0.3556" y2="-0.180340625" width="0.0635" layer="22"/>
-<wire x1="0.4572" y1="0.2286" x2="0.4572" y2="-0.2286" width="0.0635" layer="22"/>
+<wire x1="-0.381" y1="0.231140625" x2="0.3556" y2="0.231140625" width="0.127" layer="21"/>
+<wire x1="-0.3556" y1="-0.231140625" x2="0.3556" y2="-0.231140625" width="0.127" layer="21"/>
+<wire x1="-0.381" y1="0.205740625" x2="-0.381" y2="-0.231140625" width="0.127" layer="22"/>
+<wire x1="0.381" y1="0.231140625" x2="0.381" y2="-0.231140625" width="0.127" layer="22"/>
+<wire x1="0.5588" y1="0.3302" x2="0.5588" y2="-0.3048" width="0.127" layer="22"/>
 </package>
 <package name="JUMPER_R0402">
 <wire x1="-0.245" y1="0.224" x2="0.245" y2="0.224" width="0.1524" layer="51"/>
@@ -3153,10 +3153,10 @@ design rules under a new name.</description>
 <element name="S$1" library="lightmeter" package="PTS540BTM" value="PTS540" x="6.35" y="3.4544"/>
 <element name="S$2" library="lightmeter" package="PTS540BTM" value="PTS540" x="22.89" y="3.4544"/>
 <element name="D2" library="lightmeter" package="X3-DFN0603-2" value="" x="22.3012" y="25.0698" smashed="yes" rot="R90">
-<attribute name="NAME" x="21.6916" y="25.146" size="0.762" layer="25" rot="R90"/>
+<attribute name="NAME" x="22.2758" y="23.241" size="0.762" layer="25" rot="R90"/>
 </element>
 <element name="D3" library="lightmeter" package="X3-DFN0603-2" value="" x="23.1902" y="25.0698" smashed="yes" rot="R90">
-<attribute name="NAME" x="23.241" y="22.9616" size="0.762" layer="25" rot="R90"/>
+<attribute name="NAME" x="23.3934" y="23.241" size="0.762" layer="25" rot="R90"/>
 </element>
 <element name="J4" library="lightmeter" package="JUMPER_R0402" value="CONNECTEDJUMPER" x="14.732" y="34.7472" smashed="yes">
 <attribute name="NAME" x="15.748" y="34.3154" size="0.762" layer="25"/>
