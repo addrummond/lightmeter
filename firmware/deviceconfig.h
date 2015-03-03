@@ -28,11 +28,11 @@ NRST     --|                       |-- USBDP
            |                       |
 VDDA     --|                       |-- PBI$1
            |                       |
-OAOUT1   --|                       |-- PBI$2
+MEASURE1 --|                       |-- PBI$2
            |                       |
 SCRPWR   --|                       |-- SCRRES
            |                       |
-OAOUT2   --|                       |-- VDD
+MEASURE2 --|                       |-- VDD
            |_______________________|
             |  |  |  |  |  |  |  |
             B  D  B  U  U  I     V
