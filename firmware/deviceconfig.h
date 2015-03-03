@@ -12,9 +12,9 @@ STM32F030K6T6 configuration.
 
                   I  I
             V  B  2  2  P  P
-            S  O  C  C  Z  Z
-            S  O  S  S  P  N  G  G
-               T  D  C  O  E  B  B
+            S  O  C  C  Z  Z  S  S
+            S  O  S  S  P  N  T  T
+               T  D  C  O  E  G  G
                0  A  L  S  H  1  2
             |  |  |  |  |  |  |  |
             ________________________
@@ -71,11 +71,11 @@ MEASURE2 --|                       |-- VDD
 #define DIODESW3_PORT        GPIOA
 #define DIODESW3_PIN         GPIO_Pin_3
 
-#define STG1_PORT            GPIOB
-#define STG1_PIN             GPIO_Pin_0
+#define STG1_GPIO_PORT       GPIOB
+#define STG1_PIN             GPIO_Pin_3
 
-#define STG2_PORT            GPIOB
-#define STG2_PIN             GPIO_Pin_1
+#define STG2_GPIO_PORT       GPIOA
+#define STG2_PIN             GPIO_Pin_15
 
 
 //
