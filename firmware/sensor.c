@@ -12,6 +12,26 @@ void sensor_init_config()
     GPIO_Init(STG2_GPIO_PORT, &gpi);
 }
 
+void sensor_init_adc()
+{
+    GPIO_InitTypeDef gpi;
+    ADC_InitTypeDef adci;
+
+    gpi.GPIO_Pin = MEASURE1_GPIO_PIN;
+    gpi.GPIO_Mode = GPIO_Mode_AN;
+    gpi.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_Init(MEASURE1_GPIO_PORT, &gpi);
+    gpi.GPIO_Pin = MEASURE2_GPIO_PIN;
+    GPIO_Init(MEASURE2_GPIO_PORT, &gpi);
+
+    adci.ADC_Resolution = ADC_Resolution_12b;
+    adci.ADC_ContinuousConvMode = DISABLE;
+    adci.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
+    adci.ADC_DataAlign = ADC_DataAlign_Right;
+    adci.ADC_ScanDirection = ADC_ScanDirection_Upward;
+    ADC_Init(ADC1, &adci);
+}
+
 // 0 is power down mode.
 void sensor_select_amp_stage(unsigned stage)
 {

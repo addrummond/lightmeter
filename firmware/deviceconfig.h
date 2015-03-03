@@ -79,6 +79,16 @@ MEASURE2 --|                       |-- VDD
 
 
 //
+// ADC pins for light sensor measurement.
+//
+
+#define MEASURE1_GPIO_PORT   GPIOA
+#define MEASURE1_PIN         GPIO_Pin_0
+#define MEASURE2_GPIO_PORT   GPIOA
+#define MEASURE2_PIN         GPIO_Pin_2
+
+
+//
 // I2C
 //
 
