@@ -11,12 +11,14 @@
 
 int main()
 {
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
+    RCC_AHBPeriphClockCmd( RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOB, ENABLE);
+
 
     debugging_writec("Hello World!\n");
 
     piezo_init();
+
+    debugging_writec("Piezo init complete\n");
 
     i2c_init();
     display_init();

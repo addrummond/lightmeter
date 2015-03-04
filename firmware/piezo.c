@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <myassert.h>
 #include <stm32f0xx_gpio.h>
 #include <stm32f0xx_tim.h>
 #include <stm32f0xx_rcc.h>
@@ -10,7 +11,14 @@ void piezo_init()
     TIM_OCInitTypeDef  TIM_OCInitStructure;
     GPIO_InitTypeDef GPIO_InitStructure;
 
-    /* GPIOA Configuration: TIM3 CH1 (PB4) and TIM3 CH2 (PB5) */
+    NVIC_InitTypeDef NVIC_InitStructure;
+    // Enable the TIM3 gloabal Interrupt.
+    NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
+
+    // GPIOA Configuration: TIM3 CH1 (PB4) and TIM3 CH2 (PB5).
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -23,7 +31,7 @@ void piezo_init()
     GPIO_PinAFConfig(GPIOB, GPIO_PinSource5, GPIO_AF_2);
 
     // Compute the value to be set in ARR regiter to generate signal frequency at 17.57 Khz.
-    uint16_t TimerPeriod = (SystemCoreClock / 17570 ) - 1;
+    uint32_t TimerPeriod = (SystemCoreClock / 17570 ) - 1;
     // Compute CCR1 value to generate a duty cycle at 50% for channel 1 and 1N.
     uint16_t Channel1Pulse = (uint16_t) (((uint32_t) 5 * (TimerPeriod - 1)) / 10);
     // Compute CCR4 value to generate a duty cycle at 12.5%  for channel 4 */
@@ -37,9 +45,10 @@ void piezo_init()
     TIM_TimeBaseStructure.TIM_Prescaler = 0;
     TIM_TimeBaseStructure.TIM_ClockDivision = 0;
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+    TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
     TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
 
-    /* Channel 1, 2,3 and 4 Configuration in PWM mode */
+    // Channel 1 and 2 configuration in PWM mode.
     TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM2;
     TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
     TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
@@ -48,13 +57,13 @@ void piezo_init()
     TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
     TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
     TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Reset;
-    TIM_OC1Init(TIM1, &TIM_OCInitStructure);
+    TIM_OC1Init(TIM3, &TIM_OCInitStructure);
     TIM_OCInitStructure.TIM_Pulse = Channel2Pulse;
-    TIM_OC1Init(TIM1, &TIM_OCInitStructure);
+    TIM_OC2Init(TIM3, &TIM_OCInitStructure);
 
-    /// TIM3 counter enable.
+    // TIM3 counter enable.
     TIM_Cmd(TIM3, ENABLE);
 
-    /* TIM1 Main Output Enable */
+    // TIM3 Main Output Enable.
     TIM_CtrlPWMOutputs(TIM3, ENABLE);
 }
