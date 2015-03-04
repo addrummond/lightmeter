@@ -3,6 +3,7 @@
 #include <stm32f0xx_rcc.h>
 
 #include <i2c.h>
+#include <piezo.h>
 #include <display.h>
 #include <ui.h>
 #include <state.h>
@@ -14,6 +15,8 @@ int main()
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
 
     debugging_writec("Hello World!\n");
+
+    piezo_init();
 
     i2c_init();
     display_init();
