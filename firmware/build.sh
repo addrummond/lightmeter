@@ -33,6 +33,8 @@ $CC $CFLAGS -c ./stm/stm32f0xx_i2c.c -o ./stm/stm32f0xx_i2c.o
 OBJS="$OBJS ./stm/stm32f0xx_i2c.o"
 $CC $CFLAGS -c ./stm/stm32f0xx_adc.c -o ./stm/stm32f0xx_adc.o
 OBJS="$OBJS ./stm/stm32f0xx_adc.o"
+$CC $CFLAGS -c ./stm/stm32f0xx_tim.c -o ./stm/stm32f0xx_tim.o
+OBJS="$OBJS ./stm/stm32f0xx_tim.o"
 
 $CC $CFLAGS -c debugging.c -o debugging.o
 OBJS="$OBJS debugging.o"
@@ -52,6 +54,8 @@ $CC $CFLAGS -c state.c -o state.o
 OBJS="$OBJS state.o"
 $CC $CFLAGS -c display.c -o display.o
 OBJS="$OBJS display.o"
+$CC $CFLAGS -c piezo.c -o piezo.o
+OBJS="$OBJS piezo.o"
 $CC $CFLAGS -c ui.c -o ui.o
 OBJS="$OBJS ui.o"
 $CC $CFLAGS -c bitmaps/bitmaps.c -o bitmaps/bitmaps.o

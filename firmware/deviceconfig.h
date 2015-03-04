@@ -84,9 +84,9 @@ MEASURE2 --|                       |-- VDD
 
 #define MEASURE1_GPIO_PORT   GPIOA
 #define MEASURE1_PIN         GPIO_Pin_0
-#define MEASURE1_ADC_CHANNEL ADC_IN0
+#define MEASURE1_ADC_CHANNEL ADC_Channel_0
 #define MEASURE2_GPIO_PORT   GPIOA
-#define MEASURE2_PIN         GPIO_Pin_2
+#define MEASURE2_PIN         ADC_Channel_1
 #define MEASURE2_ADC_CHANNEL ADC_IN2
 
 
@@ -104,6 +104,18 @@ MEASURE2 --|                       |-- VDD
 #define I2C_SCL_SOURCE       GPIO_PinSource6
 #define I2C_SDA_GPIO_CLK     RCC_AHBPeriph_GPIOB
 #define I2C_SCL_GPIO_CLK     RCC_AHBPeriph_GPIOB
+
+
+//
+// Piezo bender
+//
+
+#define PIEZOPOS_GPIO_PORT   GPIOB
+#define PIEZOPOS_PIN         GPIO_Pin_5
+#define PIEZOPOS_PIN_SOURCE  GPIO_PinSource5
+#define PIEZONEG_GPIO_PORT   GPIOB
+#define PIEZONEG_PIN         GPIO_Pin_4
+#define PIEZONEG_PIN_SOURCE  GPIO_PinSource4
 
 
 //
