@@ -11451,7 +11451,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="GND18" library="supply1" deviceset="GND" device=""/>
 <part name="GND19" library="supply1" deviceset="GND" device=""/>
 <part name="GND20" library="supply1" deviceset="GND" device=""/>
-<part name="R4" library="resistor" deviceset="R-EU_" device="R0402" value="1k"/>
+<part name="R4" library="resistor" deviceset="R-EU_" device="R0603" value="130"/>
 <part name="S$3" library="lightmeter" deviceset="PTS540" device=""/>
 <part name="S$1" library="lightmeter" deviceset="PTS540" device=""/>
 <part name="S$2" library="lightmeter" deviceset="PTS540" device=""/>
