@@ -11,15 +11,15 @@ void piezo_init()
     TIM_OCInitTypeDef  TIM_OCInitStructure;
     GPIO_InitTypeDef GPIO_InitStructure;
 
-    NVIC_InitTypeDef NVIC_InitStructure;
+    /*NVIC_InitTypeDef NVIC_InitStructure;
     // Enable the TIM3 gloabal Interrupt.
     NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_Init(&NVIC_InitStructure);
+    NVIC_Init(&NVIC_InitStructure);*/
 
     // GPIOA Configuration: TIM3 CH1 (PB4) and TIM3 CH2 (PB5).
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -27,11 +27,11 @@ void piezo_init()
     GPIO_Init(GPIOB, &GPIO_InitStructure);
 
     // Connect TIM Channels to AF2.
-    GPIO_PinAFConfig(GPIOB, GPIO_PinSource4, GPIO_AF_2);
-    GPIO_PinAFConfig(GPIOB, GPIO_PinSource5, GPIO_AF_2);
+    GPIO_PinAFConfig(GPIOB, GPIO_PinSource4, GPIO_AF_1);
+    GPIO_PinAFConfig(GPIOB, GPIO_PinSource5, GPIO_AF_3);
 
     // Compute the value to be set in ARR regiter to generate signal frequency at 17.57 Khz.
-    uint32_t TimerPeriod = (SystemCoreClock / 17570 ) - 1;
+    uint16_t TimerPeriod = (SystemCoreClock / 5000/*17570*/ ) - 1;
     // Compute CCR1 value to generate a duty cycle at 50% for channel 1 and 1N.
     uint16_t Channel1Pulse = (uint16_t) (((uint32_t) 5 * (TimerPeriod - 1)) / 10);
     // Compute CCR4 value to generate a duty cycle at 12.5%  for channel 4 */
@@ -64,6 +64,6 @@ void piezo_init()
     // TIM3 counter enable.
     TIM_Cmd(TIM3, ENABLE);
 
-    // TIM3 Main Output Enable.
-    TIM_CtrlPWMOutputs(TIM3, ENABLE);
+    // Not needed for this timer (TIM3).
+    //TIM_CtrlPWMOutputs(TIM3, ENABLE);
 }
