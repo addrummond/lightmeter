@@ -4,9 +4,38 @@
 #include <stm32f0xx_tim.h>
 #include <stm32f0xx_rcc.h>
 #include <stm32f0xx_misc.h>
+#include <deviceconfig.h>
 
 void piezo_init()
 {
+    //
+    // Test code that uses GPIO to bitbang the piezo pins.
+    //
+
+    /*GPIO_InitTypeDef gpi;
+    gpi.GPIO_Pin = PIEZOPOS_PIN;
+    gpi.GPIO_Mode = GPIO_Mode_OUT;
+    gpi.GPIO_Speed = GPIO_Speed_Level_1;
+    gpi.GPIO_OType = GPIO_OType_PP;
+    gpi.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_Init(PIEZOPOS_GPIO_PORT, &gpi);
+    gpi.GPIO_Pin = PIEZONEG_PIN;
+    GPIO_Init(PIEZONEG_GPIO_PORT, &gpi);
+
+    unsigned v = 0;
+    for (;;) {
+        GPIO_WriteBit(PIEZOPOS_GPIO_PORT, PIEZOPOS_PIN, v);
+        GPIO_WriteBit(PIEZONEG_GPIO_PORT, PIEZONEG_PIN, !v);
+        v = !v;
+        unsigned i;
+        for (i = 0; i < 1800; ++i);
+    }*/
+
+
+    //
+    // PWM setup.
+    //
+
     TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
     TIM_OCInitTypeDef  TIM_OCInitStructure;
     GPIO_InitTypeDef GPIO_InitStructure;
