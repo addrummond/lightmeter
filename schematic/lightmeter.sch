@@ -12080,9 +12080,9 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pinref part="D4" gate="G$1" pin="A"/>
 </segment>
 <segment>
-<pinref part="IC$4" gate="G$1" pin="PA10"/>
-<wire x1="0" y1="-12.7" x2="2.54" y2="-12.7" width="0.1524" layer="91"/>
-<label x="2.54" y="-12.7" size="1.778" layer="95" xref="yes"/>
+<pinref part="IC$4" gate="G$1" pin="PA12"/>
+<wire x1="0" y1="-2.54" x2="2.54" y2="-2.54" width="0.1524" layer="91"/>
+<label x="2.54" y="-2.54" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="N$24" class="0">
@@ -12346,6 +12346,11 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pinref part="IC$4" gate="G$1" pin="PB4"/>
 <wire x1="-25.4" y1="22.86" x2="-25.4" y2="25.4" width="0.1524" layer="91"/>
 <label x="-25.4" y="25.4" size="1.778" layer="95" rot="R90" xref="yes"/>
+</segment>
+<segment>
+<pinref part="IC$4" gate="G$1" pin="PA10"/>
+<wire x1="0" y1="-12.7" x2="2.54" y2="-12.7" width="0.1524" layer="91"/>
+<label x="2.54" y="-12.7" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="NRST" class="0">
@@ -12665,6 +12670,11 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pinref part="IC$4" gate="G$1" pin="PB5"/>
 <wire x1="-30.48" y1="22.86" x2="-30.48" y2="25.4" width="0.1524" layer="91"/>
 <label x="-30.48" y="25.4" size="1.778" layer="95" rot="R90" xref="yes"/>
+</segment>
+<segment>
+<pinref part="IC$4" gate="G$1" pin="PA11"/>
+<wire x1="0" y1="-7.62" x2="2.54" y2="-7.62" width="0.1524" layer="91"/>
+<label x="2.54" y="-7.62" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="USBD+" class="0">

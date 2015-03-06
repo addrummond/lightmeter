@@ -22,11 +22,11 @@ VDD      --|                       |-- SWDCLK/USBD+
            |                       |
          --|                       |-- SWDIO/USBD-
            |                       |
-         --|                       |-- USBDM
+         --|                       |-- PBI$1
            |                       |
-NRST     --|                       |-- USBDP
+NRST     --|                       |-- PIEZOPOS
            |                       |
-VDDA     --|                       |-- PBI$1
+VDDA     --|                       |-- PIEZONEG
            |                       |
 MEASURE1 --|                       |-- PBI$2
            |                       |
@@ -50,13 +50,13 @@ MEASURE2 --|                       |-- VDD
 //
 // Pushbutton ports configuration.
 //
-#define PUSHBUTTON1_PORT     GPIOB
-#define PUSHBUTTON1_PIN      GPIO_Pin_6
+#define PUSHBUTTON1_PORT     GPIOA
+#define PUSHBUTTON1_PIN      GPIO_Pin_12
 
-#define PUSHBUTTON2_PORT     GPIOB
-#define PUSHBUTTON2_PIN      GPIO_Pin_7
+#define PUSHBUTTON2_PORT     GPIOA
+#define PUSHBUTTON2_PIN      GPIO_Pin_9
 
-#define FOR_X_FROM_1_TO_N_PUSHBUTTONS_WITH_GPIO_DO(x) x(1, GPIOB) x(2, GPIOB)
+#define FOR_X_FROM_1_TO_N_PUSHBUTTONS_WITH_GPIO_DO(x) x(1, GPIOA) x(2, GPIOA)
 
 
 //
@@ -104,18 +104,6 @@ MEASURE2 --|                       |-- VDD
 #define I2C_SCL_SOURCE       GPIO_PinSource6
 #define I2C_SDA_GPIO_CLK     RCC_AHBPeriph_GPIOB
 #define I2C_SCL_GPIO_CLK     RCC_AHBPeriph_GPIOB
-
-
-//
-// Piezo bender
-//
-
-#define PIEZOPOS_GPIO_PORT   GPIOB
-#define PIEZOPOS_PIN         GPIO_Pin_5
-#define PIEZOPOS_PIN_SOURCE  GPIO_PinSource5
-#define PIEZONEG_GPIO_PORT   GPIOB
-#define PIEZONEG_PIN         GPIO_Pin_4
-#define PIEZONEG_PIN_SOURCE  GPIO_PinSource4
 
 
 //

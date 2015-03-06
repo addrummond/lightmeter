@@ -33,59 +33,66 @@ void piezo_init()
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
 }
 
-void piezo_set_periods(uint16_t period1, uint16_t period2)
+void piezo_set_period(unsigned channels, uint16_t period)
 {
     // 50% duty cycle.
-    uint16_t pulse1 = (uint16_t) (((uint32_t) 5 * (period1 - 1)) / 10);
-    uint16_t pulse2 = (uint16_t) (((uint32_t) 5 * (period2 - 1)) / 10);
+    uint16_t pulse = (uint16_t) (((uint32_t) 5 * (period - 1)) / 10);
 
     TIM_TimeBaseInitTypeDef tbs;
     TIM_OCInitTypeDef oci;
 
-    // TIM3 channel 1 and 2 configuration in PWM mode.
+    // Channel 1 and 2 configuration in PWM mode.
     oci.TIM_OCMode = TIM_OCMode_PWM1;
     oci.TIM_OutputState = TIM_OutputState_Enable;
     oci.TIM_OutputNState = TIM_OutputNState_Enable;
-    oci.TIM_Pulse = pulse1;
+    oci.TIM_Pulse = pulse;
     oci.TIM_OCPolarity = TIM_OCPolarity_Low;
     oci.TIM_OCNPolarity = TIM_OCNPolarity_High;
     oci.TIM_OCIdleState = TIM_OCIdleState_Set;
     oci.TIM_OCNIdleState = TIM_OCIdleState_Reset;
-    TIM_OC1Init(TIM3, &oci);
+    if (channels & 1)
+        TIM_OC1Init(TIM3, &oci);
+    if (channels & 2)
+        TIM_OC3Init(TIM1, &oci);
     oci.TIM_OCMode = TIM_OCMode_PWM2;
-    TIM_OC2Init(TIM3, &oci);
-
-    // TIM1 channel 3 and 4 configuration in PWM mode.
-    oci.TIM_Pulse = pulse2;
-    oci.TIM_OCMode = TIM_OCMode_PWM1;
-    TIM_OC3Init(TIM1, &oci);
-    oci.TIM_OCMode = TIM_OCMode_PWM2;
-    TIM_OC4Init(TIM2, &oci);
+    if (channels & 1)
+        TIM_OC2Init(TIM3, &oci);
+    if (channels & 2)
+        TIM_OC4Init(TIM1, &oci);
 
     // Time base configuration.
     tbs.TIM_Prescaler = 0;
     tbs.TIM_CounterMode = TIM_CounterMode_Up;
-    tbs.TIM_Period = period1;
+    tbs.TIM_Period = period;
     tbs.TIM_ClockDivision = 0;
     tbs.TIM_RepetitionCounter = 0;
-    TIM_TimeBaseInit(TIM3, &tbs);
-    tbs.TIM_Period = period2;
-    TIM_TimeBaseInit(TIM1, &tbs);
+    if (channels & 1)
+        TIM_TimeBaseInit(TIM3, &tbs);
+    if (channels & 2)
+        TIM_TimeBaseInit(TIM1, &tbs);
 }
 
-void piezo_turn_on()
+void piezo_turn_on(unsigned channels)
 {
     // TIM3 clock enable.
-    TIM_Cmd(TIM3, ENABLE);
-    TIM_Cmd(TIM1, ENABLE);
-    TIM_CtrlPWMOutputs(TIM1, ENABLE);
+    if (channels & 1) {
+        TIM_Cmd(TIM3, ENABLE);
+    }
+    if (channels & 2) {
+        TIM_Cmd(TIM1, ENABLE);
+        TIM_CtrlPWMOutputs(TIM1, ENABLE);
+    }
 }
 
-void piezo_pause()
+void piezo_pause(unsigned channels)
 {
-    TIM_Cmd(TIM3, DISABLE);
-    TIM_Cmd(TIM1, DISABLE);
-    TIM_CtrlPWMOutputs(TIM1, DISABLE);
+    if (channels & 1) {
+        TIM_Cmd(TIM3, DISABLE);
+        TIM_Cmd(TIM1, DISABLE);
+    }
+    if (channels & 2) {
+        TIM_CtrlPWMOutputs(TIM1, DISABLE);
+    }
 }
 
 void piezo_deinit()
