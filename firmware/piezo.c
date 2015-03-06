@@ -22,7 +22,6 @@ void piezo_init()
     GPIO_PinAFConfig(GPIOB, GPIO_PinSource5, GPIO_AF_1);
 
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
-
 }
 
 void piezo_set_period(uint16_t period)
