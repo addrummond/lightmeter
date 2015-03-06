@@ -36,56 +36,50 @@ void piezo_init()
     // PWM setup.
     //
 
-    TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
-    TIM_OCInitTypeDef  TIM_OCInitStructure;
-    GPIO_InitTypeDef GPIO_InitStructure;
+    TIM_TimeBaseInitTypeDef tbs;
+    TIM_OCInitTypeDef oci;
+    GPIO_InitTypeDef gpi;
 
     // GPIOA Configuration: TIM3 CH1 (PB4) and TIM3 CH2 (PB5).
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
+    gpi.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
+    gpi.GPIO_Mode = GPIO_Mode_AF;
+    gpi.GPIO_Speed = GPIO_Speed_50MHz;
+    gpi.GPIO_OType = GPIO_OType_PP;
+    gpi.GPIO_PuPd = GPIO_PuPd_UP ;
+    GPIO_Init(GPIOB, &gpi);
 
-    // Connect TIM Channels to AF2.
-        GPIO_PinAFConfig(GPIOB, GPIO_PinSource4, GPIO_AF_1);
-    GPIO_PinAFConfig(GPIOB, GPIO_PinSource5, GPIO_AF_3);
+    // Connect TIM Channels to AF1.
+    GPIO_PinAFConfig(GPIOB, GPIO_PinSource4, GPIO_AF_1);
+    GPIO_PinAFConfig(GPIOB, GPIO_PinSource5, GPIO_AF_1);
 
-    // Compute the value to be set in ARR regiter to generate signal frequency at 17.57 Khz.
-    uint16_t TimerPeriod = (SystemCoreClock / 910/*17570*/ ) - 1;
-    // Compute CCR1 value to generate a duty cycle at 50% for channel 1 and 1N.
-    uint16_t Channel1Pulse = (uint16_t) (((uint32_t) 5 * (TimerPeriod - 1)) / 10);
-    // Compute CCR4 value to generate a duty cycle at 12.5%  for channel 4 */
-    uint16_t Channel2Pulse = (uint16_t) (((uint32_t) 125 * (TimerPeriod- 1)) / 1000);
+    // Compute the value to be set in ARR register.
+    const uint16_t TIMER_PERIOD = (SystemCoreClock / 4000) - 1;
+    // Generate a 50% duty cycle.
+    const uint16_t PULSE = (uint16_t) (((uint32_t) 5 * (TIMER_PERIOD - 1)) / 10);
 
     // TIM3 clock enable.
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
 
     // Time base configuration.
-    TIM_TimeBaseStructure.TIM_Period = 0;
-    TIM_TimeBaseStructure.TIM_Prescaler = 0;
-    TIM_TimeBaseStructure.TIM_ClockDivision = 0;
-    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-    TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
-    TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
+    tbs.TIM_Prescaler = 0;
+    tbs.TIM_CounterMode = TIM_CounterMode_Up;
+    tbs.TIM_Period = TIMER_PERIOD;
+    tbs.TIM_ClockDivision = 0;
+    tbs.TIM_RepetitionCounter = 0;
+    TIM_TimeBaseInit(TIM3, &tbs);
 
     // Channel 1 and 2 configuration in PWM mode.
-    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM2;
-    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-    TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
-    TIM_OCInitStructure.TIM_Pulse = Channel1Pulse;
-    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_Low;
-    TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
-    TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
-    TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Reset;
-    TIM_OC1Init(TIM3, &TIM_OCInitStructure);
-    TIM_OCInitStructure.TIM_Pulse = Channel2Pulse;
-    TIM_OC2Init(TIM3, &TIM_OCInitStructure);
+    oci.TIM_OCMode = TIM_OCMode_PWM1;
+    oci.TIM_OutputState = TIM_OutputState_Enable;
+    oci.TIM_OutputNState = TIM_OutputNState_Enable;
+    oci.TIM_Pulse = PULSE;
+    oci.TIM_OCPolarity = TIM_OCPolarity_Low;
+    oci.TIM_OCNPolarity = TIM_OCNPolarity_High;
+    oci.TIM_OCIdleState = TIM_OCIdleState_Set;
+    oci.TIM_OCNIdleState = TIM_OCIdleState_Reset;
+    TIM_OC1Init(TIM3, &oci);
+    oci.TIM_OCMode = TIM_OCMode_PWM2;
+    TIM_OC2Init(TIM3, &oci);
 
-    // TIM3 counter enable.
     TIM_Cmd(TIM3, ENABLE);
-
-    // Not needed for this timer (TIM3).
-    //TIM_CtrlPWMOutputs(TIM3, ENABLE);
 }
