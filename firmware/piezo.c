@@ -25,7 +25,7 @@ void piezo_init()
     GPIO_PinAFConfig(GPIOB, GPIO_PinSource5, GPIO_AF_1);
 
     // Compute the value to be set in ARR register.
-    const uint16_t TIMER_PERIOD = (SystemCoreClock / 4000) - 1;
+    const uint16_t TIMER_PERIOD = (SystemCoreClock / 1000) - 1;
     // Generate a 50% duty cycle.
     const uint16_t PULSE = (uint16_t) (((uint32_t) 5 * (TIMER_PERIOD - 1)) / 10);
 
