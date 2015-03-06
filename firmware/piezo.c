@@ -27,6 +27,7 @@ void piezo_init()
 
 void piezo_set_period(uint16_t period)
 {
+    // 50% duty cycle.
     uint16_t pulse = (uint16_t) (((uint32_t) 5 * (period - 1)) / 10);
 
     TIM_TimeBaseInitTypeDef tbs;
