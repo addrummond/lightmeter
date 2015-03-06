@@ -16,7 +16,7 @@ int main()
     debugging_writec("Hello World!\n");
 
     piezo_init();
-    piezo_set_period((SystemCoreClock / 1000) - 1);
+    piezo_set_periods((SystemCoreClock / 1000) - 1, (SystemCoreClock / 1300) - 1);
     piezo_turn_on();
 
     debugging_writec("Piezo init complete\n");
