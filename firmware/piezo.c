@@ -84,14 +84,29 @@ void piezo_turn_on(unsigned channels)
     }
 }
 
+static uint32_t old_channel1_period = 0;
+static uint16_t old_channel2_period = 0;
 void piezo_pause(unsigned channels)
 {
     if (channels & 1) {
-        TIM_Cmd(TIM3, DISABLE);
-        TIM_Cmd(TIM1, DISABLE);
+        old_channel1_period = TIM3->ARR;
+        TIM3->ARR = 0;
     }
     if (channels & 2) {
-        TIM_CtrlPWMOutputs(TIM1, DISABLE);
+        old_channel2_period = TIM1->ARR;
+        TIM1->ARR = 0;
+    }
+}
+
+void piezo_unpause(unsigned channels)
+{
+    if (channels & 1) {
+        TIM3->ARR = old_channel1_period;
+        //TIM3->EGR = TIM_PSCReloadMode_Immediate;
+    }
+    if (channels & 2) {
+        TIM1->ARR = old_channel2_period;
+        //TIM1->EGR = TIM_PSCReloadMode_Immediate;
     }
 }
 

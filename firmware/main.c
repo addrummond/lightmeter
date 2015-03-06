@@ -19,6 +19,14 @@ int main()
     piezo_set_period(1, (SystemCoreClock / 1000) - 1);
     piezo_set_period(2, (SystemCoreClock / 1500) - 1);
     piezo_turn_on(3);
+    for (;;) {
+        piezo_pause(1);
+        unsigned i;
+        for (i = 0; i < 2000000; ++i);
+        piezo_unpause(1);
+        for (i = 0; i < 2000000; ++i);
+        //debugging_writec("loop\n");
+    }
 
     debugging_writec("Piezo init complete\n");
 
