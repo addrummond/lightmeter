@@ -34,13 +34,15 @@ void debugging_putc(char c)
 
 void debugging_write_uint8(uint8_t i)
 {
-    char d1 = '0' + (i % 10);
-    char d2 = ((i/10)%10);
-    char d3 = '0' + ((i/100)%10);
-    if (d1 != '0')
-        debugging_putc(d1);
-    if (d2 != '0')
-        debugging_putc(d2);
-    if (d3 != '0')
-        debugging_putc(d3);
+    char ds[3];
+    char *dsp = ds;
+
+    ds[2] = '0' + (i % 10);
+    ds[1] = '0' + ((i/10)%10);
+    ds[0] = '0' + ((i/100)%10);
+    if (ds[0] == '0')
+        ++dsp;
+    if (ds[1] == '0')
+        ++dsp;
+    debugging_write(dsp, 3-(dsp-ds));
 }
