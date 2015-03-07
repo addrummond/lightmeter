@@ -25,7 +25,7 @@ int main()
         for (i = 0; i < 2000000; ++i);
         piezo_unpause(1);
         for (i = 0; i < 2000000; ++i);
-        //debugging_writec("loop\n");
+        debugging_writec("loop\n");
     }
 
     debugging_writec("Piezo init complete\n");

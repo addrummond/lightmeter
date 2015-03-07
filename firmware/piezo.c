@@ -8,22 +8,19 @@
 
 void piezo_init()
 {
-    // GPIOB configuration: TIM3 CH1 (PB4) and TIM3 CH2 (PB5).
+    // GPIOA configuration: TIM3 CH1 (PA6) and TIM3 CH2 (PA7),
+    //                      TIM1 CH3 (PA10) and TIM1 CH4 (PA11).
     GPIO_InitTypeDef gpi;
-    gpi.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
+    gpi.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_10 | GPIO_Pin_11;
     gpi.GPIO_Mode = GPIO_Mode_AF;
     gpi.GPIO_Speed = GPIO_Speed_50MHz;
     gpi.GPIO_OType = GPIO_OType_PP;
     gpi.GPIO_PuPd = GPIO_PuPd_UP ;
-    GPIO_Init(GPIOB, &gpi);
-
-    // GPIOA configuration: TIM1 CH3 (PA10) and TIM1 CH4 (PA11).
-    gpi.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_11;
     GPIO_Init(GPIOA, &gpi);
 
     // Connect TIM3 channels to AF1.
-    GPIO_PinAFConfig(GPIOB, GPIO_PinSource4, GPIO_AF_1);
-    GPIO_PinAFConfig(GPIOB, GPIO_PinSource5, GPIO_AF_1);
+    GPIO_PinAFConfig(GPIOA, GPIO_PinSource6, GPIO_AF_1);
+    GPIO_PinAFConfig(GPIOA, GPIO_PinSource7, GPIO_AF_1);
 
     // Connect TIM1 channels to AF2.
     GPIO_PinAFConfig(GPIOA, GPIO_PinSource10, GPIO_AF_2);
