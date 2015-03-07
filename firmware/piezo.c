@@ -3,10 +3,45 @@
 #include <stm32f0xx_gpio.h>
 #include <stm32f0xx_tim.h>
 #include <stm32f0xx_rcc.h>
+#include <stm32f0xx_adc.h>
 #include <stm32f0xx_misc.h>
 #include <deviceconfig.h>
 
-void piezo_init()
+void piezo_mic_init()
+{
+    ADC_InitTypeDef adci;
+    GPIO_InitTypeDef gpi;
+
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+
+    gpi.GPIO_Pin = GPIO_Pin_6;
+    gpi.GPIO_Mode = GPIO_Mode_AN;
+    gpi.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_Init(GPIOA, &gpi);
+
+    ADC_DeInit(ADC1);
+
+    ADC_StructInit(&adci);
+    adci.ADC_Resolution = ADC_Resolution_12b;
+    adci.ADC_ContinuousConvMode = ENABLE;
+    adci.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
+    adci.ADC_DataAlign = ADC_DataAlign_Right;
+    adci.ADC_ScanDirection = ADC_ScanDirection_Upward;
+    ADC_Init(ADC1, &adci);
+
+    ADC_ChannelConfig(ADC1, ADC_Channel_6 , ADC_SampleTime_239_5Cycles);
+    ADC_GetCalibrationFactor(ADC1);
+    ADC_Cmd(ADC1, ENABLE);
+    while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
+    ADC_StartOfConversion(ADC1);
+}
+
+uint16_t piezo_mic_get_reading()
+{
+    return ADC_GetConversionValue(ADC1);
+}
+
+void piezo_out_init()
 {
     // GPIOA configuration: TIM3 CH1 (PA6) and TIM3 CH2 (PA7),
     //                      TIM1 CH3 (PA10) and TIM1 CH4 (PA11).
@@ -107,7 +142,7 @@ void piezo_unpause(unsigned channels)
     }
 }
 
-void piezo_deinit()
+void piezo_out_deinit()
 {
     TIM_Cmd(TIM3, DISABLE);
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, DISABLE);

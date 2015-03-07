@@ -15,7 +15,17 @@ int main()
 
     debugging_writec("Hello World!\n");
 
-    piezo_init();
+    piezo_mic_init();
+    for (;;) {
+        uint16_t r = piezo_mic_get_reading();
+        debugging_writec("Val: ");
+        debugging_write_uint8((uint8_t)(r >> 4));
+        debugging_writec("\n");
+        unsigned i;
+        for (i = 0; i < 2000000; ++i);
+    }
+
+    piezo_out_init();
     piezo_set_period(1, (SystemCoreClock / 1000) - 1);
     piezo_set_period(2, (SystemCoreClock / 1500) - 1);
     piezo_turn_on(3);
