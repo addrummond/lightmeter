@@ -35,11 +35,11 @@ SCRPWR   --|                       |-- SCRRES
 MEASURE2 --|                       |-- VDD
            |_______________________|
             |  |  |  |  |  |  |  |
-            B  D  B  P  P  I     V
-            R  I  A  I  I  N     S
-            E  O  T  E  E  T     S
-            S  D  V  Z  Z  E
-            E  E  O  O  O  G
+            M  D  B  P  P  I     V
+            I  I  A  I  I  N     S
+            C  O  T  E  E  T     S
+            O  D  V  Z  Z  E
+            U  E  O  O  O  G
             T  S  L  P  N  C
                W  T  O  E  L
                   A  S  G  R
