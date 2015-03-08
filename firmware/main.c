@@ -17,11 +17,22 @@ int main()
 
     piezo_mic_init();
     for (;;) {
-        uint16_t r = piezo_mic_get_reading();
-        debugging_writec("Val: ");
-        debugging_write_uint8((uint8_t)(r >> 4));
-        debugging_writec("\n");
+        uint16_t samples[512];
         unsigned i;
+        for (i = 0; i < 512; ++i)
+            samples[i] = piezo_mic_get_reading();
+        uint32_t min = 65536, max = 0;
+        for (i = 0; i < 512; ++i) {
+            if (samples[i] < min)
+                min = samples[i];
+            else if (samples[i] > max)
+                max = samples[i];
+        }
+        uint16_t r = max - min;
+        debugging_writec("Val: ");
+        debugging_write_uint16(r);
+        debugging_writec("\n");
+        //unsigned i;
         for (i = 0; i < 2000000; ++i);
     }
 
