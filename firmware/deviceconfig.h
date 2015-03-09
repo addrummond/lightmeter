@@ -35,13 +35,13 @@ SCRPWR   --|                       |-- SCRRES
 MEASURE2 --|                       |-- VDD
            |_______________________|
             |  |  |  |  |  |  |  |
-            M  D  B  P  P  I     V
+            D  M  B  P  P  I     V
             I  I  A  I  I  N     S
-            C  O  T  E  E  T     S
-            O  D  V  Z  Z  E
-            U  E  O  O  O  G
-            T  S  L  P  N  C
-               W  T  O  E  L
+            O  C  T  E  E  T     S
+            D  O  V  Z  Z  E
+            E  U  O  O  O  G
+            S  T  L  P  N  C
+            W     T  O  E  L
                   A  S  G  R
                   G
                   E
@@ -62,20 +62,8 @@ MEASURE2 --|                       |-- VDD
 //
 // Resistor/diode switches configuration.
 //
-#define DIODESW1_PORT        GPIOF
-#define DIODESW1_PIN         GPIO_Pin_1
-
-#define DIODESW2_PORT        GPIOA
-#define DIODESW2_PIN         GPIO_Pin_2
-
-#define DIODESW3_PORT        GPIOA
-#define DIODESW3_PIN         GPIO_Pin_3
-
-#define STG1_GPIO_PORT       GPIOB
-#define STG1_PIN             GPIO_Pin_3
-
-#define STG2_GPIO_PORT       GPIOA
-#define STG2_PIN             GPIO_Pin_15
+#define DIODESW_PORT        GPIOA
+#define DIODESW_PIN         GPIO_Pin_3
 
 
 //

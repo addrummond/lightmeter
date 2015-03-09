@@ -11484,9 +11484,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="C12" library="rcl" deviceset="C-EU" device="C0402" value="2u2"/>
 <part name="C11" library="rcl" deviceset="C-EU" device="C0402" value="2u2"/>
 <part name="IC$2" library="lightmeter" deviceset="MMA8653" device=""/>
-<part name="C4" library="rcl" deviceset="C-EU" device="C0402" value="1u"/>
-<part name="C3" library="rcl" deviceset="C-EU" device="C0603" value="u1"/>
-<part name="GND1" library="supply1" deviceset="GND" device=""/>
+<part name="C3" library="rcl" deviceset="C-EU" device="C0603" value="1u"/>
 <part name="GND4" library="supply1" deviceset="GND" device=""/>
 <part name="C5" library="rcl" deviceset="C-EU" device="C0603" value="u1"/>
 <part name="GND16" library="supply1" deviceset="GND" device=""/>
@@ -11628,9 +11626,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <instance part="C12" gate="G$1" x="170.434" y="-15.24" rot="R90"/>
 <instance part="C11" gate="G$1" x="160.782" y="-12.7" rot="R90"/>
 <instance part="IC$2" gate="G$1" x="25.4" y="45.72"/>
-<instance part="C4" gate="G$1" x="0" y="58.42" rot="R270"/>
 <instance part="C3" gate="G$1" x="12.7" y="66.04"/>
-<instance part="GND1" gate="1" x="-10.16" y="58.42" rot="R270"/>
 <instance part="GND4" gate="1" x="22.86" y="68.58" rot="R90"/>
 <instance part="C5" gate="G$1" x="7.62" y="38.1" rot="R90"/>
 <instance part="GND16" gate="1" x="0" y="38.1" rot="R270"/>
@@ -11828,11 +11824,6 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pinref part="C3" gate="G$1" pin="1"/>
 <pinref part="GND4" gate="1" pin="GND"/>
 <wire x1="12.7" y1="68.58" x2="20.32" y2="68.58" width="0.1524" layer="91"/>
-</segment>
-<segment>
-<pinref part="C4" gate="G$1" pin="2"/>
-<pinref part="GND1" gate="1" pin="GND"/>
-<wire x1="-5.08" y1="58.42" x2="-7.62" y2="58.42" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="C5" gate="G$1" pin="1"/>
@@ -12074,15 +12065,10 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <segment>
 <pinref part="IC$2" gate="G$1" pin="VDD"/>
 <wire x1="15.24" y1="53.34" x2="12.7" y2="53.34" width="0.1524" layer="91"/>
-<wire x1="12.7" y1="53.34" x2="7.62" y2="53.34" width="0.1524" layer="91"/>
 <wire x1="12.7" y1="53.34" x2="12.7" y2="60.96" width="0.1524" layer="91"/>
 <junction x="12.7" y="53.34"/>
-<wire x1="7.62" y1="53.34" x2="7.62" y2="58.42" width="0.1524" layer="91"/>
-<pinref part="C4" gate="G$1" pin="1"/>
-<wire x1="7.62" y1="58.42" x2="2.54" y2="58.42" width="0.1524" layer="91"/>
 <pinref part="C3" gate="G$1" pin="2"/>
-<wire x1="7.62" y1="53.34" x2="-5.08" y2="53.34" width="0.1524" layer="91"/>
-<junction x="7.62" y="53.34"/>
+<wire x1="12.7" y1="53.34" x2="-5.08" y2="53.34" width="0.1524" layer="91"/>
 <label x="-5.08" y="53.34" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 <segment>
@@ -12541,9 +12527,9 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <label x="86.36" y="-63.5" size="1.778" layer="95" xref="yes"/>
 </segment>
 <segment>
-<pinref part="IC$4" gate="G$1" pin="PA4"/>
-<wire x1="-45.72" y1="-43.18" x2="-45.72" y2="-45.72" width="0.1524" layer="91"/>
-<label x="-45.72" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
+<pinref part="IC$4" gate="G$1" pin="PA3"/>
+<wire x1="-50.8" y1="-43.18" x2="-50.8" y2="-45.72" width="0.1524" layer="91"/>
+<label x="-50.8" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 <net name="AVREG" class="0">
@@ -12848,14 +12834,14 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 </net>
 <net name="MICOUT" class="0">
 <segment>
-<pinref part="IC$4" gate="G$1" pin="PA3"/>
-<wire x1="-50.8" y1="-43.18" x2="-50.8" y2="-45.72" width="0.1524" layer="91"/>
-<label x="-50.8" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
-</segment>
-<segment>
 <pinref part="C28" gate="G$1" pin="2"/>
 <wire x1="180.34" y1="88.9" x2="185.42" y2="88.9" width="0.1524" layer="91"/>
 <label x="185.42" y="88.9" size="1.778" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="IC$4" gate="G$1" pin="PA4"/>
+<wire x1="-45.72" y1="-43.18" x2="-45.72" y2="-45.72" width="0.1524" layer="91"/>
+<label x="-45.72" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 <net name="N$11" class="0">
