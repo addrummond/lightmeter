@@ -47,7 +47,7 @@ void debugging_write_uint8(uint8_t i)
     debugging_write(dsp, 3-(dsp-ds));
 }
 
-void debugging_write_uint16(uint8_t i)
+void debugging_write_uint16(uint16_t i)
 {
     char ds[5];
     char *dsp = ds;
@@ -57,14 +57,8 @@ void debugging_write_uint16(uint8_t i)
     ds[2] = '0' + ((i/100)%10);
     ds[1] = '0' + ((i/1000)%10);
     ds[0] = '0' + ((i/10000)%10);
-    if (ds[0] == '0')
-        ++dsp;
-    if (ds[1] == '0')
-        ++dsp;
-    if (ds[2] == '0')
-        ++dsp;
-    if (ds[3] == '0')
-        ++dsp;
+
+    for (; *dsp == '0' && dsp < dsp + 4; ++dsp);
 
     debugging_write(dsp, 5-(dsp-ds));
 }

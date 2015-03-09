@@ -9,6 +9,24 @@
 #include <state.h>
 #include <debugging.h>
 
+static uint32_t isqrt(uint32_t n)
+{
+   uint32_t root = 0, bit, trial;
+   bit = (n >= 0x10000) ? 1<<30 : 1<<14;
+   do
+   {
+      trial = root+bit;
+      if (n >= trial)
+      {
+         n -= trial;
+         root = trial+bit;
+      }
+      root >>= 1;
+      bit >>= 2;
+   } while (bit);
+   return root;
+}
+
 int main()
 {
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOB, ENABLE);
@@ -17,26 +35,26 @@ int main()
 
     piezo_mic_init();
     for (;;) {
-        uint16_t samples[512];
         unsigned i;
+
+        int16_t samples[512];
         for (i = 0; i < 512; ++i)
-            samples[i] = piezo_mic_get_reading();
-        uint32_t min = 65536, max = 0;
-        for (i = 0; i < 512; ++i) {
-            if (samples[i] < min)
-                min = samples[i];
-            else if (samples[i] > max)
-                max = samples[i];
-        }
-        uint16_t r = max - min;
-        debugging_writec("Val: ");
-        debugging_write_uint16(r);
+            samples[i] = (int16_t)((int32_t)(piezo_mic_get_reading()) - 2090) >> 3;
+
+        uint32_t sq = 0;
+        for (i = 0; i < 512; ++i)
+            sq += samples[i] * samples[i];
+
+        uint32_t mag = isqrt(sq);
+
+        debugging_writec("Mag: ");
+        debugging_write_uint16(mag);
         debugging_writec("\n");
         //unsigned i;
-        for (i = 0; i < 2000000; ++i);
+        for (i = 0; i < 200000; ++i);
     }
 
-    piezo_out_init();
+    /*piezo_out_init();
     piezo_set_period(1, (SystemCoreClock / 1000) - 1);
     piezo_set_period(2, (SystemCoreClock / 1500) - 1);
     piezo_turn_on(3);
@@ -47,7 +65,7 @@ int main()
         piezo_unpause(1);
         for (i = 0; i < 2000000; ++i);
         debugging_writec("loop\n");
-    }
+    }*/
 
     debugging_writec("Piezo init complete\n");
 

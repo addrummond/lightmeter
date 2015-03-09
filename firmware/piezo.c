@@ -14,7 +14,7 @@ void piezo_mic_init()
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
 
-    gpi.GPIO_Pin = GPIO_Pin_6;
+    gpi.GPIO_Pin = GPIO_Pin_3;
     gpi.GPIO_Mode = GPIO_Mode_AN;
     gpi.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_Init(GPIOA, &gpi);
@@ -29,9 +29,10 @@ void piezo_mic_init()
     adci.ADC_ScanDirection = ADC_ScanDirection_Upward;
     ADC_Init(ADC1, &adci);
 
-    ADC_ChannelConfig(ADC1, ADC_Channel_6 , ADC_SampleTime_239_5Cycles);
+    ADC_ChannelConfig(ADC1, ADC_Channel_3 , ADC_SampleTime_239_5Cycles);
     ADC_GetCalibrationFactor(ADC1);
     ADC_Cmd(ADC1, ENABLE);
+
     while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
     ADC_StartOfConversion(ADC1);
 }
@@ -83,12 +84,12 @@ void piezo_set_period(unsigned channels, uint16_t period)
     oci.TIM_OCIdleState = TIM_OCIdleState_Set;
     oci.TIM_OCNIdleState = TIM_OCIdleState_Reset;
     if (channels & 1)
-        TIM_OC1Init(TIM3, &oci);
+        TIM_OC2Init(TIM3, &oci);
     if (channels & 2)
         TIM_OC3Init(TIM1, &oci);
     oci.TIM_OCMode = TIM_OCMode_PWM2;
     if (channels & 1)
-        TIM_OC2Init(TIM3, &oci);
+        TIM_OC1Init(TIM3, &oci);
     if (channels & 2)
         TIM_OC4Init(TIM1, &oci);
 

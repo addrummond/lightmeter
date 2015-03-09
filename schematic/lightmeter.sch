@@ -12394,14 +12394,14 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <label x="2.54" y="-12.7" size="1.778" layer="95" xref="yes"/>
 </segment>
 <segment>
-<pinref part="IC$4" gate="G$1" pin="PA7"/>
-<wire x1="-30.48" y1="-43.18" x2="-30.48" y2="-45.72" width="0.1524" layer="91"/>
-<label x="-30.48" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
-</segment>
-<segment>
 <wire x1="106.68" y1="66.04" x2="111.76" y2="66.04" width="0.1524" layer="91"/>
 <label x="111.76" y="66.04" size="1.778" layer="95" xref="yes"/>
 <pinref part="Q4" gate="G$1" pin="E"/>
+</segment>
+<segment>
+<pinref part="IC$4" gate="G$1" pin="PA6"/>
+<wire x1="-35.56" y1="-43.18" x2="-35.56" y2="-45.72" width="0.1524" layer="91"/>
+<label x="-35.56" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 <net name="NRST" class="0">
@@ -12721,9 +12721,9 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <label x="2.54" y="-7.62" size="1.778" layer="95" xref="yes"/>
 </segment>
 <segment>
-<pinref part="IC$4" gate="G$1" pin="PA6"/>
-<wire x1="-35.56" y1="-43.18" x2="-35.56" y2="-45.72" width="0.1524" layer="91"/>
-<label x="-35.56" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
+<pinref part="IC$4" gate="G$1" pin="PA7"/>
+<wire x1="-30.48" y1="-43.18" x2="-30.48" y2="-45.72" width="0.1524" layer="91"/>
+<label x="-30.48" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 <net name="SWDIO/USBD-" class="0">
