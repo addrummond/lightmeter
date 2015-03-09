@@ -12126,6 +12126,16 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="-99.06" y1="12.7" x2="-99.06" y2="15.24" width="0.1524" layer="91"/>
 <label x="-99.06" y="15.24" size="1.778" layer="95" xref="yes"/>
 </segment>
+<segment>
+<label x="185.42" y="101.6" size="1.778" layer="95" xref="yes"/>
+<wire x1="152.4" y1="101.6" x2="180.34" y2="101.6" width="0.1524" layer="91"/>
+<wire x1="180.34" y1="101.6" x2="185.42" y2="101.6" width="0.1524" layer="91"/>
+<wire x1="177.8" y1="96.52" x2="180.34" y2="96.52" width="0.1524" layer="91"/>
+<wire x1="180.34" y1="96.52" x2="180.34" y2="101.6" width="0.1524" layer="91"/>
+<junction x="180.34" y="101.6"/>
+<pinref part="R17" gate="G$1" pin="1"/>
+<pinref part="R18" gate="G$1" pin="1"/>
+</segment>
 </net>
 <net name="N$19" class="0">
 <segment>
@@ -12452,9 +12462,9 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <label x="2.54" y="-12.7" size="1.778" layer="95" xref="yes"/>
 </segment>
 <segment>
-<pinref part="IC$4" gate="G$1" pin="PA6"/>
-<wire x1="-35.56" y1="-43.18" x2="-35.56" y2="-45.72" width="0.1524" layer="91"/>
-<label x="-35.56" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
+<pinref part="IC$4" gate="G$1" pin="PA7"/>
+<wire x1="-30.48" y1="-43.18" x2="-30.48" y2="-45.72" width="0.1524" layer="91"/>
+<label x="-30.48" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 <net name="NRST" class="0">
@@ -12615,16 +12625,6 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="119.38" y1="-119.38" x2="114.3" y2="-119.38" width="0.1524" layer="91"/>
 <label x="114.3" y="-119.38" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
-<segment>
-<label x="185.42" y="101.6" size="1.778" layer="95" xref="yes"/>
-<wire x1="152.4" y1="101.6" x2="180.34" y2="101.6" width="0.1524" layer="91"/>
-<wire x1="180.34" y1="101.6" x2="185.42" y2="101.6" width="0.1524" layer="91"/>
-<wire x1="177.8" y1="96.52" x2="180.34" y2="96.52" width="0.1524" layer="91"/>
-<wire x1="180.34" y1="96.52" x2="180.34" y2="101.6" width="0.1524" layer="91"/>
-<junction x="180.34" y="101.6"/>
-<pinref part="R17" gate="G$1" pin="1"/>
-<pinref part="R18" gate="G$1" pin="1"/>
-</segment>
 </net>
 <net name="BATVOLTAGE" class="0">
 <segment>
@@ -12775,9 +12775,9 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <label x="2.54" y="-7.62" size="1.778" layer="95" xref="yes"/>
 </segment>
 <segment>
-<pinref part="IC$4" gate="G$1" pin="PA7"/>
-<wire x1="-30.48" y1="-43.18" x2="-30.48" y2="-45.72" width="0.1524" layer="91"/>
-<label x="-30.48" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
+<pinref part="IC$4" gate="G$1" pin="PA6"/>
+<wire x1="-35.56" y1="-43.18" x2="-35.56" y2="-45.72" width="0.1524" layer="91"/>
+<label x="-35.56" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 <net name="SWDIO/USBD-" class="0">
