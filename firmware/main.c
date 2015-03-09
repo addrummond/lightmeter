@@ -9,6 +9,7 @@
 #include <state.h>
 #include <debugging.h>
 
+// See http://www.finesse.demon.co.uk/steven/sqrt.html
 static uint32_t isqrt(uint32_t n)
 {
    uint32_t root = 0, bit, trial;
