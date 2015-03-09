@@ -9256,8 +9256,8 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <text x="-1.27" y="1.27" size="1.27" layer="25">&gt;NAME</text>
 </package>
 <package name="CONDENSERMICROPHONE">
-<smd name="P$1" x="-1.5" y="0" dx="2" dy="2" layer="1"/>
-<smd name="P$2" x="1.5" y="0" dx="2" dy="2" layer="1"/>
+<smd name="P$1" x="-1.4492" y="0" dx="1.8984" dy="2" layer="1"/>
+<smd name="P$2" x="1.4492" y="0" dx="1.8984" dy="2" layer="1"/>
 <circle x="0" y="0" radius="2.99999375" width="0.254" layer="21"/>
 <text x="-2.54" y="2.54" size="1.778" layer="21">N</text>
 </package>
