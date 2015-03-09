@@ -9246,9 +9246,9 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <wire x1="1.016" y1="-0.4826" x2="1.016" y2="0.4826" width="0.127" layer="21"/>
 </package>
 <package name="SOT-723-3">
-<smd name="P$1" x="0" y="-0.49" dx="0.36" dy="0.52" layer="1"/>
-<smd name="P$2" x="0.4" y="0.49" dx="0.27" dy="0.52" layer="1"/>
-<smd name="P$3" x="-0.4" y="0.49" dx="0.27" dy="0.52" layer="1"/>
+<smd name="P$1" x="0" y="-0.5154" dx="0.36" dy="0.4692" layer="1"/>
+<smd name="P$2" x="0.4" y="0.5154" dx="0.27" dy="0.4692" layer="1"/>
+<smd name="P$3" x="-0.4" y="0.5154" dx="0.27" dy="0.4692" layer="1"/>
 <wire x1="-0.6858" y1="0.4064" x2="0.6858" y2="0.4064" width="0.127" layer="21"/>
 <wire x1="0.6858" y1="0.4064" x2="0.6858" y2="-0.2794" width="0.127" layer="21"/>
 <wire x1="0.6858" y1="-0.2794" x2="-0.6858" y2="-0.2794" width="0.127" layer="21"/>
@@ -12112,16 +12112,6 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="-99.06" y1="12.7" x2="-99.06" y2="15.24" width="0.1524" layer="91"/>
 <label x="-99.06" y="15.24" size="1.778" layer="95" xref="yes"/>
 </segment>
-<segment>
-<label x="185.42" y="101.6" size="1.778" layer="95" xref="yes"/>
-<wire x1="152.4" y1="101.6" x2="180.34" y2="101.6" width="0.1524" layer="91"/>
-<wire x1="180.34" y1="101.6" x2="185.42" y2="101.6" width="0.1524" layer="91"/>
-<wire x1="177.8" y1="96.52" x2="180.34" y2="96.52" width="0.1524" layer="91"/>
-<wire x1="180.34" y1="96.52" x2="180.34" y2="101.6" width="0.1524" layer="91"/>
-<junction x="180.34" y="101.6"/>
-<pinref part="R17" gate="G$1" pin="1"/>
-<pinref part="R18" gate="G$1" pin="1"/>
-</segment>
 </net>
 <net name="N$19" class="0">
 <segment>
@@ -12247,6 +12237,16 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="185.42" y1="27.94" x2="185.42" y2="30.48" width="0.1524" layer="91"/>
 <wire x1="185.42" y1="30.48" x2="182.88" y2="30.48" width="0.1524" layer="91"/>
 <label x="182.88" y="30.48" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<label x="185.42" y="101.6" size="1.778" layer="95" xref="yes"/>
+<wire x1="152.4" y1="101.6" x2="180.34" y2="101.6" width="0.1524" layer="91"/>
+<wire x1="180.34" y1="101.6" x2="185.42" y2="101.6" width="0.1524" layer="91"/>
+<wire x1="177.8" y1="96.52" x2="180.34" y2="96.52" width="0.1524" layer="91"/>
+<wire x1="180.34" y1="96.52" x2="180.34" y2="101.6" width="0.1524" layer="91"/>
+<junction x="180.34" y="101.6"/>
+<pinref part="R17" gate="G$1" pin="1"/>
+<pinref part="R18" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="VBAT" class="0">
