@@ -2577,6 +2577,18 @@ diameter 7.62 mm, horizontal, grid 12.7 mm</description>
 <circle x="0" y="0" radius="2.99999375" width="0.254" layer="21"/>
 <text x="-2.54" y="2.54" size="1.778" layer="21">N</text>
 </package>
+<package name="SPU0410LR5H-QB">
+<hole x="0" y="0" drill="0.3302"/>
+<smd name="P$1" x="-1.015" y="2.103" dx="0.723" dy="0.723" layer="1" roundness="100"/>
+<smd name="P$5" x="0" y="2.103" dx="0.612" dy="0.612" layer="1" roundness="100"/>
+<smd name="P$4" x="1.015" y="2.103" dx="0.723" dy="0.723" layer="1" roundness="100"/>
+<smd name="P$2" x="-1.015" y="-0.634" dx="0.562" dy="0.562" layer="1" roundness="100"/>
+<smd name="P$3" x="1.015" y="-0.634" dx="0.562" dy="0.562" layer="1" roundness="100"/>
+<smd name="P$6" x="0" y="0.4064" dx="0.381" dy="0.2438" layer="1"/>
+<smd name="P$7" x="0" y="-0.4064" dx="0.762" dy="0.2438" layer="1"/>
+<smd name="P$8" x="-0.4826" y="0.2286" dx="0.762" dy="0.2438" layer="1" rot="R90"/>
+<smd name="P$9" x="0.4826" y="0.254" dx="0.762" dy="0.2438" layer="1" rot="R90"/>
+</package>
 </packages>
 <symbols>
 <symbol name="74HC164">
