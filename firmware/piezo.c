@@ -29,12 +29,17 @@ void piezo_mic_init()
     adci.ADC_ScanDirection = ADC_ScanDirection_Upward;
     ADC_Init(ADC1, &adci);
 
-    ADC_ChannelConfig(ADC1, ADC_Channel_4 , ADC_SampleTime_239_5Cycles);
+    ADC_ChannelConfig(ADC1, ADC_Channel_4, ADC_SampleTime_28_5Cycles);
     ADC_GetCalibrationFactor(ADC1);
     ADC_Cmd(ADC1, ENABLE);
 
     while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
     ADC_StartOfConversion(ADC1);
+}
+
+void piezo_mic_wait_on_ready()
+{
+    while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
 }
 
 uint16_t piezo_mic_get_reading()

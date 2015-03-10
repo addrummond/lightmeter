@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 void piezo_mic_init(void);
+void piezo_mic_wait_on_ready(void);
 uint16_t piezo_mic_get_reading(void);
 
 void piezo_out_init(void);
