@@ -295,3 +295,24 @@ int fix_fftr(int16_t f[], int m, int inverse)
 		scale = fix_fft(fi, fr, m-1, inverse);
 	return scale;
 }
+
+#ifdef TEST
+
+#include <math.h>
+#include <stdio.h>
+
+int main()
+{
+    int16_t sinwave[512];
+    unsigned i;
+    for (i = 0; i < 512; ++i) {
+        float v = sin((M_PI*8*i)/512);
+        sinwave[i] = (int16_t)(v*(65536/2));
+    }
+    fix_fftr(sinwave, 9, 0);
+    for (i = 0; i < 512; i += 2) {
+        printf("A = %i, B= %i\n", sinwave[i], sinwave[i+1]);
+    }
+}
+
+#endif
