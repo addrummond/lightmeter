@@ -305,13 +305,13 @@ int fix_fftr(int16_t f[], int m, int inverse)
 int main()
 {
     int16_t sinwave[512];
+    memset(sinwave, 0, sizeof(int16_t)*512);
     unsigned i;
-    for (i = 0; i < 512; ++i) {
-        float v = sin((M_PI*4*i)/512);
+    for (i = 0; i < 256; ++i) {
+        float v = sin((M_PI*8*i)/256);
         sinwave[i] = (int16_t)(v*(65536/2));
     }
-    fix_fftr(sinwave, 9, 0);
-    fix_unweave(sinwave, 512);
+    fix_fft(sinwave, sinwave+256, 8, 0);
 
     for (i = 0; i < 512; i += 2) {
         printf("A = %i, B= %i\n", sinwave[i], sinwave[i+1]);
