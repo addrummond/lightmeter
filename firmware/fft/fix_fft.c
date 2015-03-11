@@ -1,9 +1,9 @@
 #include "fix_fft.h"
 
-#define pgm_read_byte_near(a) (*(a))
-
 /* fix_fft.c - Fixed-point in-place Fast Fourier Transform  */
 /*
+  // Note: out of date comment -- now 8-bit.
+
   All data are fixed-point short integers, in which -32768
   to +32768 represent -1.0 to +1.0 respectively. Integer
   arithmetic is used for speed, instead of the more natural
@@ -37,36 +37,35 @@
 #define LOG2_N_WAVE 8	/* log2(N_WAVE) */
 
 /*
+  // Out of date comment -- now stores less.
+
   Since we only use 3/4 of N_WAVE, we define only
   this many samples, in order to conserve data space.
 */
 
-// This is only 192 bytes. On a 328 chip it might be worth
-// leaving it in sram.
-//const prog_int8_t Sinewave[N_WAVE-N_WAVE/4] = {
-//#define ORIGINAL_TABLE
 const int8_t Sinewave[N_WAVE/2] = {
-0, 3, 6, 9, 12, 15, 18, 21,
-24, 28, 31, 34, 37, 40, 43, 46,
-48, 51, 54, 57, 60, 63, 65, 68,
-71, 73, 76, 78, 81, 83, 85, 88,
-90, 92, 94, 96, 98, 100, 102, 104,
-106, 108, 109, 111, 112, 114, 115, 117,
-118, 119, 120, 121, 122, 123, 124, 124,
-125, 126, 126, 127, 127, 127, 127, 127,
+    0, 3, 6, 9, 12, 15, 18, 21,
+    24, 28, 31, 34, 37, 40, 43, 46,
+    48, 51, 54, 57, 60, 63, 65, 68,
+    71, 73, 76, 78, 81, 83, 85, 88,
+    90, 92, 94, 96, 98, 100, 102, 104,
+    106, 108, 109, 111, 112, 114, 115, 117,
+    118, 119, 120, 121, 122, 123, 124, 124,
+    125, 126, 126, 127, 127, 127, 127, 127,
 
-127, 127, 127, 127, 127, 127, 126, 126,
-125, 124, 124, 123, 122, 121, 120, 119,
-118, 117, 115, 114, 112, 111, 109, 108,
-106, 104, 102, 100, 98, 96, 94, 92,
-90, 88, 85, 83, 81, 78, 76, 73,
-71, 68, 65, 63, 60, 57, 54, 51,
-48, 46, 43, 40, 37, 34, 31, 28,
-24, 21, 18, 15, 12, 9, 6, 3,
+    127, 127, 127, 127, 127, 127, 126, 126,
+    125, 124, 124, 123, 122, 121, 120, 119,
+    118, 117, 115, 114, 112, 111, 109, 108,
+    106, 104, 102, 100, 98, 96, 94, 92,
+    90, 88, 85, 83, 81, 78, 76, 73,
+    71, 68, 65, 63, 60, 57, 54, 51,
+    48, 46, 43, 40, 37, 34, 31, 28,
+    24, 21, 18, 15, 12, 9, 6, 3,
 };
 
-
 /*
+  // Outdated comment -- now 8 bit.
+
   FIX_MPY() - fixed-point multiplication & scaling.
   Substitute inline assembly for hardware-specific
   optimization suited to a particluar DSP processor.
@@ -126,10 +125,6 @@ int fix_fft(int8_t fr[], int8_t fi[], int m, int inverse)
     l = 1;
     k = LOG2_N_WAVE-1;
     while (l < n) {
-// I had this split into two ifdefs with one around the
-// shift=1 statement but a bug in the preprocessor makes
-// it omit that statement altogether so I'm doing it this
-// way.
 	  if (inverse) {
 		/* variable scaling, depending upon data */
 		shift = 0;
@@ -160,13 +155,13 @@ int fix_fft(int8_t fr[], int8_t fi[], int m, int inverse)
 		j = m << k;
 		/* 0 <= j < N_WAVE/2 */
 		if((idx = j+N_WAVE/4) >= 128)
-			wr =  -pgm_read_byte_near(Sinewave + idx - 128);
+			wr = -Sinewave[idx - 128];
 		else
-			wr =  pgm_read_byte_near(Sinewave + idx);
+			wr = Sinewave[idx];
 		if(j >= 128)
-			wi = pgm_read_byte_near(Sinewave + j);
+			wi = Sinewave[j];
 		else
-			wi = -pgm_read_byte_near(Sinewave + j);
+			wi = -Sinewave[j];
 
 		if (inverse)
 		    wi = -wi;
@@ -209,7 +204,7 @@ int main()
     memset(imag, 0, sizeof(int8_t)*256);
     unsigned i;
     for (i = 0; i < 256; ++i) {
-        float v = sin((M_PI*79*(float)i)/256.0);
+        float v = sin((M_PI*32*(float)i)/256.0);
         real[i] = (int8_t)(v*128);
     }
     fix_fft(real, imag, 8, 0);
