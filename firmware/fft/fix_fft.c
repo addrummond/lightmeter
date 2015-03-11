@@ -296,20 +296,67 @@ int fix_fftr(int16_t f[], int m, int inverse)
 	return scale;
 }
 
+static int16_t mysin(int16_t v) // v is fraction of 2PI in 1024ths
+{
+    if (v > 1024*3/4) {
+        v -= 255;
+        return -Sinewave[v];
+    }
+    else {
+        return Sinewave[v];
+    }
+}
+
+static int16_t mycos(int16_t v) // v is fraction of 2PI 1024ths
+{
+    v += 1024/4;
+    if (v >= 1024)
+        v -= 1024;
+
+    return mysin(v);
+}
+
+void fix_unweave(int16_t f[], unsigned n)
+{
+    int32_t n2 = n/2;
+    int32_t i;
+    for (i = 0; i < n2; ++i) {
+        int16_t xrm = f[i*2];
+        int16_t xrnm = f[(n2 - i)*2];
+
+        int16_t xrmp = (xrm + xrnm) / 2;
+        int16_t xrmn = (xrm - xrnm) / 2;
+
+        int16_t xim = f[(i*2)+1];
+        int16_t xinm = f[(n2 - i)*2 + 1];
+
+        int16_t ximp = (xim + xinm) / 2;
+        int16_t ximn = (xim - xinm) / 2;
+
+#define MPY(a, b) ((uint64_t)a*(uint64_t)b)/(65536L*65536L)
+        f[i*2]     = xrmp + (MPY(mycos((i*512)/n2), ximp)) - (MPY(mysin((i*512)/n2), xrmn));
+        f[i*2 + 1] = ximn - (MPY(mysin((i*512)/n2), ximp)) - (MPY(mycos((i*512)/n2), xrmn));
+#undef MPY
+    }
+}
+
 #ifdef TEST
 
 #include <math.h>
 #include <stdio.h>
+#include <string.h>
 
 int main()
 {
     int16_t sinwave[512];
     unsigned i;
     for (i = 0; i < 512; ++i) {
-        float v = sin((M_PI*8*i)/512);
+        float v = sin((M_PI*4*i)/512);
         sinwave[i] = (int16_t)(v*(65536/2));
     }
     fix_fftr(sinwave, 9, 0);
+    fix_unweave(sinwave, 512);
+
     for (i = 0; i < 512; i += 2) {
         printf("A = %i, B= %i\n", sinwave[i], sinwave[i+1]);
     }
