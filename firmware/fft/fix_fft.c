@@ -279,7 +279,7 @@ int fix_fft(int16_t fr[], int16_t fi[], int16_t m, int16_t inverse)
   that fix_fft "sees" consecutive real samples as alternating
   real and imaginary samples in the complex array.
 */
-int fix_fftr(int16_t f[], int m, int inverse)
+/*int fix_fftr(int16_t f[], int m, int inverse)
 {
 	int i, N = 1<<(m-1), scale = 0;
 	int16_t tt, *fr=f, *fi=&f[N];
@@ -294,7 +294,7 @@ int fix_fftr(int16_t f[], int m, int inverse)
 	if (! inverse)
 		scale = fix_fft(fi, fr, m-1, inverse);
 	return scale;
-}
+}*/
 
 #ifdef TEST
 
@@ -304,17 +304,20 @@ int fix_fftr(int16_t f[], int m, int inverse)
 
 int main()
 {
-    int16_t sinwave[512];
-    memset(sinwave, 0, sizeof(int16_t)*512);
+    int16_t real[256];
+    int16_t imag[256];
+    memset(imag, 0, sizeof(int16_t)*256);
     unsigned i;
     for (i = 0; i < 256; ++i) {
-        float v = sin((M_PI*8*i)/256);
-        sinwave[i] = (int16_t)(v*(65536/2));
+        float v = sin((M_PI*8*(float)i)/256.0);
+        real[i] = (int16_t)(v*(65536/8));
     }
-    fix_fft(sinwave, sinwave+256, 8, 0);
+    fix_fft(real, imag, 8, 0);
 
-    for (i = 0; i < 512; i += 2) {
-        printf("A = %i, B= %i\n", sinwave[i], sinwave[i+1]);
+    for (i = 1; i < 255; ++i) {
+        //printf("%i\n%i\n", sinwave[i], sinwave[i+1]);
+        uint32_t ri = real[i], ii = imag[i];
+        printf("x = %i, R = %i, I= %i\n", ri*ri + ii*ii, real[i], imag[i]);
     }
 }
 
