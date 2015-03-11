@@ -66,10 +66,6 @@ const int8_t Sinewave[N_WAVE/2] = {
 };
 
 
-
-
-
-
 /*
   FIX_MPY() - fixed-point multiplication & scaling.
   Substitute inline assembly for hardware-specific
@@ -213,16 +209,23 @@ int main()
     memset(imag, 0, sizeof(int8_t)*256);
     unsigned i;
     for (i = 0; i < 256; ++i) {
-        float v = sin((M_PI*4*(float)i)/64.0);
-        real[i] = (int8_t)(v*(256/4));
+        float v = sin((M_PI*79*(float)i)/256.0);
+        real[i] = (int8_t)(v*128);
     }
     fix_fft(real, imag, 8, 0);
 
-    for (i = 1; i < 255; ++i) {
-        //printf("%i\n%i\n", sinwave[i], sinwave[i+1]);
+    uint32_t max = 0;
+    unsigned maxi = 0;
+    for (i = 0; i < 256/2; ++i) {
         uint32_t ri = real[i], ii = imag[i];
-        printf("x = %i, R = %i, I= %i\n", ri*ri + ii*ii, real[i], imag[i]);
+        uint32_t e = ri*ri + ii*ii;
+        if (e > max) {
+            max = e;
+            maxi = i;
+        }
+        //printf("%i\n", ri);
     }
+    printf("Peak at %i\n", maxi);
 }
 
 #endif
