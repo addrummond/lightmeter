@@ -158,9 +158,9 @@ int fix_fft(int8_t fr[], int8_t fi[], int m, int inverse)
 			wr = -Sinewave[idx - 128];
 		else
 			wr = Sinewave[idx];
-		if(j >= 128)
-			wi = Sinewave[j];
-		else
+		//if(j >= 128)
+		//	wi = Sinewave[j];
+		//else
 			wi = -Sinewave[j];
 
 		if (inverse)

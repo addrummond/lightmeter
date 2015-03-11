@@ -30,7 +30,8 @@ static uint32_t isqrt(uint32_t n)
    return root;
 }
 
-static int16_t samples[512];
+static int8_t samples[512];
+static int8_t imaginary[512]; // Initalized to 0.
 int main()
 {
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOB, ENABLE);
@@ -41,8 +42,9 @@ int main()
     for (;;) {
         unsigned i;
 
+        // 12 bits to 8 -- chop off two most and least significant bits.
         for (i = 0; i < 512; ++i, piezo_mic_wait_on_ready())
-            samples[i] = (int16_t)((int32_t)(piezo_mic_get_reading()) - 4096/2) >> 1;
+            samples[i] = (int8_t)(((int32_t)(piezo_mic_get_reading()) - 4096/2) >> 2);
 
         uint32_t sq = 0;
         for (i = 0; i < 512; ++i)
@@ -51,21 +53,25 @@ int main()
         uint32_t mag = isqrt(sq);
 
         // Find first formant.
-        /*fix_fftr(samples, 9, 0);
-        int16_t max = 0;
-        for (i = 0; i < 512; ++i) {
-            if (max < samples[i])
-                max = samples[i];
-        }*/
+        fix_fft(samples, imaginary, 9, 0);
+        int32_t max = 0;
+        unsigned maxi = 0;
+        for (i = 0; i < 512/2; ++i) {
+            int32_t e = samples[i]*samples[i] + imaginary[i]*imaginary[i];
+
+            if (max < e) {
+                max = e;
+                maxi = i;
+            }
+        }
 
         debugging_writec("Mag: ");
         debugging_write_uint16(mag);
+        debugging_writec(" ~ ");
+        debugging_write_uint16(maxi);
         debugging_writec("\n");
-        //debugging_writec("Formant: ");
-        //debugging_write_uint16(max);
-        //debugging_writec("\n");
         //unsigned i;
-        for (i = 0; i < 200000; ++i);
+        //for (i = 0; i < 200000; ++i);
     }
 
     /*piezo_out_init();
