@@ -35,6 +35,7 @@ static uint32_t isqrt(uint32_t n)
 // Midpoint:
 
 #define N_SAMPLES 256
+#define SHIFT_1_BY_THIS_TO_GET_N_SAMPLES 8
 
 static int8_t samples[N_SAMPLES*2];
 int main()
@@ -63,9 +64,9 @@ int main()
                 raw_max = v;
         }
         int16_t ratio = 127/raw_max;
-        debugging_writec("Rat: ");
-        debugging_write_uint16(ratio);
-        debugging_writec("\n");
+        //debugging_writec("Rat: ");
+        //debugging_write_uint16(ratio);
+        //debugging_writec("\n");
         if (ratio > 1) {
             for (i = 0; i < N_SAMPLES; ++i)
                 samples16[i] *= ratio;
@@ -95,18 +96,13 @@ int main()
             samples[i] = samples16[i] >> shift;
         }
 
-        debugging_writec("--start--\n");
+        /*debugging_writec("--start--\n");
         for (i = 0; i < N_SAMPLES; ++i) {
             debugging_write_uint8(samples[i]);
             debugging_writec("\n");
         }
         debugging_writec("--end--\n");
-        continue;
-
-        int8_t *imaginary = samples + N_SAMPLES;
-        for (i = 0; i < N_SAMPLES; ++i) {
-            imaginary[i] = 0;
-        }
+        continue;*/
 
         uint32_t sq = 0;
         for (i = 0; i < N_SAMPLES; ++i)
@@ -115,10 +111,14 @@ int main()
         uint32_t mag = isqrt(sq);
 
         // Find first formant.
-        fix_fft(samples, imaginary, 9, 0);
+        int8_t *imaginary = samples + N_SAMPLES;
+        for (i = 0; i < N_SAMPLES; ++i) {
+            imaginary[i] = 0;
+        }
+        fix_fft(samples, imaginary, SHIFT_1_BY_THIS_TO_GET_N_SAMPLES, 0);
         int32_t max = 0;
         unsigned maxi = 0;
-        for (i = 0; i < N_SAMPLES/2; ++i) {
+        for (i = 1; i < N_SAMPLES/2; ++i) { // First sample is DC component
             int32_t e = samples[i]*samples[i] + imaginary[i]*imaginary[i];
 
             if (max < e) {
@@ -127,11 +127,21 @@ int main()
             }
         }
 
+        /*debugging_writec("--ft-start--\n");
+        for (i = 0; i < N_SAMPLES; ++i) {
+            debugging_write_uint32(samples[i]*samples[i] + imaginary[i]*imaginary[i]);
+            debugging_writec("\n");
+        }
+        debugging_writec("--ft-end--\n");
+        continue;*/
+
         debugging_writec("Mag: ");
         debugging_write_uint16(mag);
         debugging_writec(" ~ ");
         debugging_write_uint16(maxi);
-        debugging_writec("\n");
+        debugging_writec(" [");
+        debugging_write_uint8(samples[i]); // DC component.
+        debugging_writec("]\n");
         //unsigned i;
         //for (i = 0; i < 200000; ++i);
     }
