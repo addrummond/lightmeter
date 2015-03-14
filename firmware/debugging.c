@@ -2,6 +2,7 @@
 
 // See http://electronics.stackexchange.com/questions/149387/how-do-i-print-debug-messages-to-gdb-console-with-stm32-discovery-board-using-gd/149403#149403
 
+#ifndef TEST
 static void send_command(int command, void *message)
 {
     asm(
@@ -31,34 +32,58 @@ void debugging_putc(char c)
           : "r0", "r1"
     );
 }
+#endif
 
-void debugging_write_uint8(uint8_t i)
+static char *debugging_write_uint32_to_string(char *ds, uint32_t i)
 {
-    char ds[3];
-    char *dsp = ds;
+    unsigned j = 9;
+    uint32_t d = 1;
+    do {
+        ds[j] = '0' + ((i/d) % 10);
+        d *= 10;
+    } while (j-- > 0);
+    j = 0;
+    while (*ds == '0' && ++j < 10)
+        ++ds;
+    return ds;
+}
 
-    ds[2] = '0' + (i % 10);
-    ds[1] = '0' + ((i/10)%10);
-    ds[0] = '0' + ((i/100)%10);
-    if (ds[0] == '0')
-        ++dsp;
-    if (ds[1] == '0')
-        ++dsp;
-    debugging_write(dsp, 3-(dsp-ds));
+#ifndef TEST
+void debugging_write_uint32(uint32_t i)
+{
+    char ds[10];
+    char *beg = debugging_write_uint32_to_string(ds, i, false);
+    debugging_write(beg, 10-(beg-ds));
 }
 
 void debugging_write_uint16(uint16_t i)
 {
-    char ds[5];
-    char *dsp = ds;
-
-    ds[4] = '0' + (i % 10);
-    ds[3] = '0' + ((i/10)%10);
-    ds[2] = '0' + ((i/100)%10);
-    ds[1] = '0' + ((i/1000)%10);
-    ds[0] = '0' + ((i/10000)%10);
-
-    for (; *dsp == '0' && dsp < dsp + 4; ++dsp);
-
-    debugging_write(dsp, 5-(dsp-ds));
+    debugging_write_uint32(i);
 }
+
+void debugging_write_uint8(uint8_t i)
+{
+    debugging_write_uint32(i);
+}
+#endif
+
+#ifdef TEST
+
+#include <stdio.h>
+#include <string.h>
+
+int main()
+{
+    char s8[11];
+    s8[10] = '\0';
+    uint16_t i = 0;
+    const char *beg;
+    do {
+        beg = debugging_write_uint32_to_string(s8, i);
+        printf("%s\n", beg);
+    } while (i++ < 65535);
+    beg = debugging_write_uint32_to_string(s8, 1000000023);
+    printf("%s\n", beg);
+}
+
+#endif
