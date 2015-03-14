@@ -31,7 +31,7 @@ static uint32_t isqrt(uint32_t n)
 }
 
 static int8_t samples[512];
-static int8_t imaginary[512]; // Initalized to 0.
+static int8_t imaginary[512];
 int main()
 {
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOB, ENABLE);
@@ -42,9 +42,21 @@ int main()
     for (;;) {
         unsigned i;
 
-        // 12 bits to 8 -- chop off two most and least significant bits.
-        for (i = 0; i < 512; ++i, piezo_mic_wait_on_ready())
-            samples[i] = (int8_t)(((int32_t)(piezo_mic_get_reading()) - 4096/2) >> 2);
+        // 12 bits to 8.
+        for (i = 0; i < 512; ++i, piezo_mic_wait_on_ready()) {
+            samples[i] = (int8_t)(((int16_t)(piezo_mic_get_reading()) - 4096/2) >> 4);
+        }
+        for (i = 0; i < 512; ++i) {
+            imaginary[i] = 0;
+        }
+
+        /*debugging_writec("-----start-----\n");
+        for (i = 0; i < 512; ++i) {
+            debugging_write_uint8(samples[i]);
+            debugging_writec("\n");
+        }
+        debugging_writec("----end----\n");
+        continue;*/
 
         uint32_t sq = 0;
         for (i = 0; i < 512; ++i)

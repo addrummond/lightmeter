@@ -29,7 +29,7 @@ void piezo_mic_init()
     adci.ADC_ScanDirection = ADC_ScanDirection_Upward;
     ADC_Init(ADC1, &adci);
 
-    ADC_ChannelConfig(ADC1, ADC_Channel_4, ADC_SampleTime_28_5Cycles);
+    ADC_ChannelConfig(ADC1, ADC_Channel_4, ADC_SampleTime_71_5Cycles);
     ADC_GetCalibrationFactor(ADC1);
     ADC_Cmd(ADC1, ENABLE);
 
