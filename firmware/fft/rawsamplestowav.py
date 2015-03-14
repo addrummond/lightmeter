@@ -20,6 +20,9 @@ def get_samples_from_text(s):
         m = re.match(r"^\s*(\d{1,3})\s*$", l)
         if not m:
             raise Exception("Bad file format")
+        v = samples[i]
+        if v > 127:
+            v = -(v-127)
         samples[i] = int(m.group(1))
         i += 1
     return samples
@@ -27,10 +30,11 @@ def get_samples_from_text(s):
 if __name__ == '__main__':
     inputfile = sys.argv[1]
     outputfile = sys.argv[2]
+    times_to_repeat = int(sys.argv[3]) if len(sys.argv) >= 4 else 1
 
     f = open(inputfile)
     c = f.read()
-    samples = get_samples_from_text(c)
+    samples = get_samples_from_text(c) * times_to_repeat
     samples_to_wave(samples, outputfile)
 
     # Test output of sine wave.
