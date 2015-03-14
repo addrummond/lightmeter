@@ -29,8 +29,9 @@ void piezo_mic_init()
     adci.ADC_ScanDirection = ADC_ScanDirection_Upward;
     ADC_Init(ADC1, &adci);
 
-    ADC_ChannelConfig(ADC1, ADC_Channel_4, ADC_SampleTime_71_5Cycles);
+    ADC_ChannelConfig(ADC1, ADC_Channel_4, ADC_SampleTime_239_5Cycles);
     ADC_GetCalibrationFactor(ADC1);
+    //ADC_ContinuousModeCmd(ADC1, ENABLE);
     ADC_Cmd(ADC1, ENABLE);
 
     while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));

@@ -30,8 +30,13 @@ static uint32_t isqrt(uint32_t n)
    return root;
 }
 
-static int8_t samples[512];
-static int8_t imaginary[512];
+// Mic: 1.3K
+// Vcc to mic: 10K
+// Midpoint:
+
+#define N_SAMPLES 256
+
+static int8_t samples[N_SAMPLES*2];
 int main()
 {
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOB, ENABLE);
@@ -42,24 +47,69 @@ int main()
     for (;;) {
         unsigned i;
 
-        // 12 bits to 8.
-        for (i = 0; i < 512; ++i, piezo_mic_wait_on_ready()) {
-            samples[i] = (int8_t)(((int16_t)(piezo_mic_get_reading()) - 4096/2) >> 4);
+        int16_t *samples16 = (int16_t *)samples;
+        for (i = 0; i < N_SAMPLES; ++i, piezo_mic_wait_on_ready()) {
+            samples16[i] = (int16_t)(piezo_mic_get_reading()) - (4096/2);
         }
-        for (i = 0; i < 512; ++i) {
-            imaginary[i] = 0;
+        samples16[0] = samples16[1];
+
+        // 12 bits to 8.
+        int16_t raw_max = -(4096/2);
+        for (i = 0; i < N_SAMPLES; ++i) {
+            int16_t v = samples16[i];
+            if (v < 0)
+                v = -v;
+            if (v > raw_max)
+                raw_max = v;
+        }
+        int16_t ratio = 127/raw_max;
+        debugging_writec("Rat: ");
+        debugging_write_uint16(ratio);
+        debugging_writec("\n");
+        if (ratio > 1) {
+            for (i = 0; i < N_SAMPLES; ++i)
+                samples16[i] *= ratio;
+        }
+        raw_max = -(4096/2);
+        for (i = 0; i < N_SAMPLES; ++i) {
+            int16_t v = samples16[i];
+            if (v < 0)
+                v = -v;
+            if (v > raw_max)
+                raw_max = v;
+        }
+        unsigned shift = 0;
+        if (raw_max >= 1024) {
+            shift = 4;
+        }
+        else if (raw_max >= 512) {
+            shift = 3;
+        }
+        else if (raw_max >= 256) {
+            shift = 2;
+        }
+        else if (raw_max >= 128) {
+            shift = 1;
+        }
+        for (i = 0; i < N_SAMPLES; ++i) {
+            samples[i] = samples16[i] >> shift;
         }
 
-        /*debugging_writec("-----start-----\n");
-        for (i = 0; i < 512; ++i) {
+        debugging_writec("--start--\n");
+        for (i = 0; i < N_SAMPLES; ++i) {
             debugging_write_uint8(samples[i]);
             debugging_writec("\n");
         }
-        debugging_writec("----end----\n");
-        continue;*/
+        debugging_writec("--end--\n");
+        continue;
+
+        int8_t *imaginary = samples + N_SAMPLES;
+        for (i = 0; i < N_SAMPLES; ++i) {
+            imaginary[i] = 0;
+        }
 
         uint32_t sq = 0;
-        for (i = 0; i < 512; ++i)
+        for (i = 0; i < N_SAMPLES; ++i)
             sq += samples[i] * samples[i];
 
         uint32_t mag = isqrt(sq);
@@ -68,7 +118,7 @@ int main()
         fix_fft(samples, imaginary, 9, 0);
         int32_t max = 0;
         unsigned maxi = 0;
-        for (i = 0; i < 512/2; ++i) {
+        for (i = 0; i < N_SAMPLES/2; ++i) {
             int32_t e = samples[i]*samples[i] + imaginary[i]*imaginary[i];
 
             if (max < e) {
