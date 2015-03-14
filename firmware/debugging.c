@@ -52,7 +52,7 @@ static char *debugging_write_uint32_to_string(char *ds, uint32_t i)
 void debugging_write_uint32(uint32_t i)
 {
     char ds[10];
-    char *beg = debugging_write_uint32_to_string(ds, i, false);
+    char *beg = debugging_write_uint32_to_string(ds, i);
     debugging_write(beg, 10-(beg-ds));
 }
 
