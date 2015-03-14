@@ -6,8 +6,16 @@ import re
 def samples_to_wave(samples, of):
     w = wave.open(of, 'w')
     w.setparams((1, 1, 44000, len(samples), 'NONE', 'not compressed'))
-    w.writeframes(samples)
+    w.writeframes(bytearray((s+128 if s < 128 else -((256-s)-128) for s in samples)))
     w.close()
+
+def samples_to_text(samples, of):
+    f = of
+    if isinstance(f, str):
+        f = open(f, "w")
+    for s in samples:
+        f.write("%i\n" % (s if s < 127 else -(256-s)))
+    f.close()
 
 def get_samples_from_text(s):
     lines = re.split(r"\r?\n", s)
@@ -20,10 +28,8 @@ def get_samples_from_text(s):
         m = re.match(r"^\s*(\d{1,3})\s*$", l)
         if not m:
             raise Exception("Bad file format")
-        v = samples[i]
-        if v > 127:
-            v = -(v-127)
-        samples[i] = int(m.group(1))
+        v = int(m.group(1))
+        samples[i] = v
         i += 1
     return samples
 
@@ -35,7 +41,10 @@ if __name__ == '__main__':
     f = open(inputfile)
     c = f.read()
     samples = get_samples_from_text(c) * times_to_repeat
-    samples_to_wave(samples, outputfile)
+    if outputfile.endswith(".wav"):
+        samples_to_wave(samples, outputfile)
+    else:
+        samples_to_text(samples, outputfile)
 
     # Test output of sine wave.
     #samples = bytearray(100000)
