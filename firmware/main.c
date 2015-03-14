@@ -64,9 +64,6 @@ int main()
                 raw_max = v;
         }
         int16_t ratio = 127/raw_max;
-        //debugging_writec("Rat: ");
-        //debugging_write_uint16(ratio);
-        //debugging_writec("\n");
         if (ratio > 1) {
             for (i = 0; i < N_SAMPLES; ++i)
                 samples16[i] *= ratio;
@@ -80,21 +77,16 @@ int main()
                 raw_max = v;
         }
         unsigned shift = 0;
-        if (raw_max >= 1024) {
+        if (raw_max >= 1024)
             shift = 4;
-        }
-        else if (raw_max >= 512) {
+        else if (raw_max >= 512)
             shift = 3;
-        }
-        else if (raw_max >= 256) {
+        else if (raw_max >= 256)
             shift = 2;
-        }
-        else if (raw_max >= 128) {
+        else if (raw_max >= 128)
             shift = 1;
-        }
-        for (i = 0; i < N_SAMPLES; ++i) {
+        for (i = 0; i < N_SAMPLES; ++i)
             samples[i] = samples16[i] >> shift;
-        }
 
         /*debugging_writec("--start--\n");
         for (i = 0; i < N_SAMPLES; ++i) {
@@ -110,7 +102,7 @@ int main()
 
         uint32_t mag = isqrt(sq);
 
-        // Find first formant.
+        // Find first and second formant.
         int8_t *imaginary = samples + N_SAMPLES;
         for (i = 0; i < N_SAMPLES; ++i) {
             imaginary[i] = 0;
@@ -118,12 +110,18 @@ int main()
         fix_fft(samples, imaginary, SHIFT_1_BY_THIS_TO_GET_N_SAMPLES, 0);
         int32_t max = 0;
         unsigned maxi = 0;
-        for (i = 1; i < N_SAMPLES/2; ++i) { // First sample is DC component
+        int32_t max2 = 0;
+        unsigned max2i = 0;
+        for (i = 1; i < 60/* cut off frequencies above ~10kHz*/; ++i) { // First sample is DC component (I think).
             int32_t e = samples[i]*samples[i] + imaginary[i]*imaginary[i];
 
             if (max < e) {
                 max = e;
                 maxi = i;
+            }
+            if (max2 < e && e < max) {
+                max2 = e;
+                max2i = i;
             }
         }
 
@@ -139,9 +137,9 @@ int main()
         debugging_write_uint16(mag);
         debugging_writec(" ~ ");
         debugging_write_uint16(maxi);
-        debugging_writec(" [");
-        debugging_write_uint8(samples[i]); // DC component.
-        debugging_writec("]\n");
+        debugging_writec(", ");
+        debugging_write_uint16(max2i);
+        debugging_writec("\n");
         //unsigned i;
         //for (i = 0; i < 200000; ++i);
     }
