@@ -257,3 +257,67 @@ void piezo_out_deinit()
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, DISABLE);
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, DISABLE);
 }
+
+
+//
+// HFSDP stuff.
+//
+
+#define SQMAG_THRESHOLD 200
+
+void piezo_hfsdp_listen_for_masters_init()
+{
+    int8_t samples[PIEZO_MIC_BUFFER_SIZE_BYTES];
+    int8_t *imaginary = samples + N_SAMPLES;
+
+    unsigned last_state = 0; // 1 = F1 on F2 off, 2 = F2 on F1 off.
+    unsigned state_changes = 0;
+    for (;;) {
+        piezo_mic_read_buffer(samples);
+        piezo_mic_buffer_fft(samples);
+
+        uint32_t ranges[10];
+        uint32_t *m1range = ranges;
+        uint32_t *m2range = ranges+5;
+
+        int i;
+        for (i = 0; i < 10; ++i)
+            ranges[i] = 0;
+
+        for (i = -2; i < 3; ++i) {
+            int m1i = PIEZO_HFSDP_A_MODE_MASTER_F1_FTF + i;
+            int m2i = PIEZO_HFSDP_A_MODE_MASTER_F2_FTF + i;
+
+            if (m1i > 0)
+                m1range[i] = (int32_t)samples[m1i]*(int32_t)samples[m1i] + (int32_t)imaginary[m1i]*(int32_t)imaginary[m1i];
+            if (m2i > 0)
+                m2range[i] = (int32_t)samples[m2i]*(int32_t)samples[m2i] + (int32_t)imaginary[m1i]*(int32_t)imaginary[m1i];
+        }
+
+        uint32_t m1max = 0, m2max = 0;
+        for (i = 0; i < 10; ++i) {
+            if (m1range[i] > m1max)
+                m1max = m1range[i];
+            if (m2range[i] > m2max)
+                m2max = m2range[i];
+        }
+
+        unsigned new_state = 0;
+        if (m1max > m2max && m1max - m2max >= SQMAG_THRESHOLD)
+            new_state = 1;
+        else if (m2max > m1max && m2max - m1max >= SQMAG_THRESHOLD)
+            new_state = 2;
+
+        if (last_state == 0) {
+            if (new_state > 0) {
+                last_state = new_state;
+                ++state_changes;
+            }
+            else if (new_state > 0) {
+                if (last_state != new_state)
+                    ++state_changes;
+                last_state = new_state;
+            }
+        }
+    }
+}
