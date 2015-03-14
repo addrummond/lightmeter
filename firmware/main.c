@@ -30,14 +30,7 @@ static uint32_t isqrt(uint32_t n)
    return root;
 }
 
-// Mic: 1.3K
-// Vcc to mic: 10K
-// Midpoint:
-
-#define N_SAMPLES 256
-#define SHIFT_1_BY_THIS_TO_GET_N_SAMPLES 8
-
-static int8_t samples[N_SAMPLES*2];
+static int8_t samples[PIEZO_MIC_BUFFER_SIZE_BYTES];
 int main()
 {
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOB, ENABLE);
@@ -46,100 +39,20 @@ int main()
 
     piezo_mic_init();
     for (;;) {
-        unsigned i;
-
-        int16_t *samples16 = (int16_t *)samples;
-        for (i = 0; i < N_SAMPLES; ++i, piezo_mic_wait_on_ready()) {
-            samples16[i] = (int16_t)(piezo_mic_get_reading()) - (4096/2);
-        }
-        samples16[0] = samples16[1];
-
-        // 12 bits to 8.
-        int16_t raw_max = -(4096/2);
-        for (i = 0; i < N_SAMPLES; ++i) {
-            int16_t v = samples16[i];
-            if (v < 0)
-                v = -v;
-            if (v > raw_max)
-                raw_max = v;
-        }
-        int16_t ratio = 127/raw_max;
-        if (ratio > 1) {
-            for (i = 0; i < N_SAMPLES; ++i)
-                samples16[i] *= ratio;
-        }
-        raw_max = -(4096/2);
-        for (i = 0; i < N_SAMPLES; ++i) {
-            int16_t v = samples16[i];
-            if (v < 0)
-                v = -v;
-            if (v > raw_max)
-                raw_max = v;
-        }
-        unsigned shift = 0;
-        if (raw_max >= 1024)
-            shift = 4;
-        else if (raw_max >= 512)
-            shift = 3;
-        else if (raw_max >= 256)
-            shift = 2;
-        else if (raw_max >= 128)
-            shift = 1;
-        for (i = 0; i < N_SAMPLES; ++i)
-            samples[i] = samples16[i] >> shift;
-
-        /*debugging_writec("--start--\n");
-        for (i = 0; i < N_SAMPLES; ++i) {
-            debugging_write_uint8(samples[i]);
-            debugging_writec("\n");
-        }
-        debugging_writec("--end--\n");
-        continue;*/
-
-        uint32_t sq = 0;
-        for (i = 0; i < N_SAMPLES; ++i)
-            sq += samples[i] * samples[i];
-
-        uint32_t mag = isqrt(sq);
-
-        // Find first and second formant.
-        int8_t *imaginary = samples + N_SAMPLES;
-        for (i = 0; i < N_SAMPLES; ++i) {
-            imaginary[i] = 0;
-        }
-        fix_fft(samples, imaginary, SHIFT_1_BY_THIS_TO_GET_N_SAMPLES, 0);
-        int32_t max = 0;
-        unsigned maxi = 0;
-        int32_t max2 = 0;
-        unsigned max2i = 0;
-        for (i = 1; i < 60/* cut off frequencies above ~10kHz*/; ++i) { // First sample is DC component (I think).
-            int32_t e = samples[i]*samples[i] + imaginary[i]*imaginary[i];
-
-            if (max < e) {
-                max = e;
-                maxi = i;
-            }
-            if (max2 < e && e < max) {
-                max2 = e;
-                max2i = i;
-            }
-        }
-
-        /*debugging_writec("--ft-start--\n");
-        for (i = 0; i < N_SAMPLES; ++i) {
-            debugging_write_uint32(samples[i]*samples[i] + imaginary[i]*imaginary[i]);
-            debugging_writec("\n");
-        }
-        debugging_writec("--ft-end--\n");
-        continue;*/
+        piezo_mic_read_buffer(samples);
+        uint32_t mag = isqrt(piezo_mic_buffer_get_sqmag(samples));
+        piezo_mic_buffer_fft(samples);
+        unsigned first_formant = 0, second_formant = 0;
+        piezo_fft_buffer_get_12formants(samples, &first_formant, &second_formant);
 
         debugging_writec("Mag: ");
         debugging_write_uint16(mag);
         debugging_writec(" ~ ");
-        debugging_write_uint16(maxi);
+        debugging_write_uint16(first_formant);
         debugging_writec(", ");
-        debugging_write_uint16(max2i);
+        debugging_write_uint16(second_formant);
         debugging_writec("\n");
+
         //unsigned i;
         //for (i = 0; i < 200000; ++i);
     }

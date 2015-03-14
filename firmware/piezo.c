@@ -5,7 +5,13 @@
 #include <stm32f0xx_rcc.h>
 #include <stm32f0xx_adc.h>
 #include <stm32f0xx_misc.h>
+#include <fix_fft.h>
+#include <piezo.h>
 #include <deviceconfig.h>
+
+//
+// Microphone stuff.
+//
 
 void piezo_mic_init()
 {
@@ -38,15 +44,111 @@ void piezo_mic_init()
     ADC_StartOfConversion(ADC1);
 }
 
-void piezo_mic_wait_on_ready()
+static void piezo_mic_wait_on_ready()
 {
     while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
 }
 
-uint16_t piezo_mic_get_reading()
+static uint16_t piezo_mic_get_reading()
 {
     return ADC_GetConversionValue(ADC1);
 }
+
+#define N_SAMPLES (PIEZO_MIC_BUFFER_SIZE_BYTES/2)
+
+void piezo_mic_read_buffer(int8_t *samples)
+{
+    int16_t *samples16 = (int16_t *)samples;
+    unsigned i;
+    for (i = 0; i < N_SAMPLES; ++i, piezo_mic_wait_on_ready()) {
+        samples16[i] = (int16_t)(piezo_mic_get_reading()) - (4096/2);
+    }
+    samples16[0] = samples16[1];
+
+    // 12 bits to 8.
+    int16_t raw_max = -(4096/2);
+    for (i = 0; i < N_SAMPLES; ++i) {
+        int16_t v = samples16[i];
+        if (v < 0)
+            v = -v;
+        if (v > raw_max)
+            raw_max = v;
+    }
+    int16_t ratio = 127/raw_max;
+    if (ratio > 1) {
+        for (i = 0; i < N_SAMPLES; ++i)
+            samples16[i] *= ratio;
+    }
+    raw_max = -(4096/2);
+    for (i = 0; i < N_SAMPLES; ++i) {
+        int16_t v = samples16[i];
+        if (v < 0)
+            v = -v;
+        if (v > raw_max)
+            raw_max = v;
+    }
+    unsigned shift = 0;
+    if (raw_max >= 1024)
+        shift = 4;
+    else if (raw_max >= 512)
+        shift = 3;
+    else if (raw_max >= 256)
+        shift = 2;
+    else if (raw_max >= 128)
+        shift = 1;
+    for (i = 0; i < N_SAMPLES; ++i)
+        samples[i] = samples16[i] >> shift;
+}
+
+uint32_t piezo_mic_buffer_get_sqmag(int8_t *samples)
+{
+    uint32_t sq = 0;
+    unsigned i;
+    for (i = 0; i < N_SAMPLES; ++i)
+        sq += samples[i] * samples[i];
+    return sq;
+}
+
+void piezo_mic_buffer_fft(int8_t *samples)
+{
+    // Find first and second formant.
+    int8_t *imaginary = samples + N_SAMPLES;
+    unsigned i;
+    for (i = 0; i < N_SAMPLES; ++i)
+        imaginary[i] = 0;
+
+    fix_fft(samples, imaginary, PIEZO_SHIFT_1_BY_THIS_TO_GET_N_SAMPLES, 0);
+}
+
+void piezo_fft_buffer_get_12formants(int8_t *samples, unsigned *first, unsigned *second)
+{
+    int8_t *imaginary = samples + N_SAMPLES;
+
+    int32_t max = 0, max2 = 0;
+    unsigned maxi = 0, max2i = 0;
+    // Starts from 1 because sample is DC component (I think). If not, it's too
+    // low a frequency to be of interest anyway.
+    unsigned i;
+    for (i = 1; i < 60/* cut off frequencies above ~10kHz*/; ++i) {
+        int32_t e = samples[i]*samples[i] + imaginary[i]*imaginary[i];
+
+        if (max < e) {
+            max = e;
+            maxi = i;
+        }
+        if (max2 < e && e < max) {
+            max2 = e;
+            max2i = i;
+        }
+    }
+
+    *first = maxi;
+    *second = max2i;
+}
+
+//
+// Piezo buzzer stuff.
+//
 
 void piezo_out_init()
 {
