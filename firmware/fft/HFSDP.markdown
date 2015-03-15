@@ -52,9 +52,10 @@ The slave responds after detecting a sequence of 16 on-off or off-on state
 changes on at least one of the two FP500s. The slave's response follows the same
 pattern as the master's signal but uses different FP500s:
 
-    |              | A mode | I mode |
-    | First FP500  | 7000   | 23000  |
-    | Second FP500 | 11000  | 29000  |
+|              | A mode | I mode |
+|--------------|--------|--------|
+| First FP500  | 7000   | 23000  |
+| Second FP500 | 11000  | 29000  |
 
 Once the master detects 16 state changes on at least one of these FP500s,
 the protocol enters the frequency negotiation phase.
@@ -79,8 +80,8 @@ the previous paragraph.
 The slave acknowledges by switching between the following two states at 1000Hz
 using FP500(x) where x is the frequency chosen by the master:
 
-    * State 1: FP500(x) is on.
-    * State 2: FP500(x) is off.
+* State 1: FP500(x) is on.
+* State 2: FP500(x) is off.
 
 Once the master receives this acknowledgment, the protocol enters the message
 phase.
@@ -91,10 +92,10 @@ Message phase
 
 The frequency x selected by the master defines four FP500s:
 
-    * Master clock: FP500(x)
-    * Master data:  FP500(x+2000)
-    * Slave clock:  FP500(x+4000)
-    * Slave data:   FP500(x+6000)
+* Master clock: FP500(x)
+* Master data:  FP500(x+2000)
+* Slave clock:  FP500(x+4000)
+* Slave data:   FP500(x+6000)
 
 By default, communication occurs at 1000Hz. The master and slave may exchange
 messages to negotiate a higher speed at any time (or to return to a lower
