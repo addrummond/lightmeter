@@ -263,7 +263,7 @@ void piezo_out_deinit()
 // HFSDP stuff.
 //
 
-#define SQMAG_THRESHOLD 200
+#define SQMAG_THRESHOLD 0
 
 bool piezo_hfsdp_listen_for_masters_init()
 {
@@ -313,11 +313,10 @@ bool piezo_hfsdp_listen_for_masters_init()
                 last_state = new_state;
                 ++state_changes;
             }
-            else if (new_state > 0) {
-                if (last_state != new_state)
-                    ++state_changes;
-                last_state = new_state;
-            }
+        }
+        else if (new_state > 0 && last_state != new_state) {
+            ++state_changes;
+            last_state = new_state;
         }
     }
 
