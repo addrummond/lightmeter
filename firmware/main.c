@@ -30,7 +30,7 @@ static uint32_t isqrt(uint32_t n)
    return root;
 }
 
-static int8_t samples[PIEZO_MIC_BUFFER_SIZE_BYTES];
+//static int8_t samples[PIEZO_MIC_BUFFER_SIZE_BYTES];
 int main()
 {
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOB, ENABLE);
@@ -38,7 +38,11 @@ int main()
     debugging_writec("Hello World!\n");
 
     piezo_mic_init();
-    for (;;) {
+    piezo_hfsdp_listen_for_masters_init();
+    debugging_writec("Init heard!\n");
+
+
+    /*for (;;) {
         piezo_mic_read_buffer(samples);
         uint32_t mag = isqrt(piezo_mic_buffer_get_sqmag(samples));
         piezo_mic_buffer_fft(samples);
@@ -55,7 +59,7 @@ int main()
 
         //unsigned i;
         //for (i = 0; i < 200000; ++i);
-    }
+    }*/
 
     /*piezo_out_init();
     piezo_set_period(1, (SystemCoreClock / 1000) - 1);

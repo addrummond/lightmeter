@@ -1,4 +1,3 @@
-#include <stdint.h>
 #include <myassert.h>
 #include <stm32f0xx_gpio.h>
 #include <stm32f0xx_tim.h>
@@ -265,14 +264,14 @@ void piezo_out_deinit()
 
 #define SQMAG_THRESHOLD 200
 
-void piezo_hfsdp_listen_for_masters_init()
+bool piezo_hfsdp_listen_for_masters_init()
 {
     int8_t samples[PIEZO_MIC_BUFFER_SIZE_BYTES];
     int8_t *imaginary = samples + N_SAMPLES;
 
     unsigned last_state = 0; // 1 = F1 on F2 off, 2 = F2 on F1 off.
     unsigned state_changes = 0;
-    for (;;) {
+    for (state_changes = 0; state_changes < 16;) {
         piezo_mic_read_buffer(samples);
         piezo_mic_buffer_fft(samples);
 
@@ -320,4 +319,6 @@ void piezo_hfsdp_listen_for_masters_init()
             }
         }
     }
+
+    return true;
 }

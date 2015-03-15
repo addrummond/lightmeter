@@ -2,6 +2,7 @@
 #define PIEZO_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 // (1 << PIEZO_SHIFT_1_BY_THIS_TO_GET_N_SAMPLES) == PIEZO_MIC_BUFFER_SIZE_BYTES/2
 #define PIEZO_MIC_BUFFER_SIZE_BYTES            512
@@ -33,6 +34,6 @@ void piezo_pause(unsigned channels);
 void piezo_unpause(unsigned channels);
 void piezo_out_deinit(void);
 
-void piezo_hfsdp_listen_for_masters_init(void);
+bool piezo_hfsdp_listen_for_masters_init(void);
 
 #endif
