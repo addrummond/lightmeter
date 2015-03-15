@@ -7,6 +7,7 @@
 #include <fix_fft.h>
 #include <piezo.h>
 #include <deviceconfig.h>
+#include <debugging.h>
 
 //
 // Microphone stuff.

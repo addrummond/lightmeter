@@ -13,9 +13,9 @@
 #define PIEZO_HFSDP_A_MODE_SLAVE_F1_HZ   7000.0
 #define PIEZO_HFSDP_A_MODE_SLAVE_F2_HZ   11000.0
 // Estimated by testing. Each element in the sequence outputted by the FFT
-// appears to correspond to about 108.7Hz when ADC samples at 239.5 clock
+// appears to correspond to about 217.4Hz when ADC samples at 239.5 clock
 // cycles (and processor is at 8MHz).
-#define PIEZO_HZ_TO_FTF(hz)             ((unsigned)((hz)/108.7))
+#define PIEZO_HZ_TO_FTF(hz)              (((unsigned)((hz)/217.4))+1)
 #define PIEZO_HFSDP_A_MODE_MASTER_F1_FTF PIEZO_HZ_TO_FTF(PIEZO_HFSDP_A_MODE_MASTER_F1_HZ)
 #define PIEZO_HFSDP_A_MODE_MASTER_F2_FTF PIEZO_HZ_TO_FTF(PIEZO_HFSDP_A_MODE_MASTER_F2_HZ)
 #define PIEZO_HFSDP_A_MODE_SLAVE_F1_FTF  PIEZO_HZ_TO_FTF(PIEZO_HFSDP_A_MODE_MASTER_F3_HZ)
