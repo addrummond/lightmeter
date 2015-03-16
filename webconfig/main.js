@@ -43,7 +43,67 @@ function roundW(x, k) {
     return buffer;
 }*/
 
-function generateInitPips(sampleRate, n, mag) {
+function ssb(s, sh, f, t) {
+    return s(t)*Math.cos(2*Math.PI*f*t) - sh(t)*Math.sin(2*Math.PI*f*t);
+}
+
+function square(freq, mag) {
+    return function (t) {
+        t = Math.abs(((t*freq)%2));
+        if (t <= 0.5)
+            return mag;
+        if (t <= 1.5)
+            return 0;
+        else
+            return mag;
+    };
+}
+
+function hilbert_of_square(freq, mag) {
+    return function (t) {
+        t = (((t*freq))%2);
+        var m = 1;
+        if (t > 1) {
+            m = -1;
+            t -= 1;
+        }
+        return m*mag*(1/Math.PI)*Math.log(Math.abs((t+0.5)/(t-0.5)));
+    };
+}
+
+function sinfm(freq, mag) {
+    return function (t) {
+        return mag*Math.sin(Math.PI*2*freq*t);
+    }
+}
+
+function minuscosfm(freq, mag) {
+    return function (t) {
+        return -(mag*Math.cos(Math.PI*2*freq*t));
+    }
+}
+
+function myf(t) {
+    //return 0.5*Math.sin(2*Math.PI*1000*t)*Math.sin(2*Math.PI*5000*t);
+    return (0.1 * Math.sin(2*Math.PI*5000*t))  + ssb(sinfm(1000, 0.5), minuscosfm(1000, 0.5), 5000, t);
+    //return ssb(square(1000, 0.5), hilbert_of_square(1000, 0.5), 5000, t);
+    //return square(1000, 0.25)(t);
+}
+
+audioCtx = new AudioContext();
+var buffer = audioCtx.createBuffer(1, audioCtx.sampleRate, audioCtx.sampleRate);
+var samples = buffer.getChannelData(0);
+for (var i = 0; i < samples.length; ++i) {
+    var t = i / audioCtx.sampleRate;
+    samples[i] = myf(t);
+    document.write(samples[i] + '<br>\n');
+}
+var bufS = audioCtx.createBufferSource();
+bufS.buffer = buffer;
+bufS.connect(audioCtx.destination);
+bufS.start();
+
+/*function generateInitPips(sampleRate, n, mag) {
     if (typeof(mag) != 'number')
         mag = 1.0;
 
@@ -82,4 +142,4 @@ var pips = generateInitPips(audioCtx.sampleRate, 640);
 var bufS = audioCtx.createBufferSource();
 bufS.buffer = pips;
 bufS.connect(audioCtx.destination);
-bufS.start();
+bufS.start();*/
