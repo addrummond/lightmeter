@@ -1,9 +1,9 @@
 var A_MODE_FIRST_FP500_FREQ_HZ = 5000;
-var A_MODE_SECOND_FP500_FREQ_HZ = 9000;
+var A_MODE_SECOND_FP500_FREQ_HZ = 5500;
 
-var BASE_FREQ = 1000;
+var BASE_FREQ = 500;
 
-// Function that generates square waves with the same period as sin/cos.
+// Function that generates square waves with the same period as sin.
 function squareW(x, k) {
     var y = parseInt(x / Math.PI);
     if (y % 2 == k)
@@ -11,16 +11,27 @@ function squareW(x, k) {
     else
         return 0;
 }
+function roundW(x, k) {
+    var v;
+    if (k == 0)
+        v = Math.sin(x);
+    else
+        v = Math.cos(x);
+    return Math.abs(v);
+}
 
 function generateInitPips(sampleRate, n, mag) {
     if (typeof(mag) != 'number')
         mag = 1.0;
 
-    var k1 = 2 * Math.PI * BASE_FREQ * (BASE_FREQ/sampleRate);
+    var tPerSwitch = 1/BASE_FREQ;
+    var k1 = Math.PI / tPerSwitch;
     function mag1AtT(t) {
+        return 0.25;
         return 0.5 * squareW(k1*t, 0);
     }
     function mag2AtT(t) {
+        return 0.25;
         return 0.5 * squareW(k1*t, 1);
     }
 
@@ -38,14 +49,15 @@ function generateInitPips(sampleRate, n, mag) {
     for (var i = 0; i < samples.length; ++i) {
         var t = i/sampleRate;
         samples[i] = mag1AtT(t)*val1AtT(t) + mag2AtT(t)*val2AtT(t);
-        samples[i] *= mag;
+        samples[i] *= mag * 0.2;
+        document.write(samples[i] + '<br>\n');// ', ' +  t + ', ' + mag1AtT(t) + '<br>\n');
     }
 
     return buffer;
 }
 
 audioCtx = new AudioContext();
-var pips = generateInitPips(audioCtx.sampleRate, 64);
+var pips = generateInitPips(audioCtx.sampleRate, 640);
 var bufS = audioCtx.createBufferSource();
 bufS.buffer = pips;
 bufS.connect(audioCtx.destination);

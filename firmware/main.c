@@ -8,6 +8,7 @@
 #include <ui.h>
 #include <state.h>
 #include <debugging.h>
+#include <piezo.h>
 
 #include <fix_fft.h>
 
@@ -34,20 +35,20 @@ int main()
 {
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOB, ENABLE);
 
-    debugging_writec("Hello World!\n");
+    debugging_writec("Hello world\n");
 
     piezo_mic_init();
 
     piezo_hfsdp_listen_for_masters_init();
     debugging_writec("Init heard!\n");
 
-    /*int8_t samples[PIEZO_MIC_BUFFER_SIZE_BYTES];
+    int8_t samples[PIEZO_MIC_BUFFER_SIZE_BYTES];
     for (;;) {
         piezo_mic_read_buffer(samples);
         uint32_t mag = isqrt(piezo_mic_buffer_get_sqmag(samples));
         piezo_mic_buffer_fft(samples);
-        unsigned first_formant = 0, second_formant = 0;
-        piezo_fft_buffer_get_12formants(samples, &first_formant, &second_formant);
+        unsigned first_formant = 0, second_formant = 0, first_formant_mag = 0, second_formant_mag = 0;
+        piezo_fft_buffer_get_12formants(samples, &first_formant, &second_formant, &first_formant_mag, &second_formant_mag);
 
         debugging_writec("Mag: ");
         debugging_write_uint16(mag);
@@ -55,13 +56,17 @@ int main()
         debugging_write_uint16(first_formant);
         debugging_writec(", ");
         debugging_write_uint16(second_formant);
-        debugging_writec("\n");
+        debugging_writec(" [");
+        debugging_write_uint16(first_formant_mag);
+        debugging_writec(", ");
+        debugging_write_uint16(second_formant_mag);
+        debugging_writec("]\n");
 
         //unsigned i;
         //for (i = 0; i < 200000; ++i);
-    }*/
+    }
 
-    /*piezo_out_init();
+    piezo_out_init();
     piezo_set_period(1, (SystemCoreClock / 1000) - 1);
     piezo_set_period(2, (SystemCoreClock / 1500) - 1);
     piezo_turn_on(3);
@@ -72,7 +77,7 @@ int main()
         piezo_unpause(1);
         for (i = 0; i < 2000000; ++i);
         debugging_writec("loop\n");
-    }*/
+    }
 
     debugging_writec("Piezo init complete\n");
 
