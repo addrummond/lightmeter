@@ -3,10 +3,16 @@ import math
 import sys
 import re
 
+def complement_convert(x):
+    if x < 128:
+        return x + 128
+    else:
+        return -((256-x)-128)
+
 def samples_to_wave(samples, of):
     w = wave.open(of, 'w')
     w.setparams((1, 1, 44100, len(samples), 'NONE', 'not compressed'))
-    w.writeframes(bytearray((s+128 if s < 128 else -((256-s)-128) for s in samples)))
+    w.writeframes(samples)
     w.close()
 
 def samples_to_text(samples, of):
@@ -69,6 +75,7 @@ if __name__ == '__main__':
         samples = get_samples_from_webapp(c)
     else:
         samples = get_samples_from_text(c) * times_to_repeat
+        samples = bytearray((complement_convert(x) for x in samples))
     if outputfile.endswith(".wav"):
         samples_to_wave(samples, outputfile)
     else:
