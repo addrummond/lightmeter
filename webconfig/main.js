@@ -27,11 +27,9 @@ function generateInitPips(sampleRate, n, mag) {
     var tPerSwitch = 1/BASE_FREQ;
     var k1 = Math.PI / tPerSwitch;
     function mag1AtT(t) {
-        return 0.25;
         return 0.5 * squareW(k1*t, 0);
     }
     function mag2AtT(t) {
-        return 0.25;
         return 0.5 * squareW(k1*t, 1);
     }
 

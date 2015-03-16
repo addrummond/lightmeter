@@ -282,7 +282,11 @@ bool piezo_hfsdp_listen_for_masters_init()
 
     unsigned last_state = 0; // 1 = F1 on F2 off, 2 = F2 on F1 off.
     unsigned state_changes = 0;
-    for (state_changes = 0; state_changes < 16;) {
+    unsigned count = 0;
+    for (state_changes = 0; state_changes < 16; ++count) {
+        if (count > 200)
+            state_changes = 0;
+
         piezo_mic_read_buffer(samples);
         piezo_mic_buffer_fft(samples);
 
