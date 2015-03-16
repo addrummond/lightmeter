@@ -1,7 +1,7 @@
 var A_MODE_FIRST_FP500_FREQ_HZ = 5000;
 var A_MODE_SECOND_FP500_FREQ_HZ = 5500;
 
-var BASE_FREQ = 500;
+var BASE_FREQ = 1000;
 
 // Function that generates square waves with the same period as sin.
 function squareW(x, k) {
@@ -20,6 +20,29 @@ function roundW(x, k) {
     return Math.abs(v);
 }
 
+// Using phase modulation.
+/*function generateInitPips(sampleRate, n, mag) {
+    if (typeof(mag) != 'number')
+        mag = 1.0;
+
+    var tPerSwitch = 1/BASE_FREQ;
+    var k1 = Math.PI / tPerSwitch;
+    function phaseAtT(t) {
+        return roundW(k1*t, 0) * Math.PI/2;
+    }
+
+    var buffer = audioCtx.createBuffer(1, (n/BASE_FREQ)*sampleRate, sampleRate);
+    var samples = buffer.getChannelData(0);
+    for (var i = 0; i < samples.length; ++i) {
+        var t = i/sampleRate;
+        samples[i] = Math.sin(2*Math.PI*A_MODE_FIRST_FP500_FREQ_HZ*t + phaseAtT(t));
+        samples[i] *= mag * 0.2;
+        document.write(samples[i] + '<br>\n');
+    }
+
+    return buffer;
+}*/
+
 function generateInitPips(sampleRate, n, mag) {
     if (typeof(mag) != 'number')
         mag = 1.0;
@@ -27,10 +50,10 @@ function generateInitPips(sampleRate, n, mag) {
     var tPerSwitch = 1/BASE_FREQ;
     var k1 = Math.PI / tPerSwitch;
     function mag1AtT(t) {
-        return 0.5 * squareW(k1*t, 0);
+        return 0.5 * roundW(k1*t, 0);
     }
     function mag2AtT(t) {
-        return 0.5 * squareW(k1*t, 1);
+        return 0.5 * roundW(k1*t, 1);
     }
 
     var k2 = 2 * Math.PI * A_MODE_FIRST_FP500_FREQ_HZ;
