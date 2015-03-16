@@ -9256,6 +9256,7 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <wire x1="-1.5" y1="2.636" x2="-1.5" y2="-1.124" width="0.127" layer="21"/>
 <wire x1="1.5" y1="2.636" x2="1.5" y2="-1.124" width="0.127" layer="21"/>
 <pad name="P$6" x="0" y="0" drill="0.3302"/>
+<text x="-2.54" y="2.54" size="1.27" layer="25">&gt;NAME</text>
 </package>
 </packages>
 <symbols>
