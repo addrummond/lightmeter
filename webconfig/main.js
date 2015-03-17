@@ -9,29 +9,52 @@ function ssb(s, sh, f, t) {
 
 var SERIES_LENGTH = 3;
 
-function approximate_square_wave(freq, mag) {
+function approximate_square_wave(freq, mag, dutycycle, hilbert) {
     return function (t) {
-        var v = 0;
+        // See http://lpsa.swarthmore.edu/Fourier/Series/ExFS.html#CosSeriesDC=0.5
+
+        t *= freq;
+
+        // Convenient to have it start at beginning of positive.
+        t += dutycycle*2 + (1-dutycycle);
+
+        function a(n) {
+            return 2*(mag/(n*Math.PI))*Math.sin(n*Math.PI*dutycycle);
+        }
+
+        function fnh(i) {
+            return a(i) * Math.cos(i*Math.PI*2*t);
+        }
+        function fh(i) {
+            return a(i) * Math.sin(i*Math.PI*2*t);
+        }
+
+        var v = mag*dutycycle;
+        var f = (hilbert ? fh : fnh);
+        for (var i = 1; i < SERIES_LENGTH; ++i) {
+            v += f(i);
+        }
+
+        return v;
+
+        // Old code that just does 50% duty cycle waves.
+        //
+        /*var v = 0;
         for (var i = 1; i < SERIES_LENGTH*2; i += 2) {
             v += Math.sin(i*2*Math.PI*freq*t)/i;
         }
-        return mag*((4*v)/Math.PI);
+        return mag*((4*v)/Math.PI);*/
     };
 }
 
-function hilbert_of_approximate_square_wave(freq, mag) {
-    return function(t) {
-        var v = 0;
-        for (var i = 1; i < SERIES_LENGTH*2; i += 2) {
-            v -= Math.cos(i*2*Math.PI*freq*t)/i;
-        }
-        return mag*((4*v)/Math.PI);
-    };
+function hilbert_of_approximate_square_wave(freq, mag, dutycycle) {
+    return approximate_square_wave(freq, mag, dutycycle, true);
 }
 
 function myf(t) {
-    //return approximate_square_wave(1000, 0.25)(t);
-    return Math.sin(2*Math.PI*9000*t)*0.2 + ssb(approximate_square_wave(1000, 0.2), hilbert_of_approximate_square_wave(1000, 0.2), 9000, t);
+    //return approximate_square_wave(1000, 0.75, 0.75)(t);
+    //return /*Math.sin(2*Math.PI*9000*t)*0.2 + */ssb(approximate_square_wave(1000, 0.2, 0.75), hilbert_of_approximate_square_wave(1000, 0.2, 0.75), 9000, t);
+    return 0.1*ssb(approximate_square_wave(1000, 0.2, 0.75), hilbert_of_approximate_square_wave(1000, 0.2, 0.75), 19000, t);
 }
 
 audioCtx = new AudioContext();
