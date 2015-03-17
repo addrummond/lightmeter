@@ -7,7 +7,7 @@ function ssb(s, sh, f, t) {
     return s(t)*Math.cos(2*Math.PI*f*t) - sh(t)*Math.sin(2*Math.PI*f*t);
 }
 
-var SERIES_LENGTH = 3;
+var SERIES_LENGTH = 6;
 
 function approximate_square_wave(freq, mag, dutycycle, hilbert) {
     return function (t) {
@@ -16,7 +16,7 @@ function approximate_square_wave(freq, mag, dutycycle, hilbert) {
         t *= freq;
 
         // Convenient to have it start at beginning of positive.
-        t += dutycycle*2 + (1-dutycycle);
+        t -= dutycycle/2;
 
         function a(n) {
             return 2*(mag/(n*Math.PI))*Math.sin(n*Math.PI*dutycycle);
@@ -52,9 +52,9 @@ function hilbert_of_approximate_square_wave(freq, mag, dutycycle) {
 }
 
 function myf(t) {
-    //return approximate_square_wave(1000, 0.75, 0.75)(t);
+    //return approximate_square_wave(1000, 0.75, 0.5)(t);
     //return /*Math.sin(2*Math.PI*9000*t)*0.2 + */ssb(approximate_square_wave(1000, 0.2, 0.75), hilbert_of_approximate_square_wave(1000, 0.2, 0.75), 9000, t);
-    return ssb(approximate_square_wave(1000, 0.2, 0.5), hilbert_of_approximate_square_wave(1000, 0.2, 0.5), 19000, t);
+    return /*Math.cos(2*Math.PI*19000*t)**/(0.2*Math.cos(2*Math.PI*19000*t) + ssb(approximate_square_wave(1000, 0.2, 0.5), hilbert_of_approximate_square_wave(1000, 0.2, 0.5), 19000, t));
     //return 0.5*Math.sin(2*Math.PI*10000*t + 0.2*Math.PI*Math.cos(2*Math.PI*1000*t));
     //return Math.sin(2*Math.PI*1000*t)*Math.sin(2*Math.PI*t*19000);
 }
@@ -72,14 +72,22 @@ for (var i = 0; i < samples.length; ++i) {
 var bufS = audioCtx.createBufferSource();
 bufS.buffer = buffer;
 if (FILTER) {
-    var filter;
-    filter = audioCtx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.value = 19500;
-    filter.Q.value = 19500/2000;
-    filter.gain.value = 1;
-    bufS.connect(filter);
-    filter.connect(audioCtx.destination);
+    var filter1;
+    filter1 = audioCtx.createBiquadFilter();
+    filter1.type = 'bandpass';
+    filter1.frequency.value = 19500;
+    filter1.Q.value = 19500/2000;
+    filter1.gain.value = 1;
+
+    var filter2 = audioCtx.createBiquadFilter();
+    filter1.type = 'highpass';
+    filter1.frequency.value = 18500;
+    filter1.gain.value = 1;
+
+    bufS.connect(filter1);
+    filter1.connect(filter2);
+
+    filter2.connect(audioCtx.destination);
 }
 else {
     bufS.connect(audioCtx.destination);
