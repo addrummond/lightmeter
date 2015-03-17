@@ -45,20 +45,16 @@ function hilbert_of_approximate_square_wave(freq, mag, dutyCycle, phaseShift) {
     return approximate_square_wave(freq, mag, dutyCycle, phaseShift, true);
 }
 
-function encode_signal(signal, signalFreq, carrierFreq, mag) {
+function encode_signal(out, signal, signalFreq, carrierFreq, mag) {
     if (signal.length == 0)
-        return [];
+        return;
 
     var rat = parseInt(carrierFreq/signalFreq);
-
-    var out;
-    if (typeof(Float32Array) != 'undefined')
-        out = new Float32Array(signal.length * rat);
-    else
-        out = new Array(signal.length * rat);
+    if (out.length < signal.length * rat)
+        throw new Error("Assertion error in encode_signal: output buffer too short");
 
     for (var i = 0; i < signal.length;) {
-        var start = 0;
+        var start = i;
 
         var seq1Count = 0;
         var seq2Count = 0;
@@ -84,6 +80,7 @@ function encode_signal(signal, signalFreq, carrierFreq, mag) {
             phaseShift = 0;
             dutyCycle = seq1Count / seq2Count;
         }
+        dutyCycle /= 2;
 
         var dv = i - start;
         var wf = approximate_square_wave(signalFreq/dv, mag, dutyCycle, phaseShift);
@@ -96,24 +93,25 @@ function encode_signal(signal, signalFreq, carrierFreq, mag) {
                     break;
 
                 var t = oi / carrierFreq;
+                //console.log(t);
                 //console.log(t, wf(t), hwf(t), ssb(wf, hwf, carrierFreq, t));
                 var v = ssb(wf, hwf, carrierFreq, t);
                 out[oi] = v;
             }
         }
     }
-
-    return out;
 }
 
 function myf(t) {
     return (0.2*Math.cos(2*Math.PI*I_MODE_F1*t) +
             ssb(approximate_square_wave(SIGNAL_FREQ, 0.2, 0.5),
-            hilbert_of_approximate_square_wave(SIGNAL_FREQ, 0.2, 0.5), I_MODE_F1, t)) +
+                hilbert_of_approximate_square_wave(SIGNAL_FREQ, 0.2, 0.5),
+                I_MODE_F1, t)) +
            //0
            (0.2*Math.cos(2*Math.PI*I_MODE_F2*t) +
            ssb(approximate_square_wave(SIGNAL_FREQ, 0.2, 0.5),
-           hilbert_of_approximate_square_wave(SIGNAL_FREQ, 0.2, 0.5), I_MODE_F2, t))
+               hilbert_of_approximate_square_wave(SIGNAL_FREQ, 0.2, 0.5),
+               I_MODE_F2, t))
            ;
 }
 
@@ -122,11 +120,18 @@ var FILTER = true;
 audioCtx = new AudioContext();
 var buffer = audioCtx.createBuffer(1, audioCtx.sampleRate, audioCtx.sampleRate);
 var samples = buffer.getChannelData(0);
-for (var i = 0; i < samples.length; ++i) {
+
+/*for (var i = 0; i < samples.length; ++i) {
     var t = i / audioCtx.sampleRate;
     samples[i] = myf(t);
     document.write(samples[i] + '<br>\n');
+}*/
+var message = [1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0];
+encode_signal(samples, [1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0], 1000, 19000, 0.2);
+for (var i = 0; i < message.length*(19000/1000); ++i) {
+    document.write(samples[i] + '<br>\n');
 }
+
 var bufS = audioCtx.createBufferSource();
 bufS.buffer = buffer;
 if (FILTER) {
