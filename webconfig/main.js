@@ -10,11 +10,9 @@ function ssb(s, sh, f, t) {
 var SERIES_LENGTH = 6;
 
 function approximate_square_wave(freq, mag, dutycycle, hilbert) {
+    // See http://lpsa.swarthmore.edu/Fourier/Series/ExFS.html#CosSeriesDC=0.5
     return function (t) {
-        // See http://lpsa.swarthmore.edu/Fourier/Series/ExFS.html#CosSeriesDC=0.5
-
         t *= freq;
-
         // Convenient to have it start at beginning of positive.
         t -= dutycycle/2;
 
