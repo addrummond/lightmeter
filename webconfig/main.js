@@ -78,24 +78,26 @@ function encode_signal(signal, signalFreq, carrierFreq, mag) {
         var phaseShift, dutyCycle;
         if (seq1V == 0) {
             phaseShift = 1;
-            dutyCycle = seq2V / seq1V;
+            dutyCycle = seq2Count / seq1Count;
         }
         else {
             phaseShift = 0;
-            dutyCycle = seq1V / seq2V;
+            dutyCycle = seq1Count / seq2Count;
         }
 
         var dv = i - start;
         var wf = approximate_square_wave(signalFreq/dv, mag, dutyCycle, phaseShift);
         var hwf = hilbert_of_approximate_square_wave(signalFreq/dv, mag, dutyCycle, phaseShift);
 
-        for (var j = i; j < start; ++j) {
+        for (var j = start; j < i; ++j) {
             for (var k = 0; k < rat; ++k) {
                 var oi = j*rat + k;
                 if (oi >= out.length)
                     break;
 
-                var v = wf(k) + hwf(k);
+                var t = oi / carrierFreq;
+                //console.log(t, wf(t), hwf(t), ssb(wf, hwf, carrierFreq, t));
+                var v = ssb(wf, hwf, carrierFreq, t);
                 out[oi] = v;
             }
         }
