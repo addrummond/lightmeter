@@ -53,7 +53,7 @@ function square(freq, mag) {
         if (t <= 0.5)
             return mag;
         if (t <= 1.5)
-            return -mag;
+            return 0;
         else
             return mag;
     };
@@ -67,7 +67,7 @@ function hilbert_of_square(freq, mag) {
         for (var n = 1, s = 1; n < 25; n += 2, s *= -1) {
             v += s*(Math.sin(n*t)/n);
         }
-        return mag*v*4/Math.PI;
+        return 0.5*mag*v*4/Math.PI;// - mag/2;
     };
 }
 
@@ -84,11 +84,9 @@ function minuscosfm(freq, mag) {
 }
 
 function myf(t) {
-    //return 0.5*Math.sin(2*Math.PI*1000*t)*Math.sin(2*Math.PI*5000*t);
-    //return /*(0.1 * Math.sin(2*Math.PI*5000*t))  +*/ ssb(sinfm(1000, 0.5), minuscosfm(1000, 0.5), 5000, t);
-    return /*square(1000, 1)(t)**/ssb(square(1000, 0.2), hilbert_of_square(1000, 0.2), 5000, t);
-    //return hilbert_of_square(1000, 0.2)(t);
-    //return square(1000,0.25)(t)*hilbert_of_square(1000,0.25)(t);
+    return Math.cos(2*Math.PI*5000*t)*ssb(square(1000, 0.2), hilbert_of_square(1000, 0.2), 5000, t);
+    //return square(1000, 0.2, 0)(t);
+    //return hilbert_of_square(1000,0.1)(t);
 }
 
 audioCtx = new AudioContext();
