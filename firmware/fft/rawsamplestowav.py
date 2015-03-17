@@ -57,6 +57,7 @@ def get_samples_from_webapp(s):
             raise Exception("Bad file format [2]")
 
         if v < -1.0 or v > 1.0:
+            print(v)
             raise Exception("Bad file format [3]")
 
         samples[i] = int(round((v+1.0)*128.0))
