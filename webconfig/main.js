@@ -19,7 +19,6 @@ function approximate_square_wave(freq, mag, dutycycle, hilbert) {
         function a(n) {
             return 2*(mag/(n*Math.PI))*Math.sin(n*Math.PI*dutycycle);
         }
-
         function fnh(i) {
             return a(i) * Math.cos(i*Math.PI*2*t);
         }
