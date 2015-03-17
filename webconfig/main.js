@@ -41,10 +41,9 @@ function hilbert_of_approximate_square_wave(freq, mag, dutycycle) {
 }
 
 function myf(t) {
-    return (/*Math.cos(2*Math.PI*19000*t) * */
-            (0.2*Math.cos(2*Math.PI*I_MODE_F1*t) +
+    return (//0.2*Math.cos(2*Math.PI*I_MODE_F1*t) +
             ssb(approximate_square_wave(SIGNAL_FREQ, 0.2, 0.5),
-            hilbert_of_approximate_square_wave(SIGNAL_FREQ, 0.2, 0.5), I_MODE_F1, t)));
+            hilbert_of_approximate_square_wave(SIGNAL_FREQ, 0.2, 0.5), I_MODE_F1, t));
 }
 
 var FILTER = true;
