@@ -54,8 +54,12 @@ function hilbert_of_approximate_square_wave(freq, mag, dutycycle) {
 function myf(t) {
     //return approximate_square_wave(1000, 0.75, 0.75)(t);
     //return /*Math.sin(2*Math.PI*9000*t)*0.2 + */ssb(approximate_square_wave(1000, 0.2, 0.75), hilbert_of_approximate_square_wave(1000, 0.2, 0.75), 9000, t);
-    return 0.1*ssb(approximate_square_wave(1000, 0.2, 0.75), hilbert_of_approximate_square_wave(1000, 0.2, 0.75), 19000, t);
+    return ssb(approximate_square_wave(1000, 0.2, 0.5), hilbert_of_approximate_square_wave(1000, 0.2, 0.5), 19000, t);
+    //return 0.5*Math.sin(2*Math.PI*10000*t + 0.2*Math.PI*Math.cos(2*Math.PI*1000*t));
+    //return Math.sin(2*Math.PI*1000*t)*Math.sin(2*Math.PI*t*19000);
 }
+
+var FILTER = true;
 
 audioCtx = new AudioContext();
 var buffer = audioCtx.createBuffer(1, audioCtx.sampleRate, audioCtx.sampleRate);
@@ -67,7 +71,19 @@ for (var i = 0; i < samples.length; ++i) {
 }
 var bufS = audioCtx.createBufferSource();
 bufS.buffer = buffer;
-bufS.connect(audioCtx.destination);
+if (FILTER) {
+    var filter;
+    filter = audioCtx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = 19500;
+    filter.Q.value = 19500/2000;
+    filter.gain.value = 1;
+    bufS.connect(filter);
+    filter.connect(audioCtx.destination);
+}
+else {
+    bufS.connect(audioCtx.destination);
+}
 bufS.start();
 
 /*function generateInitPips(sampleRate, n, mag) {
