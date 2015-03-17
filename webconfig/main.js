@@ -1,7 +1,7 @@
-var A_MODE_FIRST_FP500_FREQ_HZ = 5000;
-var A_MODE_SECOND_FP500_FREQ_HZ = 5500;
-
 var BASE_FREQ = 1000;
+
+var SIGNAL_FREQ = 1000;
+var I_MODE_F1 = 19000;
 
 function ssb(s, sh, f, t) {
     return s(t)*Math.cos(2*Math.PI*f*t) - sh(t)*Math.sin(2*Math.PI*f*t);
@@ -52,11 +52,10 @@ function hilbert_of_approximate_square_wave(freq, mag, dutycycle) {
 }
 
 function myf(t) {
-    //return approximate_square_wave(1000, 0.75, 0.5)(t);
-    //return /*Math.sin(2*Math.PI*9000*t)*0.2 + */ssb(approximate_square_wave(1000, 0.2, 0.75), hilbert_of_approximate_square_wave(1000, 0.2, 0.75), 9000, t);
-    return /*Math.cos(2*Math.PI*19000*t)**/(0.2*Math.cos(2*Math.PI*19000*t) + ssb(approximate_square_wave(1000, 0.2, 0.5), hilbert_of_approximate_square_wave(1000, 0.2, 0.5), 19000, t));
-    //return 0.5*Math.sin(2*Math.PI*10000*t + 0.2*Math.PI*Math.cos(2*Math.PI*1000*t));
-    //return Math.sin(2*Math.PI*1000*t)*Math.sin(2*Math.PI*t*19000);
+    return (/*Math.cos(2*Math.PI*19000*t) * */
+            (0.2*Math.cos(2*Math.PI*I_MODE_F1*t) +
+            ssb(approximate_square_wave(SIGNAL_FREQ, 0.2, 0.5),
+            hilbert_of_approximate_square_wave(SIGNAL_FREQ, 0.2, 0.5), I_MODE_F1, t)));
 }
 
 var FILTER = true;
@@ -75,14 +74,14 @@ if (FILTER) {
     var filter1;
     filter1 = audioCtx.createBiquadFilter();
     filter1.type = 'bandpass';
-    filter1.frequency.value = 19500;
-    filter1.Q.value = 19500/2000;
+    filter1.frequency.value = I_MODE_F1+(SIGNAL_FREQ/2);
+    filter1.Q.value = (I_MODE_F1+(SIGNAL_FREQ/2))/(SIGNAL_FREQ+50);
     filter1.gain.value = 1;
 
     var filter2 = audioCtx.createBiquadFilter();
-    filter1.type = 'highpass';
-    filter1.frequency.value = 18500;
-    filter1.gain.value = 1;
+    filter2.type = 'highpass';
+    filter2.frequency.value = I_MODE_F1-50;
+    filter2.gain.value = 1;
 
     bufS.connect(filter1);
     filter1.connect(filter2);
