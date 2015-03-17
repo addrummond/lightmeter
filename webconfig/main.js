@@ -36,14 +36,6 @@ function approximate_square_wave(freq, mag, dutycycle, hilbert) {
         }
 
         return v;
-
-        // Old code that just does 50% duty cycle waves.
-        //
-        /*var v = 0;
-        for (var i = 1; i < SERIES_LENGTH*2; i += 2) {
-            v += Math.sin(i*2*Math.PI*freq*t)/i;
-        }
-        return mag*((4*v)/Math.PI);*/
     };
 }
 
