@@ -7,9 +7,9 @@ function ssb(s, sh, f, t) {
     return s(t)*Math.cos(2*Math.PI*f*t) - sh(t)*Math.sin(2*Math.PI*f*t);
 }
 
-var SERIES_LENGTH = 6;
-
 function approximate_square_wave(freq, mag, dutycycle, hilbert) {
+    var SERIES_LENGTH = 6;
+
     // See http://lpsa.swarthmore.edu/Fourier/Series/ExFS.html#CosSeriesDC=0.5
     return function (t) {
         t *= freq;
