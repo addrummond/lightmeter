@@ -2,6 +2,20 @@ var SIGNAL_FREQ = 1000;
 var I_MODE_F1 = 18500;
 var I_MODE_F2 = 19000;
 
+function goetzel(freq, input, output) {
+    var inter = new Float32Array(input.length);
+    for (var i = 0; i < input.length; ++i) {
+        var prev1 = i >= 1 ? input[i-1] : 0;
+        var prev2 = i >= 2 ? input[i-2] : 0;
+        inter[i] = input[i] + 2*Math.cos(2*Math.PI*freq)*prev1 - prev2;
+    }
+
+    for (var i = 0; i < input.length; ++i) {
+        var prev = i >= 1 ? inter[i-1] : inter[inter.length-1];
+        output[i] = inter[i] - Math.cos(-2*Math.PI*freq)*prev;
+    }
+}
+
 function fir(coefficients, input, output) {
     var ops = 0;
     for (var i = 0; i < input.length; ++i) {
@@ -182,7 +196,7 @@ function hilbert_of_approximate_triangle_wave(freq, mag, dutyCycle, phaseShift) 
 }
 
 function myf(t) {
-    return 0.5*(Math.sin(10000*Math.PI*2*t) + Math.sin(19000*Math.PI*2*t));
+    return 0.1*(Math.sin(10000*Math.PI*2*t) + Math.sin(19000*Math.PI*2*t));
 
     //return hilbert_of_approximate_triangle_wave(1000, 0.5, 2)(t);
     //return approximate_triangle_wave(1000,0.25,0.001)(t)*Math.sin(2*Math.PI*19000*t);
@@ -215,7 +229,8 @@ for (var i = 0; i < samples.length; ++i) {
     var t = i / audioCtx.sampleRate;
     xsamples[i] = myf(t);
 }
-fir(CS, xsamples, samples);
+//fir(CS, xsamples, samples);
+goetzel(audioCtx.sampleRate/19000, xsamples, samples);
 for (var i = 0; i < samples.length; ++i) {
     document.write(samples[i] + '<br>\n');
 }
