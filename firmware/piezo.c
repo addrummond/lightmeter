@@ -192,15 +192,15 @@ void piezo_out_deinit()
 bool piezo_hfsdp_listen_for_masters_init()
 {
     int16_t samples[PIEZO_MIC_BUFFER_N_SAMPLES];
+
     for (;;) {
         piezo_mic_read_buffer(samples);
-        goetzel_state_t gs;
-        goetzel_state_init(&gs, PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF);
-        unsigned i;
-        for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {
-            goetzel_step(&gs, samples[i]);
-        }
-        int32_t p = goetzel_get_normalized_power(&gs);
+        uint32_t before = SysTick->VAL;
+        int p = goetzel(samples, PIEZO_MIC_BUFFER_N_SAMPLES, PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF);
+        uint32_t after = SysTick->VAL;
+        debugging_writec("time ");
+        debugging_write_uint32(before-after);
+        debugging_writec("\n");
         if (p > 20000)
             return true;
     }

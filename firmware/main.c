@@ -22,10 +22,12 @@ int main()
     SysTick->LOAD = 16777215;
     SysTick->VAL = 0;
     SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
-    debugging_writec("Sys tick val: ");
-    debugging_write_uint32(SysTick->VAL);
-    debugging_writec(" ");
-    debugging_write_uint32(SysTick->VAL);
+    uint32_t before = SysTick->VAL;
+    int32_t i = 1;
+    --i;
+    uint32_t after = SysTick->VAL;
+    debugging_writec("time ");
+    debugging_write_uint32(before-after+i);
     debugging_writec("\n");
 
     piezo_mic_init();
