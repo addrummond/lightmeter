@@ -2,6 +2,39 @@ var SIGNAL_FREQ = 1000;
 var I_MODE_F1 = 18500;
 var I_MODE_F2 = 19000;
 
+function fir(coefficients, input, output) {
+    var ops = 0;
+    for (var i = 0; i < input.length; ++i) {
+        var o = 0;
+        for (var j = i, ci = 0; ci < coefficients.length; --j, ++ci) {
+            var c = coefficients[ci];
+            var v;
+            if (j >= 0)
+                v = input[j];
+            else
+                v = input[input.length+j];
+            o += c*v;
+            ++ops;
+        }
+        output[i] = o;
+    }
+    console.log('OPS: ' + ops);
+}
+
+// Filters out everything except 19000Hz+/-100.
+var CS = [
+      0.002557915382766357,
+      -0.020906425544830624,
+      -0.000960939427215661,
+      -0.0012470051092847469,
+      0.0003097908913539428,
+      0.0003097908913539428,
+      -0.0012470051092847469,
+      -0.000960939427215661,
+      -0.020906425544830624,
+      0.002557915382766357
+];
+
 function ssb(s, sh, f, t) {
     return s(t)*Math.cos(2*Math.PI*f*t) - sh(t)*Math.sin(2*Math.PI*f*t);
 }
@@ -149,9 +182,11 @@ function hilbert_of_approximate_triangle_wave(freq, mag, dutyCycle, phaseShift) 
 }
 
 function myf(t) {
+    return 0.5*(Math.sin(10000*Math.PI*2*t) + Math.sin(19000*Math.PI*2*t));
+
     //return hilbert_of_approximate_triangle_wave(1000, 0.5, 2)(t);
     //return approximate_triangle_wave(1000,0.25,0.001)(t)*Math.sin(2*Math.PI*19000*t);
-    return ssb(approximate_triangle_wave(1000,0.25,0.5), hilbert_of_approximate_triangle_wave(1000,0.25,0.5), 19000, t);
+    //return ssb(approximate_triangle_wave(1000,0.25,0.5), hilbert_of_approximate_triangle_wave(1000,0.25,0.5), 19000, t);
 
     // QAC.
     //var s1 = approximate_square_wave(SIGNAL_FREQ, 0.2, 0.5, 0);
@@ -175,10 +210,13 @@ var FILTER = true;
 audioCtx = new AudioContext();
 var buffer = audioCtx.createBuffer(1, audioCtx.sampleRate, audioCtx.sampleRate);
 var samples = buffer.getChannelData(0);
-
+var xsamples = new Float32Array(samples.length);
 for (var i = 0; i < samples.length; ++i) {
     var t = i / audioCtx.sampleRate;
-    samples[i] = myf(t);
+    xsamples[i] = myf(t);
+}
+fir(CS, xsamples, samples);
+for (var i = 0; i < samples.length; ++i) {
     document.write(samples[i] + '<br>\n');
 }
 /*var message = [1,0,1,0];//[1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0];
