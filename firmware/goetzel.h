@@ -12,6 +12,6 @@ typedef struct goetzel_state {
 } goetzel_state_t;
 
 void goetzel_state_init(goetzel_state_t *st, int32_t coeff);
-int32_t goetzel(goetzel_state_t *st, int32_t sample);
+int32_t goetzel_step(goetzel_state_t *st, int32_t sample);
 
 #endif
