@@ -36,6 +36,9 @@ int main()
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOB, ENABLE);
 
     debugging_writec("Hello world\n");
+    debugging_writec("System core clock: ");
+    debugging_write_uint32(SystemCoreClock);
+    debugging_writec("\n");
 
     piezo_mic_init();
 
