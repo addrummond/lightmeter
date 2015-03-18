@@ -13,28 +13,25 @@
 // This module assumes that the raw ADC value has been converted to a SIGNED
 // 12-bit value.
 //
-// We add two additionl bits.
-//
 
 #define ADC_VAL_BITS 12
-#define EXTRA_BITS 0
 
 static int32_t ADC_TO_FIX(int32_t x)
 {
-    return x << EXTRA_BITS;
+    return x;
 }
 
-#define FLOAT_TO_FIX(x) ((int32_t)((x)*(float)(1<<(ADC_VAL_BITS-1+EXTRA_BITS))))
-#define FIX_TO_FLOAT(x) (((float)(x))/((float)(1<<(ADC_VAL_BITS-1+EXTRA_BITS))))
+#define FLOAT_TO_FIX(x) ((int32_t)((x)*(float)(1<<(ADC_VAL_BITS-1))))
+#define FIX_TO_FLOAT(x) (((float)(x))/((float)(1<<(ADC_VAL_BITS-1))))
 
 static int32_t MUL(int32_t x, int32_t y)
 {
-    return (x * y) >> (ADC_VAL_BITS-1+EXTRA_BITS);
+    return (x * y) >> (ADC_VAL_BITS-1);
 }
 
 static int32_t DIV(int32_t x, int32_t y)
 {
-   return (x << (ADC_VAL_BITS-1+EXTRA_BITS)) / y;
+   return (x << (ADC_VAL_BITS-1)) / y;
 }
 
 void goetzel_state_init(goetzel_state_t *st, int32_t coeff)
