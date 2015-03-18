@@ -68,6 +68,8 @@ $CC $CFLAGS -c menus/menu_strings_table.c -o menus/menu_strings_table.o
 OBJS="$OBJS menus/menu_strings_table.o"
 $CC $CFLAGS -c fft/fix_fft.c -o fft/fix_fft.o
 OBJS="$OBJS fft/fix_fft.o"
+$CC $CFLAGS -c goetzel.c -o goetzel.o
+OBJS="$OBJS goetzel.o"
 
 $CC $CFLAGS -c main.c -o main.o
 OBJS="$OBJS main.o"

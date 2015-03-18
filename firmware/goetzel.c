@@ -40,7 +40,7 @@ void goetzel_state_init(goetzel_state_t *st, int32_t coeff)
     st->coeff = coeff;
 }
 
-int32_t goetzel_step(goetzel_state_t *st, int32_t sample)
+void goetzel_step(goetzel_state_t *st, int32_t sample)
 {
 #ifdef TEST
     assert(-2048 < sample && sample < 2048);
@@ -51,11 +51,18 @@ int32_t goetzel_step(goetzel_state_t *st, int32_t sample)
     st->prev1 = s;
     ++(st->n);
 
-    int32_t p = MUL(st->prev2,st->prev2) + MUL(st->prev1,st->prev1) - MUL(MUL(st->coeff,st->prev1),st->prev2);
-    st->power += MUL(sample,sample);
-    if (st->power == 0)
-        st->power = 1;
-    return DIV(DIV(p,st->power),st->n);
+    st->last_power = MUL(st->prev2,st->prev2) + MUL(st->prev1,st->prev1) - MUL(MUL(st->coeff,st->prev1),st->prev2);
+    st->total_power += MUL(sample,sample);
+    if (st->last_power == 0)
+        st->last_power = 1;
+}
+
+int32_t goetzel_get_normalized_power(goetzel_state_t *st)
+{
+    int32_t p = DIV(DIV(st->last_power,st->total_power),st->n);
+    if (p < 0)
+        p = -p;
+    return p;
 }
 
 #ifdef TEST
@@ -89,14 +96,14 @@ static void test1()
 
         // It's a bit inefficient to recompute samples for each outer loop, but
         // this doesn't really matter in test code.
-        uint32_t p;
         for (i = 0; i < N_SAMPLES; ++i) {
             float t = i/SAMPLE_FREQ;
             float sample_value = 0.24*(sin(2.0*M_PI*SIG1_FREQ*t)) +
                                  0.24*(cos(2.0*M_PI*SIG2_FREQ*t));
             int32_t sample12 = (int32_t)(sample_value*(4096/2.0));
-            p = goetzel_step(&gs, sample12);
+            goetzel_step(&gs, sample12);
         }
+        int32_t p = goetzel_get_normalized_power(&gs);
         printf("%i,%f,%f\n", j, BIN_FREQ, (float)p);
     }
 }
