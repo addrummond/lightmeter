@@ -56,7 +56,7 @@ int main()
     const float SIG_FREQ = 5000;
     const float NFREQ = SIG_FREQ/SAMPLE_FREQ;
     const float COEFF_ = 2*cos(2*M_PI*NFREQ);
-    const int32_t COEFF = TOFIXED((int32_t)(COEFF_*4096.0));
+    const int32_t COEFF = (int32_t)(COEFF_*4096.0);
 
     goetzel_state_t gs;
     goetzel_state_init(&gs, COEFF);
