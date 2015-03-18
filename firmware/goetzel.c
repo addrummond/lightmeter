@@ -48,13 +48,14 @@ void goetzel_step(goetzel_state_t *st, int32_t sample)
 
     st->last_power = MUL(st->prev2,st->prev2) + MUL(st->prev1,st->prev1) - MUL(MUL(st->coeff,st->prev1),st->prev2);
     st->total_power += MUL(sample,sample);
-    if (st->last_power == 0)
-        st->last_power = 1;
 }
 
 int32_t goetzel_get_normalized_power(goetzel_state_t *st)
 {
-    int32_t p = DIV(DIV(st->last_power,st->total_power),st->n);
+    int32_t lp = st->last_power;
+    if (lp == 0)
+        lp = 1;
+    int32_t p = DIV(DIV(lp,st->total_power),st->n);
     if (p < 0)
         p = -p;
     return p;
