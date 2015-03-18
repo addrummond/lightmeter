@@ -49,7 +49,7 @@ void piezo_mic_init()
     ADC_GetCalibrationFactor(ADC1);
 
     ADC_DMARequestModeConfig(ADC1, ADC_DMAMode_Circular);
-    ADC_DMACmd(ADC1, ENABLE);  
+    ADC_DMACmd(ADC1, ENABLE);
 
     ADC_Cmd(ADC1, ENABLE);
 
@@ -218,14 +218,14 @@ void piezo_out_deinit()
 bool piezo_hfsdp_listen_for_masters_init()
 {
     for (;;) {
-        uint32_t before = SysTick->VAL;
+        //uint32_t before = SysTick->VAL;
         piezo_mic_read_buffer();
         int p = goetzel(piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF);
         piezo_mic_done_with_buffer();
-        uint32_t after = SysTick->VAL;
-        debugging_writec("time ");
-        debugging_write_uint32(before-after);
-        debugging_writec("\n");
+        //uint32_t after = SysTick->VAL;
+        //debugging_writec("time ");
+        //debugging_write_uint32(before-after);
+        //debugging_writec("\n");
         if (p > 20000)
             return true;
     }
