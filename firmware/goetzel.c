@@ -5,6 +5,7 @@
 #ifdef TEST
 #include <math.h>
 #include <stdio.h>
+#include <assert.h>
 #endif
 
 // ADC samples are 12-bit.
@@ -23,8 +24,8 @@ static int32_t ADC_TO_FIX(int32_t x)
     return x << EXTRA_BITS;
 }
 
-#define FLOAT_TO_FIX(x) ((int32_t)((x)*(float)(1<<15)))
-#define FIX_TO_FLOAT(x) (((float)(x))/((float)(1<<15)))
+#define FLOAT_TO_FIX(x) ((int32_t)((x)*(float)(1<<(ADC_VAL_BITS-1+EXTRA_BITS))))
+#define FIX_TO_FLOAT(x) (((float)(x))/((float)(1<<(ADC_VAL_BITS-1+EXTRA_BITS))))
 
 static int32_t MUL(int32_t x, int32_t y)
 {
@@ -43,12 +44,13 @@ void goetzel_state_init(goetzel_state_t *st, int32_t coeff)
 }
 
 // Samples should be a signed 12-bit value.
-uint32_t goetzel(goetzel_state_t *st, int32_t sample)
+int32_t goetzel(goetzel_state_t *st, int32_t sample)
 {
     int32_t s = ADC_TO_FIX(sample) + MUL(st->coeff, st->prev1) - st->prev2;
     st->prev2 = st->prev1;
     st->prev1 = s;
     ++(st->n);
+
     int32_t p = MUL(st->prev2,st->prev2) + MUL(st->prev1,st->prev1) - MUL(MUL(st->coeff,st->prev1),st->prev2);
     st->power += MUL(sample,sample);
     if (st->power == 0)
@@ -62,7 +64,7 @@ int main()
     const float SAMPLE_FREQ = 40000;
     const float SIG_FREQ = 1000;
     const float NFREQ = SIG_FREQ/SAMPLE_FREQ;
-    const int32_t COEFF = FLOAT_TO_FIX(2*cos(2*M_PI*NFREQ));
+    const int32_t COEFF = FLOAT_TO_FIX(2*cos(2*M_PI*NFREQ*1));
 
     goetzel_state_t gs;
     goetzel_state_init(&gs, COEFF);
