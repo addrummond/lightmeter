@@ -4,7 +4,7 @@
 #include <stm32f0xx_rcc.h>
 #include <stm32f0xx_adc.h>
 #include <stm32f0xx_misc.h>
-#include <fix_fft.h>
+#include <goetzel.h>
 #include <piezo.h>
 #include <deviceconfig.h>
 #include <debugging.h>
@@ -54,107 +54,23 @@ static uint16_t piezo_mic_get_reading()
     return ADC_GetConversionValue(ADC1);
 }
 
-#define N_SAMPLES (PIEZO_MIC_BUFFER_SIZE_BYTES/2)
-
-void piezo_mic_read_buffer(int8_t *samples)
+void piezo_mic_read_buffer(int16_t *samples)
 {
-    int16_t *samples16 = (int16_t *)samples;
     unsigned i;
-    for (i = 0; i < N_SAMPLES; ++i, piezo_mic_wait_on_ready()) {
-        samples16[i] = (int16_t)(piezo_mic_get_reading()) - (4096/2);
+    for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i, piezo_mic_wait_on_ready()) {
+        samples[i] = (int16_t)(piezo_mic_get_reading()) - (4096/2);
     }
-    samples16[0] = samples16[1];
-
-    // 12 bits to 8.
-    int16_t raw_max = -(4096/2);
-    for (i = 0; i < N_SAMPLES; ++i) {
-        int16_t v = samples16[i];
-        if (v < 0)
-            v = -v;
-        if (v > raw_max)
-            raw_max = v;
-    }
-    int16_t ratio = 127/raw_max;
-    if (ratio > 1) {
-        for (i = 0; i < N_SAMPLES; ++i)
-            samples16[i] *= ratio;
-    }
-    raw_max = -(4096/2);
-    for (i = 0; i < N_SAMPLES; ++i) {
-        int16_t v = samples16[i];
-        if (v < 0)
-            v = -v;
-        if (v > raw_max)
-            raw_max = v;
-    }
-    unsigned shift = 0;
-    if (raw_max >= 1024)
-        shift = 4;
-    else if (raw_max >= 512)
-        shift = 3;
-    else if (raw_max >= 256)
-        shift = 2;
-    else if (raw_max >= 128)
-        shift = 1;
-    for (i = 0; i < N_SAMPLES; ++i)
-        samples[i] = samples16[i] >> shift;
 }
 
-uint32_t piezo_mic_buffer_get_sqmag(int8_t *samples)
+int32_t piezo_mic_buffer_get_sqmag(int16_t *samples)
 {
-    uint32_t sq = 0;
+    int32_t sq = 0;
     unsigned i;
-    for (i = 0; i < N_SAMPLES; ++i)
+    for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i)
         sq += samples[i] * samples[i];
     return sq;
 }
 
-void piezo_mic_buffer_fft(int8_t *samples)
-{
-    // Find first and second formant.
-    int8_t *imaginary = samples + N_SAMPLES;
-    unsigned i;
-    for (i = 0; i < N_SAMPLES; ++i)
-        imaginary[i] = 0;
-
-    fix_fft(samples, imaginary, PIEZO_SHIFT_1_BY_THIS_TO_GET_N_SAMPLES, 0);
-}
-
-void piezo_fft_buffer_get_12formants(int8_t *samples,
-                                     unsigned *first_formant,
-                                     unsigned *second_formant,
-                                     unsigned *first_formant_mag,
-                                     unsigned *second_formant_mag)
-{
-    int8_t *imaginary = samples + N_SAMPLES;
-
-    int32_t max = 0, max2 = 0;
-    unsigned maxi = 0, max2i = 0;
-    // Starts from 1 because sample is DC component (I think). If not, it's too
-    // low a frequency to be of interest anyway.
-    unsigned i;
-    for (i = 1; i < 60/* cut off frequencies above ~10kHz*/; ++i) {
-        int32_t e = samples[i]*samples[i] + imaginary[i]*imaginary[i];
-
-        if (max < e) {
-            max = e;
-            maxi = i;
-        }
-        if (max2 < e && e < max) {
-            max2 = e;
-            max2i = i;
-        }
-    }
-
-    if (first_formant)
-        *first_formant = maxi;
-    if (second_formant)
-        *second_formant = max2i;
-    if (first_formant_mag)
-        *first_formant_mag = max;
-    if (second_formant_mag)
-        *second_formant_mag = max2;
-}
 
 //
 // Piezo buzzer stuff.
@@ -273,69 +189,19 @@ void piezo_out_deinit()
 // HFSDP stuff.
 //
 
-#define SQMAG_THRESHOLD 10
-
 bool piezo_hfsdp_listen_for_masters_init()
 {
-    int8_t samples[PIEZO_MIC_BUFFER_SIZE_BYTES];
-    int8_t *imaginary = samples + N_SAMPLES;
-
-    unsigned last_state = 0; // 1 = F1 on F2 off, 2 = F2 on F1 off.
-    unsigned state_changes = 0;
-    unsigned count = 0;
-    for (state_changes = 0; state_changes < 16; ++count) {
-        if (count > 200)
-            state_changes = 0;
-
+    int16_t samples[PIEZO_MIC_BUFFER_N_SAMPLES];
+    for (;;) {
         piezo_mic_read_buffer(samples);
-        piezo_mic_buffer_fft(samples);
-
-        const unsigned SLACK = 0;
-        const unsigned NBANDS = SLACK*2 + 1;
-        uint32_t ranges[NBANDS*2];
-        uint32_t *m1range = ranges;
-        uint32_t *m2range = ranges+NBANDS;
-
-        int i;
-        for (i = 0; i < NBANDS; ++i)
-            ranges[i] = 0;
-
-        unsigned j;
-        for (i = -SLACK, j = 0; i < SLACK+1; ++i, ++j) {
-            int m1i = PIEZO_HFSDP_A_MODE_MASTER_F1_FTF + i;
-            int m2i = PIEZO_HFSDP_A_MODE_MASTER_F2_FTF + i;
-
-            if (m1i > 0)
-                m1range[j] = (int32_t)samples[m1i]*(int32_t)samples[m1i] + (int32_t)imaginary[m1i]*(int32_t)imaginary[m1i];
-            if (m2i > 0)
-                m2range[j] = (int32_t)samples[m2i]*(int32_t)samples[m2i] + (int32_t)imaginary[m2i]*(int32_t)imaginary[m2i];
+        goetzel_state_t gs;
+        goetzel_state_init(&gs, PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF);
+        unsigned i;
+        for (i = 0; i < sizeof(samples)/sizeof(int16_t); ++i) {
+            goetzel_step(&gs, samples[i]);
         }
-
-        uint32_t m1max = 0, m2max = 0;
-        for (i = 0; i < NBANDS; ++i) {
-            if (m1range[i] > m1max)
-                m1max = m1range[i];
-            if (m2range[i] > m2max)
-                m2max = m2range[i];
-        }
-
-        unsigned new_state = 0;
-        if (m1max > m2max && m1max - m2max >= SQMAG_THRESHOLD)
-            new_state = 1;
-        else if (m2max > m1max && m2max - m1max >= SQMAG_THRESHOLD)
-            new_state = 2;
-
-        if (last_state == 0) {
-            if (new_state > 0) {
-                last_state = new_state;
-                ++state_changes;
-            }
-        }
-        else if (new_state > 0 && last_state != new_state) {
-            ++state_changes;
-            last_state = new_state;
-        }
+        int32_t p = goetzel_get_normalized_power(&gs);
+        if (p > 1000)
+            return true;
     }
-
-    return true;
 }

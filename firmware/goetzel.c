@@ -14,24 +14,19 @@
 // 12-bit value.
 //
 
-#define ADC_VAL_BITS 12
-
 static int32_t ADC_TO_FIX(int32_t x)
 {
     return x;
 }
 
-#define FLOAT_TO_FIX(x) ((int32_t)((x)*(float)(1<<(ADC_VAL_BITS-1))))
-#define FIX_TO_FLOAT(x) (((float)(x))/((float)(1<<(ADC_VAL_BITS-1))))
-
 static int32_t MUL(int32_t x, int32_t y)
 {
-    return (x * y) >> (ADC_VAL_BITS-1);
+    return (x * y) >> (GOETZEL_ADC_VAL_BITS-1);
 }
 
 static int32_t DIV(int32_t x, int32_t y)
 {
-   return (x << (ADC_VAL_BITS-1)) / y;
+   return (x << (GOETZEL_ADC_VAL_BITS-1)) / y;
 }
 
 void goetzel_state_init(goetzel_state_t *st, int32_t coeff)
@@ -90,7 +85,7 @@ static void test1()
     for (j = 1; j <= N_BINS; ++j) {
         float BIN_FREQ = ((float)j/(float)N_BINS)*(SAMPLE_FREQ/2);
         float NFREQ = BIN_FREQ/SAMPLE_FREQ;
-        int32_t COEFF = FLOAT_TO_FIX(2*cos(2*M_PI*NFREQ*1));
+        int32_t COEFF = GOETZEL_FLOAT_TO_FIX(2*cos(2*M_PI*NFREQ*1));
 
         goetzel_state_init(&gs, COEFF);
 

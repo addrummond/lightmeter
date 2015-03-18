@@ -10,27 +10,6 @@
 #include <debugging.h>
 #include <piezo.h>
 
-#include <fix_fft.h>
-
-// See http://www.finesse.demon.co.uk/steven/sqrt.html
-static uint32_t isqrt(uint32_t n)
-{
-   uint32_t root = 0, bit, trial;
-   bit = (n >= 0x10000) ? 1<<30 : 1<<14;
-   do
-   {
-      trial = root+bit;
-      if (n >= trial)
-      {
-         n -= trial;
-         root = trial+bit;
-      }
-      root >>= 1;
-      bit >>= 2;
-   } while (bit);
-   return root;
-}
-
 int main()
 {
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOB, ENABLE);
@@ -50,41 +29,9 @@ int main()
     debugging_writec("\n");
 
     piezo_mic_init();
-
-    //piezo_hfsdp_listen_for_masters_init();
-    //debugging_writec("Init heard!\n");
-
-    int8_t samples[PIEZO_MIC_BUFFER_SIZE_BYTES];
-    for (;;) {
-        uint32_t before = SysTick->VAL;
-        piezo_mic_read_buffer(samples);
-        uint32_t mag = isqrt(piezo_mic_buffer_get_sqmag(samples));
-        piezo_mic_buffer_fft(samples);
-        unsigned first_formant = 0, second_formant = 0, first_formant_mag = 0, second_formant_mag = 0;
-        piezo_fft_buffer_get_12formants(samples, &first_formant, &second_formant, &first_formant_mag, &second_formant_mag);
-        uint32_t after = SysTick->VAL;
-
-        debugging_writec("BEFORE: ");
-        debugging_write_uint32(before);
-        debugging_writec(" AFTER: ");
-        debugging_write_uint32(after);
-        debugging_writec("\n");
-
-        debugging_writec("Mag: ");
-        debugging_write_uint16(mag);
-        debugging_writec(" ~ ");
-        debugging_write_uint16(first_formant);
-        debugging_writec(", ");
-        debugging_write_uint16(second_formant);
-        debugging_writec(" [");
-        debugging_write_uint16(first_formant_mag);
-        debugging_writec(", ");
-        debugging_write_uint16(second_formant_mag);
-        debugging_writec("]\n");
-
-        //unsigned i;
-        //for (i = 0; i < 200000; ++i);
-    }
+    piezo_hfsdp_listen_for_masters_init();
+    debugging_writec("Init heard!\n");
+    for (;;);
 
     piezo_out_init();
     piezo_set_period(1, (SystemCoreClock / 1000) - 1);
