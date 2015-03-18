@@ -20,6 +20,9 @@
 
 static int16_t piezo_mic_buffer[PIEZO_MIC_BUFFER_N_SAMPLES];
 
+#define USE_DMA
+//#undef USE_DMA
+
 void piezo_mic_init()
 {
     //
@@ -48,14 +51,17 @@ void piezo_mic_init()
     ADC_ChannelConfig(ADC1, ADC_Channel_4, ADC_SampleTime_239_5Cycles);
     ADC_GetCalibrationFactor(ADC1);
 
+#ifdef USE_DMA
     ADC_DMARequestModeConfig(ADC1, ADC_DMAMode_Circular);
     ADC_DMACmd(ADC1, ENABLE);
+#endif
 
     ADC_Cmd(ADC1, ENABLE);
 
     while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
     ADC_StartOfConversion(ADC1);
 
+#ifdef USE_DMA
     //
     // DMA configuration.
     //
@@ -79,6 +85,7 @@ void piezo_mic_init()
     DMA_Init(DMA1_Channel1, &dmai);
     // DMA1 Channel1 enable.
     DMA_Cmd(DMA1_Channel1, ENABLE);
+#endif
 }
 
 void piezo_mic_deinit()
@@ -86,9 +93,23 @@ void piezo_mic_deinit()
 
 }
 
+#ifndef USE_DMA
+static void piezo_mic_wait_on_ready()
+{
+    while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
+}
+#endif
+
 static void piezo_mic_read_buffer()
 {
+#ifdef USE_DMA
     while((DMA_GetFlagStatus(DMA1_FLAG_TC1)) == RESET);
+#else
+    unsigned i;
+    for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i, piezo_mic_wait_on_ready()) {
+        piezo_mic_buffer[i] = ADC_GetConversionValue(ADC1);
+    }
+#endif
 }
 
 static void piezo_mic_done_with_buffer()
@@ -220,8 +241,17 @@ bool piezo_hfsdp_listen_for_masters_init()
     for (;;) {
         //uint32_t before = SysTick->VAL;
         piezo_mic_read_buffer();
-        int p = goetzel(piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF);
         piezo_mic_done_with_buffer();
+        unsigned i;
+        for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {
+            debugging_write_uint32((int32_t)(piezo_mic_buffer[i] - 4096/2));
+            debugging_writec("\n");
+        }
+        debugging_writec("\n---\n");
+        for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {
+            piezo_mic_buffer[i] -= 4096/2;
+        }
+        int p = goetzel(piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF);
         //uint32_t after = SysTick->VAL;
         //debugging_writec("time ");
         //debugging_write_uint32(before-after);
