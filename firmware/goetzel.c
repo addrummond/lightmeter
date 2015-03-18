@@ -25,7 +25,7 @@ static inline int32_t DIV(int32_t x, int32_t y)
 }
 
 #define GOETZEL_NORMALIZE
-int32_t goetzel(int16_t *samples, unsigned length, int32_t coeff)
+int32_t goetzel(const int16_t *samples, unsigned length, int32_t coeff)
 {
 #ifdef GOETZEL_NORMALIZE
     int32_t total_power = 0;

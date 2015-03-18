@@ -4,17 +4,27 @@
 #include <stm32f0xx_rcc.h>
 #include <stm32f0xx_adc.h>
 #include <stm32f0xx_misc.h>
+#include <stm32f0xx_dma.h>
 #include <goetzel.h>
 #include <piezo.h>
 #include <deviceconfig.h>
 #include <debugging.h>
 
+// Magic number taken from STM SDK.
+#define ADC1_DR_Address 0x40012440
+
+
 //
 // Microphone stuff.
 //
 
+static int16_t piezo_mic_buffer[PIEZO_MIC_BUFFER_N_SAMPLES];
+
 void piezo_mic_init()
 {
+    //
+    // ADC configuration.
+    //
     ADC_InitTypeDef adci;
     GPIO_InitTypeDef gpi;
 
@@ -37,39 +47,55 @@ void piezo_mic_init()
 
     ADC_ChannelConfig(ADC1, ADC_Channel_4, ADC_SampleTime_239_5Cycles);
     ADC_GetCalibrationFactor(ADC1);
-    //ADC_ContinuousModeCmd(ADC1, ENABLE);
+
+    ADC_DMARequestModeConfig(ADC1, ADC_DMAMode_Circular);
+    ADC_DMACmd(ADC1, ENABLE);  
+
     ADC_Cmd(ADC1, ENABLE);
 
     while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
     ADC_StartOfConversion(ADC1);
+
+    //
+    // DMA configuration.
+    //
+    DMA_InitTypeDef dmai;
+    // DMA1 clock enable.
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1 , ENABLE);
+
+    // DMA1 Channel1 Config.
+    DMA_DeInit(DMA1_Channel1);
+    dmai.DMA_PeripheralBaseAddr = (uint32_t)ADC1_DR_Address;
+    dmai.DMA_MemoryBaseAddr = (uint32_t)piezo_mic_buffer;
+    dmai.DMA_DIR = DMA_DIR_PeripheralSRC;
+    dmai.DMA_BufferSize = PIEZO_MIC_BUFFER_N_SAMPLES;
+    dmai.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+    dmai.DMA_MemoryInc = DMA_MemoryInc_Enable;
+    dmai.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
+    dmai.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
+    dmai.DMA_Mode = DMA_Mode_Circular;
+    dmai.DMA_Priority = DMA_Priority_High;
+    dmai.DMA_M2M = DMA_M2M_Disable;
+    DMA_Init(DMA1_Channel1, &dmai);
+    // DMA1 Channel1 enable.
+    DMA_Cmd(DMA1_Channel1, ENABLE);
 }
 
-static void piezo_mic_wait_on_ready()
+void piezo_mic_deinit()
 {
-    while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
+
 }
 
-static uint16_t piezo_mic_get_reading()
+static void piezo_mic_read_buffer()
 {
-    return ADC_GetConversionValue(ADC1);
+    while((DMA_GetFlagStatus(DMA1_FLAG_TC1)) == RESET);
 }
 
-void piezo_mic_read_buffer(int16_t *samples)
+static void piezo_mic_done_with_buffer()
 {
-    unsigned i;
-    for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i, piezo_mic_wait_on_ready()) {
-        samples[i] = (int16_t)(piezo_mic_get_reading()) - (4096/2);
-    }
+    DMA_ClearFlag(DMA1_FLAG_TC1);
 }
 
-int32_t piezo_mic_buffer_get_sqmag(int16_t *samples)
-{
-    int32_t sq = 0;
-    unsigned i;
-    for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i)
-        sq += samples[i] * samples[i];
-    return sq;
-}
 
 
 //
@@ -191,12 +217,11 @@ void piezo_out_deinit()
 
 bool piezo_hfsdp_listen_for_masters_init()
 {
-    int16_t samples[PIEZO_MIC_BUFFER_N_SAMPLES];
-
     for (;;) {
-        piezo_mic_read_buffer(samples);
         uint32_t before = SysTick->VAL;
-        int p = goetzel(samples, PIEZO_MIC_BUFFER_N_SAMPLES, PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF);
+        piezo_mic_read_buffer();
+        int p = goetzel(piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF);
+        piezo_mic_done_with_buffer();
         uint32_t after = SysTick->VAL;
         debugging_writec("time ");
         debugging_write_uint32(before-after);

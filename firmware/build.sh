@@ -37,6 +37,8 @@ $CC $CFLAGS -c ./stm/stm32f0xx_tim.c -o ./stm/stm32f0xx_tim.o
 OBJS="$OBJS ./stm/stm32f0xx_tim.o"
 $CC $CFLAGS -c ./stm/stm32f0xx_misc.c -o ./stm/stm32f0xx_misc.o
 OBJS="$OBJS ./stm/stm32f0xx_misc.o"
+$CC $CFLAGS -c ./stm/stm32f0xx_dma.c -o ./stm/stm32f0xx_dma.o
+OBJS="$OBJS ./stm/stm32f0xx_dma.o"
 
 $CC $CFLAGS -c debugging.c -o debugging.o
 OBJS="$OBJS debugging.o"

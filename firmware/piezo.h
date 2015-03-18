@@ -28,8 +28,7 @@
 #define PIEZO_HFSDP_A_MODE_SLAVE_F2_FTF  PIEZO_HZ_TO_FTF(PIEZO_HFSDP_A_MODE_SLAVE_F2_HZ)
 
 void piezo_mic_init(void);
-void piezo_mic_read_buffer(int16_t *samples);
-int32_t piezo_mic_buffer_get_sqmag(int16_t *samples);
+void piezo_mic_deinit(void);
 
 void piezo_out_init(void);
 void piezo_set_period(unsigned channels, uint16_t period);
