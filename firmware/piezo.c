@@ -197,11 +197,11 @@ bool piezo_hfsdp_listen_for_masters_init()
         goetzel_state_t gs;
         goetzel_state_init(&gs, PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF);
         unsigned i;
-        for (i = 0; i < sizeof(samples)/sizeof(int16_t); ++i) {
+        for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {
             goetzel_step(&gs, samples[i]);
         }
         int32_t p = goetzel_get_normalized_power(&gs);
-        if (p > 1000)
+        if (p > 20000)
             return true;
     }
 }

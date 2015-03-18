@@ -78,7 +78,7 @@ static void test1()
     const float SAMPLE_FREQ = 40000;
     const float SIG1_FREQ = 1000;
     const float SIG2_FREQ = 9000;
-
+    
     printf("bin,bin_freq,value\n");
 
     goetzel_state_t gs;
