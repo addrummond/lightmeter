@@ -40,18 +40,35 @@ int main()
     debugging_write_uint32(SystemCoreClock);
     debugging_writec("\n");
 
+    SysTick->LOAD = 16777215;
+    SysTick->VAL = 0;
+    SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
+    debugging_writec("Sys tick val: ");
+    debugging_write_uint32(SysTick->VAL);
+    debugging_writec(" ");
+    debugging_write_uint32(SysTick->VAL);
+    debugging_writec("\n");
+
     piezo_mic_init();
 
-    piezo_hfsdp_listen_for_masters_init();
-    debugging_writec("Init heard!\n");
+    //piezo_hfsdp_listen_for_masters_init();
+    //debugging_writec("Init heard!\n");
 
     int8_t samples[PIEZO_MIC_BUFFER_SIZE_BYTES];
     for (;;) {
+        uint32_t before = SysTick->VAL;
         piezo_mic_read_buffer(samples);
         uint32_t mag = isqrt(piezo_mic_buffer_get_sqmag(samples));
         piezo_mic_buffer_fft(samples);
         unsigned first_formant = 0, second_formant = 0, first_formant_mag = 0, second_formant_mag = 0;
         piezo_fft_buffer_get_12formants(samples, &first_formant, &second_formant, &first_formant_mag, &second_formant_mag);
+        uint32_t after = SysTick->VAL;
+
+        debugging_writec("BEFORE: ");
+        debugging_write_uint32(before);
+        debugging_writec(" AFTER: ");
+        debugging_write_uint32(after);
+        debugging_writec("\n");
 
         debugging_writec("Mag: ");
         debugging_write_uint16(mag);
