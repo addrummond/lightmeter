@@ -175,12 +175,7 @@ function approximate_triangle_wave(freq, mag, dutyCycle, phaseShift, hilbert) {
         t *= freq;
 
         // Convenient to have it start at beginning of positive.
-        // Not quite sure why we need a different shift for Hilbert.
-        if (hilbert)
-            t += dutyCycle
-        else
-            t -= dutyCycle;
-        t += phaseShift;
+        t -= dutyCycle;
 
         function b(n) {
             var k = (2*m*m)/(n*n*(m-1)*Math.PI*Math.PI);
