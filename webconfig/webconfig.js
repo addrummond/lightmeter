@@ -108,6 +108,7 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
         var seq1Count = 1;
         var seq2Count = 1;
         var seq1V = signal[i];
+        var lastOne = false;
         for (++i; signal[i] == seq1V && i < signal.length; ++i, ++seq1Count)
             ;
 
@@ -117,8 +118,11 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
                 ;
         }
         else {
+            lastOne = true;
             seq2Count = seq1Count;
         }
+
+        console.log('counts', seq1Count, seq2Count, i);
 
         var phaseShift, dutyCycle;
         if (seq1V == 0) {
@@ -129,20 +133,24 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
             phaseShift = 0;
             dutyCycle = seq1Count / seq2Count;
         }
-        console.log('Count', seq1Count, seq2Count, signal);
         dutyCycle /= 2;
 
-        var dv = i - start;
-        var wf = approximate_triangle_wave((signalFreq/dv)*2, mag, dutyCycle, 0);
-        var hwf = hilbert_of_approximate_triangle_wave((signalFreq/dv)*2, mag, dutyCycle, phaseShift);
+        var dv = (i - start);
+        if (! lastOne)
+            dv /= 2;
+        var wf = approximate_triangle_wave(signalFreq/dv, mag, dutyCycle, phaseShift);
+        var hwf = hilbert_of_approximate_triangle_wave(signalFreq/dv, mag, dutyCycle, phaseShift);
 
         for (var j = start; j < i; ++j) {
             for (var k = 0; k < rat; ++k) {
                 var oi = j*rat + k;
-                if (oi >= out.length)
+                console.log('oi', oi);
+                if (oi >= out.length) {
+                    console.log("BREAK!");
                     break;
+                }
 
-                var t = oi/sampleRate;
+                var t = oi/carrierFreq;
 
                 out[oi] = wf(t);
                 continue;
@@ -229,18 +237,18 @@ var FILTER = true;
 audioCtx = new AudioContext();
 var buffer = audioCtx.createBuffer(1, audioCtx.sampleRate, audioCtx.sampleRate);
 var samples = buffer.getChannelData(0);
-var xsamples = new Float32Array(samples.length);
+/*var xsamples = new Float32Array(samples.length);
 for (var i = 0; i < samples.length; ++i) {
     var t = i / audioCtx.sampleRate;
     xsamples[i] = myf(t);
     document.write(xsamples[i] + '<br>\n');
-}
+}*/
 //fir(CS, xsamples, samples);
-/*var message = [1,0,1,0];//[1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0];
+var message = [1,1,1,1,1,0,1,0,1,0,1,1,1,1,1,0,0,1,0,0,1,1,1,1,1,0,0,0,0,0];
 encode_signal(samples, audioCtx.sampleRate, message, 1000, 19000, 0.2);
 for (var i = 0; i < message.length*(19000/1000); ++i) {
     document.write(samples[i] + '<br>\n');
-}*/
+}
 
 var bufS = audioCtx.createBufferSource();
 bufS.buffer = buffer;
