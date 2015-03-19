@@ -269,7 +269,7 @@ bool piezo_hfsdp_listen_for_masters_init()
         //debugging_write_uint32(before-after);
         //debugging_writec("\n");
 
-        if (p > 20000)
+        if (p > 30000)
             return true;
     }
 }
