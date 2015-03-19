@@ -145,11 +145,6 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
                     break;
 
                 var t = (oi-(start*rat))/carrierFreq;
-
-                //out[oi] = hwf(t);
-                //continue;
-
-                var t = oi / sampleRate;
                 var v = ssb(wf, hwf, carrierFreq, t);
                 out[oi] = v;
             }
@@ -180,11 +175,17 @@ function approximate_triangle_wave(freq, mag, dutyCycle, phaseShift, hilbert) {
         t *= freq;
 
         // Convenient to have it start at beginning of positive.
-        t -= dutyCycle;
+        // Not quite sure why we need a different shift for Hilbert.
+        if (hilbert)
+            t += dutyCycle
+        else
+            t -= dutyCycle;
         t += phaseShift;
 
         function b(n) {
             var k = (2*m*m)/(n*n*(m-1)*Math.PI*Math.PI);
+
+            // here
             var s = Math.sin((n*(m-1)*Math.PI)/(m));
             return k*s;
         }
@@ -246,7 +247,7 @@ for (var i = 0; i < myMessage.length; i += 2) {
     myMessage[i+1] = (i/2 % 2);
     //myMessage[i] = (Math.random() < 0.5) + 0;
 }
-myMessage = [1,0];//1,1,0,0,0];//[1,0,1,0,1,1,1,0,0,0,1,1,0,0];//1,0,1,0,1];
+myMessage = [1,0,1,1,0,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0];//1,1,0,0,0];//[1,0,1,0,1,1,1,0,0,0,1,1,0,0];//1,0,1,0,1];
 console.log(JSON.stringify(myMessage));
 encode_signal(samples, audioCtx.sampleRate, myMessage, 1000, 19000, 0.2);
 for (var i = 0; i < myMessage.length*(19000/1000); ++i) {
