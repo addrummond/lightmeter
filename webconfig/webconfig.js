@@ -105,8 +105,8 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
     for (var i = 0; i < signal.length;) {
         var start = i;
 
-        var seq1Count = 0;
-        var seq2Count = 0;
+        var seq1Count = 1;
+        var seq2Count = 1;
         var seq1V = signal[i];
         for (++i; signal[i] == seq1V && i < signal.length; ++i, ++seq1Count)
             ;
@@ -129,11 +129,12 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
             phaseShift = 0;
             dutyCycle = seq1Count / seq2Count;
         }
+        console.log('Count', seq1Count, seq2Count, signal);
         dutyCycle /= 2;
 
         var dv = i - start;
-        var wf = approximate_square_wave((signalFreq/dv)*2, mag, dutyCycle, phaseShift);
-        var hwf = hilbert_of_approximate_square_wave((signalFreq/dv)*2, mag, dutyCycle, phaseShift);
+        var wf = approximate_triangle_wave((signalFreq/dv)*2, mag, dutyCycle, 0);
+        var hwf = hilbert_of_approximate_triangle_wave((signalFreq/dv)*2, mag, dutyCycle, phaseShift);
 
         for (var j = start; j < i; ++j) {
             for (var k = 0; k < rat; ++k) {
@@ -141,6 +142,10 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
                 if (oi >= out.length)
                     break;
 
+                var t = oi/sampleRate;
+
+                out[oi] = wf(t);
+                continue;
                 var t = oi / sampleRate;
                 var v = ssb(wf, hwf, carrierFreq, t);
                 out[oi] = v;
@@ -158,7 +163,7 @@ function approximate_triangle_wave(freq, mag, dutyCycle, phaseShift, hilbert) {
     var SERIES_LENGTH = 10;
 
     if (dutyCycle == null)
-        dutyCycle = 2;
+        dutyCycle = 0.5 ;
     if (phaseShift == null)
         phaseShift = 0;
 
@@ -169,10 +174,10 @@ function approximate_triangle_wave(freq, mag, dutyCycle, phaseShift, hilbert) {
     return function (t) {
         // Not quite sure where the PI factor comes from, but it must be missing
         // somewhere below.
-        t *= freq * Math.PI;
+        t *= freq;
 
         // Convenient to have it start at beginning of positive.
-        t -= dutyCycle/2;
+        t -= dutyCycle;
         t += phaseShift;
 
         function b(n) {
@@ -184,7 +189,7 @@ function approximate_triangle_wave(freq, mag, dutyCycle, phaseShift, hilbert) {
         var v = 0;
         var s = (hilbert ? -1 : 1);
         for (var i = 1; i <= SERIES_LENGTH; ++i, s *= -1) {
-            v += s*b(i)*f(i*t);
+            v += s*b(i)*f(i*t*Math.PI);
         }
 
         return mag*v + mag;
@@ -196,10 +201,10 @@ function hilbert_of_approximate_triangle_wave(freq, mag, dutyCycle, phaseShift) 
 }
 
 function myf(t) {
-    return 0.1*(Math.sin(10000*Math.PI*2*t) + Math.sin(19000*Math.PI*2*t));
+    //return 0.1*(Math.sin(10000*Math.PI*2*t) + Math.sin(19000*Math.PI*2*t));
 
     //return hilbert_of_approximate_triangle_wave(1000, 0.5, 2)(t);
-    //return approximate_triangle_wave(1000,0.25,0.001)(t)*Math.sin(2*Math.PI*19000*t);
+    //return approximate_triangle_wave(1000,0.25,0.9)(t);//*Math.sin(2*Math.PI*19000*t);
     //return ssb(approximate_triangle_wave(1000,0.25,0.5), hilbert_of_approximate_triangle_wave(1000,0.25,0.5), 19000, t);
 
     // QAC.
@@ -228,14 +233,11 @@ var xsamples = new Float32Array(samples.length);
 for (var i = 0; i < samples.length; ++i) {
     var t = i / audioCtx.sampleRate;
     xsamples[i] = myf(t);
+    document.write(xsamples[i] + '<br>\n');
 }
 //fir(CS, xsamples, samples);
-goetzel(audioCtx.sampleRate/19000, xsamples, samples);
-for (var i = 0; i < samples.length; ++i) {
-    document.write(samples[i] + '<br>\n');
-}
 /*var message = [1,0,1,0];//[1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0];
-encode_signal(samples, audioCtx.sampleRate, [1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0], 1000, 19000, 0.2);
+encode_signal(samples, audioCtx.sampleRate, message, 1000, 19000, 0.2);
 for (var i = 0; i < message.length*(19000/1000); ++i) {
     document.write(samples[i] + '<br>\n');
 }*/
