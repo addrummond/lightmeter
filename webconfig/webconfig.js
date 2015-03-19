@@ -65,7 +65,7 @@ function approximate_square_wave(freq, mag, dutyCycle, phaseShift, hilbert) {
 
     // See http://lpsa.swarthmore.edu/Fourier/Series/ExFS.html#CosSeriesDC=0.5
     return function (t) {
-        t *= freq/2;
+        t *= freq;
         // Convenient to have it start at beginning of positive.
         t -= dutyCycle/2;
         t += phaseShift;
@@ -112,9 +112,7 @@ function approximate_triangle_wave(freq, mag, dutyCycle, phaseShift, hilbert) {
     var f = (hilbert ? Math.cos : Math.sin);
 
     return function (t) {
-        // Not quite sure where the PI factor comes from, but it must be missing
-        // somewhere below.
-        t *= freq;
+        t *= freq*2;
 
         // Convenient to have it start at beginning of positive.
         t -= dutyCycle;
@@ -144,9 +142,10 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
         return;
 
     var rat = parseInt(carrierFreq/signalFreq);
-    if (out.length < signal.length * rat * 2)
+    if (out.length < signal.length/2 * rat)
         throw new Error("Assertion error in encode_signal: output buffer too short");
 
+    var oi = 0;
     for (var i = 0; i < signal.length;) {
         var start = i;
 
@@ -177,22 +176,18 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
             dutyCycle = seq1Count / (seq1Count + seq2Count);
         }
 
-        var dv = (i - start);
-        if (! lastOne)
+        var dv = (i - start)/2;
+        if (lastOne)
             dv /= 2;
-        var wf = approximate_square_wave(signalFreq/dv, mag, dutyCycle, phaseShift);
-        var hwf = hilbert_of_approximate_square_wave(signalFreq/dv, mag, dutyCycle, phaseShift);
+        var freq2 = signalFreq/dv;
+        var wf = approximate_triangle_wave(freq2, mag, dutyCycle, phaseShift);
+        var hwf = hilbert_of_approximate_triangle_wave(freq2, mag, dutyCycle, phaseShift);
 
-        for (var j = start; j < i; ++j) {
-            for (var k = 0; k < rat; ++k) {
-                var oi = j*rat + k;
-                if (oi >= out.length)
-                    break;
-
-                var t = (oi-(start*rat))/carrierFreq;
-                var v = ssb(wf, hwf, carrierFreq, t);
-                out[oi] = v;
-            }
+        for (var j = 0; j < sampleRate/freq2; ++j) {
+            var t = j/sampleRate;
+            var v = ssb(wf, hwf, carrierFreq, t);
+            //var v = wf(t);
+            out[oi++] = v;
         }
     }
 }
@@ -206,12 +201,12 @@ function test_message() {
     var samples = buffer.getChannelData(0);
     var myMessage = [1,0,1,0];//[1,0,1,1,0,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0];//1,1,0,0,0];//[1,0,1,0,1,1,1,0,0,0,1,1,0,0];//1,0,1,0,1];
     myMessage = new Array(1000);
-    for (var i = 0; i < 1000; ++i) {
+    for (var i = 0; i < myMessage.length; ++i) {
         myMessage[i] = i%2;
     }
     console.log(JSON.stringify(myMessage));
     encode_signal(samples, audioCtx.sampleRate, myMessage, 1000, 19000, 0.2);
-    for (var i = 0; i < myMessage.length*(19000/1000); ++i) {
+    for (var i = 0; i < myMessage.length*(19000/1000)*0.5; ++i) {
         var t = i/audioCtx.sampleRate;
         var v = samples[i];
         //v -= 0.2*Math.cos(2*Math.PI*19000*t);
@@ -223,8 +218,8 @@ function test_message() {
 function test_f() {
     var samples = buffer.getChannelData(0);
     function myf(t) {
-        //return approximate_square_wave(1000, 0.25, 0.5)(t)*Math.cos(2*Math.PI*19000*t);
-        return ssb(approximate_triangle_wave(1000,0.25,0.5), hilbert_of_approximate_triangle_wave(1000,0.25,0.5), 19000, t);
+        return approximate_triangle_wave(1000, 0.25, 0.5)(t);//*Math.cos(2*Math.PI*19000*t);
+        //return ssb(approximate_square_wave(1000,0.25,0.5), hilbert_of_approximate_square_wave(1000,0.25,0.5), 19000, t);
     }
 
     for (var i = 0; i < samples.length; ++i) {
