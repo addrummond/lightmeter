@@ -141,15 +141,14 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
         for (var j = start; j < i; ++j) {
             for (var k = 0; k < rat; ++k) {
                 var oi = j*rat + k;
-                if (oi >= out.length) {
-                    console.log("BREAK!");
+                if (oi >= out.length)
                     break;
-                }
 
                 var t = (oi-(start*rat))/carrierFreq;
 
-                out[oi] = wf(t);
-                continue;
+                //out[oi] = hwf(t);
+                //continue;
+
                 var t = oi / sampleRate;
                 var v = ssb(wf, hwf, carrierFreq, t);
                 out[oi] = v;
@@ -209,7 +208,7 @@ function myf(t) {
 
     //return hilbert_of_approximate_triangle_wave(1000, 0.5, 2)(t);
     //return approximate_triangle_wave(1000,0.25,0.9)(t);//*Math.sin(2*Math.PI*19000*t);
-    //return ssb(approximate_triangle_wave(1000,0.25,0.5), hilbert_of_approximate_triangle_wave(1000,0.25,0.5), 19000, t);
+    return ssb(approximate_triangle_wave(1000,0.25,0.5), hilbert_of_approximate_triangle_wave(1000,0.25,0.5), 19000, t);
 
     // QAC.
     //var s1 = approximate_square_wave(SIGNAL_FREQ, 0.2, 0.5, 0);
@@ -233,17 +232,29 @@ var FILTER = true;
 audioCtx = new AudioContext();
 var buffer = audioCtx.createBuffer(1, audioCtx.sampleRate, audioCtx.sampleRate);
 var samples = buffer.getChannelData(0);
+
 /*var xsamples = new Float32Array(samples.length);
 for (var i = 0; i < samples.length; ++i) {
     var t = i / audioCtx.sampleRate;
     xsamples[i] = myf(t);
     document.write(xsamples[i] + '<br>\n');
 }*/
-//fir(CS, xsamples, samples);
-var message = [1,1,1,1,0,1,1,1,1,1,0,0,1,0,0,1,1,1,1,1,0,0,0,0,0];
-encode_signal(samples, audioCtx.sampleRate, message, 1000, 19000, 0.2);
-for (var i = 0; i < message.length*(19000/1000); ++i) {
-    document.write(samples[i] + '<br>\n');
+
+var myMessage = new Array(8);
+for (var i = 0; i < myMessage.length; i += 2) {
+    myMessage[i] = (i/2 % 2);
+    myMessage[i+1] = (i/2 % 2);
+    //myMessage[i] = (Math.random() < 0.5) + 0;
+}
+myMessage = [1,0];//1,1,0,0,0];//[1,0,1,0,1,1,1,0,0,0,1,1,0,0];//1,0,1,0,1];
+console.log(JSON.stringify(myMessage));
+encode_signal(samples, audioCtx.sampleRate, myMessage, 1000, 19000, 0.2);
+for (var i = 0; i < myMessage.length*(19000/1000); ++i) {
+    var t = i/audioCtx.sampleRate;
+    var v = samples[i];
+    //v -= 0.2*Math.cos(2*Math.PI*19000*t);
+    v *= Math.cos(2*Math.PI*19000*t);
+    document.write(v + '<br>\n');
 }
 
 var bufS = audioCtx.createBufferSource();

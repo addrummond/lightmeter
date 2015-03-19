@@ -73,7 +73,7 @@ if __name__ == '__main__':
     c = f.read()
     samples = None
     if inputfile.endswith(".web"):
-        samples = get_samples_from_webapp(c)
+        samples = get_samples_from_webapp(c) * times_to_repeat
     else:
         samples = get_samples_from_text(c) * times_to_repeat
         samples = bytearray((complement_convert(x) for x in samples))
