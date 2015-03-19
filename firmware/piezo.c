@@ -236,6 +236,7 @@ bool piezo_hfsdp_listen_for_masters_init()
 {
     for (;;) {
         //uint32_t before = SysTick->VAL;
+
         piezo_mic_read_buffer();
         DMA_Cmd(DMA1_Channel1, DISABLE);
 
@@ -259,16 +260,16 @@ bool piezo_hfsdp_listen_for_masters_init()
 
         DMA_Cmd(DMA1_Channel1, ENABLE);
 
-        debugging_writec("val ");
-        debugging_write_uint32(p);
-        debugging_writec("\n");
+        //debugging_writec("val ");
+        //debugging_write_uint32(p);
+        //debugging_writec("\n");
 
-        /*uint32_t after = SysTick->VAL;
-        debugging_writec("time ");
-        debugging_write_uint32(before-after);
-        debugging_writec("\n");*/
+        //uint32_t after = SysTick->VAL;
+        //debugging_writec("time ");
+        //debugging_write_uint32(before-after);
+        //debugging_writec("\n");
 
-        if (p > 2000)
+        if (p > 20000)
             return true;
     }
 }
