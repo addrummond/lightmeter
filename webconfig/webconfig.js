@@ -65,7 +65,7 @@ function approximate_square_wave(freq, mag, dutyCycle, phaseShift, hilbert) {
 
     // See http://lpsa.swarthmore.edu/Fourier/Series/ExFS.html#CosSeriesDC=0.5
     return function (t) {
-        t *= freq;
+        t *= freq/2;
         // Convenient to have it start at beginning of positive.
         t -= dutyCycle/2;
         t += phaseShift;
@@ -141,14 +141,12 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
         for (var j = start; j < i; ++j) {
             for (var k = 0; k < rat; ++k) {
                 var oi = j*rat + k;
-                console.log('oi', oi);
                 if (oi >= out.length) {
                     console.log("BREAK!");
                     break;
                 }
 
-                var t = oi/carrierFreq;
-                console.log("T", t, wf(t));
+                var t = (oi-(start*rat))/carrierFreq;
 
                 out[oi] = wf(t);
                 continue;
@@ -242,7 +240,7 @@ for (var i = 0; i < samples.length; ++i) {
     document.write(xsamples[i] + '<br>\n');
 }*/
 //fir(CS, xsamples, samples);
-var message = [1,1,1,1,0,1,0,1,1,1,1,1,0,0,1,0,0,1,1,1,1,1,0,0,0,0,0];
+var message = [1,1,1,1,0,1,1,1,1,1,0,0,1,0,0,1,1,1,1,1,0,0,0,0,0];
 encode_signal(samples, audioCtx.sampleRate, message, 1000, 19000, 0.2);
 for (var i = 0; i < message.length*(19000/1000); ++i) {
     document.write(samples[i] + '<br>\n');
