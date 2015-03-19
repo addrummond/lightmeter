@@ -33,10 +33,11 @@ int32_t goetzel(const uint16_t *samples, unsigned length, int32_t coeff)
     int32_t prev1 = 0, prev2 = 0;
     unsigned i;
     for (i = 0; i < length; ++i) {
+        int32_t samplesi = samples[i] - 4096/2;
 #ifdef GOETZEL_NORMALIZE
-        total_power += MUL(samples[i],samples[i]);
+        total_power += MUL(samplesi,samplesi);
 #endif
-        int32_t s = samples[i] + MUL(coeff, prev1) - prev2 - (4096.0/2.0);
+        int32_t s = samplesi+ MUL(coeff, prev1) - prev2;// - (4096.0/2.0);
         prev2 = prev1;
         prev1 = s;
     }
@@ -75,7 +76,7 @@ static void test1()
         float t = (float)i/(float)SAMPLE_FREQ;
         float v = 0.24*(sin(2.0*M_PI*SIG1_FREQ*t)) +
                   0.24*(cos(2.0*M_PI*SIG2_FREQ*t));
-        samples[i] = (int32_t)(v*(4096/2.0)) - (4096/2.0);
+        samples[i] = (int16_t)(v*(4096/2.0)) + (4096/2.0);
     }
 
     printf("bin,bin_freq,value\n");
