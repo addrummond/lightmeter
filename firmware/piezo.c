@@ -23,6 +23,7 @@ __IO int16_t piezo_mic_buffer[PIEZO_MIC_BUFFER_N_SAMPLES];
 #ifdef USE_DMA
 static void dma_config()
 {
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
     DMA_InitTypeDef dmai;
 
     // DMA1 Channel1 Config.
@@ -84,7 +85,6 @@ void piezo_mic_init()
 
 #ifdef USE_DMA
     // DMA1 clock enable.
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
     dma_config();
 #endif
 }
@@ -234,24 +234,24 @@ void piezo_out_deinit()
 
 bool piezo_hfsdp_listen_for_masters_init()
 {
-    for (;; dma_config()) {
-        //uint32_t before = SysTick->VAL;
+    for (;;) {
+        uint32_t before = SysTick->VAL;
         piezo_mic_read_buffer();
 
-        unsigned i;
+        /*unsigned i;
         for (i = 0; i < 6; ++i) {
             debugging_write_uint32((int32_t)(piezo_mic_buffer[i] - 4096/2));
             debugging_writec("\n");
         }
-        debugging_writec("\n---\n");
-        for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {
-            piezo_mic_buffer[i] -= 4096/2;
-        }
+        debugging_writec("\n---\n");*/
+
         int p = goetzel((const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF);
-        //uint32_t after = SysTick->VAL;
-        //debugging_writec("time ");
-        //debugging_write_uint32(before-after);
-        //debugging_writec("\n");
+
+        uint32_t after = SysTick->VAL;
+        debugging_writec("time ");
+        debugging_write_uint32(before-after);
+        debugging_writec("\n");
+
         if (p > 20000)
             return true;
     }
