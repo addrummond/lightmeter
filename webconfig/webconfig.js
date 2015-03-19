@@ -94,6 +94,53 @@ function hilbert_of_approximate_square_wave(freq, mag, dutyCycle, phaseShift) {
     return approximate_square_wave(freq, mag, dutyCycle, phaseShift, true);
 }
 
+function approximate_triangle_wave(freq, mag, dutyCycle, phaseShift, hilbert) {
+    // See http://mathworld.wolfram.com/FourierSeriesTriangleWave.html
+
+    // It seems that the longest/shortest usable duty cycle is on the order of
+    // 1/SERIES_LENGTH. Conservatively, we can use duty cycles as low as 0.1
+    // and as high as 0.9 with a SERIES_LENGTH of 20.
+    var SERIES_LENGTH = 10;
+
+    if (dutyCycle == null)
+        dutyCycle = 0.5 ;
+    if (phaseShift == null)
+        phaseShift = 0;
+
+    var m = 1/dutyCycle;
+
+    var f = (hilbert ? Math.cos : Math.sin);
+
+    return function (t) {
+        // Not quite sure where the PI factor comes from, but it must be missing
+        // somewhere below.
+        t *= freq;
+
+        // Convenient to have it start at beginning of positive.
+        t -= dutyCycle;
+
+        function b(n) {
+            var k = (2*m*m)/(n*n*(m-1)*Math.PI*Math.PI);
+
+            // here
+            var s = Math.sin((n*(m-1)*Math.PI)/(m));
+            return k*s;
+        }
+
+        var v = 0;
+        var s = (hilbert ? -1 : 1);
+        for (var i = 1; i <= SERIES_LENGTH; ++i, s *= -1) {
+            v += s*b(i)*f(i*t*Math.PI);
+        }
+
+        return mag*v + mag;
+    };
+}
+
+function hilbert_of_approximate_triangle_wave(freq, mag, dutyCycle, phaseShift) {
+    return approximate_triangle_wave(freq, mag, dutyCycle, phaseShift, true);
+}
+
 function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
     if (signal.length == 0)
         return;
@@ -152,97 +199,12 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
     }
 }
 
-function approximate_triangle_wave(freq, mag, dutyCycle, phaseShift, hilbert) {
-    // See http://mathworld.wolfram.com/FourierSeriesTriangleWave.html
-
-    // It seems that the longest/shortest usable duty cycle is on the order of
-    // 1/SERIES_LENGTH. Conservatively, we can use duty cycles as low as 0.1
-    // and as high as 0.9 with a SERIES_LENGTH of 20.
-    var SERIES_LENGTH = 10;
-
-    if (dutyCycle == null)
-        dutyCycle = 0.5 ;
-    if (phaseShift == null)
-        phaseShift = 0;
-
-    var m = 1/dutyCycle;
-
-    var f = (hilbert ? Math.cos : Math.sin);
-
-    return function (t) {
-        // Not quite sure where the PI factor comes from, but it must be missing
-        // somewhere below.
-        t *= freq;
-
-        // Convenient to have it start at beginning of positive.
-        t -= dutyCycle;
-
-        function b(n) {
-            var k = (2*m*m)/(n*n*(m-1)*Math.PI*Math.PI);
-
-            // here
-            var s = Math.sin((n*(m-1)*Math.PI)/(m));
-            return k*s;
-        }
-
-        var v = 0;
-        var s = (hilbert ? -1 : 1);
-        for (var i = 1; i <= SERIES_LENGTH; ++i, s *= -1) {
-            v += s*b(i)*f(i*t*Math.PI);
-        }
-
-        return mag*v + mag;
-    };
-}
-
-function hilbert_of_approximate_triangle_wave(freq, mag, dutyCycle, phaseShift) {
-    return approximate_triangle_wave(freq, mag, dutyCycle, phaseShift, true);
-}
-
-function myf(t) {
-    //return 0.1*(Math.sin(10000*Math.PI*2*t) + Math.sin(19000*Math.PI*2*t));
-
-    //return hilbert_of_approximate_triangle_wave(1000, 0.5, 2)(t);
-    //return approximate_triangle_wave(1000,0.25,0.9)(t);//*Math.sin(2*Math.PI*19000*t);
-    return ssb(approximate_triangle_wave(1000,0.25,0.5), hilbert_of_approximate_triangle_wave(1000,0.25,0.5), 19000, t);
-
-    // QAC.
-    //var s1 = approximate_square_wave(SIGNAL_FREQ, 0.2, 0.5, 0);
-    //var s2 = approximate_square_wave(SIGNAL_FREQ, 0.2, 0.5, 1);
-    //return s1(t)*Math.cos(2*Math.PI*I_MODE_F1*t) - s2(t)*Math.sin(2*Math.PI*I_MODE_F1*t);
-
-    return (//0.2*Math.cos(2*Math.PI*I_MODE_F1*t) +
-            ssb(approximate_square_wave(SIGNAL_FREQ, 0.2, 0.5),
-                hilbert_of_approximate_square_wave(SIGNAL_FREQ, 0.2, 0.5),
-                I_MODE_F1, t)) +
-           //0
-           (//0.2*Math.cos(2*Math.PI*I_MODE_F2*t) +
-           ssb(approximate_square_wave(SIGNAL_FREQ, 0.2, 0.5),
-               hilbert_of_approximate_square_wave(SIGNAL_FREQ, 0.2, 0.5),
-               I_MODE_F2, t))
-           ;
-}
-
 var FILTER = true;
 
 audioCtx = new AudioContext();
 var buffer = audioCtx.createBuffer(1, audioCtx.sampleRate, audioCtx.sampleRate);
 var samples = buffer.getChannelData(0);
-
-/*var xsamples = new Float32Array(samples.length);
-for (var i = 0; i < samples.length; ++i) {
-    var t = i / audioCtx.sampleRate;
-    xsamples[i] = myf(t);
-    document.write(xsamples[i] + '<br>\n');
-}*/
-
-var myMessage = new Array(8);
-for (var i = 0; i < myMessage.length; i += 2) {
-    myMessage[i] = (i/2 % 2);
-    myMessage[i+1] = (i/2 % 2);
-    //myMessage[i] = (Math.random() < 0.5) + 0;
-}
-myMessage = [1,0,1,1,0,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0];//1,1,0,0,0];//[1,0,1,0,1,1,1,0,0,0,1,1,0,0];//1,0,1,0,1];
+var myMessage = [1,0,1,1,0,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0];//1,1,0,0,0];//[1,0,1,0,1,1,1,0,0,0,1,1,0,0];//1,0,1,0,1];
 console.log(JSON.stringify(myMessage));
 encode_signal(samples, audioCtx.sampleRate, myMessage, 1000, 19000, 0.2);
 for (var i = 0; i < myMessage.length*(19000/1000); ++i) {
