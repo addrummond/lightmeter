@@ -235,7 +235,7 @@ void piezo_out_deinit()
 bool piezo_hfsdp_listen_for_masters_init()
 {
     for (;;) {
-        uint32_t before = SysTick->VAL;
+        //uint32_t before = SysTick->VAL;
         piezo_mic_read_buffer();
         DMA_Cmd(DMA1_Channel1, DISABLE);
 
@@ -246,7 +246,7 @@ bool piezo_hfsdp_listen_for_masters_init()
         }
         debugging_writec("\n---\n");*/
 
-        int p = goetzel((const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF);
+        int p = goetzel((const uint16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF);
 
         /*unsigned i;
         for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i)
@@ -259,12 +259,16 @@ bool piezo_hfsdp_listen_for_masters_init()
 
         DMA_Cmd(DMA1_Channel1, ENABLE);
 
-        uint32_t after = SysTick->VAL;
-        debugging_writec("time ");
-        debugging_write_uint32(before-after);
+        debugging_writec("val ");
+        debugging_write_uint32(p);
         debugging_writec("\n");
 
-        if (p > 20000)
+        /*uint32_t after = SysTick->VAL;
+        debugging_writec("time ");
+        debugging_write_uint32(before-after);
+        debugging_writec("\n");*/
+
+        if (p > 2000)
             return true;
     }
 }
