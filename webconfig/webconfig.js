@@ -122,18 +122,15 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
             seq2Count = seq1Count;
         }
 
-        console.log('counts', seq1Count, seq2Count, i);
-
         var phaseShift, dutyCycle;
         if (seq1V == 0) {
             phaseShift = 1;
-            dutyCycle = seq2Count / seq1Count;
+            dutyCycle = seq2Count / (seq1Count + seq2Count);
         }
         else {
             phaseShift = 0;
-            dutyCycle = seq1Count / seq2Count;
+            dutyCycle = seq1Count / (seq1Count + seq2Count);
         }
-        dutyCycle /= 2;
 
         var dv = (i - start);
         if (! lastOne)
@@ -151,6 +148,7 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
                 }
 
                 var t = oi/carrierFreq;
+                console.log("T", t, wf(t));
 
                 out[oi] = wf(t);
                 continue;
@@ -244,7 +242,7 @@ for (var i = 0; i < samples.length; ++i) {
     document.write(xsamples[i] + '<br>\n');
 }*/
 //fir(CS, xsamples, samples);
-var message = [1,1,1,1,1,0,1,0,1,0,1,1,1,1,1,0,0,1,0,0,1,1,1,1,1,0,0,0,0,0];
+var message = [1,1,1,1,0,1,0,1,1,1,1,1,0,0,1,0,0,1,1,1,1,1,0,0,0,0,0];
 encode_signal(samples, audioCtx.sampleRate, message, 1000, 19000, 0.2);
 for (var i = 0; i < message.length*(19000/1000); ++i) {
     document.write(samples[i] + '<br>\n');
