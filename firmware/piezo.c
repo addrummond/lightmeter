@@ -35,7 +35,7 @@ static void dma_config()
     dmai.DMA_MemoryInc = DMA_MemoryInc_Enable;
     dmai.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
     dmai.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
-    dmai.DMA_Mode = DMA_Mode_Normal;
+    dmai.DMA_Mode = DMA_Mode_Circular;
     dmai.DMA_Priority = DMA_Priority_High;
     dmai.DMA_M2M = DMA_M2M_Disable;
     DMA_Init(DMA1_Channel1, &dmai);
@@ -73,7 +73,7 @@ void piezo_mic_init()
     ADC_GetCalibrationFactor(ADC1);
 
 #ifdef USE_DMA
-    ADC_DMARequestModeConfig(ADC1, ADC_DMAMode_OneShot);
+    ADC_DMARequestModeConfig(ADC1, ADC_DMAMode_Circular);
     ADC_DMACmd(ADC1, ENABLE);
 #endif
 
@@ -105,6 +105,7 @@ static void piezo_mic_read_buffer()
 {
 #ifdef USE_DMA
     while((DMA_GetFlagStatus(DMA1_FLAG_TC1)) == RESET);
+    DMA_ClearFlag(DMA1_FLAG_TC1);
 #else
     unsigned i;
     for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i, piezo_mic_wait_on_ready()) {
