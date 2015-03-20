@@ -49,8 +49,8 @@ var CS = [
       0.002557915382766357
 ];
 
-function ssb(s, sh, f, t) {
-    return s(t)*Math.cos(2*Math.PI*f*t) - sh(t)*Math.sin(2*Math.PI*f*t);
+function ssb(s, sh, f, signalT, carrierT) {
+    return s(signalT)*Math.cos(2*Math.PI*f*carrierT) - sh(signalT)*Math.sin(2*Math.PI*f*signalT);
 }
 
 function approximate_square_wave(freq, mag, dutyCycle, phaseShift, hilbert) {
@@ -146,6 +146,7 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
         throw new Error("Assertion error in encode_signal: output buffer too short");
 
     var oi = 0;
+    var carrierTOff = 0;
     for (var i = 0; i < signal.length;) {
         var start = i;
 
@@ -183,17 +184,22 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
         var wf = approximate_triangle_wave(freq2, mag, dutyCycle, phaseShift);
         var hwf = hilbert_of_approximate_triangle_wave(freq2, mag, dutyCycle, phaseShift);
 
-        console.log('r', sampleRate/freq2);
-        for (var j = 0; j < sampleRate/freq2; ++j) {
-            var t = j/sampleRate;
-            var v = ssb(wf, hwf, carrierFreq, t);
+        var dd = sampleRate/freq2;
+        var t;
+        for (var j = 0; j < dd; j += 1) {
+            t = j/sampleRate;
+            var v = ssb(wf, hwf, carrierFreq, t + carrierTOff, t + carrierTOff);
             //var v = hwf(t);
             out[oi++] = v;
         }
+
+        var ellapsedT = dd*(1/sampleRate);
+        var carrierSamples = parseInt(dd * rat);
+        var carrierEllapsedT = 1/(carrierSamples * rat);
+        carrierTOff = ellapsedT - carrierEllapsedT;
+        //console.log(ellapsedT, carrierSamples, dd, carrierTOff);
     }
 }
-
-var FILTER = true;
 
 audioCtx = new AudioContext();
 var buffer = audioCtx.createBuffer(1, audioCtx.sampleRate, audioCtx.sampleRate);
@@ -210,7 +216,7 @@ function test_message() {
     for (var i = 0; i < myMessage.length*(19000/1050)*0.5; ++i) {
         var t = i/audioCtx.sampleRate;
         var v = samples[i];
-        v -= 0.2*Math.cos(2*Math.PI*19000*t+Math.PI/2);
+        v -= 0.2*Math.cos(2*Math.PI*19000*t);
         //v *= Math.cos(2*Math.PI*19000*t);
         document.write(v + '<br>\n');
     }
@@ -219,8 +225,8 @@ function test_message() {
 function test_f() {
     var samples = buffer.getChannelData(0);
     function myf(t) {
-        //return approximate_triangle_wave(1000, 0.25, 0.5)(t);//*Math.cos(2*Math.PI*1900*t);
-        return ssb(approximate_triangle_wave(1000,0.25,0.5), hilbert_of_approximate_triangle_wave(1000,0.25,0.5), 19000, t)*0.5*Math.cos(2*Math.PI*19000*t+Math.PI/2);
+        //return approximate_triangle_wave(1050, 0.25, 0.5)(t);//*Math.cos(2*Math.PI*1900*t);
+        return ssb(approximate_triangle_wave(1050,0.25,0.5), hilbert_of_approximate_triangle_wave(1050,0.25,0.5), 19000, t, t)*0.5*Math.cos(2*Math.PI*19000*t);
         //return hilbert_of_approximate_triangle_wave(1050, 0.25, 0.5)(t);
     }
 
@@ -230,6 +236,8 @@ function test_f() {
         document.write(samples[i] + '<br>\n');
     }
 }
+
+var FILTER = false;
 
 //test_f();
 test_message();
