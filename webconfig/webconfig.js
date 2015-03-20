@@ -17,7 +17,6 @@ function goetzel(freq, input, output) {
 }
 
 function fir(coefficients, input, output) {
-    var ops = 0;
     for (var i = 0; i < input.length; ++i) {
         var o = 0;
         for (var j = i, ci = 0; ci < coefficients.length; --j, ++ci) {
@@ -28,26 +27,95 @@ function fir(coefficients, input, output) {
             else
                 v = input[input.length+j];
             o += c*v;
-            ++ops;
         }
         output[i] = o;
     }
-    console.log('OPS: ' + ops);
 }
 
-// Filters out everything except 19000Hz+/-100.
-var CS = [
-      0.002557915382766357,
-      -0.020906425544830624,
-      -0.000960939427215661,
-      -0.0012470051092847469,
-      0.0003097908913539428,
-      0.0003097908913539428,
-      -0.0012470051092847469,
-      -0.000960939427215661,
-      -0.020906425544830624,
-      0.002557915382766357
-];
+function filter_below_17500_at_44100(buffer_in, buffer_out)
+{
+    var CS = [
+          -0.008773638033184997,
+          0.009357892710825723,
+          -0.010554635817558757,
+          0.008340088013772331,
+          -0.002152007417465064,
+          -0.007187478912713112,
+          0.017467430185060372,
+          -0.025680440692784242,
+          0.029070873432189042,
+          -0.026260306102679768,
+          0.017961316619322994,
+          -0.006929583363486038,
+          -0.002936373680287187,
+          0.008074565276900758,
+          -0.006735257115986192,
+          -0.00017436576561198606,
+          0.009319367779764108,
+          -0.016231131157432868,
+          0.017221409674721674,
+          -0.011071265324582759,
+          -0.00014492320392081414,
+          0.01176763381993594,
+          -0.01836630323638912,
+          0.01622320048911814,
+          -0.005266516590764755,
+          -0.01042156610025096,
+          0.023881690174243228,
+          -0.028057738144694568,
+          0.01903684970409776,
+          0.0016283074277931738,
+          -0.026566669446709053,
+          0.044596203179861287,
+          -0.04457503889471697,
+          0.019745719379580782,
+          0.029078063988884347,
+          -0.0928195179499722,
+          0.15637928156717756,
+          -0.20315976523480075,
+          0.22035083004992345,
+          -0.20315976523480075,
+          0.15637928156717756,
+          -0.0928195179499722,
+          0.029078063988884347,
+          0.019745719379580782,
+          -0.04457503889471697,
+          0.044596203179861287,
+          -0.026566669446709053,
+          0.0016283074277931738,
+          0.01903684970409776,
+          -0.028057738144694568,
+          0.023881690174243228,
+          -0.01042156610025096,
+          -0.005266516590764755,
+          0.016223200489118142,
+          -0.01836630323638912,
+          0.01176763381993594,
+          -0.00014492320392081414,
+          -0.011071265324582753,
+          0.017221409674721674,
+          -0.016231131157432868,
+          0.009319367779764108,
+          -0.00017436576561198606,
+          -0.006735257115986192,
+          0.008074565276900758,
+          -0.0029363736802871846,
+          -0.006929583363486038,
+          0.017961316619322994,
+          -0.026260306102679775,
+          0.029070873432189042,
+          -0.025680440692784242,
+          0.017467430185060372,
+          -0.007187478912713112,
+          -0.002152007417465064,
+          0.008340088013772331,
+          -0.010554635817558757,
+          0.009357892710825726,
+          -0.008773638033184997
+    ];
+
+    return fir(CS, buffer_in, buffer_out);
+}
 
 function ssb(s, sh, f, signalT, carrierT) {
     return s(signalT)*Math.cos(2*Math.PI*f*carrierT) - sh(signalT)*Math.sin(2*Math.PI*f*signalT);
@@ -65,10 +133,10 @@ function approximate_square_wave(freq, mag, dutyCycle, phaseShift, hilbert) {
 
     // See http://lpsa.swarthmore.edu/Fourier/Series/ExFS.html#CosSeriesDC=0.5
     return function (t) {
+        t += (1/freq)*(phaseShift/2);
         t *= freq;
         // Convenient to have it start at beginning of positive.
         t -= dutyCycle/2;
-        t += phaseShift;
 
         function a(n) {
             return 2*(mag/(n*Math.PI))*Math.sin(n*Math.PI*dutyCycle);
@@ -112,6 +180,7 @@ function approximate_triangle_wave(freq, mag, dutyCycle, phaseShift, hilbert) {
     var f = (hilbert ? Math.cos : Math.sin);
 
     return function (t) {
+        t += (1/freq)*(phaseShift/2);
         t *= freq*2;
 
         // Convenient to have it start at beginning of positive.
@@ -148,20 +217,22 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
     var def = parseInt(sampleRate/carrierFreq)/(sampleRate/carrierFreq);
 
     var oi = 0;
+    var totalHalfPeriods = 0;
     for (var i = 0; i < signal.length;) {
         var start = i;
 
         var seq1Count = 1;
-        var seq2Count = 1;
+        var seq2Count = 0;
         var seq1V = signal[i];
         var lastOne = false;
-        for (++i; signal[i] == seq1V && i < signal.length; ++i, ++seq1Count)
-            ;
+        for (++i; signal[i] == seq1V && i < signal.length; ++i)
+            ++seq1Count;
 
         if (i < signal.length) {
+            seq2Count = 1;
             var seq2V = signal[i];
-            for (++i; signal[i] == seq2V && i < signal.length; ++i, ++seq2Count);
-                ;
+            for (++i; signal[i] == seq2V && i < signal.length; ++i);
+                ++seq2Count;
         }
         else {
             lastOne = true;
@@ -178,19 +249,21 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
             dutyCycle = seq1Count / (seq1Count + seq2Count);
         }
 
-        var dv = (i - start)*0.5;
-        if (lastOne)
-            dv *= 0.5;
+        phaseShift += totalHalfPeriods;
+        totalHalfPeriods += seq1Count + seq2Count;
+
+        var dv = (seq1Count+seq2Count)*0.5;
         var freq2 = signalFreq/dv;
+        console.log("DC", dutyCycle, freq2, phaseShift);
         var wf = approximate_triangle_wave(freq2, mag, dutyCycle, phaseShift);
         var hwf = hilbert_of_approximate_triangle_wave(freq2, mag, dutyCycle, phaseShift);
 
-        var dd = sampleRate/freq2;
+        var dd = (sampleRate/signalFreq)*dv;
         var t;
-        for (var j = 0; j < dd; j += 1) {
+        for (var j = 0; j <= dd && oi < out.length; j += 1) {
             t = j/sampleRate;
-            var v = ssb(wf, hwf, carrierFreq, t, t);
-            //var v = hwf(t);
+            //var v = ssb(wf, hwf, carrierFreq, t, t);
+            var v = wf(t);
             out[oi++] = v;
         }
     }
@@ -204,15 +277,22 @@ function test_message() {
     var myMessage = [1,0,1,0];//[1,0,1,1,0,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0];//1,1,0,0,0];//[1,0,1,0,1,1,1,0,0,0,1,1,0,0];//1,0,1,0,1];
     myMessage = new Array(1000);
     for (var i = 0; i < myMessage.length; ++i) {
-        myMessage[i] = i%2;
+        myMessage[i] = i%3%2;
     }
+    //myMessage = [0,1,0,0,1];
     console.log(JSON.stringify(myMessage));
-    encode_signal(samples, audioCtx.sampleRate, myMessage, 1050, 19000, 0.2);
+    encode_signal(samples, audioCtx.sampleRate, myMessage, 1050, 19000, 0.5);
+    var samples2 = new Float32Array(samples.length);
+    for (j = 0; j < samples.length; ++j)
+        samples2[j] = samples[j];
+    //filter_below_17500_at_44100(samples, samples2);
+    //filter_below_17500_at_44100(samples2, samples);
+    //samples = samples2;
     for (var i = 0; i < myMessage.length*(19000/1050)*0.5; ++i) {
         var t = i/audioCtx.sampleRate;
         var v = samples[i];
-        v -= 0.2*Math.cos(2*Math.PI*19000*t);
-        //v *= Math.cos(2*Math.PI*19000*t);
+        //v -= 0.2*Math.cos(2*Math.PI*19000*t);
+        //v *= 0.5*Math.cos(2*Math.PI*19000*t - Math.PI/2);
         document.write(v + '<br>\n');
     }
 }
@@ -220,8 +300,10 @@ function test_message() {
 function test_f() {
     var samples = buffer.getChannelData(0);
     function myf(t) {
-        //return approximate_triangle_wave(1050, 0.25, 0.5)(t);//*Math.cos(2*Math.PI*1900*t);
-        return ssb(approximate_triangle_wave(1050,0.25,0.5), hilbert_of_approximate_triangle_wave(1050,0.25,0.5), 19000, t, t)*0.5*Math.cos(2*Math.PI*19000*t);
+        return approximate_triangle_wave(796, 0.5, 0.5, 1)(t);//*Math.cos(2*Math.PI*1900*t);
+        return ssb(approximate_triangle_wave(1050,0.25,0.5), hilbert_of_approximate_triangle_wave(1050,0.25,0.5), 19000, t, t)*
+               1;
+               //0.5*Math.cos(2*Math.PI*19000*t);
         //return hilbert_of_approximate_triangle_wave(1050, 0.25, 0.5)(t);
     }
 
