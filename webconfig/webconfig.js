@@ -145,8 +145,9 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
     if (out.length < signal.length/2 * rat)
         throw new Error("Assertion error in encode_signal: output buffer too short");
 
+    var def = parseInt(sampleRate/carrierFreq)/(sampleRate/carrierFreq);
+
     var oi = 0;
-    var carrierTOff = 0;
     for (var i = 0; i < signal.length;) {
         var start = i;
 
@@ -188,16 +189,10 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
         var t;
         for (var j = 0; j < dd; j += 1) {
             t = j/sampleRate;
-            var v = ssb(wf, hwf, carrierFreq, t + carrierTOff, t + carrierTOff);
+            var v = ssb(wf, hwf, carrierFreq, t, t);
             //var v = hwf(t);
             out[oi++] = v;
         }
-
-        var ellapsedT = dd*(1/sampleRate);
-        var carrierSamples = parseInt(dd * rat);
-        var carrierEllapsedT = 1/(carrierSamples * rat);
-        carrierTOff = ellapsedT - carrierEllapsedT;
-        //console.log(ellapsedT, carrierSamples, dd, carrierTOff);
     }
 }
 
