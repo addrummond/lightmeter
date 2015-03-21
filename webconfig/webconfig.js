@@ -184,7 +184,7 @@ function approximate_triangle_wave(freq, mag, dutyCycle, phaseShift, hilbert) {
         t *= freq*2;
 
         // Convenient to have it start at beginning of positive.
-        t -= dutyCycle;
+        t -= dutyCycle*2;
 
         function b(n) {
             var k = (2*m*m)/(n*n*(m-1)*Math.PI*Math.PI);
@@ -229,7 +229,6 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
             ++seq1Count;
 
         if (i < signal.length) {
-            seq2Count = 1;
             var seq2V = signal[i];
             for (++i; signal[i] == seq2V && i < signal.length; ++i);
                 ++seq2Count;
@@ -249,12 +248,12 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
             dutyCycle = seq1Count / (seq1Count + seq2Count);
         }
 
-        phaseShift += totalHalfPeriods;
+        //phaseShift += totalHalfPeriods;
         totalHalfPeriods += seq1Count + seq2Count;
 
         var dv = (seq1Count+seq2Count)*0.5;
         var freq2 = signalFreq/dv;
-        console.log("DC", dutyCycle, freq2, phaseShift);
+        console.log("DC", seq1Count, seq2Count, dutyCycle, freq2, phaseShift);
         var wf = approximate_triangle_wave(freq2, mag, dutyCycle, phaseShift);
         var hwf = hilbert_of_approximate_triangle_wave(freq2, mag, dutyCycle, phaseShift);
 
@@ -316,8 +315,8 @@ function test_f() {
 
 var FILTER = false;
 
-//test_f();
-test_message();
+test_f();
+//test_message();
 
 var bufS = audioCtx.createBufferSource();
 bufS.buffer = buffer;
