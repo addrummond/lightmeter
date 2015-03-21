@@ -12810,6 +12810,18 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="109.22" y1="106.68" x2="114.3" y2="106.68" width="0.1524" layer="91"/>
 </segment>
 </net>
+<net name="N$8" class="0">
+<segment>
+<pinref part="IC$4" gate="G$1" pin="PF0/OSC_IN"/>
+<wire x1="-66.04" y1="2.54" x2="-68.58" y2="2.54" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$9" class="0">
+<segment>
+<pinref part="IC$4" gate="G$1" pin="PF1/OSC_OUT"/>
+<wire x1="-66.04" y1="-2.54" x2="-68.58" y2="-2.54" width="0.1524" layer="91"/>
+</segment>
+</net>
 </nets>
 </sheet>
 </sheets>
