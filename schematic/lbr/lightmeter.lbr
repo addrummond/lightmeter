@@ -1191,8 +1191,8 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <text x="-1.27" y="5.461" size="0.4064" layer="27">&gt;VALUE</text>
 <pad name="P$1" x="0" y="-4.175" drill="1.3" diameter="2.286"/>
 <pad name="P$2" x="0" y="4.175" drill="1.3" diameter="2.286"/>
-<pad name="P$3" x="2.99999375" y="-2.2606" drill="0.7366" diameter="0.7366" shape="octagon"/>
-<pad name="P$4" x="2.99999375" y="2.2606" drill="0.7366" diameter="0.7366" shape="octagon"/>
+<pad name="P$3" x="2.99999375" y="-2.2733" drill="0.7366" diameter="0.7366" shape="octagon"/>
+<pad name="P$4" x="2.99999375" y="2.2733" drill="0.7366" diameter="0.7366" shape="octagon"/>
 </package>
 <package name="USB-AB-MICRO-SMD_V03">
 <text x="-4.66" y="5.96" size="0.3048" layer="51">PCB Front</text>
