@@ -1,4 +1,4 @@
-var SIGNAL_FREQ = 1000;
+var SIGNAL_FREQ = 1050;
 var I_MODE_F1 = 18500;
 var I_MODE_F2 = 19000;
 
@@ -184,7 +184,7 @@ function approximate_triangle_wave(freq, mag, dutyCycle, phaseShift, hilbert) {
         t *= freq*2;
 
         // Convenient to have it start at beginning of positive.
-        t -= dutyCycle*2;
+        t -= dutyCycle;
 
         function b(n) {
             var k = (2*m*m)/(n*n*(m-1)*Math.PI*Math.PI);
@@ -240,7 +240,7 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
 
         var phaseShift, dutyCycle;
         if (seq1V == 0) {
-            phaseShift = 1;
+            phaseShift = 2*seq2Count / (seq1Count + seq2Count);
             dutyCycle = seq2Count / (seq1Count + seq2Count);
         }
         else {
@@ -248,12 +248,10 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
             dutyCycle = seq1Count / (seq1Count + seq2Count);
         }
 
-        //phaseShift += totalHalfPeriods;
         totalHalfPeriods += seq1Count + seq2Count;
 
         var dv = (seq1Count+seq2Count)*0.5;
         var freq2 = signalFreq/dv;
-        console.log("DC", seq1Count, seq2Count, dutyCycle, freq2, phaseShift);
         var wf = approximate_triangle_wave(freq2, mag, dutyCycle, phaseShift);
         var hwf = hilbert_of_approximate_triangle_wave(freq2, mag, dutyCycle, phaseShift);
 
@@ -262,10 +260,12 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
         for (var j = 0; j <= dd && oi < out.length; j += 1) {
             t = j/sampleRate;
             //var v = ssb(wf, hwf, carrierFreq, t, t);
-            var v = wf(t);
+            var v = hwf(t);
             out[oi++] = v;
         }
     }
+
+    return oi;
 }
 
 audioCtx = new AudioContext();
@@ -273,25 +273,25 @@ var buffer = audioCtx.createBuffer(1, audioCtx.sampleRate, audioCtx.sampleRate);
 
 function test_message() {
     var samples = buffer.getChannelData(0);
-    var myMessage = [1,0,1,0];//[1,0,1,1,0,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0];//1,1,0,0,0];//[1,0,1,0,1,1,1,0,0,0,1,1,0,0];//1,0,1,0,1];
+    var myMessage;
     myMessage = new Array(1000);
     for (var i = 0; i < myMessage.length; ++i) {
         myMessage[i] = i%3%2;
     }
-    //myMessage = [0,1,0,0,1];
+    //myMessage = [0,0,1];//[1,0,1,1,0,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0];//1,1,0,0,0];//[1,0,1,0,1,1,1,0,0,0,1,1,0,0];//1,0,1,0,1];
     console.log(JSON.stringify(myMessage));
-    encode_signal(samples, audioCtx.sampleRate, myMessage, 1050, 19000, 0.5);
+    var siglen = encode_signal(samples, audioCtx.sampleRate, myMessage, SIGNAL_FREQ, I_MODE_F1, 0.4);
     var samples2 = new Float32Array(samples.length);
     for (j = 0; j < samples.length; ++j)
         samples2[j] = samples[j];
     //filter_below_17500_at_44100(samples, samples2);
     //filter_below_17500_at_44100(samples2, samples);
     //samples = samples2;
-    for (var i = 0; i < myMessage.length*(19000/1050)*0.5; ++i) {
+    for (var i = 0; i < siglen; ++i) {
         var t = i/audioCtx.sampleRate;
         var v = samples[i];
-        //v -= 0.2*Math.cos(2*Math.PI*19000*t);
-        //v *= 0.5*Math.cos(2*Math.PI*19000*t - Math.PI/2);
+        //v -= 0.2*Math.cos(2*Math.PI*I_MODE_F1*t);
+        //v *= 0.5*Math.cos(2*Math.PI*I_MODE_F1*t - Math.PI/2);
         document.write(v + '<br>\n');
     }
 }
@@ -299,7 +299,7 @@ function test_message() {
 function test_f() {
     var samples = buffer.getChannelData(0);
     function myf(t) {
-        return approximate_triangle_wave(796, 0.5, 0.5, 1)(t);//*Math.cos(2*Math.PI*1900*t);
+        //return approximate_triangle_wave(1000, 0.5, 0.2, 0)(t);//*Math.cos(2*Math.PI*1900*t);
         return ssb(approximate_triangle_wave(1050,0.25,0.5), hilbert_of_approximate_triangle_wave(1050,0.25,0.5), 19000, t, t)*
                1;
                //0.5*Math.cos(2*Math.PI*19000*t);
@@ -315,8 +315,8 @@ function test_f() {
 
 var FILTER = false;
 
-test_f();
-//test_message();
+//test_f();
+test_message();
 
 var bufS = audioCtx.createBufferSource();
 bufS.buffer = buffer;
