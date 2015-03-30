@@ -272,11 +272,11 @@ function test_message() {
     var myMessage;
     myMessage = new Array(1000);
     for (var i = 0; i < myMessage.length; ++i) {
-        myMessage[i] = i%3%2;
+        myMessage[i] = (i%10 < 8 ? 1 : 0);//i%3%2;
     }
     //myMessage = [0,0,1];//[1,0,1,1,0,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0];//1,1,0,0,0];//[1,0,1,0,1,1,1,0,0,0,1,1,0,0];//1,0,1,0,1];
     console.log(JSON.stringify(myMessage));
-    var siglen = encode_signal(samples, audioCtx.sampleRate, myMessage, SIGNAL_FREQ, I_MODE_F1, 0.4);
+    var siglen = encode_signal(samples, audioCtx.sampleRate, myMessage, SIGNAL_FREQ, I_MODE_F1, 0.35);
     var samples2 = new Float32Array(samples.length);
     for (j = 0; j < samples.length; ++j)
         samples2[j] = samples[j];
