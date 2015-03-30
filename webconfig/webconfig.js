@@ -117,8 +117,8 @@ function filter_below_17500_at_44100(buffer_in, buffer_out)
     return fir(CS, buffer_in, buffer_out);
 }
 
-function ssb(s, sh, f, signalT, carrierT) {
-    return s(signalT)*Math.cos(2*Math.PI*f*carrierT) - sh(signalT)*Math.sin(2*Math.PI*f*signalT);
+function ssb(s, sh, f, t) {
+    return s(t)*Math.cos(2*Math.PI*f*t) - sh(t)*Math.sin(2*Math.PI*f*t);
 }
 
 function approximate_square_wave(freq, mag, dutyCycle, phaseShift, hilbert) {
@@ -255,7 +255,7 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
         var t;
         for (var j = 0; j < dd+m && oi < out.length; j += 1) {
             t = j/sampleRate;
-            var v = ssb(wf, hwf, carrierFreq, elapsedTime+t, elapsedTime+t);
+            var v = ssb(wf, hwf, carrierFreq, elapsedTime+t);
             out[oi++] = v;
         }
         elapsedTime += (dd+m)/sampleRate;
@@ -296,7 +296,7 @@ function test_f() {
     var samples = buffer.getChannelData(0);
     function myf(t) {
         //return approximate_triangle_wave(1000, 0.5, 0.2, 0)(t);//*Math.cos(2*Math.PI*1900*t);
-        return ssb(approximate_triangle_wave(1050,0.25,0.5), hilbert_of_approximate_triangle_wave(1050,0.25,0.5), 19000, t, t)*
+        return ssb(approximate_triangle_wave(1050,0.25,0.5), hilbert_of_approximate_triangle_wave(1050,0.25,0.5), 19000, t)*
                1;
                //0.5*Math.cos(2*Math.PI*19000*t);
         //return hilbert_of_approximate_triangle_wave(1050, 0.25, 0.5)(t);
