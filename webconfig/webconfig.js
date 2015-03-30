@@ -276,7 +276,8 @@ function test_message() {
     }
     //myMessage = [0,0,1];//[1,0,1,1,0,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0];//1,1,0,0,0];//[1,0,1,0,1,1,1,0,0,0,1,1,0,0];//1,0,1,0,1];
     console.log(JSON.stringify(myMessage));
-    var siglen = encode_signal(samples, audioCtx.sampleRate, myMessage, SIGNAL_FREQ, I_MODE_F1, 0.35);
+    var MAG = 0.5;
+    var siglen = encode_signal(samples, audioCtx.sampleRate, myMessage, SIGNAL_FREQ, I_MODE_F1, MAG);
     var samples2 = new Float32Array(samples.length);
     for (j = 0; j < samples.length; ++j)
         samples2[j] = samples[j];
@@ -286,8 +287,8 @@ function test_message() {
     for (var i = 0; i < siglen; ++i) {
         var t = i/audioCtx.sampleRate;
         var v = samples[i];
-        //v -= 0.2*Math.cos(2*Math.PI*I_MODE_F1*t);
-        //v *= 0.5*Math.cos(2*Math.PI*I_MODE_F1*t - Math.PI/2);
+        //v -= MAG*Math.cos(2*Math.PI*I_MODE_F1*t);
+        v *= MAG*Math.cos(2*Math.PI*I_MODE_F1*t);
         document.write(v + '<br>\n');
     }
 }
