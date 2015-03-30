@@ -217,8 +217,6 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
     var m = 1;
     var elapsedTime = 0;
     for (var i = 0; i < signal.length; m = (!m+0)) {
-        var start = i;
-
         var seq1Count = 1;
         var seq2Count = 0;
         var seq1V = signal[i];
@@ -237,28 +235,30 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
         }
 
         var phaseShift, dutyCycle;
+        var countSum = seq1Count+seq2Count;
         if (seq1V == 0) {
-            phaseShift = 2*seq2Count / (seq1Count + seq2Count);
-            dutyCycle = seq2Count / (seq1Count + seq2Count);
+            var countRatio = seq1Count/seq2Count;
+            phaseShift = 2*seq2Count / countRatio;
+            dutyCycle = seq2Count / countRatio;
         }
         else {
             phaseShift = 0;
-            dutyCycle = seq1Count / (seq1Count + seq2Count);
+            dutyCycle = seq1Count / countSum;
         }
 
-        var dv = (seq1Count+seq2Count)*0.5;
+        var dv = countSum*0.5;
         var freq2 = signalFreq/dv;
         var wf = approximate_triangle_wave(freq2, mag, dutyCycle, phaseShift);
         var hwf = hilbert_of_approximate_triangle_wave(freq2, mag, dutyCycle, phaseShift);
 
-        var dd = (sampleRate/signalFreq)*dv;
+        var dd = (sampleRate/signalFreq)*dv + m;
         var t;
-        for (var j = 0; j < dd+m && oi < out.length; j += 1) {
+        for (var j = 0; j < dd && oi < out.length; j += 1) {
             t = j/sampleRate;
             var v = ssb(wf, hwf, carrierFreq, elapsedTime+t);
             out[oi++] = v;
         }
-        elapsedTime += (dd+m)/sampleRate;
+        elapsedTime += dd/sampleRate;
     }
 
     return oi;
