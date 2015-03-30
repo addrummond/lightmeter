@@ -210,15 +210,13 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
     if (signal.length == 0)
         return;
 
-    var rat = parseInt(carrierFreq/signalFreq);
-    if (out.length < signal.length/2 * rat)
+    if (out.length < signal.length/2 * parseInt(carrierFreq/signalFreq))
         throw new Error("Assertion error in encode_signal: output buffer too short");
 
-    var def = parseInt(sampleRate/carrierFreq)/(sampleRate/carrierFreq);
-
     var oi = 0;
-    var totalHalfPeriods = 0;
-    for (var i = 0; i < signal.length;) {
+    var m = 1;
+    var elapsedTime = 0;
+    for (var i = 0; i < signal.length; m = (!m+0)) {
         var start = i;
 
         var seq1Count = 1;
@@ -248,8 +246,6 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
             dutyCycle = seq1Count / (seq1Count + seq2Count);
         }
 
-        totalHalfPeriods += seq1Count + seq2Count;
-
         var dv = (seq1Count+seq2Count)*0.5;
         var freq2 = signalFreq/dv;
         var wf = approximate_triangle_wave(freq2, mag, dutyCycle, phaseShift);
@@ -257,12 +253,12 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
 
         var dd = (sampleRate/signalFreq)*dv;
         var t;
-        for (var j = 0; j <= dd && oi < out.length; j += 1) {
+        for (var j = 0; j < dd+m && oi < out.length; j += 1) {
             t = j/sampleRate;
-            //var v = ssb(wf, hwf, carrierFreq, t, t);
-            var v = hwf(t);
+            var v = ssb(wf, hwf, carrierFreq, elapsedTime+t, elapsedTime+t);
             out[oi++] = v;
         }
+        elapsedTime += (dd+m)/sampleRate;
     }
 
     return oi;
