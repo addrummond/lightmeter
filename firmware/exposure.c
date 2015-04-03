@@ -268,266 +268,110 @@ void aperture_to_string(ev_with_fracs_t evwf, aperture_string_output_t *aso, pre
     aso->chars[aso->length] = '\0';
 }
 
-// Table storing full-stop ISO numbers.
-// Each pair of bytes is:
-//     (i)  big-endian 4-bit BCD rep of first two digits,
-//     (ii) number of trailing zeroes.
-static const uint8_t FULL_STOP_ISOS[] = {
-    6, 0,             // 6
-    (1 << 4) | 2, 0,  // 12
-    (2 << 4) | 5, 0,  // 25
-    5, 1,             // 50
-    1, 2,             // 100
-    2, 2,             // 200
-    4, 2,             // 400
-    8, 2,             // 800
-    (1 << 4) | 6, 2,  // 1600
-    (3 << 4) | 2, 2,  // 3200
-    (6 << 4) | 4, 2,  // 6400
-    (1 << 4) | 2, 3,  // 12500 // must be special-cased to add 5.
-    (2 << 4) | 5, 3,  // 25000
-    5, 4,             // 50000
-    1, 5,             // 100000
-    2, 5,             // 200000
-    4, 5,             // 400000
-    8, 5,             // 800000
-    (1 << 4) | 6, 5,  // 1600000
+// Full stop ISO numbers.
+static const uint16_t FULL_STOP_ISOS[] = {
+    6, 12, 25, 50, 100, 200, 400, 800, 1600,
+    3200, 6400, 12500, 25000, 50000,
+    // Divided by 100
+    125, 250, 500, 1000, 2000, 4000, 8000, 16000
 };
-
-static const uint8_t THIRD_STOP_ISOS[] = {
-    8, 0,             // 8
-    (1 << 4) | 0, 0,  // 10
-
-    (1 << 4) | 6, 0,  // 16
-    (2 << 4) | 0, 0,  // 20
-
-    (3 << 4) | 2, 0,  // 32
-    (3 << 4) | 0, 0,  // 40
-
-    (6 << 4) | 4, 0,  // 64
-    (8 << 4) | 0, 0,  // 80
-
-    (1 << 4) | 2, 1,  // 125 (specified as 120, must be special-cased).
-    (1 << 4) | 6, 1,  // 160
-
-    (2 << 4) | 5, 1,  // 250
-    (3 << 4) | 2, 1,  // 320
-
-    (5 << 4) | 0, 1,  // 500
-    (6 << 4) | 4, 1,  // 640
-
-    (1 << 4) | 0, 2,  // 1000
-    (1 << 4) | 2, 2,  // 1250 (specified as 1200, must be special-cased)
-
-    (2 << 4) | 0, 2,  // 2000
-    (2 << 4) | 5, 2,  // 2500
-
-    (4 << 4) | 0, 2,  // 4000
-    (5 << 4) | 0, 2,  // 5000
-
-    (8 << 4) | 0, 2,  // 8000
-    (1 << 4) | 0, 3,  // 10000
-
-    (1 << 4) | 6, 3,  // 16000
-    (2 << 4) | 0, 3,  // 20000
-
-    (3 << 4) | 2, 3,  // 32000
-    (4 << 4) | 0, 3,  // 40000
-
-    (6 << 4) | 4, 3,  // 64000
-    (8 << 4) | 0, 3,  // 80000
-
-    (1 << 4) | 2, 4,  // 125000 (specified as 120000, must be special-cased)
-    (1 << 4) | 6, 4,  // 160000
-
-    (2 << 4) | 5, 4,  // 250000
-    (3 << 4) | 2, 4,  // 320000
+#define FULL_STOP_ISO_100_INDEX 13
+#define FULL_STOP_ISO_AT(i) ((i) > (FULL_STOP_ISO_100_INDEX) ? (((uint32_t)FULL_STOP_ISOS[i])*100) : ((uint32_t)FULL_STOP_ISOS[i]))
+static const uint16_t THIRD_STOP_ISOS[] = {
+    8, 10, 16, 20, 32, 40, 64, 80, 125, 160, 250, 320, 500, 640,
+    1000, 1250, 2000, 2500, 4000, 5000, 8000, 10000, 16000, 20000,
+    32000, 40000, 64000,
+    // Divided by 100
+    800, 1250, 1600, 2500, 3200
 };
+#define THIRD_STOP_ISO_100_INDEX 26
+#define THIRD_STOP_ISO_AT(i) ((i) > (THIRD_STOP_ISO_100_INDEX) ? (((uint32_t)THIRD_STOP_ISOS[i])*100) : ((uint32_t)THIRD_STOP_ISOS[i]))
 
-static uint8_t *iso_into_bcd(uint_fast8_t byte1, uint_fast8_t zeroes, uint8_t *digits, uint_fast8_t length)
+static unsigned uint32_to_bcd(uint32_t n, uint8_t *digits)
 {
-    uint_fast8_t i, z;
-    for (i = length-1, z = 0; z < zeroes; --i, ++z) {
-        digits[i] = 0;
+    uint32_t divisor = 10, l = 1;
+    while (n / divisor > 0)
+        ++i, divisor *= 10;
+
+    unsigned j = l - 1;
+    uint32_t d = 1;
+    do {
+        digits[j] = ((i/d) % 10);
+        d *= 10;
+    } while (j-- > 0);
+
+    return l;
+}
+
+static uint32_t bcd_to_uint32(uint8_t *digits, unsigned length)
+{
+    uint32_t total = 0;
+    int i, m;
+    for (i = length-1, m = 1; i >= 0; --i, m *= 10)
+        total += digits[i]*m;
+    return total;
+}
+
+static unsigned iso_in_third_stops_to_bcd(uint_fast8_t iso, uint8_t *digits)
+{
+    uint_fast8_t whole = iso / 3;
+    uint_fast8_t frac = iso % 3;
+
+    uint32_t isonum;
+    if (frac == 0)
+        isonum = FULL_STOP_ISO_AT(whole);
+    else
+        isonum = THIRD_STOP_ISO_AT(2*whole + frac - 1);
+
+    return uint32_to_bcd(isonum, digits);
+}
+
+uint_fast8_t iso_bcd_to_third_stops(uint8_t *digits, unsigned length)
+{
+    uint32_t isonum = bcd_to_uint32(digits, length);
+
+    unsigned i;
+    uint_fast8_t fullstop = 0;
+    for (i = 0; i < sizeof(FULL_STOP_ISOS)/sizeof(FULL_STOP_ISOS[0]); ++i) {
+        uint32_t n = FULL_STOP_ISOS[i];
+        if (i > FULL_STOP_ISO_100_INDEX)
+            n *= 100;
+        if (isonum == n)
+            return i*3;
+        if (isonum > n)
+            fullstop = i;
     }
 
-    digits[i] = byte1 & 0x0F;
-    if (byte1 & 0xF0) {
-        --i;
-        digits[i] = byte1 >> 4;
-        // Special case for 125, 1250, 12500 and 125000
-        if (byte1 == ((1 << 4) | 2) && zeroes >= 1 && zeroes <= 4)
-            digits[length - zeroes + 1] = 5;
-        return digits + length - zeroes - 2;
+    // It's not a full stop ISO, so now we want to find the closest third-stop
+    // ISO. The 'fullstop' variable contains the value (in full stops) of the
+    // full stop ISO immediately above our given ISO. We now need to look at
+    // the third-stops one third and two-thirds below this one, and see which
+    // of the three is the closest match.
+    uint32_t nothirdsbelow = FULL_STOP_ISO_AT(fullstop);
+    uint_fast8_t fullstopm = (fullstop-1)*2;
+    uint32_t onethirdbelow = THIRD_STOP_ISO_AT(fullstopm + 1);
+    uint32_t twothirdsbelow = THIRD_STOP_ISO_AT(fullstopm);
+
+    int32_t diff1 = nothirdsbelow - isonum;
+    int32_t diff2 = onethirdbelow - isonum;
+    int32_t diff3 = twothirdsbelow - isonum;
+    if (diff1 < 0)
+        diff1 = -diff1;
+    if (diff2 < 0)
+        diff2 = -diff2;
+    if (diff3 < 0)
+        diff3 = -diff3;
+
+    if (diff1 <= diff2 && diff1 <= diff3) {
+        return fullstop*3;
     }
     else {
-        return digits + length - zeroes - 1;
+        uint_fast8_t t = (fullstop-1)*3;
+        if (diff2 <= diff1 && diff2 <= diff3) {
+            return t + 2;
+        else
+            return t + 1;
     }
-}
-
-uint8_t *iso_in_third_stops_into_bcd(uint_fast8_t iso, uint8_t *digits, uint_fast8_t length)
-{
-    uint_fast8_t byte1, zeroes;
-    uint_fast8_t i = iso/3*2;
-    uint_fast8_t rem = iso % 3;
-    if (rem == 0) {
-        byte1 = FULL_STOP_ISOS[i];
-        zeroes = FULL_STOP_ISOS[i+1];
-    }
-    else {
-        i *= 2;
-        i += (rem - 1)*2;
-        byte1 = THIRD_STOP_ISOS[i];
-        zeroes = THIRD_STOP_ISOS[i+1];
-    }
-
-    return iso_into_bcd(byte1, zeroes, digits, length);
-}
-
-bool iso_is_full_stop(const uint8_t *digits, uint_fast8_t length)
-{
-    // Special case: 12500 is listed as 12000 in table (because it has 3 non-zero digits).
-    if (length == 5 && digits[0] == 1 && digits[1] == 2 && digits[2] == 5 && digits[3] == 0 && digits[4] == 0)
-        return true;
-
-    uint_fast8_t i;
-    for (i = 0; i < sizeof(FULL_STOP_ISOS); i += 2) {
-        uint_fast8_t d = FULL_STOP_ISOS[i];
-        uint_fast8_t nsigs = 1;
-        if (d & 0xF0)
-            ++nsigs;
-        uint_fast8_t nzeroes = FULL_STOP_ISOS[i+1];
-        if (nsigs + nzeroes == length) {
-            uint_fast8_t d1 = d & 0xF;
-            uint_fast8_t checkzeroes_length = length - 1;
-            uint_fast8_t checkzeroes_offset = 1;
-            if (nsigs == 2) {
-                uint_fast8_t d2 = d >> 4;
-                checkzeroes_offset = 2;
-                --checkzeroes_length;
-                if (digits[0] != d2 || digits[1] != d1)
-                    continue;
-            }
-            else if (digits[0] != d1) {
-                continue;
-            }
-
-            uint_fast8_t j;
-            for (j = 0; j < checkzeroes_length; ++j) {
-                if (digits[j+checkzeroes_offset] != 0)
-                    goto continue_main;
-            }
-
-            return true;
-        }
-
-continue_main:;
-    }
-
-    return false;
-}
-
-// Convert a BCD ISO number into the closest equivalent 8-bit representation.
-// In the 8-bit representation, ISOs start from 6 and go up in steps of 1/3 stop.
-static const uint8_t BCD_6[] = { 6 };
-uint_fast8_t iso_bcd_to_third_stops(uint8_t *digits, uint_fast8_t length)
-{
-    assert(length <= ISO_DECIMAL_MAX_DIGITS);
-
-    uint_fast8_t l = length;
-
-    uint8_t tdigits_[l];
-    uint8_t *tdigits = tdigits_;
-    uint_fast8_t i;
-    for (i = 0; i < l; ++i)
-        tdigits_[i] = digits[i];
-
-    uint8_t *r = tdigits;
-    uint_fast8_t count;
-    for (count = 0; bcd_gt(r, l, BCD_6, sizeof(BCD_6)); ++count) {
-        //        printf(" === ");
-        //        debug_print_bcd(r, l);
-        //        printf("\n");
-        // ISO 26 -> 25
-        if (l == 2 && r[0] == 2 && r[1] == 5)
-            r[1] = 6;
-        // ISO 12500 -> 12800
-        if (l == 6 && r[0] == '1' && r[1] == '2' && r[2] == '5' && r[3] == '0' && r[4] == '0' && r[5] == '0')
-            r[2] = 8;
-
-        r = bcd_div_by_lt10(r, l, 2);
-        l = bcd_length_after_op(tdigits, l, r);
-        tdigits = r;
-    }
-
-    uint_fast8_t stops = count*3;
-
-    // If it's not a full-stop ISO number then we've calculated the
-    // stop equivalent of the next full-stop ISO number ABOVE the
-    // given number. We now deal in 1/3 stops, which is how
-    // intermediate ISO numbers appear to be standardized.  To get to
-    // the next stop down we divide by the third root of 2 (~= 1/0.8).
-    // However, due to rounding of the standard ISO numbers, we actually
-    // have to divide by a bit more than that. The magic value appears
-    // to be 1/0.7. We implement this as subtraction of 1/5 + 1/10 of
-    // the original.
-    if (! iso_is_full_stop(digits, length)) {
-        //printf("ISO INIT ");
-        //debug_print_bcd(digits, length);
-        //printf("\n");
-
-        uint8_t nextup_digits_[ISO_DECIMAL_MAX_DIGITS];
-        uint_fast8_t dcount = count << 1;
-        //        printf("=====>>> COUNT %i b1 %i b2 %i\n", count, FULL_STOP_ISOS[dcount], FULL_STOP_ISOS[dcount+1]);
-        uint8_t *nextup_digits = iso_into_bcd(FULL_STOP_ISOS[dcount],
-                                              FULL_STOP_ISOS[dcount + 1],
-                                              nextup_digits_,
-                                              ISO_DECIMAL_MAX_DIGITS);
-        uint_fast8_t nextup_length = ISO_DECIMAL_MAX_DIGITS - (nextup_digits - nextup_digits_);
-
-        //printf("NEXTUP ");
-        //debug_print_bcd(nextup_digits, nextup_length);
-        //printf("\n");
-
-        uint_fast8_t divs;
-        for (divs = 0; bcd_gt(nextup_digits, nextup_length, digits, length); ++divs) {
-            // printf("DIVS %i\n", divs);
-
-            uint8_t fifth_digits_[nextup_length];
-            uint_fast8_t j;
-            for (j = 0; j < nextup_length; ++j)
-                fifth_digits_[j] = nextup_digits[j];
-            uint8_t *fifth_digits = bcd_div_by_lt10(fifth_digits_, nextup_length, 5);
-            uint_fast8_t fifth_length = bcd_length_after_op(fifth_digits_, nextup_length, fifth_digits);
-
-            // Subtract 1/5.
-            uint8_t *r = bcd_sub(nextup_digits, nextup_length, fifth_digits, fifth_length);
-            nextup_length = bcd_length_after_op(nextup_digits, nextup_length, r);
-            nextup_digits = r;
-
-            // Subtract 1/10.
-            // We subtract an additional 1/10 because sometimes standard ISO numbers are a
-            // little lower than they really should be due to rounding.
-            uint8_t tenth_digits[nextup_length];
-            for (j = 0; j < nextup_length - 1; ++j)
-                tenth_digits[j] = nextup_digits[j];
-            r = bcd_sub(nextup_digits, nextup_length, tenth_digits, nextup_length-1);
-            nextup_length = bcd_length_after_op(nextup_digits, nextup_length, r);
-            nextup_digits = r;
-
-            //printf("CMP\n");
-            //debug_print_bcd(nextup_digits, nextup_length);
-            //printf(" > ");
-            //debug_print_bcd(digits, length);
-            //printf("\n");
-        }
-
-        //printf("STOPS %i DIVS %i\n", stops, divs);
-        assert(divs > 0 && divs <= 3);
-        stops -= divs;
-    }
-
-    return stops;
 }
 
 static const uint_fast8_t ev_wtih_fracs_to_xth_consts[] = {
