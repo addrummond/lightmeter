@@ -184,12 +184,12 @@ function approximate_triangle_wave(freq, mag, dutyCycle, phaseShift, hilbert) {
         t *= freq*2;
 
         // Convenient to have it start at beginning of positive.
-        t -= dutyCycle;
+        t += dutyCycle;
 
         function b(n) {
             var k = (2*m*m)/(n*n*(m-1)*Math.PI*Math.PI);
-            var s = Math.sin((n*(m-1)*Math.PI)/(m));
-            return k*s;
+            var si = Math.sin((n*(m-1)*Math.PI)/m);
+            return -k*si;
         }
 
         var v = 0;
@@ -256,6 +256,7 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
         for (var j = 0; j < dd && oi < out.length; j += 1) {
             t = j/sampleRate;
             var v = ssb(wf, hwf, carrierFreq, elapsedTime+t);
+            //v = 0.5*wf(elapsedTime+t);
             out[oi++] = v;
         }
         elapsedTime += dd/sampleRate;
@@ -276,7 +277,7 @@ function test_message() {
     }
     //myMessage = [0,0,1];//[1,0,1,1,0,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0];//1,1,0,0,0];//[1,0,1,0,1,1,1,0,0,0,1,1,0,0];//1,0,1,0,1];
     console.log(JSON.stringify(myMessage));
-    var MAG = 0.5;
+    var MAG = 0.35;
     var siglen = encode_signal(samples, audioCtx.sampleRate, myMessage, SIGNAL_FREQ, I_MODE_F1, MAG);
     var samples2 = new Float32Array(samples.length);
     for (j = 0; j < samples.length; ++j)
@@ -288,7 +289,7 @@ function test_message() {
         var t = i/audioCtx.sampleRate;
         var v = samples[i];
         //v -= MAG*Math.cos(2*Math.PI*I_MODE_F1*t);
-        v *= MAG*Math.cos(2*Math.PI*I_MODE_F1*t);
+        //v *= MAG*Math.cos(2*Math.PI*I_MODE_F1*t);
         document.write(v + '<br>\n');
     }
 }
@@ -296,8 +297,9 @@ function test_message() {
 function test_f() {
     var samples = buffer.getChannelData(0);
     function myf(t) {
-        //return approximate_triangle_wave(1000, 0.5, 0.2, 0)(t);//*Math.cos(2*Math.PI*1900*t);
-        return ssb(approximate_triangle_wave(1050,0.25,0.5), hilbert_of_approximate_triangle_wave(1050,0.25,0.5), 19000, t)*
+        //return 0.5*ssb(function (t) { return Math.cos(2*Math.PI*1050*t) + 0.3*Math.sin(2*Math.PI*950*t); }, function (t) { return Math.sin(2*Math.PI*1050*t) - 0.3*Math.cos(2*Math.PI*950*t); }, 18500, t);
+        //return 0.5*hilbert_of_approximate_triangle_wave(1000, 0.5, 0.5, 0)(t);//*Math.cos(2*Math.PI*I_MODE_F1*t);
+        return ssb(approximate_triangle_wave(1050,0.25,0.5), hilbert_of_approximate_triangle_wave(1050,0.25,0.5), I_MODE_F1, t)*
                1;
                //0.5*Math.cos(2*Math.PI*19000*t);
         //return hilbert_of_approximate_triangle_wave(1050, 0.25, 0.5)(t);
@@ -312,8 +314,8 @@ function test_f() {
 
 var FILTER = false;
 
-//test_f();
-test_message();
+test_f();
+//test_message();
 
 var bufS = audioCtx.createBufferSource();
 bufS.buffer = buffer;
