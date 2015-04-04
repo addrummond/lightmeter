@@ -12,8 +12,8 @@
 #include <stdbool.h>
 #include <myassert.h>
 #include <state.h>
-#include <exposure.h>
 #include <bcd.h>
+#include <exposure.h>
 #include <tables.h>
 //#include <deviceconfig.h>
 #include <mymemset.h>
@@ -291,12 +291,12 @@ static unsigned uint32_to_bcd(uint32_t n, uint8_t *digits)
 {
     uint32_t divisor = 10, l = 1;
     while (n / divisor > 0)
-        ++i, divisor *= 10;
+        ++l, divisor *= 10;
 
     unsigned j = l - 1;
     uint32_t d = 1;
     do {
-        digits[j] = ((i/d) % 10);
+        digits[j] = ((n/d) % 10);
         d *= 10;
     } while (j-- > 0);
 
@@ -312,7 +312,7 @@ static uint32_t bcd_to_uint32(uint8_t *digits, unsigned length)
     return total;
 }
 
-static unsigned iso_in_third_stops_to_bcd(uint_fast8_t iso, uint8_t *digits)
+unsigned iso_in_third_stops_to_bcd(uint_fast8_t iso, uint8_t *digits)
 {
     uint_fast8_t whole = iso / 3;
     uint_fast8_t frac = iso % 3;
@@ -326,7 +326,7 @@ static unsigned iso_in_third_stops_to_bcd(uint_fast8_t iso, uint8_t *digits)
     return uint32_to_bcd(isonum, digits);
 }
 
-uint_fast8_t iso_bcd_to_third_stops(uint8_t *digits, unsigned length)
+static uint_fast8_t iso_bcd_to_third_stops(uint8_t *digits, unsigned length)
 {
     uint32_t isonum = bcd_to_uint32(digits, length);
 
@@ -367,7 +367,7 @@ uint_fast8_t iso_bcd_to_third_stops(uint8_t *digits, unsigned length)
     }
     else {
         uint_fast8_t t = (fullstop-1)*3;
-        if (diff2 <= diff1 && diff2 <= diff3) {
+        if (diff2 <= diff1 && diff2 <= diff3)
             return t + 2;
         else
             return t + 1;
@@ -375,35 +375,46 @@ uint_fast8_t iso_bcd_to_third_stops(uint8_t *digits, unsigned length)
 }
 
 static const uint_fast8_t ev_wtih_fracs_to_xth_consts[] = {
+    // Value -1
+    //
     // 120
-    120, 40, 15, 12,
+    119, 39, 14, 11,
     // 100
-    100, 33, 13, 10
+    99, 32, 12, 9,
+    // 256
+    255, 84, 31, 25
 };
 #define consts ev_wtih_fracs_to_xth_consts
-static int_fast16_t ev_with_fracs_to_xth(ev_with_fracs_t evwf, uint_fast8_t const_offset)
+static int32_t ev_with_fracs_to_xth(ev_with_fracs_t evwf, uint_fast8_t const_offset)
 {
-    uint_fast8_t nth = ev_with_fracs_get_nth(evwf);
+    unsigned nth = ev_with_fracs_get_nth(evwf);
 
-    int_fast16_t whole = ev_with_fracs_get_wholes(evwf) * consts[const_offset+0];
-    int_fast16_t rest;
+    int32_t whole = ev_with_fracs_get_wholes(evwf) * ((int32_t)consts[const_offset+0] + 1);
+    int32_t rest;
+    int32_t mul;
     if (nth == 3) {
-        rest = ev_with_fracs_get_thirds(evwf) * consts[const_offset+1];
+        rest = ev_with_fracs_get_thirds(evwf);
+        mul = consts[const_offset+1];
     }
     else if (nth == 8) {
-        rest = ev_with_fracs_get_eighths(evwf) * consts[const_offset+2];
+        rest = ev_with_fracs_get_eighths(evwf);
+        mul = consts[const_offset+2];
     }
     else if (nth == 10) {
-        rest = ev_with_fracs_get_tenths(evwf) * consts[const_offset+3];
+        rest = ev_with_fracs_get_tenths(evwf);
+        mul = consts[const_offset+3];
     }
     else {
         assert(false);
         return 0; // Get rid of warning.
     }
 
+    rest *= (int32_t)mul + 1;
+
     return whole + rest;
 }
 #undef consts
+#define ev_with_fracs_to_256th(x) ev_with_fracs_to_xth((x), 8)
 #define ev_with_fracs_to_120th(x) ev_with_fracs_to_xth((x), 0)
 #define ev_with_fracs_to_100th(x) ev_with_fracs_to_xth((x), 4)
 
@@ -570,57 +581,66 @@ ev_with_fracs_t fps_and_angle_to_shutter_speed(uint_fast16_t fps, uint_fast16_t 
     return ret;
 }
 
-// Gets lux as BCD with 4 decimal places.
-uint8_t *ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits)
+#define EXP2_PRECISION 8
+#define V_0_5          128
+#define V_0_11         28
+#define V_0_02         5
+#define EXP2_0_5       362
+#define EXP2_0_11      276
+#define EXP2_0_02      260
+static int32_t int32_exp2(int32_t x)
 {
-    //printf("ORIG = %i 100th = %i\n", ev_with_fracs_get_ev8(evwf), ev_with_fracs_to_100th(evwf));
-    int32_t ev = (ev_with_fracs_to_100th(evwf) - 500) * 10;
+    int32_t ix = x >> EXP2_PRECISION;
+    int32_t ir = 1 << EXP2_PRECISION;
+    unsigned i;
+    for (i = 0; i < ix; ++i)
+        ir *= 2;
 
-    // Magic compensation. This corrects somewhat for the imprecision of the
-    // bcd_exp2 function, which gets worse the further we go from whole EV
-    // values.
-    uint_fast8_t eighths = ev_with_fracs_get_eighths(evwf);
-    ev -= (eighths * 4);
+    int32_t ifl = x & (0xFFFFFFFF >> (32 - EXP2_PRECISION));
+    int32_t m = 1 << EXP2_PRECISION;
+    while (ifl > V_0_02) {
+        if (ifl >= V_0_5) {
+            ifl -= V_0_5;
+            m *= EXP2_0_5;
+        }
+        else if (ifl >= V_0_11) {
+            ifl -= V_0_11;
+            m *= EXP2_0_11;
+        }
+        else {
+            ifl -= V_0_02;
+            m *= EXP2_0_02;
+        }
+        m >>= EXP2_PRECISION;
+    }
 
-    //printf("EV %i (%i)\n", ev, ev_with_fracs_get_ev8(evwf));
-    assert(ev >= 0 && ev <= 25000);
-
-    // The resulting number cannot be bigger than six digits.
-    // Following exponention and multiplication 12 digits is the max,
-    // assuming convervative max EV of 25.
-    // We leave extra space at the end if BCD_EXP2_PRECISION is > 2.
-#if BCD_EXP2_PRECISION < 2
-#error "Bad value for BCD_EXP2_PRECISION in ev_at_100_to_bcd_lux in exposure.c"
-#endif
-    memset8_zero(digits, (EV_AT_100_TO_BCD_LUX_BCD_LENGTH)*sizeof(uint8_t));
-    uint8_t *digits_p = uint32_to_bcd(ev, digits, (EV_AT_100_TO_BCD_LUX_BCD_LENGTH-(BCD_EXP2_PRECISION-3))*sizeof(uint8_t));
-
-    //uint_fast8_t x;
-    //printf("[%i], digits_p = ", ev);
-    //for (x = 0; x < bcd_length_after_op(digits, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, digits_p); ++x)
-    //    printf("%c", digits_p[x] + '0');
-    //printf("\n");
-
-    uint_fast8_t rlen = bcd_length_after_op(digits, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, digits_p);
-    uint8_t *digits_p2 = bcd_exp2(digits_p, rlen);
-
-    //uint_fast8_t x;
-    //printf("digits_p = ");
-    //for (x = 0; x < bcd_length_after_op(digits_p1, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, digits_p2); ++x)
-    //    printf("%c", digits_p2[x] + '0');
-    //printf("\n");
-
-    static uint8_t TWO_FIVE[] = { 2, 5 };
-    uint_fast8_t rlen2 = bcd_length_after_op(digits_p, rlen, digits_p2);
-    uint8_t *digits_p3 = bcd_mul(digits_p2, rlen2, TWO_FIVE, sizeof(TWO_FIVE)/sizeof(uint8_t));
-    //uint_fast8_t rlen3 = bcd_length_after_op(digits_p2, rlen2, digits_p3);
-
-    // digits_p3 now contains the lux value in decimal.
-    return digits_p3;
+    return (m * ir) >> EXP2_PRECISION;
 }
-#undef LOG10_2_5__1000
-#undef LOG10_2__10000
+#undef V_0_5
+#undef V_0_11
+#undef V_0_048
+#undef EXP2_0_5
+#undef EXP2_0_11
+#undef EXP2_0_048
 
+static int32_t ev_at_100_to_lux(ev_with_fracs_t evwf)
+{
+    int32_t ev = ev_with_fracs_to_256th(evwf) - (5*(1<<EXP2_PRECISION));
+    ev = int32_exp2(ev);
+    ev += ev + (ev/2); // Multiply by 2.5
+    return ev;
+}
+
+unsigned ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits)
+{
+    int32_t lux = ev_at_100_to_lux(evwf);
+
+    // Convert from 256ths to 100ths.
+    lux *= 100;
+    lux >>= EXP2_PRECISION;
+
+    return uint32_to_bcd(lux, digits);
+}
 
 #ifdef TEST
 
@@ -654,23 +674,24 @@ int main()
         }
     }
 
-    printf("ev_at_100_to_bcd_lux\n");
+    printf("\n");
+
     ev_with_fracs_t evat100;
     uint_fast8_t ev8;
+    printf("ev_at_100_to_bcd_lux\n");
     for (ev8 = 8*5; ev8 < 160; ++ev8) {
         float fev = ((float)ev8 - 40.0) / 8.0;
         float flux = pow(2.0, fev) * 2.5;
         ev_with_fracs_init(evat100);
         ev_with_fracs_set_ev8(evat100, ev8);
-        uint8_t lux_digits_[EV_AT_100_TO_BCD_LUX_BCD_LENGTH];
-        uint8_t *lux_digits = ev_at_100_to_bcd_lux(evat100, lux_digits_);
-        printf("EV@100 %f =,", (((float)ev_with_fracs_get_ev8(evat100))/8.0)-5.0);
-        uint_fast8_t x;
-        print_bcd(lux_digits, bcd_length_after_op(lux_digits_, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, lux_digits), 3, 4);
-        printf(",%f\n", flux);
-        //for (x = 0; x < bcd_length_after_op(lux_digits_, EV_AT_100_TO_BCD_LUX_BCD_LENGTH, lux_digits); ++x)
-        //    printf("%c", lux_digits[x] + '0');
-        //printf("\n");
+        uint8_t lux_digits[EV_AT_100_TO_BCD_LUX_BCD_LENGTH];
+        unsigned dl = ev_at_100_to_bcd_lux(evat100, lux_digits);
+        print_bcd(lux_digits, dl, 3, 2);
+        printf("EV@100 %f = ", (((float)ev_with_fracs_get_ev8(evat100))/8.0)-5.0);
+        unsigned x;
+        for (x = 0; x < dl; ++x)
+            printf("%c", lux_digits[x] + '0');
+        printf("\n");
     }
 
     printf("fps_and_angle_to_shutter_speed\n");
@@ -816,23 +837,6 @@ int main()
 
     printf("\n\n");
 
-    // TODO: Uses old API.
-    /*for (is = ISO_MIN; is <= ISO_MAX; ++is) {
-        for (ss = SS_MIN; ss <= SS_MAX; ++ss) {
-          for (ev = 40; ev <= EV_MAX; ++ev) {
-                ap = aperture_given_shutter_speed_iso_ev(ss, is, ev);
-                shutter_speed_to_string(ss, &sso);
-                aperture_to_string(ap, &aso);
-                printf("ISO %f stops from 6,  %s  %s (EV = %.2f)   [%i, %i, %i : %i]\n",
-                       ((float)is) / 8.0,
-                       SHUTTER_STRING_OUTPUT_STRING(sso),
-                       APERTURE_STRING_OUTPUT_STRING(aso),
-                       ((float)(((int_fast16_t)(ev))-(5*8)))/8.0,
-                       is, ss, ev, ap);
-             }
-        }
-        }*/
-
     // Useful table for comparison is here: http://en.wikipedia.org/wiki/Film_speed
     static uint8_t isobcds[] = {
         7,   1, 6, 0, 0, 0, 0, 0,  0,
@@ -884,11 +888,10 @@ int main()
         int offset = i+8-length;
         uint8_t *isodigits = isobcds+offset;
 
-        bool is_full = iso_is_full_stop(isodigits, length);
         int stops = iso_bcd_to_third_stops(isodigits, length);
         bcd_to_string(isodigits, length);
 
-        printf("ISO %s (%sfull) = %.2f stops from ISO 6\n", isodigits, is_full ? "" : "not ", ((float)stops)/3.0);
+        printf("ISO %s = %.2f stops from ISO 6\n", isodigits, ((float)stops)/3.0);
     }
 
     // Test that compressed table is giving correct values by comparing to uncompressed table.

@@ -5,7 +5,6 @@
 // Transient state is in transient_meter_state_t.
 
 #include <stdbool.h>
-#include <bcd.h>
 #include <exposure.h>
 
 #define STATE_BLOCK_LENGTH 128

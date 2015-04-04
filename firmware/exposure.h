@@ -1,8 +1,6 @@
 #ifndef EXPOSURE_H
 #define EXPOSURE_H
 
-#include <bcd.h>
-
 #define SS_1M       0
 #define SS_8S       24
 #define SS_1S       48
@@ -110,15 +108,14 @@ ev_with_fracs_t z_given_x_y_ev(ev_with_fracs_t given_x, ev_with_fracs_t given_y,
 #define shutter_speed_given_aperture_iso_ev(a,b,c) z_given_x_y_ev((a),(b),(c),1)
 #define iso_given_aperture_shutter_speed_ev(a,b,c) z_given_x_y_ev((a),(b),(c),2)
 
-uint_fast8_t iso_bcd_to_third_stops(uint8_t *digits, uint_fast8_t length);
-uint8_t *iso_in_third_stops_into_bcd(uint_fast8_t iso, uint8_t *digits, uint_fast8_t length);
+unsigned iso_in_third_stops_to_bcd(uint_fast8_t iso, uint8_t *digits);
 
 ev_with_fracs_t get_ev100_at_voltage(uint_fast8_t voltage, uint_fast8_t op_amp_resistor_stage);
 uint_fast8_t convert_from_reference_voltage(uint_fast16_t adc_out);
 
-uint8_t *ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits);
-#define EV_AT_100_TO_BCD_LUX_RESULT_PRECISION BCD_EXP2_PRECISION
-#define EV_AT_100_TO_BCD_LUX_BCD_LENGTH       (12+BCD_EXP2_PRECISION-3)
+unsigned ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits);
+#define EV_AT_100_TO_BCD_LUX_RESULT_PRECISION 2
+#define EV_AT_100_TO_BCD_LUX_BCD_LENGTH       (7+EV_AT_100_TO_BCD_LUX_RESULT_PRECISION)
 
 // Note that these give the tenth/third immediately <= the nearest eighth
 // (i.e. they don't round up).
