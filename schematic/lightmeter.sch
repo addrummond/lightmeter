@@ -11767,8 +11767,8 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="GND35" library="supply1" deviceset="GND" device=""/>
 <part name="C21" library="rcl" deviceset="C-EU" device="C0402" value="1u"/>
 <part name="U$3" library="lightmeter" deviceset="LIBAT" device=""/>
-<part name="R14" library="resistor" deviceset="R-EU_" device="R0402" value="500k"/>
-<part name="R15" library="resistor" deviceset="R-EU_" device="R0402" value="500k"/>
+<part name="R14" library="resistor" deviceset="R-EU_" device="R0402" value="510k"/>
+<part name="R15" library="resistor" deviceset="R-EU_" device="R0402" value="510k"/>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
 <part name="P+4" library="supply1" deviceset="VCC" device=""/>
 <part name="U$2" library="lightmeter" deviceset="PIEZOBENDER165" device="" value="PIEZOBENDER165"/>
