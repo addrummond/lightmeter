@@ -122,11 +122,11 @@ def getBoardInfo(filename):
         if rot is not None:
             m = re.match(angle_re, rot)
             if not m:
-                raise Exception("Could not parse angle")
+                raise Exception("Could not parse angle '%s'" % rot)
             eangle = float(m.group(1))
 
         ourpads = [ ]
-        complayer = None # Assume that all components pads will be on same layer.
+        complayer = None # Assume that all component's pads will be on same layer.
         for p in ppads:
             if p.get("layer", None) is None:
                 raise Exception("Could not get pad layer")
