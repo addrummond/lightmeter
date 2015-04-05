@@ -4,7 +4,7 @@ from reportlab.lib import colors
 import math
 import re
 
-angle_re = re.compile(r"^R(\d+)$")
+angle_re = re.compile(r"^M?R(\d+)$")
 
 def rotate_coords(xy, angle):
     if angle is None:
