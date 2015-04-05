@@ -273,7 +273,7 @@ static const uint16_t FULL_STOP_ISOS[] = {
     6, 12, 25, 50, 100, 200, 400, 800, 1600,
     3200, 6400, 12500, 25000, 50000,
     // Divided by 100
-    125, 250, 500, 1000, 2000, 4000, 8000, 16000
+    1000, 2000, 4000, 8000, 16000
 };
 #define FULL_STOP_ISO_100_INDEX 13
 #define FULL_STOP_ISO_AT(i) ((i) > (FULL_STOP_ISO_100_INDEX) ? (((uint32_t)FULL_STOP_ISOS[i])*100) : ((uint32_t)FULL_STOP_ISOS[i]))
@@ -344,8 +344,8 @@ static uint_fast8_t iso_bcd_to_third_stops(uint8_t *digits, unsigned length)
 
     // It's not a full stop ISO, so now we want to find the closest third-stop
     // ISO. The 'fullstop' variable contains the value (in full stops) of the
-    // full stop ISO immediately below our given ISO. We now need to look at
-    // the third-stops one third and two-thirds below this one, and see which
+    // full stop ISO immediately above our given ISO. We now need to look at
+    // the third-stops one third and two-thirds above this one, and see which
     // of the three is the closest match.
     uint32_t nothirdsabove = FULL_STOP_ISO_AT(fullstop);
     uint_fast8_t fullstopm = fullstop*2;
@@ -366,11 +366,10 @@ static uint_fast8_t iso_bcd_to_third_stops(uint8_t *digits, unsigned length)
         return fullstop*3;
     }
     else {
-        uint_fast8_t t = fullstop*3;
-        if (diff2 <= diff1 && diff2 <= diff3)
-            return t + 1;
-        else
-            return t + 2;
+        uint_fast8_t t = fullstop*3 + 1;
+        if (! (diff2 <= diff1 && diff2 <= diff3))
+            ++t;
+        return t;
     }
 }
 
