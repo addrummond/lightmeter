@@ -344,17 +344,17 @@ static uint_fast8_t iso_bcd_to_third_stops(uint8_t *digits, unsigned length)
 
     // It's not a full stop ISO, so now we want to find the closest third-stop
     // ISO. The 'fullstop' variable contains the value (in full stops) of the
-    // full stop ISO immediately above our given ISO. We now need to look at
+    // full stop ISO immediately below our given ISO. We now need to look at
     // the third-stops one third and two-thirds below this one, and see which
     // of the three is the closest match.
-    uint32_t nothirdsbelow = FULL_STOP_ISO_AT(fullstop);
-    uint_fast8_t fullstopm = (fullstop-1)*2;
-    uint32_t onethirdbelow = THIRD_STOP_ISO_AT(fullstopm + 1);
-    uint32_t twothirdsbelow = THIRD_STOP_ISO_AT(fullstopm);
+    uint32_t nothirdsabove = FULL_STOP_ISO_AT(fullstop);
+    uint_fast8_t fullstopm = fullstop*2;
+    uint32_t onethirdabove = THIRD_STOP_ISO_AT(fullstopm);
+    uint32_t twothirdsabove = THIRD_STOP_ISO_AT(fullstopm+1);
 
-    int32_t diff1 = nothirdsbelow - isonum;
-    int32_t diff2 = onethirdbelow - isonum;
-    int32_t diff3 = twothirdsbelow - isonum;
+    int32_t diff1 = nothirdsabove - isonum;
+    int32_t diff2 = onethirdabove - isonum;
+    int32_t diff3 = twothirdsabove - isonum;
     if (diff1 < 0)
         diff1 = -diff1;
     if (diff2 < 0)
@@ -366,11 +366,11 @@ static uint_fast8_t iso_bcd_to_third_stops(uint8_t *digits, unsigned length)
         return fullstop*3;
     }
     else {
-        uint_fast8_t t = (fullstop-1)*3;
+        uint_fast8_t t = fullstop*3;
         if (diff2 <= diff1 && diff2 <= diff3)
-            return t + 2;
-        else
             return t + 1;
+        else
+            return t + 2;
     }
 }
 
