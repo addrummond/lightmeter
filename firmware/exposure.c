@@ -881,8 +881,9 @@ int main()
         1,   0, 0, 0, 0, 0, 0, 6,  0
     };
 
+    printf("Testing iso_bcd_to_third_stops\n");
     int i;
-    for (i = 0; i < sizeof(isobcds); i += 9) {
+    for (i = sizeof(isobcds) - 9; i >= 0; i -= 9) {
         int length = isobcds[i];
         int offset = i+8-length;
         uint8_t *isodigits = isobcds+offset;
