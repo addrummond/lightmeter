@@ -37,7 +37,7 @@ int32_t goetzel(const uint16_t *samples, unsigned length, int32_t coeff)
 #ifdef GOETZEL_NORMALIZE
         total_power += MUL(samplesi,samplesi);
 #endif
-        int32_t s = samplesi+ MUL(coeff, prev1) - prev2;// - (4096.0/2.0);
+        int32_t s = samplesi + MUL(coeff, prev1) - prev2;
         prev2 = prev1;
         prev1 = s;
     }
