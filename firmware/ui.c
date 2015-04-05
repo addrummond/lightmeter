@@ -1,4 +1,5 @@
 #include <ui.h>
+#include <bcd.h>
 #include <display.h>
 #include <bitmaps/bitmaps.h>
 #include <exposure.h>
@@ -432,29 +433,23 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
             func_state->ev_length = 2;
             func_state->ev_chars[0] = CHAR_8PX_MINUS_O;
             func_state->ev_chars[1] = CHAR_8PX_0_O + CHAR_OFFSET_8PX(5 - (ev >> 3));
-            func_state->ev_chars_ = func_state->ev_chars;
         }
         else {
-            //func_state->ev_length = 2;
-            //func_state->ev_chars[0] = CHAR_8PX_7_O;
-            //func_state->ev_chars[1] = CHAR_8PX_8_O;
-            //func_state->ev_chars_ = func_state->ev_chars;
-            func_state->ev_chars_ = uint32_to_bcd((ev >> 3) - 5, func_state->ev_chars, 3);
-            func_state->ev_length = bcd_length_after_op(func_state->ev_chars, 3, func_state->ev_chars_);
+            func_state->ev_length = uint32_to_bcd((ev >> 3) - 5, func_state->ev_chars);
             uint8_t i;
             for (i = 0; i < func_state->ev_length; ++i)
-                func_state->ev_chars_[i] = CHAR_OFFSET_8PX(func_state->ev_chars_[i]) + CHAR_8PX_0_O;
+                func_state->ev_chars[i] = CHAR_OFFSET_8PX(func_state->ev_chars[i]) + CHAR_8PX_0_O;
         }
 
         uint8_t l = func_state->ev_length;
         if (ms.precision_mode == PRECISION_MODE_EIGHTH && eighths != 0 && eighths != 8) {
-            func_state->ev_chars_[l++] = CHAR_8PX_PLUS_O;
-            write_eighths_8px_chars(func_state->ev_chars_ + l, eighths);
+            func_state->ev_chars[l++] = CHAR_8PX_PLUS_O;
+            write_eighths_8px_chars(func_state->ev_chars + l, eighths);
             l += 3;
         }
         else if (ms.precision_mode == PRECISION_MODE_TENTH && tenths != 0 && tenths != 10) {
-            func_state->ev_chars_[l++] = CHAR_8PX_PERIOD_O;
-            func_state->ev_chars_[l++] = CHAR_OFFSET_8PX(tenths) + CHAR_8PX_0_O;
+            func_state->ev_chars[l++] = CHAR_8PX_PERIOD_O;
+            func_state->ev_chars[l++] = CHAR_OFFSET_8PX(tenths) + CHAR_8PX_0_O;
         }
 
         func_state->ev_length = l;
@@ -512,7 +507,7 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
         for (off = 0, j = x; j > 18; j -= 6, ++off);
 
         if (off < func_state->ev_length) {
-            uint8_t co = func_state->ev_chars_[off];
+            uint8_t co = func_state->ev_chars[off];
             display_bwrite_8px_char(CHAR_PIXELS_8PX + co, out, pages_per_col, 0);
         }
     }

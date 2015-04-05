@@ -4,6 +4,7 @@
 // State which is to be preserved between on/off cycles is in meter_state_t.
 // Transient state is in transient_meter_state_t.
 
+#include <stdint.h>
 #include <stdbool.h>
 #include <exposure.h>
 

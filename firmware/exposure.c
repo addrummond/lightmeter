@@ -287,31 +287,6 @@ static const uint16_t THIRD_STOP_ISOS[] = {
 #define THIRD_STOP_ISO_100_INDEX 26
 #define THIRD_STOP_ISO_AT(i) ((i) > (THIRD_STOP_ISO_100_INDEX) ? (((uint32_t)THIRD_STOP_ISOS[i])*100) : ((uint32_t)THIRD_STOP_ISOS[i]))
 
-static unsigned uint32_to_bcd(uint32_t n, uint8_t *digits)
-{
-    uint32_t divisor = 10, l = 1;
-    while (n / divisor > 0)
-        ++l, divisor *= 10;
-
-    unsigned j = l - 1;
-    uint32_t d = 1;
-    do {
-        digits[j] = ((n/d) % 10);
-        d *= 10;
-    } while (j-- > 0);
-
-    return l;
-}
-
-static uint32_t bcd_to_uint32(uint8_t *digits, unsigned length)
-{
-    uint32_t total = 0;
-    int i, m;
-    for (i = length-1, m = 1; i >= 0; --i, m *= 10)
-        total += digits[i]*m;
-    return total;
-}
-
 unsigned iso_in_third_stops_to_bcd(uint_fast8_t iso, uint8_t *digits)
 {
     uint_fast8_t whole = iso / 3;
@@ -326,7 +301,7 @@ unsigned iso_in_third_stops_to_bcd(uint_fast8_t iso, uint8_t *digits)
     return uint32_to_bcd(isonum, digits);
 }
 
-static uint_fast8_t iso_bcd_to_third_stops(uint8_t *digits, unsigned length)
+uint_fast8_t iso_bcd_to_third_stops(uint8_t *digits, unsigned length)
 {
     uint32_t isonum = bcd_to_uint32(digits, length);
 

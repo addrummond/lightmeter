@@ -37,7 +37,6 @@ typedef struct ui_bttm_status_line_state {
     // ISO.
     uint8_t ev_chars[7]; // Max length example: "-10 1/8"
     uint8_t ev_length;
-    uint8_t *ev_chars_;
 
     uint8_t expcomp_chars[7]; // Max length example: "+14 1/8"
     uint8_t expcomp_chars_length;

@@ -109,6 +109,7 @@ ev_with_fracs_t z_given_x_y_ev(ev_with_fracs_t given_x, ev_with_fracs_t given_y,
 #define iso_given_aperture_shutter_speed_ev(a,b,c) z_given_x_y_ev((a),(b),(c),2)
 
 unsigned iso_in_third_stops_to_bcd(uint_fast8_t iso, uint8_t *digits);
+uint_fast8_t iso_bcd_to_third_stops(uint8_t *digits, unsigned length);
 
 ev_with_fracs_t get_ev100_at_voltage(uint_fast8_t voltage, uint_fast8_t op_amp_resistor_stage);
 uint_fast8_t convert_from_reference_voltage(uint_fast16_t adc_out);
