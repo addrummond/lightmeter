@@ -104,7 +104,6 @@ void debug_print_bcd(uint8_t *digits, uint_fast8_t length)
     printf("%s", digits2);
 }
 
-
 static void bcd_to_string_fp_test()
 {
     uint8_t digits[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0  };
