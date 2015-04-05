@@ -13,6 +13,31 @@
 #include <string.h>
 #endif
 
+unsigned uint32_to_bcd(uint32_t n, uint8_t *digits)
+{
+    uint32_t divisor = 10, l = 1;
+    while (n / divisor > 0)
+        ++l, divisor *= 10;
+
+    unsigned j = l - 1;
+    uint32_t d = 1;
+    do {
+        digits[j] = ((n/d) % 10);
+        d *= 10;
+    } while (j-- > 0);
+
+    return l;
+}
+
+uint32_t bcd_to_uint32(uint8_t *digits, unsigned length)
+{
+    uint32_t total = 0;
+    int i, m;
+    for (i = length-1, m = 1; i >= 0; --i, m *= 10)
+        total += digits[i]*m;
+    return total;
+}
+
 // 'digits' and 'dest' may point to same buffer.
 unsigned bcd_to_string_fp(uint8_t *digits, uint_fast8_t length, uint8_t *dest, uint_fast8_t sigfigs, uint_fast8_t dps)
 {
