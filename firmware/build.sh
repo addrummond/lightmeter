@@ -74,4 +74,4 @@ OBJS="$OBJS goetzel.o"
 $CC $CFLAGS -c main.c -o main.o
 OBJS="$OBJS main.o"
 
-$CC $CFLAGS -Wl,--gc-sections -T ./stm/STM32F030R8_FLASH.ld $OBJS -o out.elf
+$CC $CFLAGS -Wl,--gc-sections -T ./stm/STM32F030K6_FLASH.ld $OBJS -o out.elf
