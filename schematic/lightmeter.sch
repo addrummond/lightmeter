@@ -9465,9 +9465,9 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <wire x1="1.143" y1="0.635" x2="-1.143" y2="0.635" width="0.127" layer="21"/>
 </package>
 <package name="SOT-523-3">
-<smd name="P$1" x="0" y="0.6477" dx="0.3556" dy="0.508" layer="1"/>
-<smd name="P$2" x="-0.510540625" y="-0.6477" dx="0.3556" dy="0.508" layer="1"/>
-<smd name="P$3" x="0.510540625" y="-0.6477" dx="0.3556" dy="0.508" layer="1"/>
+<smd name="P$1" x="0" y="0.7747" dx="0.5334" dy="0.762" layer="1"/>
+<smd name="P$2" x="-0.510540625" y="-0.7747" dx="0.5334" dy="0.762" layer="1"/>
+<smd name="P$3" x="0.510540625" y="-0.7747" dx="0.5334" dy="0.762" layer="1"/>
 <wire x1="-0.8" y1="0.38" x2="0.8" y2="0.38" width="0.127" layer="21"/>
 <wire x1="-0.8" y1="-0.38" x2="0.8" y2="-0.38" width="0.127" layer="21"/>
 <wire x1="-0.8" y1="0.38" x2="-0.8" y2="-0.38" width="0.127" layer="21"/>
