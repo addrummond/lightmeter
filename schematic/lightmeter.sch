@@ -11754,8 +11754,8 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="GND4" library="supply1" deviceset="GND" device=""/>
 <part name="C8" library="rcl" deviceset="C-EU" device="C0603" value="u1"/>
 <part name="GND16" library="supply1" deviceset="GND" device=""/>
-<part name="R4" library="resistor" deviceset="R-EU_" device="R0402" value="1k"/>
-<part name="R2" library="resistor" deviceset="R-EU_" device="R0402" value="1k"/>
+<part name="R4" library="resistor" deviceset="R-EU_" device="R0402" value="6k49"/>
+<part name="R2" library="resistor" deviceset="R-EU_" device="R0402" value="6k49"/>
 <part name="C9" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
 <part name="U1" library="lightmeter" deviceset="USB-AB" device="USB-AB-MICRO-MIDMOUNT"/>
 <part name="GND24" library="supply1" deviceset="GND" device=""/>
