@@ -11780,7 +11780,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="C20" library="rcl" deviceset="C-EU" device="C0603" value="1u"/>
 <part name="GND27" library="supply1" deviceset="GND" device=""/>
 <part name="GND35" library="supply1" deviceset="GND" device=""/>
-<part name="C21" library="rcl" deviceset="C-EU" device="C0402" value="1u"/>
+<part name="C21" library="rcl" deviceset="C-EU" device="C0603" value="1u"/>
 <part name="U$3" library="lightmeter" deviceset="LIBAT" device=""/>
 <part name="R14" library="resistor" deviceset="R-EU_" device="R0402" value="510k"/>
 <part name="R15" library="resistor" deviceset="R-EU_" device="R0402" value="510k"/>
@@ -11811,8 +11811,8 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="C19" library="rcl" deviceset="C-EU" device="C0402" value="4u7"/>
 <part name="C13" library="lightmeter" deviceset="C" device="GAP0402" value="u01"/>
 <part name="C14" library="lightmeter" deviceset="C" device="GAP0402" value="1u"/>
-<part name="C18" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
-<part name="C24" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
+<part name="C18" library="rcl" deviceset="C-EU" device="C0603" value="u1"/>
+<part name="C24" library="rcl" deviceset="C-EU" device="C0603" value="u1"/>
 <part name="R8" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
 <part name="R11" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
 <part name="GND2" library="supply1" deviceset="GND" device=""/>
