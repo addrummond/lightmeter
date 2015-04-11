@@ -9543,6 +9543,12 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <pad name="P$3" x="2.99999375" y="-2.2733" drill="0.7366" diameter="0.7366" shape="octagon"/>
 <pad name="P$4" x="2.99999375" y="2.2733" drill="0.7366" diameter="0.7366" shape="octagon"/>
 </package>
+<package name="SC-79">
+<smd name="P$1" x="-0.675" y="0" dx="0.5" dy="0.5" layer="1"/>
+<smd name="P$2" x="0.675" y="0" dx="0.5" dy="0.5" layer="1"/>
+<wire x1="-1.27" y1="0.635" x2="-1.27" y2="-0.635" width="0.127" layer="21"/>
+<text x="-2.54" y="1.27" size="1.27" layer="25">&gt;NAME</text>
+</package>
 </packages>
 <symbols>
 <symbol name="P-MOS">
@@ -10247,6 +10253,15 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <connects>
 <connect gate="G$1" pin="A" pad="P$1"/>
 <connect gate="G$1" pin="C" pad="P$2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="SC-79" package="SC-79">
+<connects>
+<connect gate="G$1" pin="A" pad="P$2"/>
+<connect gate="G$1" pin="C" pad="P$1"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -11785,8 +11800,8 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="S$3" library="lightmeter" deviceset="PTS540" device=""/>
 <part name="S$1" library="lightmeter" deviceset="PTS540" device=""/>
 <part name="S$2" library="lightmeter" deviceset="PTS540" device=""/>
-<part name="D2" library="lightmeter" deviceset="SCHOTTKY-DIODE" device="X3-DFN0603-2"/>
-<part name="D3" library="lightmeter" deviceset="SCHOTTKY-DIODE" device="X3-DFN0603-2"/>
+<part name="D2" library="lightmeter" deviceset="SCHOTTKY-DIODE" device="SC-79"/>
+<part name="D3" library="lightmeter" deviceset="SCHOTTKY-DIODE" device="SC-79"/>
 <part name="J4" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
 <part name="J6" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
 <part name="J3" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
