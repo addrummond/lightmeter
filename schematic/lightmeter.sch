@@ -8243,10 +8243,10 @@ package type OT</description>
 <text x="1.397" y="-1.27" size="0.508" layer="25" rot="R90">&gt;NAME</text>
 </package>
 <package name="PTS540BTM">
-<smd name="P$1" x="-1.55" y="1.375" dx="0.6" dy="0.65" layer="16"/>
-<smd name="P$2" x="1.55" y="1.375" dx="0.6" dy="0.65" layer="16"/>
-<smd name="P$3" x="-1.55" y="-1.375" dx="0.6" dy="0.65" layer="16"/>
-<smd name="P$4" x="1.55" y="-1.375" dx="0.6" dy="0.65" layer="16"/>
+<smd name="P$1" x="-1.55" y="1.4766" dx="0.635" dy="1.016" layer="16"/>
+<smd name="P$2" x="1.55" y="1.4766" dx="0.635" dy="1.016" layer="16"/>
+<smd name="P$3" x="-1.55" y="-1.3496" dx="0.635" dy="0.762" layer="16"/>
+<smd name="P$4" x="1.55" y="-1.3496" dx="0.635" dy="0.762" layer="16"/>
 <wire x1="-0.9" y1="1.651" x2="0.9" y2="1.651" width="0.127" layer="22"/>
 <wire x1="-0.9" y1="-1.651" x2="0.9" y2="-1.651" width="0.127" layer="22"/>
 <wire x1="-1.8542" y1="-0.9" x2="-1.8542" y2="0.9" width="0.127" layer="22"/>
