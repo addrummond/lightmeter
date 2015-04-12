@@ -4,10 +4,12 @@
 #include <stdint.h>
 #include <state.h>
 
+#define METER_NUMBER_OF_INTEGRATING_STAGES 4
+
 void meter_init();
 void meter_deinit();
 void meter_set_mode(meter_mode_t mode);
 uint32_t meter_take_raw_nonintegrated_reading();
-uint32_t meter_take_raw_integrated_reading(uint32_t cycles);
+void meter_take_raw_integrated_readings(uint32_t cycles, uint16_t *outputs);
 
 #endif

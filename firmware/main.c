@@ -75,10 +75,16 @@ static void test_meter()
 {
     meter_init();
     meter_set_mode(METER_MODE_INCIDENT);
+    uint16_t outputs[METER_NUMBER_OF_INTEGRATING_STAGES];
     for (;;) {
-        uint32_t v = meter_take_raw_integrated_reading(500);
+        meter_take_raw_integrated_readings(500, (uint16_t*)&outputs);
         debugging_writec("V: ");
-        debugging_write_uint32(v);
+        unsigned i;
+        for (i = 0; i < METER_NUMBER_OF_INTEGRATING_STAGES; ++i) {
+            if (i != 0)
+                debugging_writec(", ");
+            debugging_write_uint32(outputs[i]);
+        }
         debugging_writec("\n");
     }
 }

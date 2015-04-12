@@ -72,24 +72,44 @@ uint32_t meter_take_raw_nonintegrated_reading()
     return ADC_GetConversionValue(ADC1);
 }
 
-uint32_t meter_take_raw_integrated_reading(uint32_t cycles)
+static const uint16_t STAGES[] = {
+    480/400, 16320/400, 32160/400, 48000/400
+};
+// Check that number of stages defined in header file is correct.
+//static const uint8_t test_dummy[(METER_NUMBER_OF_INTEGRATING_STAGES == sizeof(STAGES)/sizeof(STAGES[0]))-1];
+
+void meter_take_raw_integrated_readings(uint32_t cycles, uint16_t *outputs)
 {
+    uint32_t ends[sizeof(STAGES)/sizeof(STAGES[0])];
+
     while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
+
     // Close switch, discharge integrating cap.
     GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 0);
     unsigned i;
     for (i = 0; i < 1000; ++i); // Leave some time for cap to discharge.
-    // Open the switch, then count a few cycles while cap charges.
+
+    // Open the switch.
     GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 1);
-    uint32_t end = SysTick->VAL - cycles;
-    while (SysTick->VAL > end);
-    // Read voltage across cap.
-    ADC_StartOfConversion(ADC1);
-    while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
-    uint32_t v = ADC_GetConversionValue(ADC1);
+
+    // Determine value of SysTick for each endpoint.
+    uint32_t st = SysTick->VAL;
+    for (i = 0; i < sizeof(STAGES)/sizeof(STAGES[0]); ++i)
+        ends[i] = st - STAGES[i];
+
+    // Read cap voltage at each stage.
+    for (i = 0; i < sizeof(STAGES)/sizeof(STAGES[0]);) {
+        if (SysTick->VAL <= ends[i]) {
+            ADC_StartOfConversion(ADC1);
+            while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
+            outputs[i] = ADC_GetConversionValue(ADC1);
+
+            ++i;
+        }
+    }
+
     // Close the switch again.
     GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 0);
-    return v;
 }
 
 void meter_deinit()
