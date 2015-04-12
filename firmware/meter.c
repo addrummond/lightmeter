@@ -76,7 +76,7 @@ static const uint16_t STAGES[] = {
     480/400, 16320/400, 32160/400, 48000/400
 };
 // Check that number of stages defined in header file is correct.
-//static const uint8_t test_dummy[(METER_NUMBER_OF_INTEGRATING_STAGES == sizeof(STAGES)/sizeof(STAGES[0]))-1];
+static const uint8_t STAGES_test_dummy[(METER_NUMBER_OF_INTEGRATING_STAGES == sizeof(STAGES)/sizeof(STAGES[0]))-1];
 
 void meter_take_raw_integrated_readings(uint32_t cycles, uint16_t *outputs)
 {
