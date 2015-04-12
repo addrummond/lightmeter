@@ -100,5 +100,7 @@ MEASURE2 --|                       |-- VDD
 
 #define DISPLAY_RESET_GPIO_PORT  GPIOA
 #define DISPLAY_RESET_PIN        GPIO_Pin_8
+#define DISPLAY_POWER_GPIO_PORT  GPIOA
+#define DISPLAY_POWER_PIN        GPIO_Pin_1
 
 #endif

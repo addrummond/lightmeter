@@ -10,8 +10,7 @@
 
 // Looking at LM75 data sheet and example I2C code indicates that 7-bit address
 // should be left aligned.
-#define DISPLAY_I2C_ADDR (0b0111101 << 1)
-#define FLAG_TIMEOUT     ((uint32_t)0x1000)
+#define DISPLAY_I2C_ADDR (0b0111100 << 1)
 
 static void tof(const char *msg, uint32_t length)
 {
@@ -101,6 +100,17 @@ void display_reset()
 
 void display_init()
 {
+    // Turn on power MOSFET for display.
+    GPIO_InitTypeDef gpi;
+    gpi.GPIO_Pin = DISPLAY_POWER_PIN;
+    gpi.GPIO_Mode = GPIO_Mode_OUT;
+    gpi.GPIO_Speed = GPIO_Speed_Level_1;
+    gpi.GPIO_OType = GPIO_OType_PP;
+    gpi.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_Init(DISPLAY_POWER_GPIO_PORT, &gpi);
+    // It's a P-channel MOSFET so we set the pin low to turn it on.
+    GPIO_WriteBit(DISPLAY_POWER_GPIO_PORT, DISPLAY_POWER_PIN, 0);
+
     display_reset();
 
     // Display initialization sequence. No idea what most of this does.

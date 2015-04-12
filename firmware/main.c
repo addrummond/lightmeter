@@ -30,6 +30,7 @@ int main()
     debugging_write_uint32(before-after+i);
     debugging_writec("\n");
 
+#if 0
     piezo_mic_init();
     piezo_hfsdp_listen_for_masters_init();
     debugging_writec("Init heard!\n");
@@ -49,6 +50,7 @@ int main()
     }
 
     debugging_writec("Piezo init complete\n");
+#endif
 
     i2c_init();
     display_init();

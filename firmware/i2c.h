@@ -3,6 +3,8 @@
 
 void i2c_init(void);
 
+#define FLAG_TIMEOUT     ((uint32_t)0x1000)
+
 #define I2C_WAIT_ON_FLAG_(tof, flag, msg, op, ret, brk)     \
 do {                                                        \
     uint32_t to = FLAG_TIMEOUT;                             \
