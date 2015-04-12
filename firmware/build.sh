@@ -50,6 +50,8 @@ $CC $CFLAGS -c mymemset.c -o mymemset.o
 OBJS="$OBJS mymemset.o"
 $CC $CFLAGS -c exposure.c -o exposure.o
 OBJS="$OBJS exposure.o"
+$CC $CFLAGS -c meter.c -o meter.o
+OBJS="$OBJS meter.o"
 $CC $CFLAGS -c bcd.c -o bcd.o
 OBJS="$OBJS bcd.o"
 $CC $CFLAGS -c i2c.c -o i2c.o
