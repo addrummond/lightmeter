@@ -78,7 +78,7 @@ static const uint16_t STAGES[] = {
 // Check that number of stages defined in header file is correct.
 static const uint8_t STAGES_test_dummy[(METER_NUMBER_OF_INTEGRATING_STAGES == sizeof(STAGES)/sizeof(STAGES[0]))-1];
 
-void meter_take_raw_integrated_readings(uint32_t cycles, uint16_t *outputs)
+void meter_take_raw_integrated_readings(uint16_t *outputs)
 {
     uint32_t ends[sizeof(STAGES)/sizeof(STAGES[0])];
 
@@ -110,6 +110,31 @@ void meter_take_raw_integrated_readings(uint32_t cycles, uint16_t *outputs)
 
     // Close the switch again.
     GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 0);
+}
+
+void meter_take_averaged_raw_integrated_readings(uint16_t *outputs, unsigned n)
+{
+    uint32_t outputs_total[METER_NUMBER_OF_INTEGRATING_STAGES];
+
+    unsigned i;
+    for (i = 0; i < METER_NUMBER_OF_INTEGRATING_STAGES; ++i)
+        outputs_total[i] = 0;
+    for (i = 0; i < n; ++i) {
+        meter_take_raw_integrated_readings(outputs);
+        unsigned j;
+        for (j = 0; j < METER_NUMBER_OF_INTEGRATING_STAGES; ++j) {
+            outputs_total[j] += outputs[j] << 4;
+        }
+    }
+    for (i = 0; i < METER_NUMBER_OF_INTEGRATING_STAGES; ++i) {
+        outputs_total[i] /= n;
+        if ((outputs_total[i] & 0b1111) >= 8)
+            outputs_total[i] += 8;
+        outputs_total[i] >>= 4;
+    }
+
+    for (i = 0; i < METER_NUMBER_OF_INTEGRATING_STAGES; ++i)
+        outputs[i] = outputs_total[i];
 }
 
 void meter_deinit()

@@ -77,7 +77,7 @@ static void test_meter()
     meter_set_mode(METER_MODE_INCIDENT);
     uint16_t outputs[METER_NUMBER_OF_INTEGRATING_STAGES];
     for (;;) {
-        meter_take_raw_integrated_readings(500, (uint16_t*)&outputs);
+        meter_take_averaged_raw_integrated_readings(outputs, 10);
         debugging_writec("V: ");
         unsigned i;
         for (i = 0; i < METER_NUMBER_OF_INTEGRATING_STAGES; ++i) {
