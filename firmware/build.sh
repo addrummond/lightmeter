@@ -56,6 +56,8 @@ $CC $CFLAGS -c i2c.c -o i2c.o
 OBJS="$OBJS i2c.o"
 $CC $CFLAGS -c state.c -o state.o
 OBJS="$OBJS state.o"
+$CC $CFLAGS -c accel.c -o accel.o
+OBJS="$OBJS accel.o"
 $CC $CFLAGS -c display.c -o display.o
 OBJS="$OBJS display.o"
 $CC $CFLAGS -c piezo.c -o piezo.o
@@ -75,3 +77,6 @@ $CC $CFLAGS -c main.c -o main.o
 OBJS="$OBJS main.o"
 
 $CC $CFLAGS -Wl,--gc-sections -T ./stm/STM32F030K6_FLASH.ld $OBJS -o out.elf
+
+arm-none-eabi-objcopy -O binary out.elf out.bin
+cp out.bin /tmp
