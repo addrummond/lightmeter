@@ -5,37 +5,23 @@
 #include <i2c.h>
 #include <piezo.h>
 #include <display.h>
+#include <accel.h>
+#include <meter.h>
 #include <ui.h>
 #include <state.h>
 #include <debugging.h>
 #include <piezo.h>
 
-int main()
+static void test_mic()
 {
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOB, ENABLE);
-
-    debugging_writec("Hello world\n");
-    debugging_writec("System core clock: ");
-    debugging_write_uint32(SystemCoreClock);
-    debugging_writec("\n");
-
-    SysTick->LOAD = 16777215;
-    SysTick->VAL = 0;
-    SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
-    uint32_t before = SysTick->VAL;
-    int32_t i = 1;
-    --i;
-    uint32_t after = SysTick->VAL;
-    debugging_writec("time ");
-    debugging_write_uint32(before-after+i);
-    debugging_writec("\n");
-
-#if 0
     piezo_mic_init();
     piezo_hfsdp_listen_for_masters_init();
     debugging_writec("Init heard!\n");
     for (;;);
+}
 
+static void test_speaker()
+{
     piezo_out_init();
     piezo_set_period(1, (SystemCoreClock / 1000) - 1);
     piezo_set_period(2, (SystemCoreClock / 1500) - 1);
@@ -50,16 +36,12 @@ int main()
     }
 
     debugging_writec("Piezo init complete\n");
-#endif
+}
 
+static void test_display()
+{
     i2c_init();
     display_init();
-
-    //
-    // Temporary test code.
-    //
-    // Sets bogus UI state to show some text.
-    //
 
     display_clear();
 
@@ -87,6 +69,41 @@ int main()
 #undef gms
 #undef tms
     ui_show_interface();
+}
+
+static void test_meter()
+{
+    meter_init();
+    meter_set_mode(METER_MODE_INCIDENT);
+    for (;;) {
+        uint32_t v = meter_take_raw_nonintegrated_reading();
+        debugging_writec("V: ");
+        debugging_write_uint32(v);
+        debugging_writec("\n");
+    }
+}
+
+int main()
+{
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOB, ENABLE);
+
+    debugging_writec("Hello world\n");
+    debugging_writec("System core clock: ");
+    debugging_write_uint32(SystemCoreClock);
+    debugging_writec("\n");
+
+    SysTick->LOAD = 16777215;
+    SysTick->VAL = 0;
+    SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
+    uint32_t before = SysTick->VAL;
+    int32_t i = 1;
+    --i;
+    uint32_t after = SysTick->VAL;
+    debugging_writec("time ");
+    debugging_write_uint32(before-after+i);
+    debugging_writec("\n");
+
+    test_meter();
 
     for (;;);
 }

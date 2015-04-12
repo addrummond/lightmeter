@@ -11848,10 +11848,10 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <text x="30.48" y="66.04" size="1.778" layer="91">Acellerometer </text>
 <text x="-114.3" y="-50.8" size="1.778" layer="91">Linear regulator for ADC voltage supply (outputs 3.3V)</text>
 <text x="-111.76" y="-134.62" size="1.778" layer="91">Voltage divider for measuring battery voltage</text>
-<text x="175.26" y="-48.26" size="1.778" layer="91">REFL,NOND</text>
-<text x="177.8" y="-76.2" size="1.778" layer="91">REFL,ND</text>
-<text x="177.8" y="-101.6" size="1.778" layer="91">INC,NOND</text>
-<text x="177.8" y="-127" size="1.778" layer="91">INC,ND</text>
+<text x="175.26" y="-48.26" size="1.778" layer="91">INC,NOND</text>
+<text x="177.8" y="-76.2" size="1.778" layer="91">INC,ND</text>
+<text x="177.8" y="-101.6" size="1.778" layer="91">REFL,NOND</text>
+<text x="177.8" y="-127" size="1.778" layer="91">REFL,ND</text>
 <text x="101.6" y="38.1" size="1.778" layer="91">5V breakdown</text>
 </plain>
 <instances>

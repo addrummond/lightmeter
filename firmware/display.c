@@ -12,13 +12,6 @@
 // should be left aligned.
 #define DISPLAY_I2C_ADDR (0b0111100 << 1)
 
-static void tof(const char *msg, uint32_t length)
-{
-    debugging_writec("I2C Timeout: ");
-    debugging_write(msg, length);
-    debugging_writec("\n");
-}
-
 // We send data in 32-byte chunks to reduce I2C overheads to acceptable level.
 
 static uint8_t write_buffer[32];
@@ -29,16 +22,16 @@ static void flush_write_buffer()
     if (write_buffer_i == 0)
         return;
 
-    I2C_WAIT_ON_FLAG_NO_RESET(tof, I2C_ISR_BUSY, "flush_write_buffer 1");
+    I2C_WAIT_ON_FLAG_NO_RESET(I2C_ISR_BUSY, "flush_write_buffer 1");
     I2C_TransferHandling(I2C_I2C, DISPLAY_I2C_ADDR, write_buffer_i+1, I2C_AutoEnd_Mode, I2C_Generate_Start_Write);
-    I2C_WAIT_ON_FLAG_RESET(tof, I2C_ISR_TXIS, "flush_write_buffer 2");
+    I2C_WAIT_ON_FLAG_RESET(I2C_ISR_TXIS, "flush_write_buffer 2");
     I2C_SendData(I2C_I2C, 0b01000000); // Control byte.
     size_t i;
     for (i = 0; i < write_buffer_i; ++i) {
-        I2C_WAIT_ON_FLAG_RESET(tof, I2C_ISR_TXIS, "flush_write_buffer 3");
+        I2C_WAIT_ON_FLAG_RESET(I2C_ISR_TXIS, "flush_write_buffer 3");
         I2C_SendData(I2C_I2C, write_buffer[i]);
     }
-    I2C_WAIT_ON_FLAG_RESET(tof, I2C_ISR_STOPF, "flush_write_buffer 4");
+    I2C_WAIT_ON_FLAG_RESET(I2C_ISR_STOPF, "flush_write_buffer 4");
 }
 
 void display_write_data_start()
@@ -63,19 +56,19 @@ void display_write_byte(uint8_t b)
 
 void display_command(uint8_t c)
 {
-    I2C_WAIT_ON_FLAG_NO_RESET(tof, I2C_ISR_BUSY, "display_command 1");
+    I2C_WAIT_ON_FLAG_NO_RESET(I2C_ISR_BUSY, "display_command 1");
     I2C_TransferHandling(I2C_I2C, DISPLAY_I2C_ADDR, 2, I2C_AutoEnd_Mode, I2C_Generate_Start_Write);
-    I2C_WAIT_ON_FLAG_RESET(tof, I2C_ISR_TXIS, "display_command 2");
+    I2C_WAIT_ON_FLAG_RESET(I2C_ISR_TXIS, "display_command 2");
     // Send control byte.
     I2C_SendData(
         I2C_I2C,
           (1 << 7) // Not just data bytes
         | (0 << 6) // Command (not data)
     );
-    I2C_WAIT_ON_FLAG_RESET(tof, I2C_ISR_TXIS, "display_command 3");
+    I2C_WAIT_ON_FLAG_RESET(I2C_ISR_TXIS, "display_command 3");
     // Send the command byte itself (finally!)
     I2C_SendData(I2C_I2C, c);
-    I2C_WAIT_ON_FLAG_RESET(tof, I2C_ISR_STOPF, "display_command 4");
+    I2C_WAIT_ON_FLAG_RESET(I2C_ISR_STOPF, "display_command 4");
 }
 
 void display_reset()

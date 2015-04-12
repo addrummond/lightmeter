@@ -5,9 +5,7 @@
 
 uint8_t accel_read_register(uint8_t regaddr);
 void accel_write_register(uint8_t regaddr, uint8_t value);
-void accel_setup(void);
-
-#define ACCEL_I2C_ADDRESS    (0x1D << 1)
+void accel_init(void);
 
 // Register addresses for accel IC (see table 12 on p. 20 of datasheet).
 #define ACCEL_REG_STATUS          0x00

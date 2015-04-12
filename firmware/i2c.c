@@ -4,6 +4,7 @@
 #include <stm32f0xx_rcc.h>
 
 #include <deviceconfig.h>
+#include <debugging.h>
 
 // I2C is being clocked by HSI and HSI is 8MHz.
 //
@@ -81,4 +82,11 @@ void i2c_init()
 
     I2C_Init(I2C_I2C, &i2ci);
     I2C_Cmd(I2C_I2C, ENABLE);
+}
+
+void i2c_log_timeout(const char *msg, uint32_t length)
+{
+    debugging_writec("I2C Timeout: ");
+    debugging_write(msg, length);
+    debugging_writec("\n");
 }
