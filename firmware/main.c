@@ -76,7 +76,7 @@ static void test_meter()
     meter_init();
     meter_set_mode(METER_MODE_INCIDENT);
     for (;;) {
-        uint32_t v = meter_take_raw_nonintegrated_reading();
+        uint32_t v = meter_take_raw_integrated_reading(500);
         debugging_writec("V: ");
         debugging_write_uint32(v);
         debugging_writec("\n");

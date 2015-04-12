@@ -7,6 +7,9 @@
 #include <deviceconfig.h>
 #include <meter.h>
 
+#define STM32_CLOCK_HZ 480000000UL
+#define STM32_CYCLES_PER_LOOP 6 // This will need tweaking or calculating
+
 void meter_init()
 {
     GPIO_InitTypeDef gpi;
@@ -48,7 +51,7 @@ void meter_init()
     ADC_Init(ADC1, &adci);
 
     // TODO: config to use both channels.
-    ADC_ChannelConfig(ADC1, ADC_Channel_0, ADC_SampleTime_239_5Cycles);
+    ADC_ChannelConfig(ADC1, ADC_Channel_0, ADC_SampleTime_13_5Cycles);
     ADC_GetCalibrationFactor(ADC1);
 
     ADC_Cmd(ADC1, ENABLE);
@@ -65,8 +68,28 @@ uint32_t meter_take_raw_nonintegrated_reading()
 
     while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
     ADC_StartOfConversion(ADC1);
-    while(ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
+    while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
     return ADC_GetConversionValue(ADC1);
+}
+
+uint32_t meter_take_raw_integrated_reading(uint32_t cycles)
+{
+    while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
+    // Close switch, discharge integrating cap.
+    GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 0);
+    unsigned i;
+    for (i = 0; i < 1000; ++i); // Leave some time for cap to discharge.
+    // Open the switch, then count a few cycles while cap charges.
+    GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 1);
+    uint32_t end = SysTick->VAL - cycles;
+    while (SysTick->VAL > end);
+    // Read voltage across cap.
+    ADC_StartOfConversion(ADC1);
+    while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
+    uint32_t v = ADC_GetConversionValue(ADC1);
+    // Close the switch again.
+    GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 0);
+    return v;
 }
 
 void meter_deinit()
