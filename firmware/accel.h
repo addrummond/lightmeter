@@ -1,12 +1,13 @@
 #ifndef ACCEL_H
 #define ACCEL_H
 
+#include <stdint.h>
+
 uint8_t accel_read_register(uint8_t regaddr);
 void accel_write_register(uint8_t regaddr, uint8_t value);
 void accel_setup(void);
 
-#define ACCEL_I2C_ADDRESS    0x1D
-#define ACCEL_I2C_ADDRESS_LA (ACCEL_I2C_ADDRESS << 1)
+#define ACCEL_I2C_ADDRESS    (0x1D << 1)
 
 // Register addresses for accel IC (see table 12 on p. 20 of datasheet).
 #define ACCEL_REG_STATUS          0x00
