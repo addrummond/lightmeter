@@ -48,6 +48,11 @@ static void dma_config()
 void piezo_mic_init()
 {
     //
+    // Turn on SCRPWR, which also powers mic.
+    //
+    GPIO_WriteBit(DISPLAY_POWER_GPIO_PORT, DISPLAY_POWER_PIN, 0);
+
+    //
     // ADC configuration.
     //
     ADC_InitTypeDef adci;
