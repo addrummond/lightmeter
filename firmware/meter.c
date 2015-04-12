@@ -12,7 +12,7 @@ void meter_init()
     GPIO_InitTypeDef gpi;
 
     //
-    // Init DIODESW and INTEGCLR GPIO pins.
+    // Init DIODESW, INTEGCLR and GB1/2 GPIO pins.
     //
     gpi.GPIO_Pin = DIODESW_PIN;
     gpi.GPIO_Mode = GPIO_Mode_OUT;
@@ -22,6 +22,17 @@ void meter_init()
     GPIO_Init(DIODESW_GPIO_PORT, &gpi);
     gpi.GPIO_Pin = INTEGCLR_PIN;
     GPIO_Init(INTEGCLR_GPIO_PORT, &gpi);
+    gpi.GPIO_Pin = GB1_PIN;
+    GPIO_Init(GB1_GPIO_PORT, &gpi);
+    gpi.GPIO_Pin = GB2_PIN;
+    GPIO_Init(GB2_GPIO_PORT, &gpi);
+
+    //
+    // Set GB1/2 low, because with the Phillips IC the relevant pins should
+    // really be connected to ground.
+    //
+    GPIO_WriteBit(GB1_GPIO_PORT, GB1_PIN, 0);
+    GPIO_WriteBit(GB2_GPIO_PORT, GB2_PIN, 0);
 
     //
     // Init ADC.

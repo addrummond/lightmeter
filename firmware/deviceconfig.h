@@ -80,6 +80,10 @@ MEASURE2 --|                       |-- VDD
 #define DIODESW_PIN          GPIO_Pin_3
 #define INTEGCLR_GPIO_PORT   GPIOB
 #define INTEGCLR_PIN         GPIO_Pin_0
+#define GB1_GPIO_PORT        GPIOB
+#define GB1_PIN              GPIO_Pin_3
+#define GB2_GPIO_PORT        GPIOA
+#define GB2_PIN              GPIO_Pin_15
 
 
 //
