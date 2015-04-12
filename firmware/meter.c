@@ -7,9 +7,6 @@
 #include <deviceconfig.h>
 #include <meter.h>
 
-#define STM32_CLOCK_HZ 480000000UL
-#define STM32_CYCLES_PER_LOOP 6 // This will need tweaking or calculating
-
 void meter_init()
 {
     GPIO_InitTypeDef gpi;
