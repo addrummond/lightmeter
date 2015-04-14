@@ -109,6 +109,7 @@ int main()
     debugging_write_uint32(before-after+i);
     debugging_writec("\n");
 
+    test_mic();
     test_display();
     test_meter();
 

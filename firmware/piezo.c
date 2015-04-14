@@ -50,16 +50,25 @@ void piezo_mic_init()
     //
     // Turn on SCRPWR, which also powers mic.
     //
+    GPIO_InitTypeDef gpi;
+    GPIO_StructInit(&gpi);
+    gpi.GPIO_Pin = DISPLAY_POWER_PIN;
+    gpi.GPIO_Mode = GPIO_Mode_OUT;
+    gpi.GPIO_Speed = GPIO_Speed_Level_1;
+    gpi.GPIO_OType = GPIO_OType_PP;
+    gpi.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_Init(DISPLAY_POWER_GPIO_PORT, &gpi);
+    // It's a P-channel MOSFET so we set the pin low to turn it on.
     GPIO_WriteBit(DISPLAY_POWER_GPIO_PORT, DISPLAY_POWER_PIN, 0);
 
     //
     // ADC configuration.
     //
     ADC_InitTypeDef adci;
-    GPIO_InitTypeDef gpi;
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
 
+    GPIO_StructInit(&gpi);
     gpi.GPIO_Pin = GPIO_Pin_4;
     gpi.GPIO_Mode = GPIO_Mode_AN;
     gpi.GPIO_PuPd = GPIO_PuPd_NOPULL;
@@ -114,9 +123,24 @@ static void piezo_mic_read_buffer()
 #else
     unsigned i;
     for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i, piezo_mic_wait_on_ready()) {
-        piezo_mic_buffer[i] = ADC_GetConversionValue(ADC1);
+        int16_t v = ADC_GetConversionValue(ADC1);
+        piezo_mic_buffer[i] = v;
+
     }
 #endif
+}
+
+static int16_t piezo_get_magnitude()
+{
+    int32_t total = 0;
+    unsigned i;
+    for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {
+        int16_t v = piezo_mic_buffer[i];
+        if (v < 0)
+            v = -v;
+        total += v;
+    }
+    return (int16_t)(total/PIEZO_MIC_BUFFER_N_SAMPLES);
 }
 
 
@@ -243,16 +267,22 @@ bool piezo_hfsdp_listen_for_masters_init()
         //uint32_t before = SysTick->VAL;
 
         piezo_mic_read_buffer();
+#ifdef USE_DMA
         DMA_Cmd(DMA1_Channel1, DISABLE);
+#endif
 
-        /*unsigned i;
-        for (i = 0; i < 6; ++i) {
-            debugging_write_uint32((int32_t)(piezo_mic_buffer[i] - 4096/2));
-            debugging_writec("\n");
-        }
-        debugging_writec("\n---\n");*/
+        //unsigned i;
+        //for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {
+        //    debugging_write_uint32((int32_t)(piezo_mic_buffer[i] - 4096/2));
+        //    debugging_writec("\n");
+        //}
+        //debugging_writec("\n---\n");
 
-        int p = goetzel((const uint16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF);
+        debugging_writec("V: ");
+        debugging_write_uint32(piezo_get_magnitude());
+        debugging_writec("\n");
+
+        int p = 0;//goetzel((const uint16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF);
 
         /*unsigned i;
         for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i)
@@ -263,7 +293,9 @@ bool piezo_hfsdp_listen_for_masters_init()
             debugging_writec("\n");
         }*/
 
+#ifdef USE_DMA
         DMA_Cmd(DMA1_Channel1, ENABLE);
+#endif
 
         //debugging_writec("val ");
         //debugging_write_uint32(p);
