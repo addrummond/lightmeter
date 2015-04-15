@@ -348,7 +348,7 @@ uint_fast8_t iso_bcd_to_third_stops(uint8_t *digits, unsigned length)
     }
 }
 
-static const uint_fast8_t ev_wtih_fracs_to_xth_consts[] = {
+static const uint_fast8_t ev_with_fracs_to_xth_consts[] = {
     // Value -1
     //
     // 120
@@ -358,7 +358,7 @@ static const uint_fast8_t ev_wtih_fracs_to_xth_consts[] = {
     // 256
     255, 84, 31, 25
 };
-#define consts ev_wtih_fracs_to_xth_consts
+#define consts ev_with_fracs_to_xth_consts
 static int32_t ev_with_fracs_to_xth(ev_with_fracs_t evwf, uint_fast8_t const_offset)
 {
     unsigned nth = ev_with_fracs_get_nth(evwf);
