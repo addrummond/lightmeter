@@ -11854,13 +11854,14 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="Y1" library="microbuilder" deviceset="CRYSTAL" device="2.5X2.0MM"/>
 <part name="R6" library="resistor" deviceset="R-EU_" device="R0402" value="??"/>
 <part name="Q1" library="lightmeter" deviceset="PCHANNELMOSFET" device="SOT-523-3-BTTM" value="PCHANNELMOSFETSOT-523-3-BTTM"/>
+<part name="D5" library="adafruit" deviceset="DIODE" device="SOD-323F"/>
 </parts>
 <sheets>
 <sheet>
 <plain>
 <text x="-152.4" y="-7.62" size="1.778" layer="91">Battery (3.7V nominal)</text>
 <text x="-40.64" y="101.6" size="1.778" layer="91">Buck regulator LM3671 (outputs 2.8 volts)</text>
-<text x="-1.778" y="-83.058" size="1.778" layer="91">Pushbuttons (mouser 611-PTS540JM035SMTRL)</text>
+<text x="0.762" y="-72.898" size="1.778" layer="91">Pushbuttons (mouser 611-PTS540JM035SMTRL)</text>
 <text x="213.36" y="60.96" size="1.778" layer="91">Screen (C2P right, IREF left)</text>
 <text x="-152.4" y="-27.94" size="1.778" layer="91">Power muxer</text>
 <text x="-1.778" y="-141.478" size="1.778" layer="91">Charges at 100mA</text>
@@ -11993,6 +11994,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <instance part="Y1" gate="G$1" x="-71.12" y="2.54"/>
 <instance part="R6" gate="G$1" x="-83.82" y="2.54" rot="R180"/>
 <instance part="Q1" gate="G$1" x="157.48" y="15.24" rot="R90"/>
+<instance part="D5" gate="G$1" x="0" y="-86.36" rot="R180"/>
 </instances>
 <busses>
 </busses>
@@ -12611,14 +12613,12 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <segment>
 <wire x1="8.382" y1="-90.424" x2="8.382" y2="-86.36" width="0.1524" layer="91"/>
 <pinref part="S$2" gate="G$1" pin="1"/>
-<pinref part="S$1" gate="G$1" pin="1"/>
-<wire x1="-6.858" y1="-80.518" x2="-6.858" y2="-86.36" width="0.1524" layer="91"/>
-<label x="-6.858" y="-80.518" size="1.778" layer="95" rot="R90" xref="yes"/>
-<wire x1="-6.858" y1="-86.36" x2="-6.858" y2="-90.424" width="0.1524" layer="91"/>
-<wire x1="-12.7" y1="-86.36" x2="-6.858" y2="-86.36" width="0.1524" layer="91"/>
-<junction x="-6.858" y="-86.36"/>
-<wire x1="-6.858" y1="-86.36" x2="8.382" y2="-86.36" width="0.1524" layer="91"/>
-<pinref part="D4" gate="G$1" pin="C"/>
+<wire x1="7.62" y1="-86.36" x2="8.382" y2="-86.36" width="0.1524" layer="91"/>
+<wire x1="7.62" y1="-86.36" x2="7.62" y2="-78.74" width="0.1524" layer="91"/>
+<label x="7.62" y="-78.74" size="1.778" layer="95" xref="yes"/>
+<pinref part="D5" gate="G$1" pin="A"/>
+<wire x1="2.54" y1="-86.36" x2="7.62" y2="-86.36" width="0.1524" layer="91"/>
+<junction x="7.62" y="-86.36"/>
 </segment>
 <segment>
 <pinref part="IC$4" gate="G$1" pin="PA9"/>
@@ -13155,6 +13155,17 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pinref part="Y1" gate="G$1" pin="1"/>
 <wire x1="-73.66" y1="2.54" x2="-78.74" y2="2.54" width="0.1524" layer="91"/>
 <pinref part="R6" gate="G$1" pin="1"/>
+</segment>
+</net>
+<net name="N$13" class="0">
+<segment>
+<pinref part="S$1" gate="G$1" pin="1"/>
+<wire x1="-6.858" y1="-86.36" x2="-6.858" y2="-90.424" width="0.1524" layer="91"/>
+<pinref part="D4" gate="G$1" pin="C"/>
+<wire x1="-12.7" y1="-86.36" x2="-7.62" y2="-86.36" width="0.1524" layer="91"/>
+<pinref part="D5" gate="G$1" pin="C"/>
+<wire x1="-7.62" y1="-86.36" x2="-6.858" y2="-86.36" width="0.1524" layer="91"/>
+<wire x1="-6.858" y1="-86.36" x2="-2.54" y2="-86.36" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
