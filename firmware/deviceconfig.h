@@ -5,6 +5,7 @@
 
 #include <stm32f0xx_gpio.h>
 #include <stm32f0xx_i2c.h>
+#include <stm32f0xx_syscfg.h>
 
 /*
 
@@ -50,13 +51,19 @@ MEASURE2 --|                       |-- VDD
 //
 // Pushbutton ports configuration.
 //
-#define PUSHBUTTON1_PORT     GPIOA
-#define PUSHBUTTON1_PIN      GPIO_Pin_12
+#define PUSHBUTTON1_GPIO_PORT        GPIOA
+#define PUSHBUTTON1_GPIO_PORT_SOURCE EXTI_PortSourceGPIOA
+#define PUSHBUTTON1_PIN              GPIO_Pin_12
+#define PUSHBUTTON1_PIN_SOURCE       GPIO_PinSource12
+#define PUSHBUTTON1_EXTI             EXTI12
+#define PUSHBUTTON1_EXTI_LINE        EXTI_Line12
 
-#define PUSHBUTTON2_PORT     GPIOA
-#define PUSHBUTTON2_PIN      GPIO_Pin_9
-
-#define FOR_X_FROM_1_TO_N_PUSHBUTTONS_WITH_GPIO_DO(x) x(1, GPIOA) x(2, GPIOA)
+#define PUSHBUTTON2_GPIO_PORT        GPIOA
+#define PUSHBUTTON2_GPIO_PORT_SOURCE EXTI_PortSourceGPIOA
+#define PUSHBUTTON2_PIN              GPIO_Pin_9
+#define PUSHBUTTON2_PIN_SOURCE       GPIO_PinSource9
+#define PUSHBUTTON2_EXTI             EXTI9
+#define PUSHBUTTON2_EXTI_LINE        EXTI_Line9
 
 
 //

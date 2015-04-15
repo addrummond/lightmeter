@@ -39,6 +39,10 @@ $CC $CFLAGS -c ./stm/stm32f0xx_misc.c -o ./stm/stm32f0xx_misc.o
 OBJS="$OBJS ./stm/stm32f0xx_misc.o"
 $CC $CFLAGS -c ./stm/stm32f0xx_dma.c -o ./stm/stm32f0xx_dma.o
 OBJS="$OBJS ./stm/stm32f0xx_dma.o"
+$CC $CFLAGS -c ./stm/stm32f0xx_syscfg.c -o ./stm/stm32f0xx_syscfg.o
+OBJS="$OBJS ./stm/stm32f0xx_syscfg.o"
+$CC $CFLAGS -c ./stm/stm32f0xx_exti.c -o ./stm/stm32f0xx_exti.o
+OBJS="$OBJS ./stm/stm32f0xx_exti.o"
 
 $CC $CFLAGS -c debugging.c -o debugging.o
 OBJS="$OBJS debugging.o"
@@ -58,6 +62,8 @@ $CC $CFLAGS -c i2c.c -o i2c.o
 OBJS="$OBJS i2c.o"
 $CC $CFLAGS -c state.c -o state.o
 OBJS="$OBJS state.o"
+$CC $CFLAGS -c buttons.c -o buttons.o
+OBJS="$OBJS buttons.o"
 $CC $CFLAGS -c accel.c -o accel.o
 OBJS="$OBJS accel.o"
 $CC $CFLAGS -c display.c -o display.o

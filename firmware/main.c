@@ -11,6 +11,7 @@
 #include <state.h>
 #include <debugging.h>
 #include <piezo.h>
+#include <buttons.h>
 
 static void test_mic()
 {
@@ -109,9 +110,11 @@ int main()
     debugging_write_uint32(before-after+i);
     debugging_writec("\n");
 
-    test_mic();
-    test_display();
-    test_meter();
+    buttons_setup();
+
+    //test_mic();
+    //test_display();
+    //test_meter();
 
     for (;;);
 }
