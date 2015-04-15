@@ -382,7 +382,7 @@ static int32_t ev_with_fracs_to_xth(ev_with_fracs_t evwf, uint_fast8_t const_off
         return 0; // Get rid of warning.
     }
 
-    rest *= (int32_t)mul + 1;
+    rest *= ((int32_t)mul) + 1;
 
     return whole + rest;
 }
