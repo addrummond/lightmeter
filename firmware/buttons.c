@@ -8,9 +8,44 @@
 #include <buttons.h>
 #include <debugging.h>
 
+static unsigned BUTTON_MASK = 0;
+
+unsigned get_button_mask()
+{
+    unsigned m = BUTTON_MASK;
+    BUTTON_MASK = 0;
+    return m;
+}
+
+static uint32_t last_tick = 0;
+#define THRESHOLD 48000
 void EXTI4_15_IRQHandler(void)
 {
-    debugging_writec("Button interrupt x");
+    //if (EXTI_GetITStatus(PUSHBUTTON1_EXTI_LINE) == RESET ||
+    //    EXTI_GetITStatus(PUSHBUTTON2_EXTI_LINE) == RESET) {
+    //    return;
+    //}
+
+    uint32_t t = SysTick->VAL;
+    if ((t < last_tick && last_tick - t > THRESHOLD) ||
+        (t > last_tick && (last_tick + (16777215-t)) > THRESHOLD)) {
+        // Figure out which pins are high.
+        unsigned m = 0;
+        m |= GPIO_ReadInputDataBit(PUSHBUTTON1_GPIO_PORT, PUSHBUTTON1_PIN);
+        m |= GPIO_ReadInputDataBit(PUSHBUTTON2_GPIO_PORT, PUSHBUTTON2_PIN) << 1;
+        BUTTON_MASK = m;
+
+        //debugging_writec("Button interrupt ");
+        //debugging_write_uint32(m);
+        //debugging_writec("\n");
+
+        // Clear interrupt flags. If we don't do this, this function will keep
+        // getting called over and over due to a single button press.
+        EXTI_ClearITPendingBit(PUSHBUTTON1_EXTI_LINE);
+        EXTI_ClearITPendingBit(PUSHBUTTON2_EXTI_LINE);
+
+        last_tick = SysTick->VAL;
+    }
 }
 
 void buttons_setup()
