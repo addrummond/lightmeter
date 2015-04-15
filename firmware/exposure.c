@@ -358,25 +358,24 @@ static const uint_fast8_t ev_with_fracs_to_xth_consts[] = {
     // 256
     255, 84, 31, 25
 };
-#define consts ev_with_fracs_to_xth_consts
 static int32_t ev_with_fracs_to_xth(ev_with_fracs_t evwf, uint_fast8_t const_offset)
 {
     unsigned nth = ev_with_fracs_get_nth(evwf);
 
-    int32_t whole = ev_with_fracs_get_wholes(evwf) * ((int32_t)consts[const_offset+0] + 1);
+    int32_t whole = ev_with_fracs_get_wholes(evwf) * ((int32_t)ev_with_fracs_to_xth_consts[const_offset+0] + 1);
     int32_t rest;
     int32_t mul;
     if (nth == 3) {
         rest = ev_with_fracs_get_thirds(evwf);
-        mul = consts[const_offset+1];
+        mul = ev_with_fracs_to_xth_consts[const_offset+1];
     }
     else if (nth == 8) {
         rest = ev_with_fracs_get_eighths(evwf);
-        mul = consts[const_offset+2];
+        mul = ev_with_fracs_to_xth_consts[const_offset+2];
     }
     else if (nth == 10) {
         rest = ev_with_fracs_get_tenths(evwf);
-        mul = consts[const_offset+3];
+        mul = ev_with_fracs_to_xth_consts[const_offset+3];
     }
     else {
         assert(false);
@@ -387,7 +386,6 @@ static int32_t ev_with_fracs_to_xth(ev_with_fracs_t evwf, uint_fast8_t const_off
 
     return whole + rest;
 }
-#undef consts
 #define ev_with_fracs_to_256th(x) ev_with_fracs_to_xth((x), 8)
 #define ev_with_fracs_to_120th(x) ev_with_fracs_to_xth((x), 0)
 #define ev_with_fracs_to_100th(x) ev_with_fracs_to_xth((x), 4)
