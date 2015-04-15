@@ -367,15 +367,15 @@ static int32_t ev_with_fracs_to_xth(ev_with_fracs_t evwf, uint_fast8_t const_off
     int32_t mul;
     if (nth == 3) {
         rest = ev_with_fracs_get_thirds(evwf);
-        mul = ev_with_fracs_to_xth_consts[const_offset+1];
+        mul = ev_with_fracs_to_xth_consts[const_offset+1]+1;
     }
     else if (nth == 8) {
         rest = ev_with_fracs_get_eighths(evwf);
-        mul = ev_with_fracs_to_xth_consts[const_offset+2];
+        mul = ev_with_fracs_to_xth_consts[const_offset+2]+1;
     }
     else if (nth == 10) {
         rest = ev_with_fracs_get_tenths(evwf);
-        mul = ev_with_fracs_to_xth_consts[const_offset+3];
+        mul = ev_with_fracs_to_xth_consts[const_offset+3]+1;
     }
     else {
         assert(false);
