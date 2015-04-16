@@ -228,6 +228,7 @@ void display_bwrite_12px_char(const uint8_t *char_grid, uint8_t *out, uint_fast8
 void display_clear()
 {
     display_command(DISPLAY_HORIZONTALADDR);
+    display_command(DISPLAY_SET_PAGE_START + 0);
 
     DISPLAY_WRITE_DATA {
         uint_fast16_t i;
