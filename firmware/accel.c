@@ -1,6 +1,7 @@
 #include <accel.h>
 #include <i2c.h>
 #include <deviceconfig.h>
+#include <debugging.h>
 
 #define ACCEL_I2C_ADDR (0x1D << 1)
 
@@ -25,4 +26,15 @@ void accel_init()
     //     F_READ    (1)
     //     ACTIVE    (0)
     sbw(ACCEL_REG_CTRL_REG3, 0b10000001);
+}
+
+uint8_t accel_read_register(uint8_t reg)
+{
+    I2C_WAIT_ON_FLAG_NO_RESET_NORET(I2C_ISR_BUSY, "accel_read_reg 1");
+    I2C_TransferHandling(I2C_I2C, ACCEL_I2C_ADDR, 1, I2C_AutoEnd_Mode, I2C_Generate_Start_Write);
+    I2C_WAIT_ON_FLAG_RESET_NORET(I2C_ISR_TXIS, "accel_read_reg 2");
+    I2C_SendData(I2C_I2C, reg);
+    I2C_TransferHandling(I2C_I2C, ACCEL_I2C_ADDR, 1, I2C_AutoEnd_Mode, I2C_Generate_Start_Read);
+    I2C_WAIT_ON_FLAG_RESET_NORET(I2C_ISR_RXNE, "accel_read_reg 3");
+    return I2C_ReceiveData(I2C_I2C);
 }

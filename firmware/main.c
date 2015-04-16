@@ -113,8 +113,14 @@ int main()
     buttons_setup();
 
     //test_mic();
-    //test_display();
+    test_display();
+    debugging_writec("HERE1\n");
+    accel_init();
+    debugging_writec("HERE2\n");
     //test_meter();
 
-    for (;;);
+    for (;;) {
+        debugging_write_uint32(accel_read_register(ACCEL_REG_OUT_X_MSB));
+        debugging_writec("\n");
+    }
 }
