@@ -151,6 +151,9 @@ void display_write_page_array(const uint8_t *pages, uint_fast8_t ncols, uint_fas
     if (ncols + x > DISPLAY_LCDWIDTH)
         ncols = DISPLAY_LCDWIDTH - x;
 
+    display_command(DISPLAY_HORIZONTALADDR);
+    display_command(DISPLAY_SET_PAGE_START + 0);
+
     uint_fast8_t p;
     for (p = 0; p < pages_per_col && p+page_y < DISPLAY_NUM_PAGES; ++p) {
         display_command(DISPLAY_SET_COL_START_LOW + col_start_low);
@@ -236,8 +239,6 @@ void display_clear()
             display_write_byte(0x00);
         }
     }
-
-    display_command(DISPLAY_PAGEADDR);
 }
 
 // See DISPLAY_WRITE_DATA macro in display.h
