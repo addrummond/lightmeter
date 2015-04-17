@@ -12,6 +12,8 @@
 #include <debugging.h>
 #include <piezo.h>
 #include <buttons.h>
+#include <bitmaps/bitmaps.h>
+#include <mymemset.h>
 
 static void test_mic()
 {
@@ -41,9 +43,7 @@ static void test_speaker()
 
 static void test_display()
 {
-    i2c_init();
     display_init();
-
     display_clear();
 
 #define gms global_meter_state
@@ -70,6 +70,45 @@ static void test_display()
 #undef gms
 #undef tms
     ui_show_interface();
+}
+
+static void test_accel()
+{
+    display_init();
+    display_clear();
+    accel_init();
+
+    uint8_t pa[6];
+    uint8_t zpa[6];
+    memset8_zero(pa, sizeof(pa));
+    memset8_zero(zpa, sizeof(zpa));
+    display_bwrite_8px_char(CHAR_8PX_F, pa, 1, 0);
+    //display_write_page_array(pa, 6, 1, 20/*v/4*/, 3);
+
+    uint8_t lastx = 0;
+    uint32_t start, end;
+    for (;;) {
+        start = SysTick->VAL;
+        end = SysTick->VAL - 400000;
+        int8_t v = accel_read_register(ACCEL_REG_OUT_X_MSB);
+        //debugging_writec("V: ");
+        //debugging_write_uint32(v);
+        //debugging_writec("\n");
+
+        int lastx = 64-v;
+        if (lastx < 0)
+            lastx = 0;
+        if (lastx > 127)
+            lastx = 127;
+
+        display_write_page_array(pa, 6, 1, lastx, 3);
+
+        if (end > start)
+            while (SysTick->VAL < start);
+        while (SysTick->VAL > end);
+
+        display_write_page_array(zpa, 6, 1, lastx, 3);
+    }
 }
 
 static void test_meter()
@@ -110,17 +149,12 @@ int main()
     debugging_write_uint32(before-after+i);
     debugging_writec("\n");
 
+    i2c_init();
     buttons_setup();
 
     //test_mic();
-    test_display();
-    debugging_writec("HERE1\n");
-    accel_init();
-    debugging_writec("HERE2\n");
-    //test_meter();
+    //test_display();
+    test_accel();
 
-    for (;;) {
-        debugging_write_uint32(accel_read_register(ACCEL_REG_OUT_X_MSB));
-        debugging_writec("\n");
-    }
+    for (;;);
 }
