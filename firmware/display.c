@@ -91,6 +91,12 @@ void display_reset()
     GPIO_WriteBit(DISPLAY_RESET_GPIO_PORT, DISPLAY_RESET_PIN, 1);
 }
 
+void display_set_contrast(uint8_t contrast)
+{
+    display_command(DISPLAY_SETCONTRAST);
+    display_command(contrast);
+}
+
 void display_init()
 {
     // Turn on power MOSFET for display.
@@ -123,8 +129,7 @@ void display_init()
     display_command(DISPLAY_COMSCANDEC);
     display_command(DISPLAY_SETCOMPINS);                    // 0xDA
     display_command(0x12);
-    display_command(DISPLAY_SETCONTRAST);                   // 0x81
-    display_command(0xCF);
+    display_set_contrast(255);
     display_command(DISPLAY_SETPRECHARGE);                  // 0xd9
     display_command(0xF1);
     display_command(DISPLAY_SETVCOMDETECT);                 // 0xDB
