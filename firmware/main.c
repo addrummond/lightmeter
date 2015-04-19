@@ -143,7 +143,8 @@ int main()
         if (sysinit_is_time_to_sleep()) {
             debugging_writec("SLEEPING\n");
             sysinit_enter_sleep_mode();
-            debugging_writec("WAKING UP\n");
+            sysinit_after_wakeup_init();
+            debugging_writec("WOKE UP\n");
         }
     }
 }

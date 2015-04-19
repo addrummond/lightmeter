@@ -57,6 +57,8 @@ static void initialize_sleep_timer()
 
 void sysinit_init()
 {
+    initialize_sleep_timer();
+
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOB, ENABLE);
 
     SysTick->LOAD = 16777215;
@@ -65,11 +67,17 @@ void sysinit_init()
 
     i2c_init();
     buttons_setup();
-
-    initialize_sleep_timer();
 }
 
 void sysinit_enter_sleep_mode()
 {
+    TIM_ITConfig(TIM3, TIM_IT_Update, DISABLE);
+    sysinit_reset_sleep_counter();
+    time_to_sleep = false;
     PWR_EnterSTOPMode(PWR_Regulator_LowPower, PWR_SLEEPEntry_WFI);
+}
+
+void sysinit_after_wakeup_init()
+{
+    sysinit_init();
 }

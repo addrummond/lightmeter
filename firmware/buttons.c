@@ -28,10 +28,6 @@ void EXTI4_15_IRQHandler(void)
     EXTI_ClearITPendingBit(PUSHBUTTON1_EXTI_LINE);
     EXTI_ClearITPendingBit(PUSHBUTTON2_EXTI_LINE);
 
-    //debugging_writec("V :");
-    //debugging_write_uint32(PWR_GetFlagStatus(PWR_FLAG_WU));
-    //debugging_writec("\n");
-
     uint32_t t = SysTick->VAL;
     if ((t < last_tick && last_tick - t > THRESHOLD) ||
         (t > last_tick && (last_tick + (16777215-t)) > THRESHOLD)) {
