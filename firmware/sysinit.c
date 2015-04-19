@@ -5,16 +5,29 @@
 #include <stm32f0xx_misc.h>
 #include <stm32f0xx_tim.h>
 #include <sysinit.h>
+#include <stdbool.h>
 #include <debugging.h>
 
 #include <i2c.h>
 #include <buttons.h>
 
+static bool time_to_sleep = false;
+
 void TIM3_IRQHandler()
 {
     TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
     debugging_writec("TIM!\n");
-    //sysinit_enter_sleep_mode();
+    time_to_sleep = true;
+}
+
+bool sysinit_is_time_to_sleep()
+{
+    return time_to_sleep;
+}
+
+void sysinit_reset_sleep_counter()
+{
+    TIM3->CNT = 0;
 }
 
 static void initialize_sleep_timer()
@@ -37,6 +50,7 @@ static void initialize_sleep_timer()
 
     TIM_PrescalerConfig(TIM3, PRE, TIM_PSCReloadMode_Immediate);
 
+    TIM_ClearITPendingBit(TIM3, TIM_IT_Update); // Stop interrupt being triggered immediately.
     TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);
     TIM_Cmd(TIM3, ENABLE);
 }

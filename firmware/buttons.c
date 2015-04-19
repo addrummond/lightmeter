@@ -3,10 +3,12 @@
 #include <stm32f0xx_syscfg.h>
 #include <stm32f0xx_exti.h>
 #include <stm32f0xx_misc.h>
+#include <stm32f0xx_pwr.h>
 
 #include <deviceconfig.h>
 #include <buttons.h>
 #include <debugging.h>
+#include <sysinit.h>
 
 static unsigned BUTTON_MASK = 0;
 
@@ -21,15 +23,14 @@ static uint32_t last_tick = 0;
 #define THRESHOLD 48000
 void EXTI4_15_IRQHandler(void)
 {
-    //if (EXTI_GetITStatus(PUSHBUTTON1_EXTI_LINE) == RESET ||
-    //    EXTI_GetITStatus(PUSHBUTTON2_EXTI_LINE) == RESET) {
-    //    return;
-    //}
-
     // Clear interrupt flags. If we don't do this, this function will keep
     // getting called over and over due to a single button press.
     EXTI_ClearITPendingBit(PUSHBUTTON1_EXTI_LINE);
     EXTI_ClearITPendingBit(PUSHBUTTON2_EXTI_LINE);
+
+    //debugging_writec("V :");
+    //debugging_write_uint32(PWR_GetFlagStatus(PWR_FLAG_WU));
+    //debugging_writec("\n");
 
     uint32_t t = SysTick->VAL;
     if ((t < last_tick && last_tick - t > THRESHOLD) ||
@@ -40,9 +41,9 @@ void EXTI4_15_IRQHandler(void)
         m |= GPIO_ReadInputDataBit(PUSHBUTTON2_GPIO_PORT, PUSHBUTTON2_PIN) << 1;
         BUTTON_MASK = m;
 
-        //debugging_writec("Button interrupt ");
-        //debugging_write_uint32(m);
-        //debugging_writec("\n");
+        debugging_writec("Button interrupt ");
+        debugging_write_uint32(m);
+        debugging_writec("\n");
 
         last_tick = SysTick->VAL;
     }

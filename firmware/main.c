@@ -139,5 +139,11 @@ int main()
     //test_display();
     //test_accel();
 
-    for (;;);
+    for (;;) {
+        if (sysinit_is_time_to_sleep()) {
+            debugging_writec("SLEEPING\n");
+            sysinit_enter_sleep_mode();
+            debugging_writec("WAKING UP\n");
+        }
+    }
 }
