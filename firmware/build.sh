@@ -43,6 +43,8 @@ $CC $CFLAGS -c ./stm/stm32f0xx_syscfg.c -o ./stm/stm32f0xx_syscfg.o
 OBJS="$OBJS ./stm/stm32f0xx_syscfg.o"
 $CC $CFLAGS -c ./stm/stm32f0xx_exti.c -o ./stm/stm32f0xx_exti.o
 OBJS="$OBJS ./stm/stm32f0xx_exti.o"
+$CC $CFLAGS -c ./stm/stm32f0xx_pwr.c -o ./stm/stm32f0xx_pwr.o
+OBJS="$OBJS ./stm/stm32f0xx_pwr.o"
 
 $CC $CFLAGS -c debugging.c -o debugging.o
 OBJS="$OBJS debugging.o"
