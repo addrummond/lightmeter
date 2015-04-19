@@ -13171,6 +13171,11 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="-104.14" y1="-86.36" x2="-106.68" y2="-86.36" width="0.1524" layer="91"/>
 <label x="-106.68" y="-86.36" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
+<segment>
+<pinref part="IC$4" gate="G$1" pin="PB5"/>
+<wire x1="-30.48" y1="22.86" x2="-30.48" y2="25.4" width="0.1524" layer="91"/>
+<label x="-30.48" y="25.4" size="1.778" layer="95" rot="R90" xref="yes"/>
+</segment>
 </net>
 </nets>
 </sheet>
