@@ -88,7 +88,7 @@ static const uint8_t STAGES_test_dummy[(METER_NUMBER_OF_INTEGRATING_STAGES == si
 
 void meter_take_raw_integrated_readings(uint16_t *outputs)
 {
-    uint32_t ends[sizeof(STAGES)/sizeof(STAGES[0])];
+    uint32_t ends[METER_NUMBER_OF_INTEGRATING_STAGES];
 
     while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
 
@@ -102,11 +102,11 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
 
     // Determine value of SysTick for each endpoint.
     uint32_t st = SysTick->VAL;
-    for (i = 0; i < sizeof(STAGES)/sizeof(STAGES[0]); ++i)
+    for (i = 0; i < METER_NUMBER_OF_INTEGRATING_STAGES; ++i)
         ends[i] = st - STAGES[i];
 
     // Read cap voltage at each stage.
-    for (i = 0; i < sizeof(STAGES)/sizeof(STAGES[0]);) {
+    for (i = 0; i < METER_NUMBER_OF_INTEGRATING_STAGES;) {
         if (SysTick->VAL <= ends[i]) {
             ADC_StartOfConversion(ADC1);
             while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
