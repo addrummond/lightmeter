@@ -12317,9 +12317,6 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="-106.68" y1="-71.12" x2="-104.14" y2="-71.12" width="0.1524" layer="91"/>
 <wire x1="-106.68" y1="-66.04" x2="-106.68" y2="-71.12" width="0.1524" layer="91"/>
 <junction x="-106.68" y="-71.12"/>
-<pinref part="IC$6" gate="G$1" pin="EN"/>
-<wire x1="-104.14" y1="-86.36" x2="-106.68" y2="-86.36" width="0.1524" layer="91"/>
-<wire x1="-106.68" y1="-86.36" x2="-106.68" y2="-71.12" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="R14" gate="G$1" pin="1"/>
@@ -13166,6 +13163,13 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pinref part="D5" gate="G$1" pin="C"/>
 <wire x1="-7.62" y1="-86.36" x2="-6.858" y2="-86.36" width="0.1524" layer="91"/>
 <wire x1="-6.858" y1="-86.36" x2="-2.54" y2="-86.36" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="LREGENABLE" class="0">
+<segment>
+<pinref part="IC$6" gate="G$1" pin="EN"/>
+<wire x1="-104.14" y1="-86.36" x2="-106.68" y2="-86.36" width="0.1524" layer="91"/>
+<label x="-106.68" y="-86.36" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 </nets>
