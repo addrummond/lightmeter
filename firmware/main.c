@@ -1,6 +1,7 @@
 #include <stm32f0xx.h>
 #include <stm32f0xx_gpio.h>
 #include <stm32f0xx_rcc.h>
+#include <stm32f0xx_pwr.h>
 
 #include <i2c.h>
 #include <piezo.h>
@@ -14,6 +15,7 @@
 #include <buttons.h>
 #include <bitmaps/bitmaps.h>
 #include <mymemset.h>
+#include <sysinit.h>
 
 static void test_mic()
 {
@@ -131,30 +133,11 @@ static void test_meter()
 
 int main()
 {
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOB, ENABLE);
-
-    debugging_writec("Hello world\n");
-    debugging_writec("System core clock: ");
-    debugging_write_uint32(SystemCoreClock);
-    debugging_writec("\n");
-
-    SysTick->LOAD = 16777215;
-    SysTick->VAL = 0;
-    SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
-    uint32_t before = SysTick->VAL;
-    int32_t i = 1;
-    --i;
-    uint32_t after = SysTick->VAL;
-    debugging_writec("time ");
-    debugging_write_uint32(before-after+i);
-    debugging_writec("\n");
-
-    i2c_init();
-    buttons_setup();
+    sysinit_init();
 
     //test_mic();
     //test_display();
-    test_accel();
+    //test_accel();
 
     for (;;);
 }

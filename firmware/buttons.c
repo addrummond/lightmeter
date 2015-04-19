@@ -39,13 +39,13 @@ void EXTI4_15_IRQHandler(void)
         //debugging_write_uint32(m);
         //debugging_writec("\n");
 
-        // Clear interrupt flags. If we don't do this, this function will keep
-        // getting called over and over due to a single button press.
-        EXTI_ClearITPendingBit(PUSHBUTTON1_EXTI_LINE);
-        EXTI_ClearITPendingBit(PUSHBUTTON2_EXTI_LINE);
-
         last_tick = SysTick->VAL;
     }
+
+    // Clear interrupt flags. If we don't do this, this function will keep
+    // getting called over and over due to a single button press.
+    EXTI_ClearITPendingBit(PUSHBUTTON1_EXTI_LINE);
+    EXTI_ClearITPendingBit(PUSHBUTTON2_EXTI_LINE);
 }
 
 void buttons_setup()

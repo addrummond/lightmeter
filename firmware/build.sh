@@ -72,6 +72,8 @@ $CC $CFLAGS -c display.c -o display.o
 OBJS="$OBJS display.o"
 $CC $CFLAGS -c piezo.c -o piezo.o
 OBJS="$OBJS piezo.o"
+$CC $CFLAGS -c sysinit.c -o sysinit.o
+OBJS="$OBJS sysinit.o"
 $CC $CFLAGS -c ui.c -o ui.o
 OBJS="$OBJS ui.o"
 $CC $CFLAGS -c bitmaps/bitmaps.c -o bitmaps/bitmaps.o
