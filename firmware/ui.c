@@ -462,10 +462,15 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
     // This means that if we ignore the eighths, it can only be up to +/- 16 stops.
     // We can therefore avoid doing a proper conversion to BCD,
     // since it's easy to convert binary values from 0-16 to a two-digit decimal.
+    //
+    // *** TODO ***
+    // It's actually now stored as an ev_with_fracs_t together with a sign.
+    // Should add abiliy to display it properly for all precision settings.
+    //
 
     uint8_t i = 0;
 
-    int8_t exp_comp = global_meter_state.exp_comp;
+    int8_t exp_comp = ev_with_fracs_get_ev8(global_meter_state.exp_comp) * global_meter_state.exp_comp_sign;
     if (exp_comp & 128) { // It's negative.
         exp_comp = ~exp_comp + 1;
         func_state->expcomp_chars[i++] = CHAR_8PX_MINUS_O;
@@ -474,7 +479,8 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
         func_state->expcomp_chars[i++] = CHAR_8PX_PLUS_O;
     }
 
-    uint8_t full_comp = global_meter_state.exp_comp >> 3;
+    // exp_comp is now positive.
+    uint8_t full_comp = exp_comp >> 3;
     uint8_t full_d1 = 0, full_d2 = 0;
     if (full_comp > 9) {
         full_d1 = 1;
@@ -486,7 +492,7 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
         func_state->expcomp_chars[i++] = CHAR_8PX_0_O + CHAR_OFFSET_8PX(full_d1);
     func_state->expcomp_chars[i++] = CHAR_8PX_0_O + CHAR_OFFSET_8PX(full_d2);
 
-    uint8_t eighths = global_meter_state.exp_comp & 0b111;
+    uint8_t eighths = exp_comp & 0b111;
     if (eighths) {
         func_state->expcomp_chars[i++] = CHAR_8PX_PLUS_O;
         write_eighths_8px_chars(func_state->expcomp_chars + i, eighths);
@@ -512,7 +518,7 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
         }
     }
 
-    if (global_meter_state.exp_comp == 0)
+    if (exp_comp == 0)
         return;
 
     // We're now two pixels behind alignment with the right edge of the display.

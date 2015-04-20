@@ -17,7 +17,7 @@
 #include <mymemset.h>
 #include <sysinit.h>
 
-static void test_mic()
+static __attribute__ ((unused)) void test_mic()
 {
     piezo_mic_init();
     piezo_hfsdp_listen_for_masters_init();
@@ -25,7 +25,7 @@ static void test_mic()
     for (;;);
 }
 
-static void test_speaker()
+static __attribute__ ((unused)) void test_speaker()
 {
     piezo_out_init();
     piezo_set_period(1, (SystemCoreClock / 1000) - 1);
@@ -43,8 +43,8 @@ static void test_speaker()
     debugging_writec("Piezo init complete\n");
 }
 
-static void test_display()
-{
+static __attribute__ ((unused)) void test_display()
+{/*
     display_init();
     display_clear();
 
@@ -72,9 +72,9 @@ static void test_display()
 #undef gms
 #undef tms
     ui_show_interface();
-}
+*/}
 
-static void test_accel()
+static __attribute__ ((unused)) void test_accel()
 {
     display_init();
     display_clear();
@@ -87,7 +87,6 @@ static void test_accel()
     display_bwrite_8px_char(CHAR_8PX_F, pa, 1, 0);
     //display_write_page_array(pa, 6, 1, 20/*v/4*/, 3);
 
-    uint8_t lastx = 0;
     uint32_t start, end;
     for (;;) {
         start = SysTick->VAL;
@@ -113,7 +112,7 @@ static void test_accel()
     }
 }
 
-static void test_meter()
+static __attribute__ ((unused)) void test_meter()
 {
     meter_init();
     meter_set_mode(METER_MODE_INCIDENT);
@@ -134,17 +133,15 @@ static void test_meter()
 int main()
 {
     sysinit_init();
-
-    //test_mic();
-    //test_display();
-    //test_accel();
+    initialize_global_meter_state();
+    initialize_global_transient_meter_state();
 
     for (;;) {
         if (sysinit_is_time_to_sleep()) {
-            debugging_writec("SLEEPING\n");
             sysinit_enter_sleep_mode();
             sysinit_after_wakeup_init();
-            debugging_writec("WOKE UP\n");
         }
+
+
     }
 }
