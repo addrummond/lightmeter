@@ -11858,6 +11858,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="R6" library="resistor" deviceset="R-EU_" device="R0402" value="??"/>
 <part name="Q1" library="lightmeter" deviceset="PCHANNELMOSFET" device="SOT-523-3-BTTM" value="PCHANNELMOSFETSOT-523-3-BTTM"/>
 <part name="D5" library="adafruit" deviceset="DIODE" device="SOD-323F"/>
+<part name="RST" library="testpad" deviceset="TP" device="B1,27"/>
 </parts>
 <sheets>
 <sheet>
@@ -11997,6 +11998,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <instance part="R6" gate="G$1" x="-83.82" y="2.54" rot="R180"/>
 <instance part="Q1" gate="G$1" x="157.48" y="15.24" rot="R90"/>
 <instance part="D5" gate="G$1" x="0" y="-86.36" rot="R180"/>
+<instance part="RST" gate="G$1" x="-109.22" y="-2.54" rot="R90"/>
 </instances>
 <busses>
 </busses>
@@ -12735,9 +12737,13 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="-66.04" y1="-7.62" x2="-99.06" y2="-7.62" width="0.1524" layer="91"/>
 <label x="-101.6" y="-7.62" size="1.778" layer="95" rot="R180" xref="yes"/>
 <wire x1="-99.06" y1="-7.62" x2="-101.6" y2="-7.62" width="0.1524" layer="91"/>
-<wire x1="-99.06" y1="-7.62" x2="-99.06" y2="2.54" width="0.1524" layer="91"/>
+<wire x1="-99.06" y1="-7.62" x2="-99.06" y2="-2.54" width="0.1524" layer="91"/>
 <junction x="-99.06" y="-7.62"/>
 <pinref part="R5" gate="G$1" pin="1"/>
+<pinref part="RST" gate="G$1" pin="TP"/>
+<wire x1="-99.06" y1="-2.54" x2="-99.06" y2="2.54" width="0.1524" layer="91"/>
+<wire x1="-99.06" y1="-2.54" x2="-106.68" y2="-2.54" width="0.1524" layer="91"/>
+<junction x="-99.06" y="-2.54"/>
 </segment>
 </net>
 <net name="INTEGCLR" class="0">
