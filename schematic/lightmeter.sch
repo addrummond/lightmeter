@@ -8291,7 +8291,7 @@ package type OT</description>
 <smd name="P$1" x="-1.625" y="-5.15" dx="1.5" dy="2.5" layer="1" rot="R90"/>
 <smd name="P$2" x="-1.625" y="5.15" dx="1.5" dy="2.5" layer="1" rot="R90"/>
 <smd name="P$3" x="5.01" y="2.733" dx="1.5" dy="1.778" layer="1" rot="R180"/>
-<smd name="P$4" x="5.01" y="-2.733" dx="1.5" dy="1.778" layer="1" rot="R180"/>
+<smd name="P$4" x="4.883" y="-2.733" dx="1.246" dy="1.778" layer="1" rot="R180"/>
 <wire x1="-3.425" y1="3.89999375" x2="2.1749875" y2="3.89999375" width="0.127" layer="20"/>
 <wire x1="-3.425" y1="-3.89999375" x2="2.1749875" y2="-3.89999375" width="0.127" layer="20"/>
 <wire x1="2.1749875" y1="3.89999375" x2="2.1749875" y2="-3.89999375" width="0.127" layer="20"/>
@@ -9544,10 +9544,14 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <pad name="P$4" x="2.99999375" y="2.2733" drill="0.7366" diameter="0.7366" shape="octagon"/>
 </package>
 <package name="SC-79">
-<smd name="P$1" x="-0.675" y="0" dx="0.5" dy="0.5" layer="1"/>
-<smd name="P$2" x="0.675" y="0" dx="0.5" dy="0.5" layer="1"/>
+<smd name="P$1" x="-0.675" y="0" dx="0.762" dy="0.762" layer="1"/>
+<smd name="P$2" x="0.675" y="0" dx="0.762" dy="0.762" layer="1"/>
 <wire x1="-1.27" y1="0.635" x2="-1.27" y2="-0.635" width="0.127" layer="21"/>
 <text x="-2.54" y="1.27" size="1.27" layer="25">&gt;NAME</text>
+<wire x1="-1.0922" y1="0.4826" x2="1.1684" y2="0.4826" width="0.127" layer="21"/>
+<wire x1="1.1684" y1="0.4826" x2="1.1684" y2="-0.4826" width="0.127" layer="21"/>
+<wire x1="1.1684" y1="-0.4826" x2="-1.1176" y2="-0.4826" width="0.127" layer="21"/>
+<wire x1="-1.1176" y1="-0.4826" x2="-1.1176" y2="0.4826" width="0.127" layer="21"/>
 </package>
 <package name="SOT-523-3-BTTM">
 <smd name="P$1" x="0" y="0.7747" dx="0.5334" dy="0.762" layer="16"/>
@@ -11740,7 +11744,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="GND11" library="supply1" deviceset="GND" device=""/>
 <part name="C17" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
 <part name="GND15" library="supply1" deviceset="GND" device=""/>
-<part name="R7" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
+<part name="R7" library="resistor" deviceset="R-EU_" device="R0402" value="390k"/>
 <part name="GND8" library="supply1" deviceset="GND" device=""/>
 <part name="R10" library="resistor" deviceset="R-EU_" device="R0402" value="390k"/>
 <part name="C5" library="rcl" deviceset="C-EU" device="C0603" value="1u"/>
@@ -11842,7 +11846,6 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="GND14" library="supply1" deviceset="GND" device=""/>
 <part name="Q2" library="microbuilder" deviceset="MOSFET-P" device="WIDE"/>
 <part name="Q3" library="microbuilder" deviceset="MOSFET-P" device="WIDE"/>
-<part name="P+5" library="supply1" deviceset="VCC" device=""/>
 <part name="D4" library="adafruit" deviceset="DIODE" device="SOD-323F"/>
 <part name="D1" library="lightmeter" deviceset="SCHOTTKY-DIODE" device="SOD-929"/>
 <part name="TP1" library="testpad" deviceset="TP" device="B1,27"/>
@@ -11982,7 +11985,6 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <instance part="GND14" gate="1" x="200.66" y="-71.12" rot="R90"/>
 <instance part="Q2" gate="G$1" x="86.36" y="-35.56" rot="R270"/>
 <instance part="Q3" gate="G$1" x="119.38" y="-35.56" rot="R270"/>
-<instance part="P+5" gate="VCC" x="-122.936" y="60.96" rot="R90"/>
 <instance part="D4" gate="G$1" x="-15.24" y="-86.36"/>
 <instance part="D1" gate="G$1" x="96.52" y="40.64" rot="R90"/>
 <instance part="TP1" gate="G$1" x="-119.38" y="-43.18" rot="R180"/>
@@ -12323,11 +12325,6 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pinref part="P+4" gate="VCC" pin="VCC"/>
 <wire x1="-121.92" y1="-124.46" x2="-116.84" y2="-124.46" width="0.1524" layer="91"/>
 </segment>
-<segment>
-<pinref part="R1" gate="G$1" pin="1"/>
-<pinref part="P+5" gate="VCC" pin="VCC"/>
-<wire x1="-120.396" y1="60.96" x2="-116.078" y2="60.96" width="0.1524" layer="91"/>
-</segment>
 </net>
 <net name="VREG" class="0">
 <segment>
@@ -12425,13 +12422,6 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pinref part="IC$4" gate="G$1" pin="PA8"/>
 <wire x1="0" y1="-22.86" x2="2.54" y2="-22.86" width="0.1524" layer="91"/>
 <label x="2.54" y="-22.86" size="1.778" layer="95" xref="yes"/>
-</segment>
-</net>
-<net name="FLASHSYNC" class="0">
-<segment>
-<pinref part="IC$4" gate="G$1" pin="PB1"/>
-<wire x1="-20.32" y1="-43.18" x2="-20.32" y2="-45.72" width="0.1524" layer="91"/>
-<label x="-20.32" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 <net name="SCRPWR" class="0">
@@ -12576,6 +12566,11 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pinref part="D3" gate="G$1" pin="A"/>
 <wire x1="-132.08" y1="-38.1" x2="-137.16" y2="-38.1" width="0.1524" layer="91"/>
 <label x="-139.7" y="-48.26" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="R1" gate="G$1" pin="1"/>
+<wire x1="-120.396" y1="60.96" x2="-116.078" y2="60.96" width="0.1524" layer="91"/>
+<label x="-119.38" y="60.96" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="N$5" class="0">
@@ -12743,11 +12738,6 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="-99.06" y1="-7.62" x2="-99.06" y2="2.54" width="0.1524" layer="91"/>
 <junction x="-99.06" y="-7.62"/>
 <pinref part="R5" gate="G$1" pin="1"/>
-</segment>
-<segment>
-<pinref part="U1" gate="G$1" pin="USBID"/>
-<wire x1="-83.82" y1="66.04" x2="-85.09" y2="66.04" width="0.1524" layer="91"/>
-<label x="-85.09" y="66.04" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="INTEGCLR" class="0">
