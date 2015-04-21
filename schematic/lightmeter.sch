@@ -13111,14 +13111,14 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 </net>
 <net name="MICOUT" class="0">
 <segment>
-<pinref part="IC$4" gate="G$1" pin="PA4"/>
-<wire x1="-45.72" y1="-43.18" x2="-45.72" y2="-45.72" width="0.1524" layer="91"/>
-<label x="-45.72" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
-</segment>
-<segment>
 <pinref part="C1" gate="G$1" pin="2"/>
 <wire x1="121.92" y1="106.68" x2="127" y2="106.68" width="0.1524" layer="91"/>
 <label x="127" y="106.68" size="1.778" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="IC$4" gate="G$1" pin="PB1"/>
+<wire x1="-20.32" y1="-43.18" x2="-20.32" y2="-45.72" width="0.1524" layer="91"/>
+<label x="-20.32" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 <net name="N$14" class="0">
@@ -13180,9 +13180,9 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <label x="10.16" y="33.02" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<pinref part="IC$4" gate="G$1" pin="PA2"/>
-<wire x1="-66.04" y1="-27.94" x2="-71.12" y2="-27.94" width="0.1524" layer="91"/>
-<label x="-71.12" y="-27.94" size="1.778" layer="95" rot="R180" xref="yes"/>
+<pinref part="IC$4" gate="G$1" pin="PA4"/>
+<wire x1="-45.72" y1="-43.18" x2="-45.72" y2="-45.72" width="0.1524" layer="91"/>
+<label x="-45.72" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 </nets>
