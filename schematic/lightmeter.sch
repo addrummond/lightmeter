@@ -12436,9 +12436,9 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pinref part="Q1" gate="G$1" pin="G"/>
 </segment>
 <segment>
-<pinref part="IC$4" gate="G$1" pin="PA1"/>
-<wire x1="-66.04" y1="-22.86" x2="-68.58" y2="-22.86" width="0.1524" layer="91"/>
-<label x="-68.58" y="-22.86" size="1.778" layer="95" rot="R180" xref="yes"/>
+<pinref part="IC$4" gate="G$1" pin="PB4"/>
+<wire x1="-25.4" y1="22.86" x2="-25.4" y2="25.4" width="0.1524" layer="91"/>
+<label x="-25.4" y="25.4" size="1.778" layer="95" rot="R90" xref="yes"/>
 </segment>
 </net>
 <net name="PBI$1" class="0">
@@ -12787,9 +12787,9 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="134.62" y1="0" x2="121.92" y2="0" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="IC$4" gate="G$1" pin="PA2"/>
-<wire x1="-66.04" y1="-27.94" x2="-71.12" y2="-27.94" width="0.1524" layer="91"/>
-<label x="-71.12" y="-27.94" size="1.778" layer="95" rot="R180" xref="yes"/>
+<pinref part="IC$4" gate="G$1" pin="PA1"/>
+<wire x1="-66.04" y1="-22.86" x2="-71.12" y2="-22.86" width="0.1524" layer="91"/>
+<label x="-71.12" y="-22.86" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="DIODESW" class="0">
@@ -13171,6 +13171,18 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pinref part="IC$4" gate="G$1" pin="PB5"/>
 <wire x1="-30.48" y1="22.86" x2="-30.48" y2="25.4" width="0.1524" layer="91"/>
 <label x="-30.48" y="25.4" size="1.778" layer="95" rot="R90" xref="yes"/>
+</segment>
+</net>
+<net name="ACCELINT2" class="0">
+<segment>
+<pinref part="IC$2" gate="G$1" pin="INT2"/>
+<wire x1="15.24" y1="33.02" x2="10.16" y2="33.02" width="0.1524" layer="91"/>
+<label x="10.16" y="33.02" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="IC$4" gate="G$1" pin="PA2"/>
+<wire x1="-66.04" y1="-27.94" x2="-71.12" y2="-27.94" width="0.1524" layer="91"/>
+<label x="-71.12" y="-27.94" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 </nets>
