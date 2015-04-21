@@ -7077,9 +7077,9 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="1.6724" y1="0.6604" x2="1.6724" y2="-0.6524" width="0.2032" layer="21"/>
 <wire x1="0.7136" y1="0.6604" x2="1.6724" y2="0.6604" width="0.2032" layer="21"/>
 <wire x1="0.2224" y1="-0.6604" x2="-0.2364" y2="-0.6604" width="0.2032" layer="21"/>
-<smd name="3" x="0" y="1" dx="1" dy="1.143" layer="1"/>
-<smd name="2" x="0.95" y="-1" dx="1" dy="1.143" layer="1"/>
-<smd name="1" x="-0.95" y="-1" dx="1" dy="1.143" layer="1"/>
+<smd name="3" x="0" y="1" dx="1" dy="1.0922" layer="1"/>
+<smd name="2" x="0.95" y="-1" dx="1" dy="1.0922" layer="1"/>
+<smd name="1" x="-0.95" y="-1" dx="1" dy="1.0922" layer="1"/>
 <text x="1.905" y="0" size="0.8128" layer="25" ratio="18">&gt;NAME</text>
 <text x="1.905" y="-0.635" size="0.4064" layer="27" ratio="10">&gt;VALUE</text>
 <rectangle x1="-0.2286" y1="0.7112" x2="0.2286" y2="1.2954" layer="51"/>
