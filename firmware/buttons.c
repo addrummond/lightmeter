@@ -12,7 +12,7 @@
 
 static unsigned BUTTON_MASK = 0;
 
-unsigned get_button_mask()
+unsigned buttons_get_mask()
 {
     unsigned m = BUTTON_MASK;
     BUTTON_MASK = 0;

@@ -143,5 +143,13 @@ int main()
         }
 
         ui_show_interface();
+
+        unsigned mask = buttons_get_mask();
+        if (mask == 2) {
+            // Reading.
+        }
+        else if (mask == 1) {
+            // ...
+        }
     }
 }

@@ -2,6 +2,6 @@
 #define BUTTONS_H
 
 void buttons_setup();
-unsigned get_button_mask();
+unsigned buttons_get_mask();
 
 #endif
