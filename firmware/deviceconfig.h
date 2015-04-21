@@ -11,12 +11,12 @@
 
 STM32F030K6T6 configuration.
 
-                  I  I
-               B  2  2
-               O  C  C        S  S
-            V  O  S  S        T  T
-            S  T  D  C        G  G
-            S  0  A  L        1  2
+                  I  I  L
+               B  2  2  R
+               O  C  C  G     S  S
+            V  O  S  S  E     T  T
+            S  T  D  C  B     G  G
+            S  0  A  L  L     1  2
             |  |  |  |  |  |  |  |
             ________________________
 VDD      --|                       |-- SWDCLK/USBD+
