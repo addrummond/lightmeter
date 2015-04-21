@@ -7,6 +7,8 @@
 #include <stm32f0xx_i2c.h>
 #include <stm32f0xx_syscfg.h>
 
+#define SYS_TICK_MAX 16777215
+
 /*
 
 STM32F030K6T6 configuration.

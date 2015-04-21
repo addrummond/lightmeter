@@ -9,6 +9,7 @@ void display_write_data_start(void);
 void display_write_data_end(void);
 void display_reset(void);
 void display_init(void);
+void display_ramp_down_contrast(uint32_t ticks_per_grade);
 void display_set_contrast(uint8_t contrast);
 void display_write_page_array(const uint8_t *pages, uint_fast8_t ncols, uint_fast8_t pages_per_col, uint_fast8_t x, uint_fast8_t page_y);
 void display_bwrite_8px_char(const uint8_t *char_grid, uint8_t *out, uint_fast8_t pages_per_col, uint_fast8_t voffset);

@@ -62,7 +62,7 @@ void sysinit_init()
 
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOB, ENABLE);
 
-    SysTick->LOAD = 16777215;
+    SysTick->LOAD = SYS_TICK_MAX;
     SysTick->VAL = 0;
     SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
 
@@ -113,6 +113,7 @@ void sysinit_enter_sleep_mode()
     sysinit_reset_sleep_counter();
     time_to_sleep = false;
 
+    display_ramp_down_contrast(192000);
     display_command(DISPLAY_DISPLAYOFF);
     set_pins_low_analogue();
     PWR_EnterSTOPMode(PWR_Regulator_LowPower, PWR_SLEEPEntry_WFI);

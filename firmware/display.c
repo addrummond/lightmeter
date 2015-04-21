@@ -140,6 +140,17 @@ void display_init()
     display_command(DISPLAY_DISPLAYON);
 }
 
+void display_ramp_down_contrast(uint32_t ticks_per_grade)
+{
+    uint8_t val = 255;
+    do {
+        display_set_contrast(val);
+        uint32_t e = ((SysTick->VAL << 8) - (ticks_per_grade << 8)) >> 8;
+        while (SysTick->VAL < e); // Deal with case where it overflowed.
+        while (SysTick->VAL >= e);
+    } while (val-- > 0);
+}
+
 // Writes a slightly oddly-formatted array of columns, where each column is some number of pages tall.
 // For example, if 'pages_per_col' is 3, then pages[0] gives the column at x+0, page_y,
 // pages[1] gives the column at x+0, page_y+1, pages[2] gives the column at x+0, page_y+2,
