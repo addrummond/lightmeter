@@ -142,6 +142,6 @@ int main()
             sysinit_after_wakeup_init();
         }
 
-
+        ui_show_interface();
     }
 }

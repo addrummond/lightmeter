@@ -191,6 +191,16 @@ static void show_main_menu()
     }
 }
 
+static void show_init()
+{
+    uint8_t pages[8];
+    unsigned i;
+    for (i = 0; i < 8; ++i) {
+        pages[i] = 0xFF;
+    }
+    display_write_page_array(pages, 8, 1, (DISPLAY_LCDWIDTH/2)+4, DISPLAY_NUM_PAGES/2);
+}
+
 void ui_show_interface()
 {
     // Used to make measurements of display power consumption.
@@ -215,7 +225,10 @@ void ui_show_interface()
         display_clear();
     last_mode = ms.ui_mode;
 
-    if (ms.ui_mode == UI_MODE_READING) {
+    if (ms.ui_mode == UI_MODE_INIT) {
+        show_init();
+    }
+    else if (ms.ui_mode == UI_MODE_READING) {
         show_reading();
     }
     else if (ms.ui_mode == UI_MODE_MAIN_MENU) {

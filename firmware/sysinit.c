@@ -7,6 +7,8 @@
 #include <sysinit.h>
 #include <stdbool.h>
 #include <debugging.h>
+#include <display.h>
+#include <deviceconfig.h>
 
 #include <i2c.h>
 #include <buttons.h>
@@ -16,7 +18,6 @@ static bool time_to_sleep = false;
 void TIM3_IRQHandler()
 {
     TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
-    debugging_writec("TIM!\n");
     time_to_sleep = true;
 }
 
@@ -67,6 +68,43 @@ void sysinit_init()
 
     i2c_init();
     buttons_setup();
+
+    display_init();
+    display_clear();
+}
+
+static void set_pins_low_analogue()
+{
+    GPIO_InitTypeDef gpi;
+#define ALLA ( GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 \
+               | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9 \
+               | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 \
+               | GPIO_Pin_15 )
+#define ALLB ( GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 \
+               | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 )
+    GPIO_StructInit(&gpi);
+    gpi.GPIO_Pin = ALLA;
+    if (GPIOA == USB_DPLUS_GPIO_PORT)
+        gpi.GPIO_Pin &= ~USB_DPLUS_PIN;
+    if (GPIOA == USB_DMINUS_GPIO_PORT)
+        gpi.GPIO_Pin &= ~USB_DMINUS_PIN;
+    if (GPIOA == PUSHBUTTON1_GPIO_PORT)
+        gpi.GPIO_Pin &= ~PUSHBUTTON1_PIN;
+    if (GPIOA == PUSHBUTTON2_GPIO_PORT)
+        gpi.GPIO_Pin &= ~PUSHBUTTON2_PIN;
+    GPIO_Init(GPIOA, &gpi);
+    gpi.GPIO_Pin = ALLB;
+    if (GPIOB == USB_DPLUS_GPIO_PORT)
+        gpi.GPIO_Pin &= ~USB_DPLUS_PIN;
+    if (GPIOB == USB_DMINUS_GPIO_PORT)
+        gpi.GPIO_Pin &= ~USB_DMINUS_PIN;
+    if (GPIOB == PUSHBUTTON1_GPIO_PORT)
+        gpi.GPIO_Pin &= ~PUSHBUTTON1_PIN;
+    if (GPIOB == PUSHBUTTON2_GPIO_PORT)
+        gpi.GPIO_Pin &= ~PUSHBUTTON2_PIN;
+    GPIO_Init(GPIOB, &gpi);
+#undef ALLA
+#undef ALLB
 }
 
 void sysinit_enter_sleep_mode()
@@ -74,6 +112,9 @@ void sysinit_enter_sleep_mode()
     TIM_ITConfig(TIM3, TIM_IT_Update, DISABLE);
     sysinit_reset_sleep_counter();
     time_to_sleep = false;
+
+    display_command(DISPLAY_DISPLAYOFF);
+    set_pins_low_analogue();
     PWR_EnterSTOPMode(PWR_Regulator_LowPower, PWR_SLEEPEntry_WFI);
 }
 

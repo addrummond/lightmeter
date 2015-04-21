@@ -49,6 +49,15 @@ MEASURE2 --|                       |-- VDD
 */
 
 //
+// USB
+//
+#define USB_DPLUS_GPIO_PORT          GPIOA
+#define USB_DPLUS_PIN                GPIO_Pin_14
+#define USB_DMINUS_GPIO_PORT         GPIOA
+#define USB_DMINUS_PIN               GPIO_Pin_13
+
+
+//
 // Pushbutton ports configuration.
 //
 #define PUSHBUTTON1_GPIO_PORT        GPIOA
