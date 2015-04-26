@@ -11863,6 +11863,9 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="D6" library="adafruit" deviceset="DIODE" device="SOD-323F"/>
 <part name="D7" library="adafruit" deviceset="DIODE" device="SOD-323F"/>
 <part name="R12" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
+<part name="J7" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
+<part name="GND33" library="supply1" deviceset="GND" device=""/>
+<part name="GND39" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -12008,6 +12011,9 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <instance part="D6" gate="G$1" x="-53.34" y="-76.2"/>
 <instance part="D7" gate="G$1" x="-53.34" y="-86.36"/>
 <instance part="R12" gate="G$1" x="-68.58" y="-93.98" rot="R270"/>
+<instance part="J7" gate="G$1" x="58.42" y="-116.84"/>
+<instance part="GND33" gate="1" x="45.72" y="-116.84" rot="R270"/>
+<instance part="GND39" gate="1" x="71.12" y="-116.84" rot="R90"/>
 </instances>
 <busses>
 </busses>
@@ -12348,6 +12354,16 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="185.42" y1="-142.24" x2="187.96" y2="-142.24" width="0.1524" layer="91"/>
 <junction x="185.42" y="-142.24"/>
 <pinref part="GND30" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="J7" gate="G$1" pin="2"/>
+<pinref part="GND33" gate="1" pin="GND"/>
+<wire x1="48.26" y1="-116.84" x2="50.8" y2="-116.84" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="J7" gate="G$1" pin="1"/>
+<pinref part="GND39" gate="1" pin="GND"/>
+<wire x1="68.58" y1="-116.84" x2="66.04" y2="-116.84" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="VCC" class="0">
