@@ -1381,16 +1381,16 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <circle x="-1.905" y="-1.27" radius="0.0508" width="0.127" layer="1"/>
 </package>
 <package name="WQFN10">
-<smd name="P$9" x="0" y="1.0414" dx="0.1778" dy="1.069340625" layer="1"/>
-<smd name="P$8" x="0.39878125" y="1.0414" dx="0.1778" dy="1.069340625" layer="1"/>
-<smd name="P$10" x="-0.39878125" y="1.0414" dx="0.1778" dy="1.05918125" layer="1"/>
-<smd name="P$3" x="-0.39878125" y="-1.0414" dx="0.1778" dy="1.069340625" layer="1"/>
-<smd name="P$4" x="0" y="-1.0414" dx="0.1778" dy="1.069340625" layer="1"/>
-<smd name="P$5" x="0.39878125" y="-1.0414" dx="0.1778" dy="1.069340625" layer="1"/>
-<smd name="P$7" x="0.822959375" y="0.199390625" dx="0.1778" dy="1.069340625" layer="1" rot="R90"/>
-<smd name="P$6" x="0.822959375" y="-0.199390625" dx="0.1778" dy="1.069340625" layer="1" rot="R90"/>
-<smd name="P$2" x="-0.822959375" y="-0.199390625" dx="0.1778" dy="1.069340625" layer="1" rot="R90"/>
-<smd name="P$1" x="-0.873759375" y="0.199390625" dx="0.1778" dy="1.170940625" layer="1" rot="R90"/>
+<smd name="P$9" x="0" y="0.9144" dx="0.1778" dy="0.80518125" layer="1"/>
+<smd name="P$8" x="0.39878125" y="0.9144" dx="0.1778" dy="0.80518125" layer="1"/>
+<smd name="P$10" x="-0.39878125" y="0.9144" dx="0.1778" dy="0.80518125" layer="1"/>
+<smd name="P$3" x="-0.39878125" y="-0.9144" dx="0.1778" dy="0.815340625" layer="1"/>
+<smd name="P$4" x="0" y="-0.9144" dx="0.1778" dy="0.815340625" layer="1"/>
+<smd name="P$5" x="0.39878125" y="-0.9144" dx="0.1778" dy="0.815340625" layer="1"/>
+<smd name="P$7" x="0.695959375" y="0.199390625" dx="0.1778" dy="0.815340625" layer="1" rot="R90"/>
+<smd name="P$6" x="0.695959375" y="-0.199390625" dx="0.1778" dy="0.815340625" layer="1" rot="R90"/>
+<smd name="P$2" x="-0.695959375" y="-0.199390625" dx="0.1778" dy="0.815340625" layer="1" rot="R90"/>
+<smd name="P$1" x="-0.746759375" y="0.199390625" dx="0.1778" dy="0.916940625" layer="1" rot="R90"/>
 <wire x1="-0.7" y1="0.9" x2="0.7" y2="0.9" width="0.0762" layer="21"/>
 <wire x1="-0.7" y1="-0.9" x2="0.7" y2="-0.9" width="0.0762" layer="21"/>
 <wire x1="-0.7" y1="0.9" x2="-0.7" y2="-0.9" width="0.0762" layer="21"/>
@@ -1557,8 +1557,8 @@ package type OT</description>
 <wire x1="-6.35" y1="-2.54" x2="6.35" y2="-2.54" width="0.127" layer="51"/>
 </package>
 <package name="78171-0002">
-<smd name="P$1" x="-0.6" y="2.9035" dx="0.6" dy="2.882" layer="1" cream="no"/>
-<smd name="P$2" x="0.6" y="2.9035" dx="0.6" dy="2.882" layer="1"/>
+<smd name="P$1" x="-0.6" y="2.54" dx="0.6" dy="2.882" layer="1" cream="no"/>
+<smd name="P$2" x="0.6" y="2.54" dx="0.6" dy="2.882" layer="1"/>
 <smd name="P$300" x="-3.02" y="-1.8875" dx="2.732" dy="0.8" layer="1"/>
 <smd name="P$400" x="3.02" y="-1.8875" dx="2.732" dy="0.8" layer="1"/>
 <wire x1="-3.175" y1="-3.175" x2="-3.175" y2="3.175" width="0.127" layer="21"/>
@@ -2630,6 +2630,22 @@ diameter 7.62 mm, horizontal, grid 12.7 mm</description>
 <wire x1="0.8" y1="0.38" x2="0.8" y2="-0.38" width="0.127" layer="21"/>
 <text x="-1.905" y="1.27" size="0.762" layer="25">&gt;NAME</text>
 </package>
+<package name="US8">
+<smd name="P$1" x="-1.38938125" y="0.74421875" dx="1.016" dy="0.2794" layer="1"/>
+<smd name="P$2" x="-1.38938125" y="0.250190625" dx="1.016" dy="0.2794" layer="1"/>
+<smd name="P$3" x="-1.38938125" y="-0.250190625" dx="1.016" dy="0.2794" layer="1"/>
+<smd name="P$4" x="-1.38938125" y="-0.74421875" dx="1.016" dy="0.2794" layer="1"/>
+<smd name="P$5" x="1.38938125" y="-0.74421875" dx="1.016" dy="0.2794" layer="1"/>
+<smd name="P$6" x="1.38938125" y="-0.250190625" dx="1.016" dy="0.2794" layer="1"/>
+<smd name="P$7" x="1.38938125" y="0.250190625" dx="1.016" dy="0.2794" layer="1"/>
+<smd name="P$8" x="1.38938125" y="0.74421875" dx="1.016" dy="0.2794" layer="1"/>
+<wire x1="-1.14935" y1="1.0033" x2="1.14935" y2="1.0033" width="0.254" layer="21"/>
+<wire x1="-1.14935" y1="-1.0033" x2="1.14935" y2="-1.0033" width="0.254" layer="21"/>
+<wire x1="-1.14935" y1="1.0033" x2="-1.14935" y2="-1.0033" width="0.254" layer="21"/>
+<wire x1="1.14935" y1="1.0033" x2="1.14935" y2="-1.0033" width="0.254" layer="21"/>
+<circle x="-1.27" y="1.397" radius="0.254" width="0.127" layer="21"/>
+<text x="-2.54" y="1.905" size="1.27" layer="25">&gt;NAME</text>
+</package>
 </packages>
 <symbols>
 <symbol name="74HC164">
@@ -3300,6 +3316,21 @@ diameter 7.62 mm, horizontal, grid 12.7 mm</description>
 <wire x1="10.16" y1="-7.62" x2="-7.62" y2="-7.62" width="0.254" layer="94"/>
 <wire x1="-7.62" y1="12.7" x2="-7.62" y2="-7.62" width="0.254" layer="94"/>
 <text x="-2.54" y="10.16" size="1.27" layer="94">PNJ4K01F</text>
+</symbol>
+<symbol name="NL27WZ08">
+<pin name="A1" x="-15.24" y="7.62" visible="pin" length="middle"/>
+<pin name="B1" x="-15.24" y="2.54" visible="pin" length="middle"/>
+<pin name="Y2" x="-15.24" y="-2.54" visible="pin" length="middle"/>
+<pin name="GND" x="-15.24" y="-7.62" visible="pin" length="middle"/>
+<pin name="A2" x="15.24" y="-7.62" visible="pin" length="middle" rot="R180"/>
+<pin name="B2" x="15.24" y="-2.54" visible="pin" length="middle" rot="R180"/>
+<pin name="Y1" x="15.24" y="2.54" visible="pin" length="middle" rot="R180"/>
+<pin name="VCC" x="15.24" y="7.62" visible="pin" length="middle" rot="R180"/>
+<wire x1="-10.16" y1="10.16" x2="10.16" y2="10.16" width="0.254" layer="94"/>
+<wire x1="10.16" y1="10.16" x2="10.16" y2="-10.16" width="0.254" layer="94"/>
+<wire x1="10.16" y1="-10.16" x2="-10.16" y2="-10.16" width="0.254" layer="94"/>
+<wire x1="-10.16" y1="-10.16" x2="-10.16" y2="10.16" width="0.254" layer="94"/>
+<text x="0" y="-5.08" size="1.27" layer="94" rot="R90">NL27WZ08</text>
 </symbol>
 </symbols>
 <devicesets>
@@ -4931,6 +4962,28 @@ naming: grid - package width</description>
 <connect gate="G$1" pin="GND4" pad="P$5"/>
 <connect gate="G$1" pin="IOUT" pad="P$6"/>
 <connect gate="G$1" pin="VCC" pad="P$1"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="NL27WZ08">
+<gates>
+<gate name="G$1" symbol="NL27WZ08" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="US8">
+<connects>
+<connect gate="G$1" pin="A1" pad="P$1"/>
+<connect gate="G$1" pin="A2" pad="P$5"/>
+<connect gate="G$1" pin="B1" pad="P$2"/>
+<connect gate="G$1" pin="B2" pad="P$6"/>
+<connect gate="G$1" pin="GND" pad="P$4"/>
+<connect gate="G$1" pin="VCC" pad="P$8"/>
+<connect gate="G$1" pin="Y1" pad="P$7"/>
+<connect gate="G$1" pin="Y2" pad="P$3"/>
 </connects>
 <technologies>
 <technology name=""/>
