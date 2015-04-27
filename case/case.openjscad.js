@@ -1,7 +1,6 @@
 //
 // TODO:
 //
-// * Determine exactly how high button nobs should be.
 // * Add side buttons.
 // * Separate out incident dome into separate piece.
 // * Make body thinner around incident dome.
@@ -13,6 +12,7 @@ var NFACES = 20;
 
 var THICK_MARGIN = 0.15;
 var SCREEN_THICK = 1.75;
+var BUTTON_THICK = 0.5; // 0.35 +/- 0.15
 
 var THICK =
 SCREEN_THICK + // Screen (buttons are slimmer)
@@ -45,10 +45,14 @@ var USB_PORT_THICK_BELOW_PCB_CENTER = 1.52 - 0.6/2;
 var USB_PORT_THICK = 2.94;
 if (Math.abs((USB_PORT_THICK_ABOVE_PCB_CENTER + USB_PORT_THICK_BELOW_PCB_CENTER) - USB_PORT_THICK > 0.0001))
     throw new Error("Bad value!");
+
+//var USB_CENTER_FROM_TOP = 28.2702; // Value for original prototype board.
 var USB_CENTER_FROM_TOP = 25.5524;
 
 var WIDTH = PCB_WIDTH + PCB_HORIZ_MARGIN;
 var HEIGHT = PCB_HEIGHT + PCB_HORIZ_MARGIN;
+
+var TOP_OF_BOTTOM_SCREW_FROM_BOTTOM = 1.77 + 1.0/*error margin*/;
 
 var PCB_THICK = 0.6;
 var SCREEN_THICK = 1.75;
@@ -78,10 +82,11 @@ var SPHERE_HOLE_HEIGHT = Math.sqrt(SPHERE_HEIGHT*SPHERE_HEIGHT - SPHERE_RECESS*S
 
 var TOTAL_WIDTH = WIDTH + THICK + (CASE_THICK*2);
 
+var BUTTON_PROTRUSION_THICK = 0.2;
 var BIG_BUTTON_WIDTH = 11;
 var BUTTON_HEIGHT = 8;
-var BUTTON_THICK = 1;
-var BUTTON_NOB_HEIGHT = 1;
+var BUTTON_THICK = CASE_THICK + BUTTON_PROTRUSION_THICK;
+var BUTTON_NOB_HEIGHT = SCREEN_THICK - BUTTON_THICK;
 var BUTTON_NOB_RAD = 1.5;
 var BUTTON_CENTER_FROM_BOTTOM = 2.0574000000000003396;
 var BUTTON_CENTER_DIV = 3;
@@ -142,7 +147,7 @@ function make_hollow_box(w, h, t, case_thick) {
     var ledge = cube({
         size: [
             PCB_LEDGE_WIDTH,
-            HEIGHT,
+            HEIGHT - TOP_OF_BOTTOM_SCREW_FROM_BOTTOM,
             PCB_LEDGE_THICK
         ]
     }).translate([0, 0, 0]);
@@ -153,7 +158,7 @@ function make_hollow_box(w, h, t, case_thick) {
 function make_button(width, pad){
     var top = linear_extrude({ height: BUTTON_THICK }, expand(0.5, NFACES, square([width+pad*2, BUTTON_HEIGHT+pad*2])));
     var nob = linear_extrude({ height: BUTTON_NOB_HEIGHT }, circle(BUTTON_NOB_RAD))
-    .translate([width/2-BUTTON_NOB_RAD, BUTTON_HEIGHT/2-BUTTON_NOB_RAD, -BUTTON_THICK]);
+    .translate([width/2-BUTTON_NOB_RAD, BUTTON_HEIGHT/2 - BUTTON_NOB_RAD - BUTTON_HEIGHT/BUTTON_CENTER_DIV/2, -BUTTON_THICK]);
     var but = top.union(nob);
     return but;
 }
@@ -168,7 +173,7 @@ function make_small_button(pad) {
 
 var butfromtop = HEIGHT - BUTTON_CENTER_FROM_BOTTOM - BUTTON_HEIGHT/BUTTON_CENTER_DIV;
 
-function output_big_button() {
+function output_buttons() {
     var z = separated ? 10 : 0;
     var big = make_big_button(0)
               .translate([(WIDTH-BIG_BUTTON_WIDTH)/2, butfromtop, THICK-BUTTON_THICK+CASE_THICK + z]);
@@ -208,6 +213,8 @@ function output_case() {
                   .translate([0, 0, -SPHERE_RECESS+0.01]));
     hs = hs.subtract(cube({ center: true, size: [SPHERE_HEIGHT*4, SPHERE_HEIGHT*4, SPHERE_RECESS-SPHERE_BAND_THICK ]}).translate([0, 0, -(SPHERE_RECESS-SPHERE_BAND_THICK)/2]));
     hs = hs.translate(ipos).translate([0,0,separated ? -10 : SPHERE_RECESS]);
+
+    // HACK: COMMENT OUT THIS TO EXCLUDE INCIDENT DOME.
     box = box.union(color("white", hs));
 
     // Hole for screen.
@@ -240,7 +247,7 @@ function output_case() {
                            THICK-SCREEN_THICK-PCB_THICK/2-USB_PORT_THICK_BELOW_PCB_CENTER+CASE_THICK]);
     box = box.subtract(port);
 
-    box = box.subtract(make_spacer_hole().translate([PCB_LEDGE_WIDTH/2,HEIGHT+0.001,PCB_LEDGE_THICK/2]));
+    box = box.subtract(make_spacer_hole().translate([PCB_LEDGE_WIDTH/2,HEIGHT+0.001-TOP_OF_BOTTOM_SCREW_FROM_BOTTOM,PCB_LEDGE_THICK/2]));
 
     return box;
 }
@@ -252,6 +259,6 @@ function output_height_reference() {
 
 function main() {
     return output_case()
-    .union(output_big_button())
+    .union(output_buttons())
     ;//.union(output_height_reference());
 }
