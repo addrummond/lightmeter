@@ -29,6 +29,9 @@ console.log("Inner thickness: " + THICK);
 var SCREEN_FROM_TOP = 2;
 var SCREEN_WIDTH = 26.7;
 var SCREEN_HEIGHT = 19.26;
+var SCREEN_HIDDEN_BORDER = 0.5;
+SCREEN_WIDTH -= SCREEN_HIDDEN_BORDER*2;
+SCREEN_HEIGHT -= SCREEN_HIDDEN_BORDER*2;
 
 var PCB_WIDTH = SCREEN_WIDTH + 1;
 var PCB_HEIGHT = 39.039799999999999613;
@@ -157,8 +160,8 @@ function make_hollow_box(w, h, t, case_thick) {
 
 function make_button(width, pad){
     var top = linear_extrude({ height: BUTTON_THICK }, expand(0.5, NFACES, square([width+pad*2, BUTTON_HEIGHT+pad*2])));
-    var nob = linear_extrude({ height: BUTTON_NOB_HEIGHT }, circle(BUTTON_NOB_RAD))
-    .translate([width/2-BUTTON_NOB_RAD, BUTTON_HEIGHT/2 - BUTTON_NOB_RAD - BUTTON_HEIGHT/BUTTON_CENTER_DIV/2, -BUTTON_THICK]);
+    var nob = linear_extrude({ height: BUTTON_THICK+BUTTON_NOB_HEIGHT }, circle(BUTTON_NOB_RAD))
+    .translate([width/2-BUTTON_NOB_RAD, BUTTON_HEIGHT/2 - BUTTON_NOB_RAD - BUTTON_HEIGHT/BUTTON_CENTER_DIV/2, -BUTTON_NOB_HEIGHT]);
     var but = top.union(nob);
     return but;
 }
