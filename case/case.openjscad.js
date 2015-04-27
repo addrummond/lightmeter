@@ -191,6 +191,20 @@ function output_buttons() {
     return color("white", big.union(smallleft).union(smallright));
 }
 
+var ipos = [((WIDTH-SENSOR_POSITIONS[0][0]) + (WIDTH-SENSOR_POSITIONS[1][0]))/2.0 + CASE_THICK, SENSOR_POSITIONS[0][1]+CASE_THICK, 0];
+
+function make_incident_dome()
+{
+    var hs = make_hollow_half_sphere();
+    hs = hs.union(linear_extrude({ height: SPHERE_BAND_THICK }, circle({ center:true, r: SPHERE_HOLE_HEIGHT+SPHERE_BAND_DIAM })
+                                                                .subtract(circle({ center: true, r: SPHERE_HOLE_HEIGHT })))
+                  .translate([0, 0, -SPHERE_RECESS+0.01]));
+    hs = hs.subtract(cube({ center: true, size: [SPHERE_HEIGHT*4, SPHERE_HEIGHT*4, SPHERE_RECESS-SPHERE_BAND_THICK ]}).translate([0, 0, -(SPHERE_RECESS-SPHERE_BAND_THICK)/2]));
+    hs = hs.translate(ipos).translate([0,0,separated ? -10 : SPHERE_RECESS]);
+
+    return hs;
+}
+
 function output_case() {
     var box = color("red", make_hollow_box(WIDTH, HEIGHT+BATTERY_HEIGHT, THICK, CASE_THICK));
     var h = [ ];
@@ -207,18 +221,8 @@ function output_case() {
     box = box.subtract(sensor_hole);
 
     // Hole for incident sensors.
-    var ipos = [((WIDTH-SENSOR_POSITIONS[0][0]) + (WIDTH-SENSOR_POSITIONS[1][0]))/2.0 + CASE_THICK, SENSOR_POSITIONS[0][1]+CASE_THICK, 0];
     var incident_hole = make_sphere(SPHERE_HOLE_HEIGHT).translate(ipos);
     box = box.subtract(incident_hole);
-    var hs = make_hollow_half_sphere();
-    hs = hs.union(linear_extrude({ height: SPHERE_BAND_THICK }, circle({ center:true, r: SPHERE_HOLE_HEIGHT+SPHERE_BAND_DIAM })
-                                                                .subtract(circle({ center: true, r: SPHERE_HOLE_HEIGHT })))
-                  .translate([0, 0, -SPHERE_RECESS+0.01]));
-    hs = hs.subtract(cube({ center: true, size: [SPHERE_HEIGHT*4, SPHERE_HEIGHT*4, SPHERE_RECESS-SPHERE_BAND_THICK ]}).translate([0, 0, -(SPHERE_RECESS-SPHERE_BAND_THICK)/2]));
-    hs = hs.translate(ipos).translate([0,0,separated ? -10 : SPHERE_RECESS]);
-
-    // HACK: COMMENT OUT THIS TO EXCLUDE INCIDENT DOME.
-    box = box.union(color("white", hs));
 
     // Hole for screen.
     box = box.subtract(cube({
@@ -261,7 +265,11 @@ function output_height_reference() {
 }
 
 function main() {
-    return output_case()
-    .union(output_buttons())
-    ;//.union(output_height_reference());
+    return (
+        output_case()
+        .union(output_big_button())
+        .union(output_small_button())
+        .union(make_incident_dome())
+        //.union(output_height_reference())
+    );
 }
