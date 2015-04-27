@@ -175,25 +175,25 @@ function make_small_button(pad) {
 }
 
 var butfromtop = HEIGHT - BUTTON_CENTER_FROM_BOTTOM - BUTTON_HEIGHT/BUTTON_CENTER_DIV;
+var buttonZ = separated ? 10 : 0;
 
-function output_buttons() {
-    var z = separated ? 10 : 0;
+function output_big_button() {
     var big = make_big_button(0)
-              .translate([(WIDTH-BIG_BUTTON_WIDTH)/2, butfromtop, THICK-BUTTON_THICK+CASE_THICK + z]);
+              .translate([(WIDTH-BIG_BUTTON_WIDTH)/2, butfromtop, THICK-BUTTON_THICK+CASE_THICK + buttonZ]);
+    return color("white", big);
+}
+
+function output_small_button() {
     var smallleft = make_small_button(0)
                     .translate([WIDTH-CASE_THICK*1.5-SMALL_BUTTON_WIDTH,
                                 butfromtop,
-                                THICK-BUTTON_THICK+CASE_THICK + z]);
-    var smallright = make_small_button(0)
-                     .translate([CASE_THICK*1.5+BUTTON_HOLE_MARGIN,
-                                 butfromtop,
-                                 THICK-BUTTON_THICK+CASE_THICK + z]);
-    return color("white", big.union(smallleft).union(smallright));
+                                THICK-BUTTON_THICK+CASE_THICK + buttonZ]);
+    return color("white", smallleft);
 }
 
 var ipos = [((WIDTH-SENSOR_POSITIONS[0][0]) + (WIDTH-SENSOR_POSITIONS[1][0]))/2.0 + CASE_THICK, SENSOR_POSITIONS[0][1]+CASE_THICK, 0];
 
-function make_incident_dome()
+function output_incident_dome()
 {
     var hs = make_hollow_half_sphere();
     hs = hs.union(linear_extrude({ height: SPHERE_BAND_THICK }, circle({ center:true, r: SPHERE_HOLE_HEIGHT+SPHERE_BAND_DIAM })
@@ -202,7 +202,7 @@ function make_incident_dome()
     hs = hs.subtract(cube({ center: true, size: [SPHERE_HEIGHT*4, SPHERE_HEIGHT*4, SPHERE_RECESS-SPHERE_BAND_THICK ]}).translate([0, 0, -(SPHERE_RECESS-SPHERE_BAND_THICK)/2]));
     hs = hs.translate(ipos).translate([0,0,separated ? -10 : SPHERE_RECESS]);
 
-    return hs;
+    return color("white", hs);
 }
 
 function output_case() {
@@ -265,11 +265,11 @@ function output_height_reference() {
 }
 
 function main() {
-    return (
-        output_case()
-        .union(output_big_button())
-        .union(output_small_button())
-        .union(make_incident_dome())
-        //.union(output_height_reference())
+    return union(
+        output_case(),
+        output_big_button(),
+        output_small_button(),
+        output_incident_dome()
+        //output_height_reference()
     );
 }
