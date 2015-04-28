@@ -266,10 +266,10 @@ function output_height_reference() {
 
 function main() {
     return union(
-        output_case(),
-        output_big_button(),
-        output_small_button(),
-        output_incident_dome()
+        output_case()//,
+        //output_big_button(),
+        //output_small_button(),
+        //output_incident_dome()
         //output_height_reference()
     );
 }
