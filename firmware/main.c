@@ -132,6 +132,8 @@ static __attribute__ ((unused)) void test_meter()
 
 int main()
 {
+    meter_state_t *gms = &global_meter_state;
+
     sysinit_init();
     initialize_global_meter_state();
     initialize_global_transient_meter_state();
@@ -145,11 +147,14 @@ int main()
         ui_show_interface();
 
         unsigned mask = buttons_get_mask();
-        if (mask == 2) {
-            // Reading.
-        }
-        else if (mask == 1) {
-            // ...
+        //if (mask == 4) {
+        //    // Reading.
+        //}
+        if (mask == 4) {
+            // Menu.
+            gms->ui_mode = UI_MODE_MAIN_MENU;
+            gms->ui_mode_state.main_menu.item_index = 0;
+            gms->ui_mode_state.main_menu.voffset = 0;
         }
     }
 }
