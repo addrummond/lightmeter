@@ -33,8 +33,8 @@ void EXTI4_15_IRQHandler(void)
         (t > last_tick && (last_tick + (16777215-t)) > THRESHOLD)) {
         // Figure out which pins are high.
         unsigned m = 0;
-        m |= GPIO_ReadInputDataBit(PUSHBUTTON1_GPIO_PORT, PUSHBUTTON1_PIN) << 1;
-        m |= GPIO_ReadInputDataBit(PUSHBUTTON2_GPIO_PORT, PUSHBUTTON2_PIN) << 2;
+        m |= !GPIO_ReadInputDataBit(PUSHBUTTON1_GPIO_PORT, PUSHBUTTON1_PIN) << 1;
+        m |= !GPIO_ReadInputDataBit(PUSHBUTTON2_GPIO_PORT, PUSHBUTTON2_PIN) << 2;
         BUTTON_MASK = m;
 
         debugging_writec("Button interrupt ");

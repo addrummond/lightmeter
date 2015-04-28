@@ -150,7 +150,7 @@ int main()
         //if (mask == 4) {
         //    // Reading.
         //}
-        if (mask == 4) {
+        if (mask == 2) {
             // Menu.
             gms->ui_mode = UI_MODE_MAIN_MENU;
             gms->ui_mode_state.main_menu.item_index = 0;
