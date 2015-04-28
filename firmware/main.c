@@ -132,6 +132,8 @@ static __attribute__ ((unused)) void test_meter()
 
 static __attribute__ ((unused)) void test_menu_scroll()
 {
+    accel_init();
+
     meter_state_t *gms = &global_meter_state;
     gms->ui_mode = UI_MODE_MAIN_MENU;
     gms->ui_mode_state.main_menu.item_index = 0;
@@ -140,31 +142,32 @@ static __attribute__ ((unused)) void test_menu_scroll()
 
     ui_show_interface();
 
-    uint8_t s = 0;
+    int s = 0;
     for (;;) {
-        display_command(DISPLAY_SETSTARTLINE + s);
-        if (s++ == 64)
-            s = 0;
-        unsigned j;
-        for (j = 0; j < 40000; ++j);
-    }
+        int8_t a = accel_read_register(ACCEL_REG_OUT_Y_MSB);
+        if (a > -10 && a < 10)
+            a = 0;
 
-    //for (;;) {
-        display_command(DISPLAY_DEACTIVATE_SCROLL);
-        display_command(DISPLAY_VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL);
-        display_command(0x00); // Dummy byte.
-        display_command(0); // Start page address.
-        //
-        // 0b000 5 frames    0b100  3 frames
-        // 0b001 64 frames   0b101  4 frames
-        // 0b010 128 frames  0b110  25 frames
-        // 0b011 256 frames  0b111  2 frames
-        //
-        display_command(0b000);
-        display_command(0); // End page address.
-        display_command(1); // 1 row vertical scrolling offset.
-        display_command(DISPLAY_ACTIVATE_SCROLL);
-    //}
+        if (a > 0)
+            ++s;
+        else if (a < 0)
+            --s;
+        if (a != 0)
+            s += a/32;
+
+        int startline = s;
+        if (s < 0)
+            s = 64 + s;
+        if (s > 63)
+            s -= 64;
+
+        display_command(DISPLAY_SETSTARTLINE + (uint8_t)startline);
+        unsigned j;
+        int pa = a;
+        if (pa < 0)
+            pa = -pa;
+        for (j = 0; j < 30000 - (pa*40); ++j);
+    }
 }
 
 int main()
