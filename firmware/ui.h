@@ -5,6 +5,8 @@
 #include <stddef.h>
 #include <state.h>
 
+#define UI_MENU_VOFFSET_MAX 12
+
 void ui_show_interface();
 
 typedef struct ui_top_status_line_state {

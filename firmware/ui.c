@@ -101,7 +101,7 @@ static void show_main_menu()
     assert(NUM_MAIN_MENU_STRINGS >= 5);
     assert(ms.ui_mode_state.main_menu.item_index < NUM_MAIN_MENU_STRINGS);
     uint8_t voffset = ms.ui_mode_state.main_menu.voffset;
-    assert(voffset < 12);
+    assert(voffset < UI_MENU_VOFFSET_MAX);
 
     // Selected item is in the middle, with two above it and two below it.
 
@@ -172,12 +172,14 @@ static void show_main_menu()
 
         if (! (finished_mask & 0b1))
             finished_mask |= menu_bwrite_12px_char(top1_str[i], buf+ks[(voffset*10)+0], ks[(voffset*10)+5]);
-        if (! (finished_mask & 0b10))
-            finished_mask |= (menu_bwrite_12px_char(top2_str[i], buf+ks[(voffset*10)+1], ks[(voffset*10)+6]) << 1);
-        if (! (finished_mask & 0b100))
-            finished_mask |= (menu_bwrite_12px_char(center_str[i], buf+ks[(voffset*10)+2], ks[(voffset*10)+7]) << 2);
-        if (! (finished_mask & 0b1000))
-            finished_mask |= (menu_bwrite_12px_char(bttm1_str[i], buf+ks[(voffset*10)+3], ks[(voffset*10)+8]) << 3);
+        if (ms.ui_mode_state.main_menu.redraw_all) {
+            if (! (finished_mask & 0b10))
+                finished_mask |= (menu_bwrite_12px_char(top2_str[i], buf+ks[(voffset*10)+1], ks[(voffset*10)+6]) << 1);
+            if (! (finished_mask & 0b100))
+                finished_mask |= (menu_bwrite_12px_char(center_str[i], buf+ks[(voffset*10)+2], ks[(voffset*10)+7]) << 2);
+            if (! (finished_mask & 0b1000))
+                finished_mask |= (menu_bwrite_12px_char(bttm1_str[i], buf+ks[(voffset*10)+3], ks[(voffset*10)+8]) << 3);
+        }
         if (!(finished_mask & 0b10000))
             finished_mask |= (menu_bwrite_12px_char(bttm2_str[i], buf+ks[(voffset*10)+4], ks[(voffset*10)+9]) << 4);
 

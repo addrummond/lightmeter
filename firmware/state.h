@@ -29,6 +29,7 @@ typedef union ui_mode_state {
     struct {
         uint8_t item_index;
         uint8_t voffset;
+        bool redraw_all;
     } main_menu;
 } ui_mode_state_t;
 
