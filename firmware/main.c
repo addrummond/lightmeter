@@ -145,28 +145,40 @@ static __attribute__ ((unused)) void test_menu_scroll()
     int s = 0;
     for (;;) {
         int8_t a = accel_read_register(ACCEL_REG_OUT_Y_MSB);
-        if (a > -10 && a < 10)
+        if (a > -5 && a < 5)
             a = 0;
+
+        if (a == 0)
+            continue;
 
         if (a > 0)
             ++s;
         else if (a < 0)
             --s;
-        if (a != 0)
-            s += a/32;
 
         int startline = s;
         if (s < 0)
-            s = 64 + s;
+            s += 64;
         if (s > 63)
             s -= 64;
 
+        // Python 3: [int(round(math.exp(x/16.0)/4500000000)) for x in range(512,256,-1)][:32]
+        static const int16_t delays[] = {
+            17547, 16484, 15485, 14547, 13666, 12838, 12060, 11329, 10643, 9998, 9392, 8823, 8289, 7787, 7315, 6872, 6455, 6064, 5697, 5352, 5027, 4723, 4437, 4168, 3915, 3678, 3455, 3246, 3049, 2865, 2691, 2528
+        };
+
         display_command(DISPLAY_SETSTARTLINE + (uint8_t)startline);
         unsigned j;
-        int pa = a;
+        int32_t pa = a;
         if (pa < 0)
             pa = -pa;
-        for (j = 0; j < 30000 - (pa*40); ++j);
+        unsigned in = pa;
+        if (in >= sizeof(delays)/sizeof(delays[0]))
+            in = sizeof(delays)/sizeof(delays[0]) - 1;
+        int32_t delay = delays[in];
+        //debugging_write_uint32(pa);
+        //debugging_writec("\n");
+        for (j = 0; j < delay; ++j);
     }
 }
 
