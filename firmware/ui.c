@@ -12,6 +12,12 @@
 #include <myassert.h>
 #include <menus/menu_strings.h>
 
+// Python 3: [(int(round((190*math.exp(x/16))/4500000000))//100) for x in range(512,256,-1)][:32]
+// NOTE: Should be bit-shifted up by 1.
+static const uint16_t VERTICAL_SCROLL_DELAYS[] = {
+    33339, 31319, 29422, 27639, 25965, 24392, 22914, 21525, 20221, 18996, 17845, 16764, 15748, 14794, 13898, 13056, 12265, 11521, 10823, 10168, 9552, 8973, 8429, 7918, 7439, 6988, 6565, 6167, 5793, 5442, 5112, 4803
+};
+
 //
 // Modularizing the display code takes a little bit of care when
 // we're not buffering the entire screen area. We will often want
@@ -101,11 +107,6 @@ static uint8_t menu_bwrite_12px_char(uint8_t code, uint8_t *buf, uint8_t voffset
 
 static void show_main_menu(uint32_t ticks_since_ui_last_shown, bool first_time)
 {
-    // Python 3: [int(round((200*math.exp(x/16.0))/4500000000)) for x in range(512,256,-1)][:32]
-    static const int32_t delays[] = {
-        3509465, 3296837, 3097092, 2909449, 2733174, 2567579, 2412018, 2265881, 2128598, 1999633, 1878481, 1764670, 1657754, 1557316, 1462963, 1374326, 1291060, 1212839, 1139356, 1070326, 1005479, 944560, 887332, 833571, 783067, 735624, 691055, 649186, 609854, 572904, 538194, 505586
-    };
-
     // TEMP HACK.
     const int item_index = 0;
     const uint8_t voffset = 0;
@@ -219,10 +220,10 @@ static void show_main_menu(uint32_t ticks_since_ui_last_shown, bool first_time)
         int pa = a;
         if (pa < 0)
             pa = -pa;
-        int in = pa/4;
-        if (in > sizeof(delays)/sizeof(delays[0]))
-            in = (sizeof(delays)/sizeof(delays[0]))-1;
-        int32_t dt = delays[in]*100;
+        int in = pa/2;
+        if (in > sizeof(VERTICAL_SCROLL_DELAYS)/sizeof(VERTICAL_SCROLL_DELAYS[0]))
+            in = (sizeof(VERTICAL_SCROLL_DELAYS)/sizeof(VERTICAL_SCROLL_DELAYS[0]))-1;
+        uint32_t dt = ((uint32_t)VERTICAL_SCROLL_DELAYS[in]) << 1;
 
         if (ms.ui_mode_state.main_menu.ticks_waited >= dt) {
             ms.ui_mode_state.main_menu.ticks_waited = 0;
@@ -233,9 +234,6 @@ static void show_main_menu(uint32_t ticks_since_ui_last_shown, bool first_time)
                 ++sl;
             sl %= DISPLAY_LCDHEIGHT;
 
-            //debugging_writec("SL: ");
-            //debugging_write_uint32(sl);
-            //debugging_writec("\n");
             display_command(DISPLAY_SETSTARTLINE + sl);
 
             ms.ui_mode_state.main_menu.start_line = (uint8_t)sl;
