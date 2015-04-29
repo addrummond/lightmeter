@@ -140,7 +140,8 @@ static __attribute__ ((unused)) void test_menu_scroll()
 
     ui_show_interface();
 
-    uint8_t *s = &(gms->ui_mode_state.main_menu.start_line);
+    gms->ui_mode_state.main_menu.start_line = 0;
+    int s = (int)(gms->ui_mode_state.main_menu.start_line);
     for (;;) {
         int8_t a = accel_read_register(ACCEL_REG_OUT_Y_MSB);
         if (a > -5 && a < 5)
@@ -149,23 +150,24 @@ static __attribute__ ((unused)) void test_menu_scroll()
         if (a == 0)
             continue;
 
-        int startline = *s;
         if (a > 0)
-            ++*s;
+            ++s;
         else if (a < 0)
-            --*s;
+            --s;
 
-        if (startline < 0)
-            startline += 64;
-        if (startline > 63)
-            startline -= 64;
+        if (s < 0)
+            s += 64;
+        if (s > 63)
+            s -= 64;
+
+        //gms->ui_mode_state.main_menu.start_line = (uint8_t)s;
 
         // Python 3: [int(round(math.exp(x/16.0)/4500000000)) for x in range(512,256,-1)][:32]
         static const int16_t delays[] = {
             17547, 16484, 15485, 14547, 13666, 12838, 12060, 11329, 10643, 9998, 9392, 8823, 8289, 7787, 7315, 6872, 6455, 6064, 5697, 5352, 5027, 4723, 4437, 4168, 3915, 3678, 3455, 3246, 3049, 2865, 2691, 2528
         };
 
-        display_command(DISPLAY_SETSTARTLINE + startline);
+        display_command(DISPLAY_SETSTARTLINE + s);
         unsigned j;
         int32_t pa = a;
         if (pa < 0)
