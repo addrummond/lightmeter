@@ -3,6 +3,7 @@
 #include <stm32f0xx_rcc.h>
 #include <stm32f0xx_pwr.h>
 
+#include <deviceconfig.h>
 #include <i2c.h>
 #include <piezo.h>
 #include <display.h>
@@ -138,7 +139,7 @@ static __attribute__ ((unused)) void test_menu_scroll()
     gms->ui_mode = UI_MODE_MAIN_MENU;
     gms->ui_mode_state.main_menu.start_line = 0;
 
-    ui_show_interface();
+    ui_show_interface(0);
 
     gms->ui_mode_state.main_menu.start_line = 0;
     int s = (int)(gms->ui_mode_state.main_menu.start_line);
@@ -190,16 +191,23 @@ int main()
     initialize_global_meter_state();
     initialize_global_transient_meter_state();
 
-    test_menu_scroll();
-    for(;;);
+    //test_menu_scroll();
+    //for(;;);
 
+    uint32_t last_systick = SysTick->VAL;
     for (;;) {
-        if (sysinit_is_time_to_sleep()) {
-            sysinit_enter_sleep_mode();
-            sysinit_after_wakeup_init();
-        }
+        //if (sysinit_is_time_to_sleep()) {
+        //    sysinit_enter_sleep_mode();
+        //    sysinit_after_wakeup_init();
+        //}
 
-        ui_show_interface();
+        uint32_t current_systick = SysTick->VAL;
+        uint32_t ticks_since_ui_last_shown;
+        if (current_systick > last_systick)
+            ticks_since_ui_last_shown = last_systick + (SYS_TICK_MAX - current_systick);
+        else
+            ticks_since_ui_last_shown = last_systick - current_systick;
+        ui_show_interface(ticks_since_ui_last_shown);
 
         unsigned mask = buttons_get_mask();
         //if (mask == 4) {

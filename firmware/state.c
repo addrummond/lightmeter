@@ -19,6 +19,9 @@ void initialize_global_meter_state()
 {
     meter_state_t *gms = &global_meter_state;
 
+    // Set everything to 0 by default.
+    memset8_zero(gms, sizeof(global_meter_state));
+
     // Set ISO 100 as default ISO.
     memset8_zero(&(gms->bcd_iso_digits), sizeof(global_meter_state.bcd_iso_digits));
     gms->bcd_iso_digits[0] = 1;

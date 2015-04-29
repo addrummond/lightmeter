@@ -1,3 +1,4 @@
+#include <deviceconfig.h>
 #include <ui.h>
 #include <bcd.h>
 #include <display.h>
@@ -5,6 +6,8 @@
 #include <exposure.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <accel.h>
+#include <debugging.h>
 #include <mymemset.h>
 #include <myassert.h>
 #include <menus/menu_strings.h>
@@ -96,8 +99,13 @@ static uint8_t menu_bwrite_12px_char(uint8_t code, uint8_t *buf, uint8_t voffset
     return 0;
 }
 
-static void show_main_menu()
+static void show_main_menu(uint32_t ticks_since_ui_last_shown, bool first_time)
 {
+    // Python 3: [int(round((200*math.exp(x/16.0))/4500000000)) for x in range(512,256,-1)][:32]
+    static const int32_t delays[] = {
+        3509465, 3296837, 3097092, 2909449, 2733174, 2567579, 2412018, 2265881, 2128598, 1999633, 1878481, 1764670, 1657754, 1557316, 1462963, 1374326, 1291060, 1212839, 1139356, 1070326, 1005479, 944560, 887332, 833571, 783067, 735624, 691055, 649186, 609854, 572904, 538194, 505586
+    };
+
     // TEMP HACK.
     const int item_index = 0;
     const uint8_t voffset = 0;
@@ -105,91 +113,131 @@ static void show_main_menu()
     assert(NUM_MAIN_MENU_STRINGS >= 5);
     assert(voffset < UI_MENU_VOFFSET_MAX);
 
-    // Selected item is in the middle, with two above it and two below it.
+    if (first_time) {
+        display_command(DISPLAY_SETSTARTLINE + 0);
+        // Selected item is in the middle, with two above it and two below it.
 
-    // Menu item 1. 1st and 2nd pages, 1px offset
-    //           2. 2nd and 3rd pages, 5px offset
-    //           3. 3rd and 4th pages, 1px offset
-    //           4. 4th and 5th pages, 5px offset
-    //           5. 5th and 6th pages, 1px offset
+        // Menu item 1. 1st and 2nd pages, 1px offset
+        //           2. 2nd and 3rd pages, 5px offset
+        //           3. 3rd and 4th pages, 1px offset
+        //           4. 4th and 5th pages, 5px offset
+        //           5. 5th and 6th pages, 1px offset
 
-    uint8_t center_str[MENU_MAX_SHORT_STRING_LENGTH+1];
-    uint8_t top1_str[MENU_MAX_SHORT_STRING_LENGTH+1];
-    uint8_t top2_str[MENU_MAX_SHORT_STRING_LENGTH+1];
-    uint8_t bttm1_str[MENU_MAX_SHORT_STRING_LENGTH+1];
-    uint8_t bttm2_str[MENU_MAX_SHORT_STRING_LENGTH+1];
+        uint8_t center_str[MENU_MAX_SHORT_STRING_LENGTH+1];
+        uint8_t top1_str[MENU_MAX_SHORT_STRING_LENGTH+1];
+        uint8_t top2_str[MENU_MAX_SHORT_STRING_LENGTH+1];
+        uint8_t bttm1_str[MENU_MAX_SHORT_STRING_LENGTH+1];
+        uint8_t bttm2_str[MENU_MAX_SHORT_STRING_LENGTH+1];
 
-    // Write selected (center) item.
-    menu_string_decode_short(MMS(item_index), center_str);
-    // Write other items.
-    menu_string_decode_short(MMS(down_from(NUM_MAIN_MENU_STRINGS, item_index, 1)), top1_str);
-    menu_string_decode_short(MMS(down_from(NUM_MAIN_MENU_STRINGS, item_index, 2)), top2_str);
-    menu_string_decode_short(MMS(up_from(NUM_MAIN_MENU_STRINGS, item_index, 1)), bttm1_str);
-    menu_string_decode_short(MMS(up_from(NUM_MAIN_MENU_STRINGS, item_index, 2)), bttm2_str);
+        // Write selected (center) item.
+        menu_string_decode_short(MMS(item_index), center_str);
+        // Write other items.
+        menu_string_decode_short(MMS(down_from(NUM_MAIN_MENU_STRINGS, item_index, 1)), top1_str);
+        menu_string_decode_short(MMS(down_from(NUM_MAIN_MENU_STRINGS, item_index, 2)), top2_str);
+        menu_string_decode_short(MMS(up_from(NUM_MAIN_MENU_STRINGS, item_index, 1)), bttm1_str);
+        menu_string_decode_short(MMS(up_from(NUM_MAIN_MENU_STRINGS, item_index, 2)), bttm2_str);
 
-    // Generated via gen_ks_in_show_main_menu_in_ui.c.py.
-    static const uint8_t ks[] = {
-        0,1,3,4,6,
-        0,5,2,7,4,
+        // Generated via gen_ks_in_show_main_menu_in_ui.c.py.
+        static const uint8_t ks[] = {
+            0,1,3,4,6,
+            0,5,2,7,4,
 
-        0,1,3,5,6,
-        1,6,3,0,5,
+            0,1,3,5,6,
+            1,6,3,0,5,
 
-        0,1,3,5,6,
-        2,7,4,1,6,
+            0,1,3,5,6,
+            2,7,4,1,6,
 
-        0,2,3,5,6,
-        3,0,5,2,7,
+            0,2,3,5,6,
+            3,0,5,2,7,
 
-        0,2,3,5,7,
-        4,1,6,3,0,
+            0,2,3,5,7,
+            4,1,6,3,0,
 
-        0,2,3,5,7,
-        5,2,7,4,1,
+            0,2,3,5,7,
+            5,2,7,4,1,
 
-        0,2,4,5,7,
-        6,3,0,5,2,
+            0,2,4,5,7,
+            6,3,0,5,2,
 
-        0,2,4,5,7,
-        7,4,1,6,3,
+            0,2,4,5,7,
+            7,4,1,6,3,
 
-        1,2,4,5,7,
-        0,5,2,7,4,
+            1,2,4,5,7,
+            0,5,2,7,4,
 
-        1,2,4,6,7,
-        1,6,3,0,5,
+            1,2,4,6,7,
+            1,6,3,0,5,
 
-        1,2,4,6,7,
-        2,7,4,1,6,
+            1,2,4,6,7,
+            2,7,4,1,6,
 
-        1,3,4,6,7,
-        3,0,5,2,7,
-    };
+            1,3,4,6,7,
+            3,0,5,2,7,
+        };
 
-    uint8_t i;
-    uint8_t buf[CHAR_WIDTH_12PX*(DISPLAY_NUM_PAGES+1)];
-    uint_fast8_t finished_mask = 0;
-    for (i = 0; i < DISPLAY_LCDWIDTH/8 && finished_mask != 0b11111; ++i) {
-        memset8_zero(buf, sizeof(buf));
+        uint8_t i;
+        uint8_t buf[CHAR_WIDTH_12PX*(DISPLAY_NUM_PAGES+1)];
+        uint_fast8_t finished_mask = 0;
+        for (i = 0; i < DISPLAY_LCDWIDTH/8 && finished_mask != 0b11111; ++i) {
+            memset8_zero(buf, sizeof(buf));
 
-        if (! (finished_mask & 0b1))
-            finished_mask |= menu_bwrite_12px_char(top1_str[i], buf+ks[(voffset*10)+0], ks[(voffset*10)+5]);
-        if (! (finished_mask & 0b10))
-            finished_mask |= (menu_bwrite_12px_char(top2_str[i], buf+ks[(voffset*10)+1], ks[(voffset*10)+6]) << 1);
-        if (! (finished_mask & 0b100))
-            finished_mask |= (menu_bwrite_12px_char(center_str[i], buf+ks[(voffset*10)+2], ks[(voffset*10)+7]) << 2);
-        if (! (finished_mask & 0b1000))
-            finished_mask |= (menu_bwrite_12px_char(bttm1_str[i], buf+ks[(voffset*10)+3], ks[(voffset*10)+8]) << 3);
-        if (!(finished_mask & 0b10000))
-            finished_mask |= (menu_bwrite_12px_char(bttm2_str[i], buf+ks[(voffset*10)+4], ks[(voffset*10)+9]) << 4);
+            if (! (finished_mask & 0b1))
+                finished_mask |= menu_bwrite_12px_char(top1_str[i], buf+ks[(voffset*10)+0], ks[(voffset*10)+5]);
+            if (! (finished_mask & 0b10))
+                finished_mask |= (menu_bwrite_12px_char(top2_str[i], buf+ks[(voffset*10)+1], ks[(voffset*10)+6]) << 1);
+            if (! (finished_mask & 0b100))
+                finished_mask |= (menu_bwrite_12px_char(center_str[i], buf+ks[(voffset*10)+2], ks[(voffset*10)+7]) << 2);
+            if (! (finished_mask & 0b1000))
+                finished_mask |= (menu_bwrite_12px_char(bttm1_str[i], buf+ks[(voffset*10)+3], ks[(voffset*10)+8]) << 3);
+            if (!(finished_mask & 0b10000))
+                finished_mask |= (menu_bwrite_12px_char(bttm2_str[i], buf+ks[(voffset*10)+4], ks[(voffset*10)+9]) << 4);
 
-        display_write_page_array(
-            buf,
-            CHAR_WIDTH_12PX,      // ncols
-            DISPLAY_NUM_PAGES,    // pages_per_col
-            i*CHAR_WIDTH_12PX,    // x
-            0                     // y
-        );
+            display_write_page_array(
+                buf,
+                CHAR_WIDTH_12PX,      // ncols
+                DISPLAY_NUM_PAGES,    // pages_per_col
+                i*CHAR_WIDTH_12PX,    // x
+                0                     // y
+            );
+        }
+    }
+
+    int8_t a = accel_read_register(ACCEL_REG_OUT_Y_MSB);
+    if (a > -5 && a < 5)
+        a = 0;
+
+    if ((a > 0 && ms.ui_mode_state.main_menu.current_accel_y < 0) ||
+        (a < 0 && ms.ui_mode_state.main_menu.current_accel_y > 0)) {
+        ms.ui_mode_state.main_menu.current_accel_y = 0;
+        ms.ui_mode_state.main_menu.ticks_waited = 0;
+    }
+    else {
+        ms.ui_mode_state.main_menu.ticks_waited += ticks_since_ui_last_shown;
+        int pa = a;
+        if (pa < 0)
+            pa = -pa;
+        int in = pa/4;
+        if (in > sizeof(delays)/sizeof(delays[0]))
+            in = (sizeof(delays)/sizeof(delays[0]))-1;
+        int32_t dt = delays[in]*100;
+
+        if (ms.ui_mode_state.main_menu.ticks_waited >= dt) {
+            ms.ui_mode_state.main_menu.ticks_waited = 0;
+            int sl = ms.ui_mode_state.main_menu.start_line;
+            if (a < 0)
+                --sl;
+            else
+                ++sl;
+            sl %= DISPLAY_LCDHEIGHT;
+
+            //debugging_writec("SL: ");
+            //debugging_write_uint32(sl);
+            //debugging_writec("\n");
+            display_command(DISPLAY_SETSTARTLINE + sl);
+
+            ms.ui_mode_state.main_menu.start_line = (uint8_t)sl;
+        }
     }
 }
 
@@ -203,7 +251,7 @@ static void show_init()
     display_write_page_array(pages, 8, 1, (DISPLAY_LCDWIDTH/2)+4, DISPLAY_NUM_PAGES/2);
 }
 
-void ui_show_interface()
+void ui_show_interface(uint32_t ticks_since_ui_last_shown)
 {
     // Used to make measurements of display power consumption.
     /*uint8_t col, page;
@@ -222,9 +270,12 @@ void ui_show_interface()
     }
     return;*/
 
+    bool first_time = false;
     static uint8_t last_mode = 255;
-    if (last_mode != ms.ui_mode)
+    if (last_mode != ms.ui_mode) {
         display_clear();
+        first_time = true;
+    }
     last_mode = ms.ui_mode;
 
     if (ms.ui_mode == UI_MODE_INIT) {
@@ -234,7 +285,7 @@ void ui_show_interface()
         show_reading();
     }
     else if (ms.ui_mode == UI_MODE_MAIN_MENU) {
-        show_main_menu();
+        show_main_menu(ticks_since_ui_last_shown, first_time);
     }
 }
 

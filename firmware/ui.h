@@ -7,7 +7,7 @@
 
 #define UI_MENU_VOFFSET_MAX 12
 
-void ui_show_interface();
+void ui_show_interface(uint32_t ticks_since_ui_last_shown);
 
 typedef struct ui_top_status_line_state {
     uint8_t charbuffer[6];

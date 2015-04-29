@@ -28,6 +28,8 @@ typedef enum ui_mode {
 typedef union ui_mode_state {
     struct {
         uint8_t start_line;
+        int8_t current_accel_y;
+        uint32_t ticks_waited;
     } main_menu;
 } ui_mode_state_t;
 
