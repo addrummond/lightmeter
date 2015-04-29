@@ -204,11 +204,13 @@ static void show_main_menu(uint32_t ticks_since_ui_last_shown, bool first_time)
     }
 
     int8_t a = accel_read_register(ACCEL_REG_OUT_Y_MSB);
-    if (a > -5 && a < 5)
+    if (a > -5 && a < 5) {
         a = 0;
-
-    if ((a > 0 && ms.ui_mode_state.main_menu.current_accel_y < 0) ||
-        (a < 0 && ms.ui_mode_state.main_menu.current_accel_y > 0)) {
+        ms.ui_mode_state.main_menu.current_accel_y = 0;
+        ms.ui_mode_state.main_menu.ticks_waited = 0;
+    }
+    else if ((a > 0 && ms.ui_mode_state.main_menu.current_accel_y < 0) ||
+             (a < 0 && ms.ui_mode_state.main_menu.current_accel_y > 0)) {
         ms.ui_mode_state.main_menu.current_accel_y = 0;
         ms.ui_mode_state.main_menu.ticks_waited = 0;
     }
