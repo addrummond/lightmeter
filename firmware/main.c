@@ -207,6 +207,7 @@ int main()
             ticks_since_ui_last_shown = last_systick + (SYS_TICK_MAX - current_systick);
         else
             ticks_since_ui_last_shown = last_systick - current_systick;
+        last_systick = current_systick;
         ui_show_interface(ticks_since_ui_last_shown);
 
         unsigned mask = buttons_get_mask();
