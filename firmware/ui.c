@@ -98,9 +98,11 @@ static uint8_t menu_bwrite_12px_char(uint8_t code, uint8_t *buf, uint8_t voffset
 
 static void show_main_menu()
 {
+    // TEMP HACK.
+    const int item_index = 0;
+    const uint8_t voffset = 0;
+
     assert(NUM_MAIN_MENU_STRINGS >= 5);
-    assert(ms.ui_mode_state.main_menu.item_index < NUM_MAIN_MENU_STRINGS);
-    uint8_t voffset = ms.ui_mode_state.main_menu.voffset;
     assert(voffset < UI_MENU_VOFFSET_MAX);
 
     // Selected item is in the middle, with two above it and two below it.
@@ -118,12 +120,12 @@ static void show_main_menu()
     uint8_t bttm2_str[MENU_MAX_SHORT_STRING_LENGTH+1];
 
     // Write selected (center) item.
-    menu_string_decode_short(MMS(ms.ui_mode_state.main_menu.item_index), center_str);
+    menu_string_decode_short(MMS(item_index), center_str);
     // Write other items.
-    menu_string_decode_short(MMS(down_from(NUM_MAIN_MENU_STRINGS, ms.ui_mode_state.main_menu.item_index, 1)), top1_str);
-    menu_string_decode_short(MMS(down_from(NUM_MAIN_MENU_STRINGS, ms.ui_mode_state.main_menu.item_index, 2)), top2_str);
-    menu_string_decode_short(MMS(up_from(NUM_MAIN_MENU_STRINGS, ms.ui_mode_state.main_menu.item_index, 1)), bttm1_str);
-    menu_string_decode_short(MMS(up_from(NUM_MAIN_MENU_STRINGS, ms.ui_mode_state.main_menu.item_index, 2)), bttm2_str);
+    menu_string_decode_short(MMS(down_from(NUM_MAIN_MENU_STRINGS, item_index, 1)), top1_str);
+    menu_string_decode_short(MMS(down_from(NUM_MAIN_MENU_STRINGS, item_index, 2)), top2_str);
+    menu_string_decode_short(MMS(up_from(NUM_MAIN_MENU_STRINGS, item_index, 1)), bttm1_str);
+    menu_string_decode_short(MMS(up_from(NUM_MAIN_MENU_STRINGS, item_index, 2)), bttm2_str);
 
     // Generated via gen_ks_in_show_main_menu_in_ui.c.py.
     static const uint8_t ks[] = {
@@ -172,14 +174,12 @@ static void show_main_menu()
 
         if (! (finished_mask & 0b1))
             finished_mask |= menu_bwrite_12px_char(top1_str[i], buf+ks[(voffset*10)+0], ks[(voffset*10)+5]);
-        if (ms.ui_mode_state.main_menu.redraw_all) {
-            if (! (finished_mask & 0b10))
-                finished_mask |= (menu_bwrite_12px_char(top2_str[i], buf+ks[(voffset*10)+1], ks[(voffset*10)+6]) << 1);
-            if (! (finished_mask & 0b100))
-                finished_mask |= (menu_bwrite_12px_char(center_str[i], buf+ks[(voffset*10)+2], ks[(voffset*10)+7]) << 2);
-            if (! (finished_mask & 0b1000))
-                finished_mask |= (menu_bwrite_12px_char(bttm1_str[i], buf+ks[(voffset*10)+3], ks[(voffset*10)+8]) << 3);
-        }
+        if (! (finished_mask & 0b10))
+            finished_mask |= (menu_bwrite_12px_char(top2_str[i], buf+ks[(voffset*10)+1], ks[(voffset*10)+6]) << 1);
+        if (! (finished_mask & 0b100))
+            finished_mask |= (menu_bwrite_12px_char(center_str[i], buf+ks[(voffset*10)+2], ks[(voffset*10)+7]) << 2);
+        if (! (finished_mask & 0b1000))
+            finished_mask |= (menu_bwrite_12px_char(bttm1_str[i], buf+ks[(voffset*10)+3], ks[(voffset*10)+8]) << 3);
         if (!(finished_mask & 0b10000))
             finished_mask |= (menu_bwrite_12px_char(bttm2_str[i], buf+ks[(voffset*10)+4], ks[(voffset*10)+9]) << 4);
 
