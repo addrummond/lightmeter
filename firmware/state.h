@@ -30,6 +30,7 @@ typedef union ui_mode_state {
         uint8_t start_line;
         int8_t current_accel_y;
         uint32_t ticks_waited;
+        uint8_t last_arrow_y;
     } main_menu;
 } ui_mode_state_t;
 

@@ -107,6 +107,19 @@ static uint8_t menu_bwrite_12px_char(uint8_t code, uint8_t *buf, uint8_t voffset
 
 static void show_main_menu(uint32_t ticks_since_ui_last_shown, bool first_time)
 {
+    static const uint8_t arrow_page_array[] = {
+        0b11111111,
+        0b01111110,
+        0b00111100,
+        0b00011000
+    };
+    static const uint8_t arrow_erase_page_array[] = {
+        0b00000000,
+        0b00000000,
+        0b00000000,
+        0b00000000
+    };
+
     // TEMP HACK.
     const int item_index = 0;
     const uint8_t voffset = 0;
@@ -204,6 +217,20 @@ static void show_main_menu(uint32_t ticks_since_ui_last_shown, bool first_time)
         }
     }
 
+    display_write_page_array(arrow_erase_page_array, sizeof(arrow_page_array)/sizeof(arrow_page_array[0]), 1, DISPLAY_LCDWIDTH-sizeof(arrow_page_array)/sizeof(arrow_page_array[0]), ms.ui_mode_state.main_menu.last_arrow_y);
+    int arrow_y = ((int)DISPLAY_LCDHEIGHT)/2 - (int)(ms.ui_mode_state.main_menu.start_line);
+    if (arrow_y < 0)
+        arrow_y = DISPLAY_LCDHEIGHT + arrow_y;
+    else if (arrow_y >= DISPLAY_LCDHEIGHT)
+        arrow_y -= DISPLAY_LCDHEIGHT;
+    if (arrow_y < 0 || arrow_y > 127) {
+        debugging_writec("FUCK!\n");
+        debugging_write_uint32(ms.ui_mode_state.main_menu.start_line);
+        debugging_writec("\n");
+    }
+    display_write_page_array(arrow_page_array, sizeof(arrow_page_array)/sizeof(arrow_page_array[0]), 1, DISPLAY_LCDWIDTH-sizeof(arrow_page_array)/sizeof(arrow_page_array[0]), arrow_y);
+    ms.ui_mode_state.main_menu.last_arrow_y = arrow_y;
+
     int8_t a = accel_read_register(ACCEL_REG_OUT_Y_MSB);
     if (a > -5 && a < 5) {
         a = 0;
@@ -232,7 +259,10 @@ static void show_main_menu(uint32_t ticks_since_ui_last_shown, bool first_time)
                 --sl;
             else
                 ++sl;
-            sl %= DISPLAY_LCDHEIGHT;
+            if (sl >= DISPLAY_LCDHEIGHT)
+                sl -= DISPLAY_LCDHEIGHT;
+            else if (sl < 0)
+                sl = DISPLAY_LCDHEIGHT + sl;
 
             display_command(DISPLAY_SETSTARTLINE + sl);
 
