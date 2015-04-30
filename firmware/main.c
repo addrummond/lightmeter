@@ -190,6 +190,8 @@ int main()
     sysinit_init();
     initialize_global_meter_state();
     initialize_global_transient_meter_state();
+    i2c_init();
+    accel_init();
 
     //test_menu_scroll();
     //for(;;);
