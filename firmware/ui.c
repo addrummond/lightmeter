@@ -105,15 +105,36 @@ static uint8_t menu_bwrite_12px_char(uint8_t code, uint8_t *buf, uint8_t voffset
     return 0;
 }
 
+static uint8_t center_item_pages_from_start_line(uint8_t start_line)
+{
+    int sl = start_line;
+    sl -= DISPLAY_LCDHEIGHT/2;
+    if (sl < 0)
+        sl += DISPLAY_LCDHEIGHT;
+    sl /= 8;
+    return (uint8_t)sl;
+}
+
 static void show_main_menu(uint32_t ticks_since_ui_last_shown, bool first_time)
 {
-    static const uint8_t arrow_page_array[] = {
-        0b11111111,
-        0b01111110,
-        0b00111100,
-        0b00011000
+    // Starts at pixel vindex=25, which is one pixel below beginning of third page.
+    static const uint8_t arrow_page_array1[] = {
+        0b00110000,
+        0b01111000,
+        0b11111100,
+        0b11111110,
+    };
+    static const uint8_t arrow_page_array2[] = {
+        0b00000000,
+        0b00000000,
+        0b00000000,
+        0b00000001
     };
     static const uint8_t arrow_erase_page_array[] = {
+        0b00000000,
+        0b00000000,
+        0b00000000,
+        0b00000000,
         0b00000000,
         0b00000000,
         0b00000000,
@@ -217,20 +238,6 @@ static void show_main_menu(uint32_t ticks_since_ui_last_shown, bool first_time)
         }
     }
 
-    display_write_page_array(arrow_erase_page_array, sizeof(arrow_page_array)/sizeof(arrow_page_array[0]), 1, DISPLAY_LCDWIDTH-sizeof(arrow_page_array)/sizeof(arrow_page_array[0]), ms.ui_mode_state.main_menu.last_arrow_y);
-    int arrow_y = ((int)DISPLAY_LCDHEIGHT)/2 - (int)(ms.ui_mode_state.main_menu.start_line);
-    if (arrow_y < 0)
-        arrow_y = DISPLAY_LCDHEIGHT + arrow_y;
-    else if (arrow_y >= DISPLAY_LCDHEIGHT)
-        arrow_y -= DISPLAY_LCDHEIGHT;
-    if (arrow_y < 0 || arrow_y > 127) {
-        debugging_writec("FUCK!\n");
-        debugging_write_uint32(ms.ui_mode_state.main_menu.start_line);
-        debugging_writec("\n");
-    }
-    display_write_page_array(arrow_page_array, sizeof(arrow_page_array)/sizeof(arrow_page_array[0]), 1, DISPLAY_LCDWIDTH-sizeof(arrow_page_array)/sizeof(arrow_page_array[0]), arrow_y);
-    ms.ui_mode_state.main_menu.last_arrow_y = arrow_y;
-
     int8_t a = accel_read_register(ACCEL_REG_OUT_Y_MSB);
     if (a > -5 && a < 5) {
         a = 0;
@@ -254,6 +261,8 @@ static void show_main_menu(uint32_t ticks_since_ui_last_shown, bool first_time)
 
         if (ms.ui_mode_state.main_menu.ticks_waited >= dt) {
             ms.ui_mode_state.main_menu.ticks_waited = 0;
+
+            // Scroll menu.
             int sl = ms.ui_mode_state.main_menu.start_line;
             if (a < 0)
                 --sl;
@@ -267,6 +276,27 @@ static void show_main_menu(uint32_t ticks_since_ui_last_shown, bool first_time)
             display_command(DISPLAY_SETSTARTLINE + sl);
 
             ms.ui_mode_state.main_menu.start_line = (uint8_t)sl;
+
+            if (ms.ui_mode_state.main_menu.start_line % 12 == 0) {
+                //debugging_writec("SL: ");
+                //debugging_write_uint32(ms.ui_mode_state.main_menu.start_line);
+                //debugging_writec("\n");
+                // Draw arrow on right indicating that center item is currently selected.
+
+                uint8_t first_page = center_item_pages_from_start_line(ms.ui_mode_state.main_menu.start_line);
+                uint8_t second_page = first_page + 1;
+                if (second_page > 7)
+                    second_page = 8 - second_page;
+
+                display_write_page_array(arrow_erase_page_array, sizeof(arrow_erase_page_array)/sizeof(arrow_erase_page_array[0]), 2, DISPLAY_LCDWIDTH-sizeof(arrow_erase_page_array)/sizeof(arrow_erase_page_array[0]), first_page);
+                int arrow_y = ((int)DISPLAY_LCDHEIGHT)/2 - (int)(ms.ui_mode_state.main_menu.start_line);
+                if (arrow_y < 0)
+                    arrow_y = DISPLAY_LCDHEIGHT + arrow_y;
+                else if (arrow_y >= DISPLAY_LCDHEIGHT)
+                    arrow_y -= DISPLAY_LCDHEIGHT;
+                display_write_page_array(arrow_page_array1, sizeof(arrow_page_array1)/sizeof(arrow_page_array1[0]), 1, DISPLAY_LCDWIDTH-sizeof(arrow_page_array1)/sizeof(arrow_page_array1[0]), first_page);
+                display_write_page_array(arrow_page_array2, sizeof(arrow_page_array2)/sizeof(arrow_page_array2[0]), 1, DISPLAY_LCDWIDTH-sizeof(arrow_page_array2)/sizeof(arrow_page_array2[0]), second_page);
+            }
         }
     }
 }
