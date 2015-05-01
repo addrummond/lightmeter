@@ -129,14 +129,6 @@ static const uint8_t arrow_page_array2[] = {
     0b00000000
 };
 static const uint8_t arrow_erase_page_array[] = {
-    /*0b11111111,
-    0b11111111,
-    0b11111111,
-    0b11111111,
-    0b11111111,
-    0b11111111,
-    0b11111111,
-    0b11111111*/
     0b00000000,
     0b00000000,
     0b00000000,
