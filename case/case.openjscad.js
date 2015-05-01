@@ -1,8 +1,6 @@
 //
 // TODO:
 //
-// * Add side buttons.
-// * Separate out incident dome into separate piece.
 // * Make body thinner around incident dome.
 //
 
