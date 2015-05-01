@@ -25,8 +25,8 @@ void initialize_global_meter_state()
     // Set ISO 100 as default ISO.
     memset8_zero(&(gms->bcd_iso_digits), sizeof(global_meter_state.bcd_iso_digits));
     gms->bcd_iso_digits[0] = 1;
-    gms->bcd_iso_length = 2;
-    gms->iso = 12;
+    gms->bcd_iso_length = 3;
+    gms->iso = 21;
 
     // Set default fixing to ISO.
     gms->fixing = FIXING_ISO;
