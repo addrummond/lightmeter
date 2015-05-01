@@ -31,7 +31,7 @@ void EXTI4_15_IRQHandler(void)
     uint32_t t = SysTick->VAL;
     if ((t < last_tick && last_tick - t > THRESHOLD) ||
         (t > last_tick && (last_tick + (16777215-t)) > THRESHOLD)) {
-        // Figure out which pins are high.
+        // Figure out which pins are low.
         unsigned m = 0;
         m |= !GPIO_ReadInputDataBit(PUSHBUTTON1_GPIO_PORT, PUSHBUTTON1_PIN) << 1;
         m |= !GPIO_ReadInputDataBit(PUSHBUTTON2_GPIO_PORT, PUSHBUTTON2_PIN) << 2;
