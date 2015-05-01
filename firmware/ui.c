@@ -115,32 +115,60 @@ static uint8_t center_item_pages_from_start_line(uint8_t start_line)
     return (uint8_t)sl;
 }
 
+// Starts at pixel vindex=25, which is one pixel below beginning of third page.
+static const uint8_t arrow_page_array1[] = {
+    0b11111110,
+    0b11111100,
+    0b01111000,
+    0b00110000,
+};
+static const uint8_t arrow_page_array2[] = {
+    0b00000001,
+    0b00000000,
+    0b00000000,
+    0b00000000
+};
+static const uint8_t arrow_erase_page_array[] = {
+    /*0b11111111,
+    0b11111111,
+    0b11111111,
+    0b11111111,
+    0b11111111,
+    0b11111111,
+    0b11111111,
+    0b11111111*/
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000
+};
+
+#define MENU_ARROW_WIDTH (sizeof(arrow_page_array1)/sizeof(arrow_page_array1[0]))
+
+static void draw_main_menu_arrow()
+{
+    uint8_t old_first_page = center_item_pages_from_start_line(ms.ui_mode_state .main_menu.last_start_line);
+    uint8_t first_page = center_item_pages_from_start_line(ms.ui_mode_state.main_menu.start_line);
+    uint8_t second_page = first_page + 1;
+    if (second_page > 7)
+        second_page = 8 - second_page;
+
+    display_write_page_array(arrow_erase_page_array, (sizeof(arrow_erase_page_array)/sizeof(arrow_erase_page_array[0]))/2, 2, 0, old_first_page);
+    int arrow_y = ((int)DISPLAY_LCDHEIGHT)/2 - (int)(ms.ui_mode_state.main_menu.start_line);
+    if (arrow_y < 0)
+        arrow_y = DISPLAY_LCDHEIGHT + arrow_y;
+    else if (arrow_y >= DISPLAY_LCDHEIGHT)
+        arrow_y -= DISPLAY_LCDHEIGHT;
+    display_write_page_array(arrow_page_array1, sizeof(arrow_page_array1)/sizeof(arrow_page_array1[0]), 1, 0, first_page);
+    display_write_page_array(arrow_page_array2, sizeof(arrow_page_array2)/sizeof(arrow_page_array2[0]), 1, 0, second_page);
+}
+
 static void show_main_menu(uint32_t ticks_since_ui_last_shown, bool first_time)
 {
-    // Starts at pixel vindex=25, which is one pixel below beginning of third page.
-    static const uint8_t arrow_page_array1[] = {
-        0b00110000,
-        0b01111000,
-        0b11111100,
-        0b11111110,
-    };
-    static const uint8_t arrow_page_array2[] = {
-        0b00000000,
-        0b00000000,
-        0b00000000,
-        0b00000001
-    };
-    static const uint8_t arrow_erase_page_array[] = {
-        0b00000000,
-        0b00000000,
-        0b00000000,
-        0b00000000,
-        0b00000000,
-        0b00000000,
-        0b00000000,
-        0b00000000
-    };
-
     // TEMP HACK.
     const int item_index = 0;
     const uint8_t voffset = 0;
@@ -230,12 +258,14 @@ static void show_main_menu(uint32_t ticks_since_ui_last_shown, bool first_time)
 
             display_write_page_array(
                 buf,
-                CHAR_WIDTH_12PX,      // ncols
-                DISPLAY_NUM_PAGES,    // pages_per_col
-                i*CHAR_WIDTH_12PX,    // x
-                0                     // y
+                CHAR_WIDTH_12PX,                             // ncols
+                DISPLAY_NUM_PAGES,                           // pages_per_col
+                MENU_ARROW_WIDTH + 2 + (i*CHAR_WIDTH_12PX),  // x
+                0                                            // y
             );
         }
+
+        draw_main_menu_arrow();
     }
 
     int8_t a = accel_read_register(ACCEL_REG_OUT_Y_MSB);
@@ -277,24 +307,10 @@ static void show_main_menu(uint32_t ticks_since_ui_last_shown, bool first_time)
 
             ms.ui_mode_state.main_menu.start_line = (uint8_t)sl;
 
-            // Draw arrow on right indicating that center item is currently selected.
-            if (ms.ui_mode_state.main_menu.start_line % 12 == 0) {
-                //debugging_writec("SL: ");
-                //debugging_write_uint32(ms.ui_mode_state.main_menu.start_line);
-                //debugging_writec("\n");
-                uint8_t first_page = center_item_pages_from_start_line(ms.ui_mode_state.main_menu.start_line);
-                uint8_t second_page = first_page + 1;
-                if (second_page > 7)
-                    second_page = 8 - second_page;
-
-                display_write_page_array(arrow_erase_page_array, sizeof(arrow_erase_page_array)/sizeof(arrow_erase_page_array[0]), 2, DISPLAY_LCDWIDTH-sizeof(arrow_erase_page_array)/sizeof(arrow_erase_page_array[0]), first_page);
-                int arrow_y = ((int)DISPLAY_LCDHEIGHT)/2 - (int)(ms.ui_mode_state.main_menu.start_line);
-                if (arrow_y < 0)
-                    arrow_y = DISPLAY_LCDHEIGHT + arrow_y;
-                else if (arrow_y >= DISPLAY_LCDHEIGHT)
-                    arrow_y -= DISPLAY_LCDHEIGHT;
-                display_write_page_array(arrow_page_array1, sizeof(arrow_page_array1)/sizeof(arrow_page_array1[0]), 1, DISPLAY_LCDWIDTH-sizeof(arrow_page_array1)/sizeof(arrow_page_array1[0]), first_page);
-                display_write_page_array(arrow_page_array2, sizeof(arrow_page_array2)/sizeof(arrow_page_array2[0]), 1, DISPLAY_LCDWIDTH-sizeof(arrow_page_array2)/sizeof(arrow_page_array2[0]), second_page);
+            if (sl % 12 == 0) {
+                // Draw arrow on right indicating that center item is currently selected.
+                draw_main_menu_arrow();
+                ms.ui_mode_state.main_menu.last_start_line = ms.ui_mode_state.main_menu.start_line;
             }
         }
     }
