@@ -277,12 +277,11 @@ static void show_main_menu(uint32_t ticks_since_ui_last_shown, bool first_time)
 
             ms.ui_mode_state.main_menu.start_line = (uint8_t)sl;
 
+            // Draw arrow on right indicating that center item is currently selected.
             if (ms.ui_mode_state.main_menu.start_line % 12 == 0) {
                 //debugging_writec("SL: ");
                 //debugging_write_uint32(ms.ui_mode_state.main_menu.start_line);
                 //debugging_writec("\n");
-                // Draw arrow on right indicating that center item is currently selected.
-
                 uint8_t first_page = center_item_pages_from_start_line(ms.ui_mode_state.main_menu.start_line);
                 uint8_t second_page = first_page + 1;
                 if (second_page > 7)
