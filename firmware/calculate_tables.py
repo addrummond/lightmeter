@@ -3,210 +3,45 @@ import sys
 import re
 
 ##########
-# Configuration values.
+# Configuration values
 ##########
 
-reference_voltage = 2800 # mV
-
-op_amp_gain       = 1.0#reference_voltage/1100.0
-
-# The gain from the second stage of amplification.
-second_stage_gain = 1.0+(97.6/10.0)
-
-# The value of the resistor in the second stage of the op amp the gain is
-# proportional to the reciprocal of which.
-second_stage_recip_resistor = 10.0 # kOhm
-
-amp_stages = [
-    # For VEMD2503X01.
-    # Uses 4 distinct resistor values.
-    # Resistor value (kOhm)  Stops subtracted by ND filter (should be >= 0)
-    ( 750.0,                 0.0  ),
-    ( 97.6,                  0.0  ),
-    ( 15.0,                  0.0  ),
-    ( 1.6,                   0.0  ),
-    ( 97.5,                  8.0  ),
-    ( 15.0,                  8.0  ),
-    ( 1.6,                   8.0  )
-]
-
-op_amp_normal_resistor = amp_stages[1][0]
-
-op_amp_resistor_value_to_resistor_number = { }
-rvalcount = 0
-for s in amp_stages:
-    if s[0] not in op_amp_resistor_value_to_resistor_number:
-        op_amp_resistor_value_to_resistor_number[s[0]] = rvalcount
-        rvalcount += 1
+reference_voltage = 2000 # mV
 
 # Table cells not calculated for voltages lower than this.
-# This is because in the region just above v = 0, the changes
-# between different voltage values lead to large discontinuities
-# in EV values which the table compression mechanism can't handle.
-voltage_offset                   = 250.0   # mV
+voltage_offset = 10 # mV
 
-# Set to highest temperature in which device is likely to be used,
-# so that we can compensate for temperature by amplifying signal
-# slightly.
-reference_temperature            = 50.0     # VEMD2503X01, BPW34, C
+sensor_cap_value = 3300 # pF
 
-##########
-
-
-b_voltage_offset = int(round((voltage_offset/reference_voltage)*256))
-# So that we don't introduce any rounding error into calculations.
-voltage_offset = (b_voltage_offset/256.0)*reference_voltage
-
-def get_function_from_function_table(filename, inverse=False):
-    f = open(filename)
-    lines = f.read().split("\n")
-    # Skip column headers if any
-    try:
-        float(lines[0][0])
-        float(lines[0][1])
-    except:
-        lines = lines[1:]
-    min = 10000
-    max = 0
-    function = { }
-    for l in lines:
-        if re.match(r"^\s*$", l):
-            continue
-        fields = l.split(",")
-        v = float(fields[0])
-        frac = float(fields[1])
-        if v < min:
-            min = v
-        elif v > max:
-            max = v
-        if inverse:
-            function[frac] = v
-        else:
-            function[v] = frac
-    f.close()
-    def f(x):
-        if x < min:
-            return function[min]
-        elif x > max:
-            return function[max]
-        else:
-            iup = x
-            while iup not in function:
-                iup += 1
-            idown = x
-            while idown not in function:
-                idown -= 1
-            diff = iup-idown
-            r = None
-            if diff == 0:
-                r = function[iup]
-            else:
-                downweight = ((iup-x)*1.0)/diff
-                upweight = ((x-idown)*1.0)/diff
-                r = function[iup]*upweight + function[idown]*downweight
-            return r
-    return f
-
-luminosity_func = get_function_from_function_table("tables/luminosity_function.csv")
-vemd2503x01_spectral_sensitivity_func = get_function_from_function_table("tables/vemd2503x01_spectral_sensitivity.csv")
-qb11_spectral_sensitivity_func = get_function_from_function_table("tables/qb11_spectral_sensitivity.csv")
-qb12_spectral_sensitivity_func = get_function_from_function_table("tables/qb12_spectral_sensitivity.csv")
+amp_timings = [ # In microseconds
+    0.1,
+    10.0,
+    50.0,
+    75.0,
+    100.0
+]
 
 
-#
-# Luminosity calculations.
-#
+# For PNJ4K01F
+# See http://www.semicon.panasonic.co.jp/en/products/detail/?cat=CED7000&part=PNJ4K01F
+# http://www.mathportal.org/calculators/analytic-geometry/two-point-form-calculator.php
+def sensor_ua_to_lux(ua):
+    incand_ratio = 1.1
+    return (100.0/43)*ua
 
-# VEMD2503X01
-def output_sensitivity_curves():
-    f = open("sensitivity_curves.csv", "w")
-    f.write("wavelength,diode relative spectral sensitivity,qb12 relative spectral sensitivity,qb11 relative spectral sensitivity,luminosity func\n")
-    for i in range(0,900):
-        lum = luminosity_func(i)
-        diode = vemd2503x01_spectral_sensitivity_func(i)
-        qb12 = qb12_spectral_sensitivity_func(i)
-        qb11 = qb11_spectral_sensitivity_func(i)
-        product12 = lum * qb12
-        product11 = lum * qb11
-        f.write("%i,%f,%f,%f,%f\n" % (i, diode, product12, product11, lum))
-    f.close()
-output_sensitivity_curves()
+def sensor_cap_time_and_mv_to_ua(us, mv):
+    # We want result in uA. We're multiplying by millivolts and microseconds,
+    # i.e. 1000*1000000. Thus we need to divide by 1000 at the end.
+    return ((sensor_cap_value/1000000000000.0)*mv*us)/1000.0
 
-irrad_to_illum_constant = None
-# VEMD2503X01 with QB12 filter.
-def irrad_to_illum(irrad):
-    global irrad_to_illum_constant
-    # Assuming white light.
-    if irrad_to_illum_constant is None:
-        area = 0.0
-        for i in range(0, 900):
-            lum = luminosity_func(i)
-            qb12 = qb12_spectral_sensitivity_func(i)
-            area += lum * qb12
-        irrad_to_illum_constant = (683.002 * area) / 900.0
-    return irrad * irrad_to_illum_constant
-
-illum_to_irrad_constant = None
-def illum_to_irrad(illum):
-    if illum_to_irrad_constant is None:
-        irrad_to_illum(5.0) # Dummy value.
-        return illum / irrad_to_illum_constant
+def sensor_cap_time_and_mv_to_lux(us, mv):
+    return sensor_ua_to_lux(sensor_cap_time_and_mv_to_ua(us, mv))
 
 #
 # EV table.
 #
 
-# Useful link for calculating equations from lines (I *always* mess this up doing it by hand):
-# http://www.mathportal.org/calculators/analytic-geometry/two-point-form-calculator.php
-
 bv_to_voltage = ((1/256.0) * reference_voltage)
-
-# http:www.vishay.comdocs81521bpw34.pdf, p. 2 Fig 2
-# Temp in C.
-# For BPW34
-#def temp_to_rrlc(temp): # Temperature to relative reverse light current
-#    slope = 0.002167
-#    k = 0.97
-#    return (temp*slope) + k
-#
-# For BPW21
-#def temp_to_rrlc(temp):
-#    return ((19/022500.0)*temp) + (97.0/100.0)
-#
-# For VEMD2503X01. See p. 2 Fig 2 of datasheet.
-def temp_to_rrlc(temp):
-    return (317.0/300000.0)*temp + (9683.0/10000.0)
-
-
-# Log10 reverse light current microamps to log10 lux.
-# http://www.vishay.com/docs/81521/bpw34.pdf, p. 3 Fig 4
-# For BPW34
-#def rlc_to_lux(rlc):
-#    k = -1.254
-#    slope = 1.054
-#    return (rlc - k) / slope
-#
-# For VTB8440, 8441
-# See table on p. 22 of PDF datasheet included in git repo.
-#def rlc_to_lux(rlc):
-#    return math.log(10.763910417,10) + rlc
-#
-# For BPW21R. See Fig 3 of PDF datasheet included in git repo.
-#def log_rlc_to_log_lux(rlc):
-#    return (rlc + 1.756) / 0.806
-
-#
-# For VEMD2503X01 with QB12 filter.
-# See p. 2 Fig 3 of datasheet.
-# Note that irradience is given in the odd unit of mW/cm^2, which is W/m^2
-# multiplied by 10.
-def log_rlc_to_log_irrad(rlc):
-    # Log10 reverse light current microamps to log10 irradience (W/m^2).
-    return (12.0/13.0)*rlc + (8.0/65.0)
-def log_rlc_to_log_lux(rlc):
-    irrad = log_rlc_to_log_irrad(rlc)
-    # TODO: Bit ugly to go out of log space.
-    return math.log(irrad_to_illum(math.pow(10,irrad)),10)
 
 # Convert log10 lux to EV at ISO 100.
 # See http://stackoverflow.com/questions/5401738/how-to-convert-between-lux-and-exposure-value
@@ -214,15 +49,15 @@ def log_rlc_to_log_lux(rlc):
 # This is (implicitly) using C=250.
 LOG10_2_5 = math.log(2.5, 10)
 LOG2_10 = math.log(2,10)
-def log_illuminance_to_ev_at_100(log_lux):
+def illuminance_to_ev_at_100(lux):
+    log10_lux = math.log(lux,10)
     ev = log_lux - LOG10_2_5
     # Convert from log10 to log2.
     ev /= LOG2_10
     return ev
 
 # Implicitly using the Sekonic calibration constant of 12.5.
-def log_luminance_to_ev_at_100(log_lux):
-    lux = math.pow(10, log_lux)
+def log10_irradience_to_ev_at_100(lux):
     ev_minus_3 = math.log(lux, 2)
     return ev_minus_3 + 3.0
 
