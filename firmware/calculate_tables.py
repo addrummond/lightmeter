@@ -21,13 +21,17 @@ amp_timings = [ # In microseconds
     100.0
 ]
 
+amp_normal_timing = 50.0
+
+clock_hz = 48000000
+
 
 # For PNJ4K01F
 # See http://www.semicon.panasonic.co.jp/en/products/detail/?cat=CED7000&part=PNJ4K01F
 # http://www.mathportal.org/calculators/analytic-geometry/two-point-form-calculator.php
 def sensor_ua_to_lux(ua):
     incand_ratio = 1.1
-    return (100.0/43)*ua
+    return ((100.0/43.0)*ua)/incand_ratio
 
 def sensor_cap_time_and_mv_to_ua(us, mv):
     # We want result in uA. We're multiplying by millivolts and microseconds,
@@ -36,6 +40,9 @@ def sensor_cap_time_and_mv_to_ua(us, mv):
 
 def sensor_cap_time_and_mv_to_lux(us, mv):
     return sensor_ua_to_lux(sensor_cap_time_and_mv_to_ua(us, mv))
+
+def us_to_ticks(us):
+    return int(round(us*(clock_hz/1000000.0)))
 
 #
 # EV table.
@@ -57,7 +64,7 @@ def illuminance_to_ev_at_100(lux):
     return ev
 
 # Implicitly using the Sekonic calibration constant of 12.5.
-def log10_irradience_to_ev_at_100(lux):
+def irradience_to_ev_at_100(lux):
     ev_minus_3 = math.log(lux, 2)
     return ev_minus_3 + 3.0
 
@@ -67,27 +74,10 @@ def log10_irradience_to_ev_at_100(lux):
 LUMINANCE_COMPENSATION = log_luminance_to_ev_at_100(10) - log_illuminance_to_ev_at_100(10)
 assert LUMINANCE_COMPENSATION >= 4.0 and LUMINANCE_COMPENSATION <= 5.0
 
-# Voltage (mV) and op amp resitor value (kOhm) to EV at the reference temp,
-# which we see from Fig 2 on p.2 of http://www.vishay.com/docs/81521/bpw34.pdf
-# is 40C.
-def voltage_and_oa_resistor_to_ev(v, r, TADJ = 0.0):
-    #v = ir => i = v/r
-    v /= 1000.0 # v, mV -> V
-    r *= 1000.0 # kOhm -> ohm
-
-    if v < 1e-06:
-        v = 1e-06
-
-    v = math.log(v, 10) - math.log(second_stage_gain, 10)
-    r = math.log(r, 10)
-    i = v - r + TADJ
-
-    # Get i in microamps.
-    i += math.log(1000000, 10)
-
-    log_lux = log_rlc_to_log_lux(i) * temp_to_rrlc(reference_temperature)
-    ev = log_illuminance_to_ev_at_100(log_lux)
-    return ev
+# Voltage in mV, timing in us.
+def voltage_and_timing_to_ev(v, timing):
+    lux = sensor_cap_time_and_mv_to_lux(timing, v)
+    return illuminance_to_ev_at_100(lux)
 
 
 #
@@ -145,11 +135,10 @@ def get_third_bit(ev):
 def get_tenth_bit(ev):
     return get_xth_bit(ev, 10.0)
 
-def output_ev_table(of, name_prefix, op_amp_resistor, filter_offset):
+def output_ev_table(of, name_prefix, timing):
     bitpatterns = [ ]
     vallist_abs = [ ]
     vallist_diffs = [ ]
-    oar = op_amp_resistor
     tenth_bits = [ ]
     third_bits = [ ]
     for sv in range(b_voltage_offset, 256, 16):
@@ -158,8 +147,7 @@ def output_ev_table(of, name_prefix, op_amp_resistor, filter_offset):
         assert voltage >= 0
         if voltage > reference_voltage:
             break
-        ev = voltage_and_oa_resistor_to_ev(voltage, oar)
-        ev += filter_offset
+        ev = voltage_and_timing_to_ev(voltage, timing)
         eight = int(round((ev+5.0) * 8.0))
         if eight < 0:
             eight = 0
@@ -173,8 +161,7 @@ def output_ev_table(of, name_prefix, op_amp_resistor, filter_offset):
             o = ""
             for k in range(0, 8):
                 v = ((sv + (j * 8.0) + k) * bv_to_voltage)
-                ev2 = voltage_and_oa_resistor_to_ev(v, oar)
-                ev2 += filter_offset
+                ev2 = voltage_and_timing_to_ev(v, timing)
                 eight2 = int(round((ev2+5.0) * 8.0))
                 if eight2 < 0:
                     eight2 = 0
@@ -248,15 +235,15 @@ def output_ev_table(of, name_prefix, op_amp_resistor, filter_offset):
 # input pin.
 def output_sanity_graph():
     f = open("sanitygraph.csv", "w")
-    f.write("v," + ','.join(["s" + str(n+1) for n in range(len(amp_stages))]) + ',')
-    f.write(','.join(["b" + str(n+1) for n in range(len(amp_stages))]) + '\n')
+    f.write("v," + ','.join(["s" + str(n+1) for n in range(len(amp_timings))]) + ',')
+    f.write(','.join(["b" + str(n+1) for n in range(len(amp_timings))]) + '\n')
     for v in range(b_voltage_offset, 256):
         f.write("%i" % v)
         voltage = (v * bv_to_voltage)
         bins = [ ]
-        for stage in range(len(amp_stages)):
-            ev = voltage_and_oa_resistor_to_ev(voltage, amp_stages[stage][0])
-            ev +=  amp_stages[stage][1]
+        for stage in range(len(amp_timings)):
+            ev = voltage_and_timing_to_ev(voltage, amp_timings[stage])
+            ev +=  amp_timings[stage][1]
             ev8 = int(round((ev + 5.0) * 8.0))
             bins.append(ev8)
             f.write(",%f" % ev)
@@ -279,7 +266,7 @@ def output_test_table(of):
     for v in range(b_voltage_offset, 256):
         voltage = (v * bv_to_voltage)
 #            sys.stderr.write('TAVY ' + str(temperature) + ',' + str(voltage) + '\n')
-        ev = voltage_and_oa_resistor_to_ev(voltage, op_amp_normal_resistor)
+        ev = voltage_and_timing_to_ev(voltage, amp_normal_timing)
         eight = int(round((ev+5.0) * 8.0))
         of.write("%i," % eight)
     of.write('\n')
@@ -958,30 +945,28 @@ def output():
     ofh.write("#define TABLES_H\n\n")
     ofh.write("#include <stdint.h>\n\n")
 
-    ofh.write("#define NUM_AMP_STAGES %i\n" % len(amp_stages))
+    ofh.write("#define NUM_AMP_STAGES %i\n" % len(amp_timings))
     ofh.write("#define FOR_EACH_AMP_STAGE(x) ")
-    for i in range(1, len(amp_stages)+1):
+    for i in range(1, len(amp_timings)+1):
         ofh.write("x(%i) " % i)
+    for i in range(0, len(amp_timings)):
+        ofh.write("#define STAGE%i_TICKS %i\n" % (i, us_to_ticks(amp_timings[i])))
     ofh.write("\n")
 
     ofc.write("#include <stdint.h>\n")
 
     e, pr = None, None
-    for i in range(len(amp_stages)):
-        resistor_value = amp_stages[i][0]
-        stops_subtracted = amp_stages[i][1]
+    for i in range(len(amp_timings)):
+        timing = amp_timings[i]
 
-        ofh.write("#define STAGE%i_RESISTOR_NUMBER %i\n" % (i+1, op_amp_resistor_value_to_resistor_number[resistor_value]))
-        ofh.write("#define STAGE%i_STOPS_SUBTRACTED %i\n" % (i+1, int(stops_subtracted)))
-
-        e, pr = output_ev_table(ofc, 'STAGE' + str(i+1), amp_stages[i][0], amp_stages[i][1])
+        e, pr = output_ev_table(ofc, 'STAGE' + str(i+1), amp_timings[i])
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_BITPATTERNS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_ABS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_DIFFS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_TENTHS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_THIRDS[];\n" % (i+1))
         if not e:
-            sys.stderr.write("R ERROR %.3f: (%.3f, %.3f) at stage %i\n" % (amp_stages[i][0], pr[0], pr[1], i))
+            sys.stderr.write("R ERROR %.3f: (%.3f, %.3f) at stage %i\n" % (amp_timings[i][0], pr[0], pr[1], i))
             break
 
     ofh.write("#define VOLTAGE_TO_EV_ABS_OFFSET " + str(b_voltage_offset) + '\n')
@@ -1008,12 +993,12 @@ def output():
     ofh.close()
     ofc.close()
 
-def try_resistor_values():
+def try_timing_values():
     working = [ ]
     for i in range(1, 2000):
         r = i/10.0
 #        sys.stderr.write("Trying %.3f\n" % r)
-        e, pr = output_ev_table('STAGE', r)
+        e, pr = output_ev_table(sys.stdout, 'STAGE', r)
         if e:
             working.append(r)
     sys.stderr.write('\n'.join(("%.2f" % x for x in working)))
@@ -1022,7 +1007,7 @@ if __name__ == '__main__':
     assert len(sys.argv) >= 2
 
     if sys.argv[1] == 'try':
-        try_resistor_values()
+        try_timing_values()
     elif sys.argv[1] == 'graph':
         output_sanity_graph()
     elif sys.argv[1] == 'output':
