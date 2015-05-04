@@ -64,11 +64,14 @@ def luminance_to_ev_at_100(lux):
 def illuminance_to_ev_at_100(lux):
     return math.log(lux/2.5, 2)
 
+def illuminance_to_luminance(lux):
+    return lux/math.pi
+
 # Difference between luminance and illuminance will be a constant in log space.
 # We store illuminance values in the table then add extra if we're measuring
 # illuminance. This calculates how much extra.
-LUMINANCE_COMPENSATION = luminance_to_ev_at_100(10) - illuminance_to_ev_at_100(10)
-assert LUMINANCE_COMPENSATION >= 4.0 and LUMINANCE_COMPENSATION <= 5.0
+LUMINANCE_COMPENSATION = luminance_to_ev_at_100(illuminance_to_luminance(10)) - illuminance_to_ev_at_100(10)
+assert LUMINANCE_COMPENSATION >= 2.0 and LUMINANCE_COMPENSATION <= 3.0
 
 # Voltage in mV, timing in us.
 def voltage_and_timing_to_ev(v, timing):
