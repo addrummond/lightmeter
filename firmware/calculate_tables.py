@@ -98,8 +98,8 @@ def voltage_and_oa_resistor_to_ev(v, r, TADJ = 0.0):
 # EV: from -5 to 26EV in 1/8 EV intervals.
 # EV: from -5 to 26EV in 18 EV intervals.
 #
-# The table is an array mapping voltage to EV*8 at the reference
-# temperature.  The resulting table would take up 256 bytes.  To make
+# The table is an array mapping voltage to EV*8. The resulting table
+# would take up 256 bytes.  To make
 # the table more compact, the series of voltages is stored with the
 # first 8-bit value followed by a series of 16 (compacted) 1-bit
 # values, where each 1-bit value indicates the (always positive)
@@ -112,9 +112,9 @@ def voltage_and_oa_resistor_to_ev(v, r, TADJ = 0.0):
 # 4-bit indices (one for each 8-bit bit pattern) into an array.
 #
 # Finally, we split the array into two arrays (one for the absolute
-# value bytes and one for the diff bit pattern index bytes). (This was
+# value bytes and one for the diff bit pattern index bytes). This was
 # previously necessary because the monolithic array was too large to
-# index with a single byte; may not be necessary now but does no harm.)
+# index with a single byte. It may not be necessary now but does no harm.
 #
 # EV values for very low voltages are not stored. The
 # VOLTAGE_TO_EV_ABS_OFFSET constant indicates the voltage for the
@@ -244,9 +244,8 @@ def output_ev_table(of, name_prefix, op_amp_resistor, filter_offset):
     return True, ()
 
 # This is useful for santiy checking calculations. It outputs a graph of
-# amplified voltage against EV which can be compared with voltage readings
-# over the two input pins (or between the input pin and ground if we're
-# using single input mode).
+# amplified voltage against EV which can be compared with the voltage at the
+# input pin.
 def output_sanity_graph():
     f = open("sanitygraph.csv", "w")
     f.write("v," + ','.join(["s" + str(n+1) for n in range(len(amp_stages))]) + ',')
