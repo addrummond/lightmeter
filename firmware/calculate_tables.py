@@ -25,6 +25,10 @@ amp_normal_timing = 50.0
 
 clock_hz = 48000000
 
+##########
+
+b_voltage_offset = int(round((voltage_offset/reference_voltage)*256))
+
 
 # For PNJ4K01F
 # See http://www.semicon.panasonic.co.jp/en/products/detail/?cat=CED7000&part=PNJ4K01F
@@ -50,28 +54,20 @@ def us_to_ticks(us):
 
 bv_to_voltage = ((1/256.0) * reference_voltage)
 
-# Convert log10 lux to EV at ISO 100.
+# Convert luminance to EV at ISO 100.
 # See http://stackoverflow.com/questions/5401738/how-to-convert-between-lux-and-exposure-value
 # http://en.wikipedia.org/wiki/Exposure_value#EV_as_a_measure_of_luminance_and_illuminance
-# This is (implicitly) using C=250.
-LOG10_2_5 = math.log(2.5, 10)
-LOG2_10 = math.log(2,10)
+# This is (implicitly) using C=12.5.
+def luminance_to_ev_at_100(lux):
+    return math.log(lux, 2) + 3.0
+
 def illuminance_to_ev_at_100(lux):
-    log10_lux = math.log(lux,10)
-    ev = log_lux - LOG10_2_5
-    # Convert from log10 to log2.
-    ev /= LOG2_10
-    return ev
+    return math.log(lux/2.5, 2)
 
-# Implicitly using the Sekonic calibration constant of 12.5.
-def irradience_to_ev_at_100(lux):
-    ev_minus_3 = math.log(lux, 2)
-    return ev_minus_3 + 3.0
-
-# Difference between illuminance and irradience will be a constant in log space.
+# Difference between luminance and illuminance will be a constant in log space.
 # We store illuminance values in the table then add extra if we're measuring
-# irradience. This calculates how much extra.
-LUMINANCE_COMPENSATION = log_luminance_to_ev_at_100(10) - log_illuminance_to_ev_at_100(10)
+# illuminance. This calculates how much extra.
+LUMINANCE_COMPENSATION = luminance_to_ev_at_100(10) - illuminance_to_ev_at_100(10)
 assert LUMINANCE_COMPENSATION >= 4.0 and LUMINANCE_COMPENSATION <= 5.0
 
 # Voltage in mV, timing in us.
@@ -255,7 +251,7 @@ def output_sanity_graph():
     f.write("lux,loglux,logillum,loglum\n")
     lux = 5
     while lux <= 656000:
-        f.write("%i,%f,%f,%f\n" % (lux, math.log(lux,10), log_illuminance_to_ev_at_100(math.log(lux, 10)), log_luminance_to_ev_at_100(math.log(lux,10))))
+        f.write("%i,%f,%f,%f\n" % (lux, math.log(lux,10), illuminance_to_ev_at_100(lux), luminance_to_ev_at_100(lux)))
         lux += lux
     f.close()
 
