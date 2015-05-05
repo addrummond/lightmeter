@@ -9,16 +9,16 @@ import re
 reference_voltage = 2000 # mV
 
 # Table cells not calculated for voltages lower than this.
-voltage_offset = 10 # mV
+voltage_offset = 80 # mV
 
 sensor_cap_value = 3300 # pF
 
 amp_timings = [ # In microseconds
-    0.1,
-    10.0,
-    50.0,
-    75.0,
-    100.0
+    0.5,
+    5,
+    10,
+    15,
+    20
 ]
 
 amp_normal_timing = 50.0
@@ -169,7 +169,7 @@ def output_ev_table(of, name_prefix, timing):
                 if not (eight2 - prev == 0 or not (j == 0 and k == 0)) or \
                    not (eight2 - prev <= 1) or \
                    not (eight2 - prev >= 0):
-                    return False, (prev, eight2)
+                    return False, sv, (prev, eight2)
                 if eight2 - prev == 0:
                     o += '0'
                 elif eight2 - prev == 1:
@@ -228,7 +228,7 @@ def output_ev_table(of, name_prefix, timing):
     write_x_bits(3)
     write_x_bits(10)
 
-    return True, ()
+    return True, None, ()
 
 # This is useful for santiy checking calculations. It outputs a graph of
 # amplified voltage against EV which can be compared with the voltage at the
@@ -958,14 +958,14 @@ def output():
     for i in range(len(amp_timings)):
         timing = amp_timings[i]
 
-        e, pr = output_ev_table(ofc, 'STAGE' + str(i+1), amp_timings[i])
+        e, sv, pr = output_ev_table(ofc, 'STAGE' + str(i+1), amp_timings[i])
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_BITPATTERNS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_ABS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_DIFFS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_TENTHS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_THIRDS[];\n" % (i+1))
         if not e:
-            sys.stderr.write("R ERROR %.3f: (%.3f, %.3f) at stage %i\n" % (amp_timings[i], pr[0], pr[1], i))
+            sys.stderr.write("R ERROR %.3f: %i (%.3f, %.3f) at stage %i\n" % (amp_timings[i], sv, pr[0], pr[1], i))
             break
 
     ofh.write("#define VOLTAGE_TO_EV_ABS_OFFSET " + str(b_voltage_offset) + '\n')
