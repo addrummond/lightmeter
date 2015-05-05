@@ -9562,6 +9562,32 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <wire x1="3.175" y1="3.175" x2="3.175" y2="-3.175" width="0.127" layer="21"/>
 <wire x1="3.175" y1="-3.175" x2="-3.175" y2="-3.175" width="0.127" layer="21"/>
 </package>
+<package name="TSSOP8">
+<description>&lt;b&gt;Plastic Small Outline&lt;/b&gt;</description>
+<wire x1="-2.15" y1="-1.4" x2="2.15" y2="-1.4" width="0.2032" layer="21"/>
+<wire x1="2.15" y1="-1.4" x2="2.15" y2="1.4" width="0.2032" layer="21"/>
+<wire x1="2.15" y1="1.4" x2="-2.15" y2="1.4" width="0.2032" layer="21"/>
+<wire x1="-2.15" y1="1.4" x2="-2.15" y2="-1.4" width="0.2032" layer="21"/>
+<circle x="-1.625" y="0.65" radius="0.325" width="0" layer="21"/>
+<smd name="1" x="-2.925" y="0.975" dx="1.2" dy="0.35" layer="1"/>
+<smd name="2" x="-2.925" y="0.325" dx="1.2" dy="0.35" layer="1"/>
+<smd name="3" x="-2.925" y="-0.325" dx="1.2" dy="0.35" layer="1"/>
+<smd name="4" x="-2.925" y="-0.975" dx="1.2" dy="0.35" layer="1"/>
+<smd name="5" x="2.925" y="-0.975" dx="1.2" dy="0.35" layer="1"/>
+<smd name="6" x="2.925" y="-0.325" dx="1.2" dy="0.35" layer="1"/>
+<smd name="7" x="2.925" y="0.325" dx="1.2" dy="0.35" layer="1"/>
+<smd name="8" x="2.925" y="0.975" dx="1.2" dy="0.35" layer="1"/>
+<text x="-2.925" y="1.625" size="1.27" layer="25">&gt;NAME</text>
+<text x="-3.25" y="-2.925" size="1.27" layer="27">&gt;VALUE</text>
+<rectangle x1="-3.2" y1="0.85" x2="-2.2" y2="1.1" layer="51"/>
+<rectangle x1="-3.2" y1="0.2" x2="-2.2" y2="0.45" layer="51"/>
+<rectangle x1="-3.2" y1="-0.45" x2="-2.2" y2="-0.2" layer="51"/>
+<rectangle x1="-3.2" y1="-1.1" x2="-2.2" y2="-0.85" layer="51"/>
+<rectangle x1="2.2" y1="-1.1" x2="3.2" y2="-0.85" layer="51"/>
+<rectangle x1="2.2" y1="-0.45" x2="3.2" y2="-0.2" layer="51"/>
+<rectangle x1="2.2" y1="0.2" x2="3.2" y2="0.45" layer="51"/>
+<rectangle x1="2.2" y1="0.85" x2="3.2" y2="1.1" layer="51"/>
+</package>
 </packages>
 <symbols>
 <symbol name="P-MOS">
@@ -9813,6 +9839,22 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <wire x1="10.16" y1="-7.62" x2="-7.62" y2="-7.62" width="0.254" layer="94"/>
 <wire x1="-7.62" y1="12.7" x2="-7.62" y2="-7.62" width="0.254" layer="94"/>
 <text x="-2.54" y="10.16" size="1.27" layer="94">PNJ4K01F</text>
+</symbol>
+<symbol name="CAT24C512">
+<pin name="A0" x="-15.24" y="7.62" length="middle"/>
+<pin name="A1" x="-15.24" y="2.54" length="middle"/>
+<pin name="A2" x="-15.24" y="-2.54" length="middle"/>
+<pin name="VSS" x="-15.24" y="-7.62" length="middle"/>
+<pin name="SDA" x="15.24" y="-7.62" length="middle" rot="R180"/>
+<pin name="SCL" x="15.24" y="-2.54" length="middle" rot="R180"/>
+<pin name="WP" x="15.24" y="2.54" length="middle" rot="R180"/>
+<pin name="VCC" x="15.24" y="7.62" length="middle" rot="R180"/>
+<wire x1="-10.16" y1="10.16" x2="10.16" y2="10.16" width="0.254" layer="94"/>
+<wire x1="10.16" y1="10.16" x2="10.16" y2="-10.16" width="0.254" layer="94"/>
+<wire x1="10.16" y1="-10.16" x2="-10.16" y2="-10.16" width="0.254" layer="94"/>
+<wire x1="-10.16" y1="-10.16" x2="-10.16" y2="10.16" width="0.254" layer="94"/>
+<text x="-7.62" y="12.7" size="1.27" layer="95">&gt;NAME</text>
+<text x="0" y="-2.54" size="1.27" layer="94" rot="R90">CAT24C512</text>
 </symbol>
 </symbols>
 <devicesets>
@@ -10681,6 +10723,28 @@ naming: grid - package width</description>
 <connect gate="G$1" pin="GND4" pad="P$5"/>
 <connect gate="G$1" pin="IOUT" pad="P$6"/>
 <connect gate="G$1" pin="VCC" pad="P$1"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="CAT24C512">
+<gates>
+<gate name="G$1" symbol="CAT24C512" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="TSSOP8">
+<connects>
+<connect gate="G$1" pin="A0" pad="1"/>
+<connect gate="G$1" pin="A1" pad="2"/>
+<connect gate="G$1" pin="A2" pad="3"/>
+<connect gate="G$1" pin="SCL" pad="6"/>
+<connect gate="G$1" pin="SDA" pad="5"/>
+<connect gate="G$1" pin="VCC" pad="8"/>
+<connect gate="G$1" pin="VSS" pad="4"/>
+<connect gate="G$1" pin="WP" pad="7"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -11866,6 +11930,9 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="J7" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
 <part name="GND33" library="supply1" deviceset="GND" device=""/>
 <part name="GND39" library="supply1" deviceset="GND" device=""/>
+<part name="U$5" library="lightmeter" deviceset="CAT24C512" device=""/>
+<part name="GND42" library="supply1" deviceset="GND" device=""/>
+<part name="GND43" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -12014,6 +12081,9 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <instance part="J7" gate="G$1" x="58.42" y="-116.84"/>
 <instance part="GND33" gate="1" x="45.72" y="-116.84" rot="R270"/>
 <instance part="GND39" gate="1" x="71.12" y="-116.84" rot="R90"/>
+<instance part="U$5" gate="G$1" x="48.26" y="109.22"/>
+<instance part="GND42" gate="1" x="25.4" y="101.6" rot="R270"/>
+<instance part="GND43" gate="1" x="68.58" y="111.76" rot="R90"/>
 </instances>
 <busses>
 </busses>
@@ -12365,6 +12435,29 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pinref part="GND39" gate="1" pin="GND"/>
 <wire x1="68.58" y1="-116.84" x2="66.04" y2="-116.84" width="0.1524" layer="91"/>
 </segment>
+<segment>
+<pinref part="U$5" gate="G$1" pin="A0"/>
+<wire x1="33.02" y1="116.84" x2="30.48" y2="116.84" width="0.1524" layer="91"/>
+<wire x1="30.48" y1="116.84" x2="30.48" y2="111.76" width="0.1524" layer="91"/>
+<pinref part="U$5" gate="G$1" pin="A1"/>
+<wire x1="30.48" y1="111.76" x2="33.02" y2="111.76" width="0.1524" layer="91"/>
+<wire x1="30.48" y1="111.76" x2="30.48" y2="106.68" width="0.1524" layer="91"/>
+<junction x="30.48" y="111.76"/>
+<pinref part="U$5" gate="G$1" pin="A2"/>
+<wire x1="30.48" y1="106.68" x2="33.02" y2="106.68" width="0.1524" layer="91"/>
+<wire x1="30.48" y1="106.68" x2="30.48" y2="101.6" width="0.1524" layer="91"/>
+<junction x="30.48" y="106.68"/>
+<pinref part="U$5" gate="G$1" pin="VSS"/>
+<wire x1="30.48" y1="101.6" x2="33.02" y2="101.6" width="0.1524" layer="91"/>
+<wire x1="30.48" y1="101.6" x2="27.94" y2="101.6" width="0.1524" layer="91"/>
+<junction x="30.48" y="101.6"/>
+<pinref part="GND42" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="U$5" gate="G$1" pin="WP"/>
+<wire x1="63.5" y1="111.76" x2="66.04" y2="111.76" width="0.1524" layer="91"/>
+<pinref part="GND43" gate="1" pin="GND"/>
+</segment>
 </net>
 <net name="VCC" class="0">
 <segment>
@@ -12491,6 +12584,11 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pinref part="R12" gate="G$1" pin="2"/>
 <wire x1="-68.58" y1="-99.06" x2="-68.58" y2="-104.14" width="0.1524" layer="91"/>
 <label x="-68.58" y="-104.14" size="1.778" layer="95" rot="R270" xref="yes"/>
+</segment>
+<segment>
+<pinref part="U$5" gate="G$1" pin="VCC"/>
+<wire x1="63.5" y1="116.84" x2="66.04" y2="116.84" width="0.1524" layer="91"/>
+<label x="66.04" y="116.84" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="N$19" class="0">
@@ -12787,6 +12885,11 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="-40.64" y1="22.86" x2="-40.64" y2="25.4" width="0.1524" layer="91"/>
 <label x="-40.64" y="25.4" size="1.778" layer="95" rot="R90" xref="yes"/>
 </segment>
+<segment>
+<pinref part="U$5" gate="G$1" pin="SDA"/>
+<wire x1="63.5" y1="101.6" x2="66.04" y2="101.6" width="0.1524" layer="91"/>
+<label x="66.04" y="101.6" size="1.778" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="I2CSCL" class="0">
 <segment>
@@ -12807,6 +12910,11 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pinref part="IC$4" gate="G$1" pin="PB6"/>
 <wire x1="-35.56" y1="22.86" x2="-35.56" y2="25.4" width="0.1524" layer="91"/>
 <label x="-35.56" y="25.4" size="1.778" layer="95" rot="R90" xref="yes"/>
+</segment>
+<segment>
+<pinref part="U$5" gate="G$1" pin="SCL"/>
+<wire x1="63.5" y1="106.68" x2="66.04" y2="106.68" width="0.1524" layer="91"/>
+<label x="66.04" y="106.68" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="PIEZONEG" class="0">
