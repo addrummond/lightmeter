@@ -523,6 +523,7 @@ def output():
     ofh.write("#define FOR_EACH_AMP_STAGE(x) ")
     for i in range(1, len(amp_timings)+1):
         ofh.write("x(%i) " % i)
+    ofh.write("\n")
     for i in range(0, len(amp_timings)):
         ofh.write("#define STAGE%i_TICKS %i\n" % (i, us_to_ticks(amp_timings[i])))
     ofh.write("\n")
