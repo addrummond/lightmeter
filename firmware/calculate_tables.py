@@ -87,7 +87,6 @@ def voltage_and_timing_to_ev(v, timing):
 #
 # Voltage: from 0 up in 1/256ths of the reference voltage.
 # EV: from -5 to 26EV in 1/8 EV intervals.
-# EV: from -5 to 26EV in 18 EV intervals.
 #
 # The table is an array mapping voltage to EV*8. The resulting table
 # would take up 256 bytes.  To make
