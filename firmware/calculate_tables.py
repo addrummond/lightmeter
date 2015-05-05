@@ -966,7 +966,7 @@ def output():
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_TENTHS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_THIRDS[];\n" % (i+1))
         if not e:
-            sys.stderr.write("R ERROR %.3f: (%.3f, %.3f) at stage %i\n" % (amp_timings[i][0], pr[0], pr[1], i))
+            sys.stderr.write("R ERROR %.3f: (%.3f, %.3f) at stage %i\n" % (amp_timings[i], pr[0], pr[1], i))
             break
 
     ofh.write("#define VOLTAGE_TO_EV_ABS_OFFSET " + str(b_voltage_offset) + '\n')
