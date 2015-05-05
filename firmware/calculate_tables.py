@@ -38,9 +38,7 @@ def sensor_ua_to_lux(ua):
     return ((100.0/43.0)*ua)/incand_ratio
 
 def sensor_cap_time_and_mv_to_ua(us, mv):
-    # We want result in uA. We're multiplying by millivolts and microseconds,
-    # i.e. 1000*1000000. Thus we need to divide by 1000 at the end.
-    return ((sensor_cap_value/1000000000000.0)*mv*us)/1000.0
+    return ((sensor_cap_value*mv)/(us*1000.0))
 
 def sensor_cap_time_and_mv_to_lux(us, mv):
     return sensor_ua_to_lux(sensor_cap_time_and_mv_to_ua(us, mv))
@@ -59,9 +57,13 @@ bv_to_voltage = ((1/256.0) * reference_voltage)
 # http://en.wikipedia.org/wiki/Exposure_value#EV_as_a_measure_of_luminance_and_illuminance
 # This is (implicitly) using C=12.5.
 def luminance_to_ev_at_100(lux):
+    if lux == 0:
+        lux = 0.00001
     return math.log(lux, 2) + 3.0
 
 def illuminance_to_ev_at_100(lux):
+    if lux == 0:
+        lux = 0.00001
     return math.log(lux/2.5, 2)
 
 def illuminance_to_luminance(lux):
@@ -242,7 +244,6 @@ def output_sanity_graph():
         bins = [ ]
         for stage in range(len(amp_timings)):
             ev = voltage_and_timing_to_ev(voltage, amp_timings[stage])
-            ev +=  amp_timings[stage][1]
             ev8 = int(round((ev + 5.0) * 8.0))
             bins.append(ev8)
             f.write(",%f" % ev)
