@@ -9,16 +9,16 @@ import re
 reference_voltage = 2000 # mV
 
 # Table cells not calculated for voltages lower than this.
-voltage_offset = 80 # mV
+voltage_offset = 90 # mV
 
 sensor_cap_value = 3300 # pF
 
 amp_timings = [ # In microseconds
-    0.5,
-    5,
-    10,
-    15,
-    20
+    0.25,
+    1.5,
+    9,
+    55,
+    300
 ]
 
 amp_normal_timing = 50.0
