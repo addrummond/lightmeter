@@ -197,6 +197,7 @@ int main()
     //for(;;);
 
     uint32_t last_systick = SysTick->VAL;
+    bool wait_for_release = false;
     for (;;) {
         //if (sysinit_is_time_to_sleep()) {
         //    sysinit_enter_sleep_mode();
@@ -212,20 +213,33 @@ int main()
         last_systick = current_systick;
         ui_show_interface(ticks_since_ui_last_shown);
 
+        if (wait_for_release) {
+            if (buttons_get_ticks_pressed_for() == 0) {
+                wait_for_release = false;
+                buttons_clear_mask();
+            }
+            else
+                continue;
+        }
+
         unsigned mask = buttons_get_mask();
         if (mask == 2 && buttons_get_ticks_pressed_for() > 5000000) {
             // Long press of center button.
 
-            buttons_clear_mask();
-
-            gms->ui_mode = UI_MODE_MAIN_MENU;
-            gms->ui_mode_state.main_menu.start_line = 0;
-        }
-        else if (mask == 2 && buttons_get_ticks_pressed_for() == 0) {
-            // Short press of center button.
             if (gms->ui_mode == UI_MODE_MAIN_MENU) {
+                // If we're currently in the menu, go back to the main screen.
+                buttons_clear_mask();
                 gms->ui_mode = UI_MODE_INIT;
             }
+            else if (gms->ui_mode == UI_MODE_INIT) {
+                // If we're on the main screen, do a reading.
+                gms->ui_mode = UI_MODE_METERING;
+                wait_for_release = true;
+            }
+        }
+        else if (mask == 2 && buttons_get_ticks_pressed_for() == 0) {
+            gms->ui_mode = UI_MODE_MAIN_MENU;
+            gms->ui_mode_state.main_menu.start_line = 0;
         }
     }
 }

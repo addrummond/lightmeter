@@ -315,6 +315,18 @@ static void show_init()
     for (i = 0; i < 8; ++i) {
         pages[i] = 0xFF;
     }
+    display_command(DISPLAY_SETSTARTLINE + 0);
+    display_write_page_array(pages, 8, 1, (DISPLAY_LCDWIDTH/2)+4, DISPLAY_NUM_PAGES/2);
+}
+
+static void show_metering()
+{
+    uint8_t pages[8];
+    unsigned i;
+    for (i = 0; i < 8; ++i) {
+        pages[i] = 0b10101010;
+    }
+    display_command(DISPLAY_SETSTARTLINE + 0);
     display_write_page_array(pages, 8, 1, (DISPLAY_LCDWIDTH/2)+4, DISPLAY_NUM_PAGES/2);
 }
 
@@ -350,6 +362,9 @@ void ui_show_interface(uint32_t ticks_since_ui_last_shown)
     }
     else if (ms.ui_mode == UI_MODE_READING) {
         show_reading();
+    }
+    else if (ms.ui_mode == UI_MODE_METERING) {
+        show_metering();
     }
     else if (ms.ui_mode == UI_MODE_MAIN_MENU) {
         show_main_menu(ticks_since_ui_last_shown, first_time);

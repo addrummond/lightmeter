@@ -21,6 +21,7 @@ typedef enum priority {
 typedef enum ui_mode {
     UI_MODE_INIT=0,
     UI_MODE_READING,
+    UI_MODE_METERING,
     UI_MODE_MAIN_MENU,
     UI_MODE_CALIBRATE,
 } ui_mode_t;
