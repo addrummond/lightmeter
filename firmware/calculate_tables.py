@@ -2,6 +2,10 @@ import math
 import sys
 import re
 
+if sys.version < '3':
+    sys.stderr.write("Run this script using Python 3\n")
+    sys.exit(1)
+
 ##########
 # Configuration values
 ##########
