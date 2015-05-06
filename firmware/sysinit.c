@@ -62,9 +62,13 @@ void sysinit_init()
 
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOB, ENABLE);
 
-    SysTick->LOAD = SYS_TICK_MAX;
-    SysTick->VAL = 0;
-    SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
+    SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK);
+    SysTick_Config(SYS_TICK_MAX+1);
+    NVIC_InitTypeDef nvic;
+    nvic.NVIC_IRQChannel = SysTick_IRQn;
+    nvic.NVIC_IRQChannelPriority = 0;
+    nvic.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&nvic);
 
     i2c_init();
     buttons_setup();
