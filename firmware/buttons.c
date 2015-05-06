@@ -51,8 +51,7 @@ void EXTI4_15_IRQHandler(void)
 {
     // Clear interrupt flags. If we don't do this, this function will keep
     // getting called over and over due to a single button press.
-    EXTI_ClearITPendingBit(PUSHBUTTON1_EXTI_LINE);
-    EXTI_ClearITPendingBit(PUSHBUTTON2_EXTI_LINE);
+    EXTI_ClearITPendingBit(PUSHBUTTON1_EXTI_LINE | PUSHBUTTON2_EXTI_LINE);
 
     uint32_t t = SysTick->VAL;
 
