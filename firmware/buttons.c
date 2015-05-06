@@ -19,6 +19,25 @@ unsigned buttons_get_mask()
     return m;
 }
 
+static int32_t last_press_ticks = -1;
+static uint32_t ticks_pressed_for = 0;
+
+uint32_t buttons_get_ticks_pressed_for()
+{
+    if (last_press_ticks == -1)
+        return 0;
+    uint32_t extras = ((uint32_t)last_press_ticks) - SysTick->VAL;
+    return extras + ticks_pressed_for;
+}
+
+// TODO: Might need to move this out of buttons.c if other logic needs to go
+// in here.
+void SysTick_Handler(void)
+{
+    ticks_pressed_for += last_press_ticks;
+    last_press_ticks = SYS_TICK_MAX;
+}
+
 static uint32_t last_tick = 0;
 #define THRESHOLD 48000
 void EXTI4_15_IRQHandler(void)
@@ -36,6 +55,14 @@ void EXTI4_15_IRQHandler(void)
         m |= !GPIO_ReadInputDataBit(PUSHBUTTON1_GPIO_PORT, PUSHBUTTON1_PIN) << 1;
         m |= !GPIO_ReadInputDataBit(PUSHBUTTON2_GPIO_PORT, PUSHBUTTON2_PIN) << 2;
         BUTTON_MASK = m;
+
+        if (m == 0) {
+            last_press_ticks = -1;
+            ticks_pressed_for = 0;
+        }
+        else {
+            last_press_ticks = (int)SysTick->VAL;
+        }
 
         debugging_writec("Button interrupt ");
         debugging_write_uint32(m);
