@@ -34,8 +34,10 @@ uint32_t buttons_get_ticks_pressed_for()
 // in here.
 void SysTick_Handler(void)
 {
-    ticks_pressed_for += last_press_ticks;
-    last_press_ticks = SYS_TICK_MAX;
+    if (last_press_ticks != -1) {
+        ticks_pressed_for += last_press_ticks;
+        last_press_ticks = SYS_TICK_MAX;
+    }
 }
 
 static uint32_t last_tick = 0;
