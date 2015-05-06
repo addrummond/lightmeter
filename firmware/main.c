@@ -239,6 +239,7 @@ int main()
             }
         }
         else if (mask == 2 && buttons_get_ticks_pressed_for() == 0) {
+            buttons_clear_mask();
             gms->ui_mode = UI_MODE_MAIN_MENU;
             gms->ui_mode_state.main_menu.start_line = 0;
         }
