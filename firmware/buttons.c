@@ -55,28 +55,29 @@ void EXTI4_15_IRQHandler(void)
     EXTI_ClearITPendingBit(PUSHBUTTON2_EXTI_LINE);
 
     uint32_t t = SysTick->VAL;
-    if ((t < last_tick && last_tick - t > THRESHOLD) ||
-        (t > last_tick && (last_tick + (16777215-t)) > THRESHOLD)) {
-        // Figure out which pins are low.
-        unsigned m = 0;
-        m |= !GPIO_ReadInputDataBit(PUSHBUTTON1_GPIO_PORT, PUSHBUTTON1_PIN) << 1;
-        m |= !GPIO_ReadInputDataBit(PUSHBUTTON2_GPIO_PORT, PUSHBUTTON2_PIN) << 2;
 
-        if (m != 0) {
+    // Figure out which pins are low.
+    unsigned m = 0;
+    m |= !GPIO_ReadInputDataBit(PUSHBUTTON1_GPIO_PORT, PUSHBUTTON1_PIN) << 1;
+    m |= !GPIO_ReadInputDataBit(PUSHBUTTON2_GPIO_PORT, PUSHBUTTON2_PIN) << 2;
+
+    if (m != 0) {
+        if ((t < last_tick && last_tick - t > THRESHOLD) ||
+            (t > last_tick && (last_tick + (16777215-t)) > THRESHOLD)) {
             BUTTON_MASK = m;
             last_press_ticks = (int)SysTick->VAL;
-        }
-        else {
-            last_press_ticks = -1;
-            ticks_pressed_for = 0;
-        }
 
-        debugging_writec("Button interrupt ");
-        debugging_write_uint32(m);
-        debugging_writec("\n");
-
-        last_tick = SysTick->VAL;
+            debugging_writec("Button interrupt ");
+            debugging_write_uint32(m);
+            debugging_writec("\n");
+        }
     }
+    else {
+        last_press_ticks = -1;
+        ticks_pressed_for = 0;
+    }
+
+    last_tick = SysTick->VAL;
 }
 
 void buttons_setup()
@@ -98,7 +99,7 @@ void buttons_setup()
     EXTI_InitTypeDef exti;
     exti.EXTI_Line = PUSHBUTTON1_EXTI_LINE;
     exti.EXTI_Mode = EXTI_Mode_Interrupt;
-    exti.EXTI_Trigger = EXTI_Trigger_Falling;
+    exti.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
     exti.EXTI_LineCmd = ENABLE;
     EXTI_Init(&exti);
     exti.EXTI_Line = PUSHBUTTON2_EXTI_LINE;
