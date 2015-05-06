@@ -213,13 +213,19 @@ int main()
         ui_show_interface(ticks_since_ui_last_shown);
 
         unsigned mask = buttons_get_mask();
-        //if (mask == 4) {
-        //    // Reading.
-        //}
-        if (mask == 2) {
-            // Menu.
+        if (mask == 2 && buttons_get_ticks_pressed_for() > 5000000) {
+            // Long press of center button.
+
+            buttons_clear_mask();
+
             gms->ui_mode = UI_MODE_MAIN_MENU;
             gms->ui_mode_state.main_menu.start_line = 0;
+        }
+        else if (mask == 2 && buttons_get_ticks_pressed_for() == 0) {
+            // Short press of center button.
+            if (gms->ui_mode == UI_MODE_MAIN_MENU) {
+                gms->ui_mode = UI_MODE_INIT;
+            }
         }
     }
 }

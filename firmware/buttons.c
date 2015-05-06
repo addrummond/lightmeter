@@ -14,9 +14,11 @@ static unsigned BUTTON_MASK = 0;
 
 unsigned buttons_get_mask()
 {
-    unsigned m = BUTTON_MASK;
+    return BUTTON_MASK;
+}
+void buttons_clear_mask()
+{
     BUTTON_MASK = 0;
-    return m;
 }
 
 static int32_t last_press_ticks = -1;
@@ -36,6 +38,9 @@ void SysTick_Handler(void)
 {
     if (last_press_ticks != -1) {
         ticks_pressed_for += last_press_ticks;
+        //debugging_writec("P: ");
+        //debugging_write_uint32(ticks_pressed_for);
+        //debugging_writec("\n");
         last_press_ticks = SYS_TICK_MAX;
     }
 }
@@ -56,14 +61,14 @@ void EXTI4_15_IRQHandler(void)
         unsigned m = 0;
         m |= !GPIO_ReadInputDataBit(PUSHBUTTON1_GPIO_PORT, PUSHBUTTON1_PIN) << 1;
         m |= !GPIO_ReadInputDataBit(PUSHBUTTON2_GPIO_PORT, PUSHBUTTON2_PIN) << 2;
-        BUTTON_MASK = m;
 
-        if (m == 0) {
-            last_press_ticks = -1;
-            ticks_pressed_for = 0;
+        if (m != 0) {
+            BUTTON_MASK = m;
+            last_press_ticks = (int)SysTick->VAL;
         }
         else {
-            last_press_ticks = (int)SysTick->VAL;
+            last_press_ticks = -1;
+            ticks_pressed_for = 0;
         }
 
         debugging_writec("Button interrupt ");
