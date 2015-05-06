@@ -218,8 +218,9 @@ int main()
                 wait_for_release = false;
                 buttons_clear_mask();
             }
-            else
+            else {
                 continue;
+            }
         }
 
         unsigned mask = buttons_get_mask();
