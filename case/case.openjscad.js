@@ -219,7 +219,7 @@ function output_case() {
     box = box.subtract(sensor_hole);
 
     // Hole for incident sensors.
-    var incident_hole = make_sphere(SPHERE_HOLE_HEIGHT).translate(ipos);
+    var incident_hole = make_sphere(SPHERE_HOLE_HEIGHT + SPHERE_THICK).translate(ipos);
     box = box.subtract(incident_hole);
 
     // Hole for screen.
