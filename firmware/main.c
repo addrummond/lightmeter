@@ -194,6 +194,7 @@ typedef enum after_release {
 int main()
 {
     meter_state_t *gms = &global_meter_state;
+    transient_meter_state_t *tms = &global_transient_meter_state;
 
     sysinit_init();
     initialize_global_meter_state();
@@ -247,7 +248,8 @@ int main()
             }
             else if (gms->ui_mode == UI_MODE_INIT) {
                 // If we're on the main screen, do a reading.
-                global_transient_meter_state.last_ev_with_fracs = meter_take_integrated_reading();
+                tms->last_ev_with_fracs = meter_take_integrated_reading();
+                tms->exposure_ready = true;
                 gms->ui_mode = UI_MODE_METERING;
                 wait_for_release = AFTER_RELEASE_SHOW_READING;
             }
