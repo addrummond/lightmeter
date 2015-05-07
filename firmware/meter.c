@@ -4,6 +4,7 @@
 #include <stm32f0xx_adc.h>
 #include <stm32f0xx_misc.h>
 
+#include <tables.h>
 #include <deviceconfig.h>
 #include <meter.h>
 
@@ -80,15 +81,15 @@ uint32_t meter_take_raw_nonintegrated_reading()
     return ADC_GetConversionValue(ADC1);
 }
 
-static const uint16_t STAGES[] = {
-    480/400, 16320/400, 32160/400, 48000/400
+#define st(x) x,
+static uint32_t STAGES[] = {
+    FOR_EACH_AMP_STAGE(st)
 };
-// Check that number of stages defined in header file is correct.
-static const uint8_t STAGES_test_dummy[(METER_NUMBER_OF_INTEGRATING_STAGES == sizeof(STAGES)/sizeof(STAGES[0]))-1];
+#undef st
 
 void meter_take_raw_integrated_readings(uint16_t *outputs)
 {
-    uint32_t ends[METER_NUMBER_OF_INTEGRATING_STAGES];
+    uint32_t ends[NUM_AMP_STAGES];
 
     while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
 
@@ -102,11 +103,11 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
 
     // Determine value of SysTick for each endpoint.
     uint32_t st = SysTick->VAL;
-    for (i = 0; i < METER_NUMBER_OF_INTEGRATING_STAGES; ++i)
+    for (i = 0; i < NUM_AMP_STAGES; ++i)
         ends[i] = st - STAGES[i];
 
     // Read cap voltage at each stage.
-    for (i = 0; i < METER_NUMBER_OF_INTEGRATING_STAGES;) {
+    for (i = 0; i < NUM_AMP_STAGES;) {
         if (SysTick->VAL <= ends[i]) {
             ADC_StartOfConversion(ADC1);
             while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
