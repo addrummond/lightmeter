@@ -17,6 +17,8 @@
 #include <bitmaps/bitmaps.h>
 #include <mymemset.h>
 #include <sysinit.h>
+#include <meter.h>
+#include <tables.h>
 
 static __attribute__ ((unused)) void test_mic()
 {
@@ -117,12 +119,12 @@ static __attribute__ ((unused)) void test_meter()
 {
     meter_init();
     meter_set_mode(METER_MODE_INCIDENT);
-    uint16_t outputs[METER_NUMBER_OF_INTEGRATING_STAGES];
+    uint16_t outputs[NUM_AMP_STAGES];
     for (;;) {
         meter_take_averaged_raw_integrated_readings(outputs, 10);
         debugging_writec("V: ");
         unsigned i;
-        for (i = 0; i < METER_NUMBER_OF_INTEGRATING_STAGES; ++i) {
+        for (i = 0; i < NUM_AMP_STAGES; ++i) {
             if (i != 0)
                 debugging_writec(", ");
             debugging_write_uint32(outputs[i]);
@@ -183,6 +185,12 @@ static __attribute__ ((unused)) void test_menu_scroll()
     }
 }
 
+typedef enum after_release {
+    AFTER_RELEASE_NOWAIT,
+    AFTER_RELEASE_NOTHING,
+    AFTER_RELEASE_SHOW_READING
+} after_release_t;
+
 int main()
 {
     meter_state_t *gms = &global_meter_state;
@@ -192,12 +200,13 @@ int main()
     initialize_global_transient_meter_state();
     i2c_init();
     accel_init();
+    meter_init();
 
     //test_menu_scroll();
     //for(;;);
 
     uint32_t last_systick = SysTick->VAL;
-    bool wait_for_release = false;
+    after_release_t wait_for_release = AFTER_RELEASE_NOWAIT;
     for (;;) {
         //if (sysinit_is_time_to_sleep()) {
         //    sysinit_enter_sleep_mode();
@@ -213,14 +222,18 @@ int main()
         last_systick = current_systick;
         ui_show_interface(ticks_since_ui_last_shown);
 
-        if (wait_for_release) {
-            if (buttons_get_ticks_pressed_for() == 0) {
-                wait_for_release = false;
+        if (wait_for_release != AFTER_RELEASE_NOWAIT) {
+            if (buttons_get_ticks_pressed_for() == 0)
                 buttons_clear_mask();
-            }
-            else {
+            else
                 continue;
+
+            if (wait_for_release == AFTER_RELEASE_SHOW_READING) {
+                gms->ui_mode = UI_MODE_READING;
             }
+
+            wait_for_release = AFTER_RELEASE_NOWAIT;
+            continue;
         }
 
         unsigned mask = buttons_get_mask();
@@ -234,8 +247,9 @@ int main()
             }
             else if (gms->ui_mode == UI_MODE_INIT) {
                 // If we're on the main screen, do a reading.
+                global_transient_meter_state.last_ev_with_fracs = meter_take_integrated_reading();
                 gms->ui_mode = UI_MODE_METERING;
-                wait_for_release = true;
+                wait_for_release = AFTER_RELEASE_SHOW_READING;
             }
         }
         else if (mask == 2 && buttons_get_ticks_pressed_for() == 0) {

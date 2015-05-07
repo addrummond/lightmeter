@@ -25,7 +25,7 @@
 // temp/voltage are encoded.
 //
 // 'voltage' is in 1/256ths of the reference voltage.
-ev_with_fracs_t get_ev100_at_voltage(uint_fast8_t voltage, uint_fast8_t op_amp_resistor_stage)
+ev_with_fracs_t get_ev100_at_voltage(uint_fast8_t voltage, uint_fast8_t amp_stage)
 {
     const uint8_t *ev_abs = NULL, *ev_diffs = NULL, *ev_bitpatterns = NULL, *ev_tenths = NULL, *ev_thirds = NULL;
 #define ASSIGN(n) (ev_abs = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_ABS,                 \
@@ -34,7 +34,7 @@ ev_with_fracs_t get_ev100_at_voltage(uint_fast8_t voltage, uint_fast8_t op_amp_r
                    ev_tenths = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_TENTHS,           \
                    ev_thirds = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_THIRDS)
 #define CASE(n) case n: ASSIGN(n); break;
-    switch (op_amp_resistor_stage) {
+    switch (amp_stage) {
 FOR_EACH_AMP_STAGE(CASE)
     }
 #undef ASSIGN
