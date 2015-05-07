@@ -249,6 +249,10 @@ int main()
             else if (gms->ui_mode == UI_MODE_INIT) {
                 // If we're on the main screen, do a reading.
                 tms->last_ev_with_fracs = meter_take_integrated_reading();
+                ev_with_fracs_init_from_ev8(tms->shutter_speed, 10*8);
+                ev_with_fracs_t isoev;
+                ev_with_fracs_init_from_thirds(isoev, gms->iso);
+                tms->aperture = shutter_speed_given_aperture_iso_ev(tms->shutter_speed, isoev, tms->last_ev_with_fracs);
                 tms->exposure_ready = true;
                 gms->ui_mode = UI_MODE_METERING;
                 wait_for_release = AFTER_RELEASE_SHOW_READING;

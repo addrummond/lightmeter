@@ -399,7 +399,7 @@ ev_with_fracs_t z_given_x_y_ev(ev_with_fracs_t given_x_, ev_with_fracs_t given_y
     const int_fast16_t the_aperture = 9*120; // F22
     const int_fast16_t the_speed = 0;        // 1 minute.
     const int_fast16_t the_ev = (3+5)*120;   // 3 EV
-    const int_fast16_t the_iso = 4*120;      // 100 ISO
+    const int_fast16_t the_iso = 7*120;      // 100 ISO
 
     int_fast16_t given_x = ev_with_fracs_to_120th(given_x_);
     int_fast16_t given_y = ev_with_fracs_to_120th(given_y_);
