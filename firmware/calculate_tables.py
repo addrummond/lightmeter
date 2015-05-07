@@ -559,9 +559,9 @@ def output():
     output_shutter_speeds(ofc)
     output_apertures(ofc)
 
-    ofh.write("extern uint8_t SHUTTER_SPEEDS_EIGHTH[];")
-    ofh.write("extern uint8_t SHUTTER_SPEEDS_TENTH[];")
-    ofh.write("extern uint8_t SHUTTER_SPEEDS_THIRD[];")
+    ofh.write("extern uint8_t SHUTTER_SPEEDS_EIGHTH[];\n")
+    ofh.write("extern uint8_t SHUTTER_SPEEDS_TENTH[];\n")
+    ofh.write("extern uint8_t SHUTTER_SPEEDS_THIRD[];\n")
     ofh.write("extern uint8_t SHUTTER_SPEEDS_BITMAP[];\n")
     ofh.write("extern uint8_t APERTURES_EIGHTH[];\n")
     ofh.write("extern uint8_t APERTURES_TENTH[];\n")
