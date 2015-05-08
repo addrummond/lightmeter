@@ -10,10 +10,10 @@ if sys.version < '3':
 # Configuration values
 ##########
 
-reference_voltage = 2000 # mV
+reference_voltage = 3300 # mV
 
 # Table cells not calculated for voltages lower than this.
-voltage_offset = 90 # mV
+voltage_offset = 135 # mV
 
 sensor_cap_value = 3300 # pF
 
