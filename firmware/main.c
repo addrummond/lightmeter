@@ -249,6 +249,9 @@ int main()
             else if (gms->ui_mode == UI_MODE_INIT) {
                 // If we're on the main screen, do a reading.
                 tms->last_ev_with_fracs = meter_take_integrated_reading();
+                debugging_writec("EV8: ");
+                debugging_write_uint32(ev_with_fracs_get_ev8(tms->last_ev_with_fracs));
+                debugging_writec("\n");
                 ev_with_fracs_init_from_ev8(tms->shutter_speed, 10*8);
                 ev_with_fracs_t isoev;
                 ev_with_fracs_init_from_thirds(isoev, gms->iso);

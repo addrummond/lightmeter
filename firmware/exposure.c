@@ -15,6 +15,7 @@
 #include <bcd.h>
 #include <exposure.h>
 #include <tables.h>
+#include <debugging.h>
 //#include <deviceconfig.h>
 #include <mymemset.h>
 #ifdef TEST
@@ -27,6 +28,10 @@
 // 'voltage' is in 1/256ths of the reference voltage.
 ev_with_fracs_t get_ev100_at_voltage(uint_fast8_t voltage, uint_fast8_t amp_stage)
 {
+    debugging_writec("V: ");
+    debugging_write_uint32(voltage);
+    debugging_writec("\n");
+
     const uint8_t *ev_abs = NULL, *ev_diffs = NULL, *ev_bitpatterns = NULL, *ev_tenths = NULL, *ev_thirds = NULL;
 #define ASSIGN(n) (ev_abs = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_ABS,                 \
                    ev_diffs = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_DIFFS,             \

@@ -151,13 +151,27 @@ ev_with_fracs_t meter_take_integrated_reading()
 {
     uint16_t outputs[NUM_AMP_STAGES];
     meter_take_raw_integrated_readings(outputs);
-    unsigned stage = 0;
-    while (outputs[stage] < 3500)
-        ++stage;
+
+    debugging_writec("RAW: ");
+    unsigned i;
+    for (i = 0; i < NUM_AMP_STAGES; ++i) {
+        debugging_write_uint32(outputs[i]);
+        debugging_writec(", ");
+    }
+    debugging_writec("\n");
+
+    unsigned stage = NUM_AMP_STAGES-1;
+    while (outputs[stage] > 3500 && stage > 0)
+        --stage;
     uint16_t v = outputs[stage];
     if (v % 16 >= 8)
         v += 16;
     v >>= 4;
     ++stage;
+
+    debugging_writec("STG: ");
+    debugging_write_uint32(stage);
+    debugging_writec("\n");
+
     return get_ev100_at_voltage((uint_fast8_t)v, stage);
 }
