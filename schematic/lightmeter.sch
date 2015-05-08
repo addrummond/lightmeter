@@ -11908,7 +11908,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="U$1" library="lightmeter" deviceset="SPU0410LR5H-QB" device="SPU0410LRSH-QB"/>
 <part name="C1" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
-<part name="Y1" library="microbuilder" deviceset="CRYSTAL" device="THIN"/>
+<part name="Y1" library="microbuilder" deviceset="CRYSTAL" device="2.5X2.0MM"/>
 <part name="R6" library="resistor" deviceset="R-EU_" device="R0402" value="??"/>
 <part name="Q1" library="lightmeter" deviceset="PCHANNELMOSFET" device="SOT-523-3-BTTM" value="PCHANNELMOSFETSOT-523-3-BTTM"/>
 <part name="D5" library="adafruit" deviceset="DIODE" device="SOD-323F"/>
