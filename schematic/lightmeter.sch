@@ -9328,6 +9328,7 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <wire x1="-0.6" y1="0.8" x2="0.6" y2="0.8" width="0.127" layer="21"/>
 <wire x1="-0.6" y1="-0.8" x2="0.6" y2="-0.8" width="0.127" layer="21"/>
 <circle x="-0.635" y="1.016" radius="0.127" width="0.127" layer="21"/>
+<text x="-2.54" y="1.27" size="1.27" layer="25">&gt;NAME</text>
 </package>
 </packages>
 <symbols>
@@ -11819,7 +11820,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <instance part="C14" gate="G$1" x="-88.9" y="-17.78"/>
 <instance part="C18" gate="G$1" x="144.78" y="-50.8" rot="R90"/>
 <instance part="C24" gate="G$1" x="147.32" y="-147.32" rot="R90"/>
-<instance part="R8" gate="G$1" x="71.12" y="-5.08" rot="R90"/>
+<instance part="R8" gate="G$1" x="71.12" y="-7.62" rot="R90"/>
 <instance part="R11" gate="G$1" x="55.88" y="-30.48" rot="R180"/>
 <instance part="R9" gate="G$1" x="106.68" y="-7.62" rot="R90"/>
 <instance part="D4" gate="G$1" x="-15.24" y="-86.36"/>
@@ -12112,7 +12113,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <segment>
 <pinref part="R8" gate="G$1" pin="2"/>
 <pinref part="GND29" gate="1" pin="GND"/>
-<wire x1="71.12" y1="0" x2="71.12" y2="2.54" width="0.1524" layer="91"/>
+<wire x1="71.12" y1="-2.54" x2="71.12" y2="2.54" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND5" gate="1" pin="GND"/>
@@ -13043,7 +13044,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="71.12" y1="-20.32" x2="81.28" y2="-20.32" width="0.1524" layer="91"/>
 <wire x1="71.12" y1="-48.26" x2="71.12" y2="-20.32" width="0.1524" layer="91"/>
 <pinref part="R8" gate="G$1" pin="1"/>
-<wire x1="71.12" y1="-20.32" x2="71.12" y2="-10.16" width="0.1524" layer="91"/>
+<wire x1="71.12" y1="-20.32" x2="71.12" y2="-12.7" width="0.1524" layer="91"/>
 <junction x="71.12" y="-20.32"/>
 <pinref part="U$6" gate="G$1" pin="A"/>
 <wire x1="71.12" y1="-48.26" x2="73.66" y2="-48.26" width="0.1524" layer="91"/>
