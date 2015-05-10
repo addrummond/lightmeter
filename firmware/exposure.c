@@ -28,10 +28,6 @@
 // 'voltage' is in 1/256ths of the reference voltage.
 ev_with_fracs_t get_ev100_at_voltage(uint_fast8_t voltage, uint_fast8_t amp_stage)
 {
-    debugging_writec("V: ");
-    debugging_write_uint32(voltage);
-    debugging_writec("\n");
-
     const uint8_t *ev_abs = NULL, *ev_diffs = NULL, *ev_bitpatterns = NULL, *ev_tenths = NULL, *ev_thirds = NULL;
 #define ASSIGN(n) (ev_abs = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_ABS,                 \
                    ev_diffs = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_DIFFS,             \
@@ -463,6 +459,30 @@ ev_with_fracs_t z_given_x_y_ev(ev_with_fracs_t given_x_, ev_with_fracs_t given_y
     ev_with_fracs_set_thirds(evwf, (uint_fast8_t)(round_divide(third_ev,40))%3);
 
     return evwf;
+}
+
+ev_with_fracs_t average_ev_with_fracs(const ev_with_fracs_t *evwfs, unsigned length)
+{
+    ev_with_fracs_t r;
+    ev_with_fracs_init(r);
+
+    uint32_t total = 0;
+    unsigned i;
+    for (i = 0; i < length; ++i) {
+        total += ev_with_fracs_to_120th(evwfs[i]);
+    }
+    total <<= 2;
+    total /= length;
+    if (total % 8 >= 4)
+        total += 8;
+    total >>= 2;
+
+    ev_with_fracs_set_ev8(r, total/15);
+    ev_with_fracs_set_thirds(r, total/40);
+    ev_with_fracs_set_tenths(r, total/12);
+    ev_with_fracs_set_nth(r, 8);
+
+    return r;
 }
 
 // Log base 2 (fixed point).

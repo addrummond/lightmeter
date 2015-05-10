@@ -121,7 +121,7 @@ static __attribute__ ((unused)) void test_meter()
     meter_set_mode(METER_MODE_INCIDENT);
     uint16_t outputs[NUM_AMP_STAGES];
     for (;;) {
-        meter_take_averaged_raw_integrated_readings(outputs, 10);
+        meter_take_raw_integrated_readings(outputs);
         debugging_writec("V: ");
         unsigned i;
         for (i = 0; i < NUM_AMP_STAGES; ++i) {
@@ -129,6 +129,10 @@ static __attribute__ ((unused)) void test_meter()
                 debugging_writec(", ");
             debugging_write_uint32(outputs[i]);
         }
+        debugging_writec("\n");
+        ev_with_fracs_t evwf = meter_take_integrated_reading();
+        debugging_writec("EV: ");
+        debugging_write_uint32(ev_with_fracs_get_ev8(evwf));
         debugging_writec("\n");
     }
 }
@@ -203,8 +207,8 @@ int main()
     accel_init();
     meter_init();
 
-    //test_menu_scroll();
-    //for(;;);
+    test_meter();
+    for(;;);
 
     uint32_t last_systick = SysTick->VAL;
     after_release_t wait_for_release = AFTER_RELEASE_NOWAIT;

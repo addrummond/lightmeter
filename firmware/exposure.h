@@ -101,7 +101,7 @@ typedef struct ev_with_fracs {
 #define ev_with_fracs_get_wholes(evwf)          ((evwf).ev >> 3)
 #define ev_with_fracs_zero_fracs(evwf)          ((evwf).fracs = 0)
 #define ev_with_fracs_get_nth(evwf)             (((evwf).fracs & 0b11) == 0 ? 8 : (((evwf).fracs & 0b11) == 1 ? 3 : 10))
-#define ev_with_fracs_set_nth(evwf, nth)        ((nth) == 8 ? (evwf).fracs |= 0 : ((nth) == 3 ? ((evwf).fracs |= 1) : ((evwf).fracs |= 2)))
+#define ev_with_fracs_set_nth(evwf, nth)        ((evwf).fracs &= 0b00111111, (nth) == 8 ? (evwf).fracs |= 0 : ((nth) == 3 ? ((evwf).fracs |= 1) : ((evwf).fracs |= 2)))
 
 enum precision_mode;
 void shutter_speed_to_string(ev_with_fracs_t shutter_speed, shutter_string_output_t *eso, enum precision_mode precision_mode);
@@ -110,6 +110,8 @@ ev_with_fracs_t z_given_x_y_ev(ev_with_fracs_t given_x, ev_with_fracs_t given_y,
 #define aperture_given_shutter_speed_iso_ev(a,b,c) z_given_x_y_ev((a),(b),(c),0)
 #define shutter_speed_given_aperture_iso_ev(a,b,c) z_given_x_y_ev((a),(b),(c),1)
 #define iso_given_aperture_shutter_speed_ev(a,b,c) z_given_x_y_ev((a),(b),(c),2)
+
+ev_with_fracs_t average_ev_with_fracs(const ev_with_fracs_t *evwfs, unsigned length);
 
 unsigned iso_in_third_stops_to_bcd(uint_fast8_t iso, uint8_t *digits);
 uint_fast8_t iso_bcd_to_third_stops(uint8_t *digits, unsigned length);

@@ -94,13 +94,18 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
 
     while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
 
-    // Close switch, discharge integrating cap.
+    // Close switch, discharge integrating cap to baseline voltage.
     GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 0);
     unsigned i;
     for (i = 0; i < 1000; ++i); // Leave some time for cap to discharge.
 
+    // Get baseline voltage.
+    ADC_StartOfConversion(ADC1);
+    while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
+    uint16_t baselinev = ADC_GetConversionValue(ADC1);
+
     // Open the switch.
-    GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 1);
+    GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 0);
 
     // Determine value of SysTick for each endpoint.
     uint32_t st = SysTick->VAL;
@@ -112,7 +117,12 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
         if (SysTick->VAL <= ends[i]) {
             ADC_StartOfConversion(ADC1);
             while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
-            outputs[i] = ADC_GetConversionValue(ADC1);
+            uint16_t val = ADC_GetConversionValue(ADC1);
+            /*if (baselinev > val)
+                outputs[i] = 0;
+            else
+                outputs[i] = val - baselinev;*/
+            outputs[i] = val;
 
             ++i;
         }
@@ -147,31 +157,46 @@ void meter_take_averaged_raw_integrated_readings(uint16_t *outputs, unsigned n)
         outputs[i] = outputs_total[i];
 }
 
+static uint_fast8_t getv(uint16_t v)
+{
+    if (v % 16 >= 8)
+        v += 16;
+    v >>= 4;
+    return (uint_fast8_t)v;
+}
+
+#define MIN12BITV 300
+#define MAX12BITV 3500
 ev_with_fracs_t meter_take_integrated_reading()
 {
     uint16_t outputs[NUM_AMP_STAGES];
     meter_take_raw_integrated_readings(outputs);
 
+    /*unsigned x;
     debugging_writec("RAW: ");
-    unsigned i;
-    for (i = 0; i < NUM_AMP_STAGES; ++i) {
-        debugging_write_uint32(outputs[i]);
-        debugging_writec(", ");
+    for (x = 0; x < NUM_AMP_STAGES; ++x) {
+        if (x > 0)
+            debugging_writec(", ");
+        debugging_write_uint32(outputs[x]);
+        debugging_writec("[");
     }
-    debugging_writec("\n");
+    debugging_writec("\n");*/
 
-    unsigned stage = NUM_AMP_STAGES-1;
-    while (outputs[stage] > 3500 && stage > 0)
-        --stage;
-    uint16_t v = outputs[stage];
-    if (v % 16 >= 8)
-        v += 16;
-    v >>= 4;
-    ++stage;
+    ev_with_fracs_t evs[NUM_AMP_STAGES];
 
-    debugging_writec("STG: ");
-    debugging_write_uint32(stage);
-    debugging_writec("\n");
-
-    return get_ev100_at_voltage((uint_fast8_t)v, stage);
+    unsigned n = 0, i;
+    for (i = 0; i < NUM_AMP_STAGES; ++i) {
+        if (! (outputs[i] < MIN12BITV || outputs[i] > MAX12BITV)) {
+            evs[n++] = get_ev100_at_voltage(getv(outputs[i]), i + 1);
+        }
+    }
+    if (n == 0) {
+        if (outputs[0] < MIN12BITV)
+            return get_ev100_at_voltage(getv(outputs[NUM_AMP_STAGES-1]), NUM_AMP_STAGES);
+        else
+            return get_ev100_at_voltage(getv(outputs[0]), 1);
+    }
+    else {
+        return average_ev_with_fracs(evs, n);
+    }
 }
