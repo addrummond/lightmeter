@@ -2670,6 +2670,18 @@ diameter 7.62 mm, horizontal, grid 12.7 mm</description>
 <wire x1="-0.6" y1="-0.8" x2="0.6" y2="-0.8" width="0.127" layer="21"/>
 <circle x="-0.635" y="1.016" radius="0.127" width="0.127" layer="21"/>
 </package>
+<package name="SOT-553-5">
+<smd name="P$1" x="-0.675" y="0.5" dx="0.45" dy="0.2794" layer="1"/>
+<smd name="P$2" x="-0.675" y="0" dx="0.45" dy="0.2794" layer="1"/>
+<smd name="P$3" x="-0.675" y="-0.5" dx="0.45" dy="0.2794" layer="1"/>
+<smd name="P$4" x="0.675" y="-0.5" dx="0.45" dy="0.2794" layer="1"/>
+<smd name="P$5" x="0.675" y="0.5" dx="0.45" dy="0.2794" layer="1"/>
+<wire x1="-0.6" y1="0.8" x2="-0.6" y2="-0.8" width="0.127" layer="21"/>
+<wire x1="0.6" y1="0.8" x2="0.6" y2="-0.8" width="0.127" layer="21"/>
+<wire x1="-0.6" y1="0.8" x2="0.6" y2="0.8" width="0.127" layer="21"/>
+<wire x1="-0.6" y1="-0.8" x2="0.6" y2="-0.8" width="0.127" layer="21"/>
+<circle x="-0.635" y="1.016" radius="0.127" width="0.127" layer="21"/>
+</package>
 </packages>
 <symbols>
 <symbol name="74HC164">
@@ -3403,6 +3415,19 @@ diameter 7.62 mm, horizontal, grid 12.7 mm</description>
 <pin name="VCC" x="0" y="25.4" visible="pin" length="middle" rot="R270"/>
 <wire x1="0" y1="-7.62" x2="0" y2="-15.24" width="0.254" layer="94"/>
 <pin name="GND" x="0" y="-20.32" length="middle" rot="R90"/>
+</symbol>
+<symbol name="SPST">
+<wire x1="-7.62" y1="0" x2="-2.54" y2="0" width="0.254" layer="94"/>
+<wire x1="-2.54" y1="0" x2="2.54" y2="2.54" width="0.254" layer="94"/>
+<wire x1="2.54" y1="0" x2="7.62" y2="0" width="0.254" layer="94"/>
+<wire x1="0" y1="1.524" x2="-2.286" y2="5.334" width="0.254" layer="94"/>
+<pin name="IN" x="-7.62" y="5.08" visible="pin" length="middle"/>
+<pin name="A" x="-12.7" y="0" visible="pin" length="middle"/>
+<pin name="B" x="12.7" y="0" visible="pin" length="middle" rot="R180"/>
+<wire x1="0" y1="7.62" x2="0" y2="10.16" width="0.254" layer="94"/>
+<wire x1="0" y1="-2.54" x2="0" y2="-5.08" width="0.254" layer="94"/>
+<pin name="GND" x="0" y="-7.62" visible="pin" length="middle" rot="R90"/>
+<pin name="VCC" x="0" y="15.24" visible="pin" length="middle" rot="R270"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -5114,6 +5139,25 @@ naming: grid - package width</description>
 <connect gate="G$1" pin="IN" pad="P$6"/>
 <connect gate="G$1" pin="NC" pad="P$3"/>
 <connect gate="G$1" pin="NO" pad="P$1"/>
+<connect gate="G$1" pin="VCC" pad="P$5"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="SN74LVC1G66">
+<gates>
+<gate name="G$1" symbol="SPST" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="SOT-553-5">
+<connects>
+<connect gate="G$1" pin="A" pad="P$1"/>
+<connect gate="G$1" pin="B" pad="P$2"/>
+<connect gate="G$1" pin="GND" pad="P$3"/>
+<connect gate="G$1" pin="IN" pad="P$4"/>
 <connect gate="G$1" pin="VCC" pad="P$5"/>
 </connects>
 <technologies>
