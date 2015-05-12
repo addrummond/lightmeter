@@ -102,6 +102,9 @@ var SPACER_MARGIN = 0.2;
 var SPACER_HOLE_FROM_TOP = 7.4168;
 var SPACER_DEPTH = 3;
 
+var FILTER_HOLDER_WIDTH = 2.4384;
+var FILTER_HOLDER_HEIGHT = 3.1496;
+
 function make_hexagon(radius) {
     var sqrt3 = Math.sqrt(3)/2;
     return polygon([
