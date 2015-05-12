@@ -63,10 +63,10 @@ var PCB_LEDGE_THICK = THICK-SCREEN_THICK-PCB_THICK;
 console.log("Ledge thickness: " + PCB_LEDGE_THICK);
 
 var SENSOR_POSITIONS = [
-[20.349996892, 0/*3.175*/],
-[22.889996891999999207, 0/*3.175*/],
-[8.9199968920000003436, 0/*3.175*/],
-[11.459996892000001267, 0/*3.175*/]
+[20.349996892, 3.175],
+[22.889996891999999207, 3.175],
+[8.9199968920000003436, 3.175],
+[11.459996892000001267, 3.175]
 ];
 
 var SENSOR_WIDTH = 1.6;
@@ -190,7 +190,7 @@ function output_small_button() {
     return color("white", smallleft);
 }
 
-var ipos = [((WIDTH-SENSOR_POSITIONS[0][0]) + (WIDTH-SENSOR_POSITIONS[1][0]))/2.0 + CASE_THICK, SENSOR_POSITIONS[0][1]+CASE_THICK, 0];
+var ipos = [((WIDTH-SENSOR_POSITIONS[0][0]) + (WIDTH-SENSOR_POSITIONS[1][0]))/2.0 + CASE_THICK, SENSOR_POSITIONS[0][1], 0];
 
 function output_incident_dome()
 {
@@ -211,7 +211,7 @@ function output_case() {
         var x = SENSOR_POSITIONS[i][0];
         var y = SENSOR_POSITIONS[i][1];
         h.push(square([SENSOR_WIDTH+SENSOR_HOLE_EXTRA, SENSOR_HEIGHT+SENSOR_HOLE_EXTRA])
-        .translate([(WIDTH-x)+CASE_THICK-(SENSOR_WIDTH+SENSOR_HOLE_EXTRA),y+CASE_THICK-((SENSOR_HEIGHT+SENSOR_HOLE_EXTRA)/2)]));
+        .translate([(WIDTH-x)+CASE_THICK-(SENSOR_WIDTH+SENSOR_HOLE_EXTRA),y-CASE_THICK-((SENSOR_HEIGHT+SENSOR_HOLE_EXTRA)/2)]));
     }
 
     // Hole for reflective sensors.
