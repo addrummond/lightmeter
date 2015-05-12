@@ -36,6 +36,7 @@ var PCB_WIDTH = SCREEN_WIDTH + 1;
 var PCB_HEIGHT = 38.608;
 var PCB_HORIZ_MARGIN = 0.5;
 
+// http://www.adafruit.com/products/1317
 var BATTERY_HEIGHT = 19.75;
 var BATTERY_THICK = 3.8;
 
