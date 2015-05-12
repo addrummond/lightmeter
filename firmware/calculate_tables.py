@@ -18,10 +18,11 @@ voltage_offset = 135 # mV
 sensor_cap_value = 3300 # pF
 
 amp_timings = [ # In microseconds
-    68,
-    110,
-    300,
-    1000
+    0.25,
+    1.5,
+    9,
+    55,
+    300
 ]
 
 amp_normal_timing = 50.0
@@ -38,8 +39,7 @@ b_voltage_offset = int(round((voltage_offset/reference_voltage)*256))
 # http://www.mathportal.org/calculators/analytic-geometry/two-point-form-calculator.php
 def sensor_ua_to_lux(ua):
     incand_ratio = 1.1
-    loglux = (10.0/387.0)*ua + (8.0/9.0)
-    return math.pow(10, loglux)*incand_ratio
+    return ((100.0/43.0)*ua)/incand_ratio
 
 def sensor_cap_time_and_mv_to_ua(us, mv):
     return ((sensor_cap_value*mv)/(us*1000.0))
