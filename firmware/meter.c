@@ -105,7 +105,7 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
     uint16_t baselinev = ADC_GetConversionValue(ADC1);
 
     // Open the switch.
-    GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 0);
+    GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 1);
 
     // Determine value of SysTick for each endpoint.
     uint32_t st = SysTick->VAL;
