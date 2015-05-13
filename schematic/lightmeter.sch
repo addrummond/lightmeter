@@ -9318,6 +9318,18 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <wire x1="1.397" y1="-0.635" x2="1.397" y2="0.635" width="0.127" layer="21"/>
 <wire x1="1.397" y1="0.635" x2="-1.397" y2="0.635" width="0.127" layer="21"/>
 </package>
+<package name="SC-70-5">
+<wire x1="-0.6223" y1="1.0033" x2="-0.6223" y2="-1.0033" width="0.254" layer="21"/>
+<wire x1="0.6223" y1="1.0033" x2="0.6223" y2="-1.0033" width="0.254" layer="21"/>
+<wire x1="-0.6223" y1="1.0033" x2="0.6223" y2="1.0033" width="0.254" layer="21"/>
+<wire x1="-0.6223" y1="-1.0033" x2="0.6223" y2="-1.0033" width="0.254" layer="21"/>
+<smd name="P$1" x="-1.0033" y="0.6604" dx="0.762" dy="0.4064" layer="1"/>
+<smd name="P$2" x="-1.0033" y="0" dx="0.762" dy="0.4064" layer="1"/>
+<smd name="P$3" x="-1.0033" y="-0.6604" dx="0.762" dy="0.4064" layer="1"/>
+<smd name="P$5" x="1.0033" y="0.6604" dx="0.762" dy="0.4064" layer="1"/>
+<smd name="P$4" x="1.0033" y="-0.6604" dx="0.762" dy="0.4064" layer="1"/>
+<text x="-2.54" y="1.27" size="1.27" layer="25">&gt;NAME</text>
+</package>
 </packages>
 <symbols>
 <symbol name="P-MOS">
@@ -9582,6 +9594,24 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <wire x1="0" y1="-2.54" x2="0" y2="-5.08" width="0.254" layer="94"/>
 <pin name="GND" x="0" y="-7.62" visible="pin" length="middle" rot="R90"/>
 <pin name="VCC" x="0" y="15.24" visible="pin" length="middle" rot="R270"/>
+</symbol>
+<symbol name="MCP6001">
+<wire x1="-5.08" y1="5.08" x2="-5.08" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="-5.08" y1="-5.08" x2="2.54" y2="0" width="0.254" layer="94"/>
+<wire x1="2.54" y1="0" x2="-5.08" y2="5.08" width="0.254" layer="94"/>
+<wire x1="0" y1="2.54" x2="0" y2="1.778" width="0.1524" layer="94"/>
+<wire x1="0" y1="-2.54" x2="0" y2="-1.778" width="0.1524" layer="94"/>
+<text x="5.08" y="2.54" size="1.778" layer="95">&gt;NAME</text>
+<text x="5.08" y="-3.81" size="1.778" layer="96">&gt;VALUE</text>
+<text x="-4.318" y="1.778" size="1.27" layer="96">+</text>
+<text x="-4.064" y="-2.794" size="1.27" layer="96">-</text>
+<text x="0.762" y="3.556" size="1.27" layer="96">+VS</text>
+<text x="0.762" y="-3.556" size="1.27" layer="96" rot="MR180">-VS</text>
+<pin name="IN+" x="-7.62" y="2.54" visible="pin" length="short" direction="in" swaplevel="1"/>
+<pin name="IN-" x="-7.62" y="-2.54" visible="pin" length="short" direction="in" swaplevel="1"/>
+<pin name="OUT" x="5.08" y="0" visible="pin" length="short" direction="out" rot="R180"/>
+<pin name="-VS" x="0" y="-5.08" visible="pin" length="short" direction="in" rot="R90"/>
+<pin name="+VS" x="0" y="5.08" visible="pin" length="short" direction="in" rot="R270"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -10478,6 +10508,25 @@ naming: grid - package width</description>
 <connect gate="G$1" pin="GND" pad="P$3"/>
 <connect gate="G$1" pin="IN" pad="P$4"/>
 <connect gate="G$1" pin="VCC" pad="P$5"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="MCP6001">
+<gates>
+<gate name="G$1" symbol="MCP6001" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="SC-70-5">
+<connects>
+<connect gate="G$1" pin="+VS" pad="P$5"/>
+<connect gate="G$1" pin="-VS" pad="P$2"/>
+<connect gate="G$1" pin="IN+" pad="P$3"/>
+<connect gate="G$1" pin="IN-" pad="P$4"/>
+<connect gate="G$1" pin="OUT" pad="P$1"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -11663,6 +11712,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="GND2" library="supply1" deviceset="GND" device=""/>
 <part name="GND44" library="supply1" deviceset="GND" device=""/>
 <part name="C14" library="lightmeter" deviceset="C" device="" value="1u"/>
+<part name="U$5" library="lightmeter" deviceset="MCP6001" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -11811,6 +11861,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <instance part="GND2" gate="1" x="78.74" y="-55.88" rot="R270"/>
 <instance part="GND44" gate="1" x="114.3" y="-55.88" rot="R270"/>
 <instance part="C14" gate="G$1" x="-88.9" y="-17.78"/>
+<instance part="U$5" gate="G$1" x="134.62" y="88.9"/>
 </instances>
 <busses>
 </busses>
