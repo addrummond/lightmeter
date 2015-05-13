@@ -9327,11 +9327,11 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <wire x1="0.6223" y1="1.0033" x2="0.6223" y2="-1.0033" width="0.254" layer="21"/>
 <wire x1="-0.6223" y1="1.0033" x2="0.6223" y2="1.0033" width="0.254" layer="21"/>
 <wire x1="-0.6223" y1="-1.0033" x2="0.6223" y2="-1.0033" width="0.254" layer="21"/>
-<smd name="P$1" x="-1.0033" y="0.6604" dx="0.762" dy="0.4064" layer="1"/>
-<smd name="P$2" x="-1.0033" y="0" dx="0.762" dy="0.4064" layer="1"/>
-<smd name="P$3" x="-1.0033" y="-0.6604" dx="0.762" dy="0.4064" layer="1"/>
-<smd name="P$5" x="1.0033" y="0.6604" dx="0.762" dy="0.4064" layer="1"/>
-<smd name="P$4" x="1.0033" y="-0.6604" dx="0.762" dy="0.4064" layer="1"/>
+<smd name="P$1" x="-0.9779" y="0.6604" dx="0.7112" dy="0.4064" layer="1"/>
+<smd name="P$2" x="-0.9779" y="0" dx="0.7112" dy="0.4064" layer="1"/>
+<smd name="P$3" x="-0.9779" y="-0.6604" dx="0.7112" dy="0.4064" layer="1"/>
+<smd name="P$5" x="0.9779" y="0.6604" dx="0.7112" dy="0.4064" layer="1"/>
+<smd name="P$4" x="0.9779" y="-0.6604" dx="0.7112" dy="0.4064" layer="1"/>
 <text x="-2.54" y="1.27" size="1.27" layer="25">&gt;NAME</text>
 </package>
 </packages>
