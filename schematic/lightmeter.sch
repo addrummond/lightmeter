@@ -11722,7 +11722,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="GND42" library="supply1" deviceset="GND" device=""/>
 <part name="R17" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
 <part name="R18" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
-<part name="R19" library="resistor" deviceset="R-EU_" device="R0603" value="100k"/>
+<part name="R19" library="resistor" deviceset="R-EU_" device="R0402" value="100k"/>
 <part name="C27" library="rcl" deviceset="C-EU" device="C0402" value="100p"/>
 <part name="C28" library="rcl" deviceset="C-EU" device="C0402" value="1u"/>
 </parts>
