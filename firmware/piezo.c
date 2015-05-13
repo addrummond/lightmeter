@@ -15,6 +15,8 @@
 // Microphone stuff.
 //
 
+#define MIC_OFFSET_ADC_V ((int)((1.1/2.8)*4096.0))
+
 __IO int16_t piezo_mic_buffer[PIEZO_MIC_BUFFER_N_SAMPLES];
 
 #define USE_DMA
@@ -115,7 +117,7 @@ static void piezo_mic_wait_on_ready()
 }
 #endif
 
-static void piezo_mic_read_buffer()
+void piezo_mic_read_buffer()
 {
 #ifdef USE_DMA
     while((DMA_GetFlagStatus(DMA1_FLAG_TC1)) == RESET);
@@ -125,17 +127,16 @@ static void piezo_mic_read_buffer()
     for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i, piezo_mic_wait_on_ready()) {
         int16_t v = ADC_GetConversionValue(ADC1);
         piezo_mic_buffer[i] = v;
-
     }
 #endif
 }
 
-static int16_t piezo_get_magnitude()
+int16_t piezo_get_magnitude()
 {
     int32_t total = 0;
     unsigned i;
     for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {
-        int16_t v = piezo_mic_buffer[i];
+        int16_t v = piezo_mic_buffer[i] - MIC_OFFSET_ADC_V;
         if (v < 0)
             v = -v;
         total += v;

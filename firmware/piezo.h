@@ -30,6 +30,9 @@
 void piezo_mic_init(void);
 void piezo_mic_deinit(void);
 
+void piezo_mic_read_buffer();
+int16_t piezo_get_magnitude();
+
 void piezo_out_init(void);
 void piezo_set_period(unsigned channels, uint16_t period);
 void piezo_turn_on(unsigned channels);
