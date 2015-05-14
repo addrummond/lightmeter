@@ -8,12 +8,9 @@
 #include <debugging.h>
 #include <i2c.h>
 
-// Looking at LM75 data sheet and example I2C code indicates that 7-bit address
-// should be left aligned.
 #define DISPLAY_I2C_ADDR (0b0111100 << 1)
 
 // We send data in 32-byte chunks to reduce I2C overheads to acceptable level.
-
 static uint8_t write_buffer[32];
 static size_t write_buffer_i = 0;
 
