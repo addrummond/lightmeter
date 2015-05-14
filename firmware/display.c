@@ -12,7 +12,7 @@
 
 // We send data in 32-byte chunks to reduce I2C overheads to acceptable level.
 static uint8_t write_buffer[32];
-static size_t write_buffer_i = 0;
+static unsigned write_buffer_i = 0;
 
 static void flush_write_buffer()
 {
@@ -23,7 +23,7 @@ static void flush_write_buffer()
     I2C_TransferHandling(I2C_I2C, DISPLAY_I2C_ADDR, write_buffer_i+1, I2C_AutoEnd_Mode, I2C_Generate_Start_Write);
     I2C_WAIT_ON_FLAG_RESET(I2C_ISR_TXIS, "flush_write_buffer 2");
     I2C_SendData(I2C_I2C, 0b01000000); // Control byte.
-    size_t i;
+    unsigned i;
     for (i = 0; i < write_buffer_i; ++i) {
         I2C_WAIT_ON_FLAG_RESET(I2C_ISR_TXIS, "flush_write_buffer 3");
         I2C_SendData(I2C_I2C, write_buffer[i]);
