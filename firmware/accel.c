@@ -16,20 +16,6 @@ void accel_write_register(uint8_t reg, uint8_t byte)
     I2C_WAIT_ON_FLAG_RESET(I2C_ISR_STOPF, "sbw (accel) 3");
 }
 
-void accel_init()
-{
-    // Wake the device by writing to ctrl 1 ACTIVE bit.
-    // At the same time, we configure:
-    //     ASLP_RATE (7-6)
-    //     DR        (5-3)
-    //     F_READ    (1)
-    //     ACTIVE    (0)
-    accel_write_register(ACCEL_REG_CTRL_REG1, 0b10000001);
-    accel_write_register(ACCEL_REG_CTRL_REG2, 0);
-    accel_write_register(ACCEL_REG_CTRL_REG3, 0);
-    accel_write_register(ACCEL_REG_CTRL_REG4, 0);
-}
-
 uint8_t accel_read_register(uint8_t reg)
 {
     I2C_WAIT_ON_FLAG_NO_RESET_NORET(I2C_ISR_BUSY, "accel_read_reg 1");
@@ -43,4 +29,18 @@ uint8_t accel_read_register(uint8_t reg)
     I2C_WAIT_ON_FLAG_RESET_NORET(I2C_ISR_STOPF, "accel_read_reg 4");
     I2C_ClearFlag(I2C_I2C, I2C_ICR_STOPCF);
     return v;
+}
+
+void accel_init()
+{
+    // Wake the device by writing to ctrl 1 ACTIVE bit.
+    // At the same time, we configure:
+    //     ASLP_RATE (7-6)
+    //     DR        (5-3)
+    //     F_READ    (1)
+    //     ACTIVE    (0)
+    accel_write_register(ACCEL_REG_CTRL_REG1, 0b10000001);
+    accel_write_register(ACCEL_REG_CTRL_REG2, 0);
+    accel_write_register(ACCEL_REG_CTRL_REG3, 0);
+    accel_write_register(ACCEL_REG_CTRL_REG4, 0);
 }
