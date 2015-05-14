@@ -9607,12 +9607,12 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <wire x1="0" y1="-2.54" x2="0" y2="-1.778" width="0.1524" layer="94"/>
 <text x="5.08" y="2.54" size="1.778" layer="95">&gt;NAME</text>
 <text x="5.08" y="-3.81" size="1.778" layer="96">&gt;VALUE</text>
-<text x="-4.318" y="1.778" size="1.27" layer="96">+</text>
-<text x="-4.064" y="-2.794" size="1.27" layer="96">-</text>
+<text x="-4.318" y="1.778" size="1.27" layer="96">-</text>
+<text x="-4.064" y="-2.794" size="1.27" layer="96">+</text>
 <text x="0.762" y="3.556" size="1.27" layer="96">+VS</text>
 <text x="0.762" y="-3.556" size="1.27" layer="96" rot="MR180">-VS</text>
-<pin name="IN+" x="-7.62" y="2.54" visible="pin" length="short" direction="in" swaplevel="1"/>
-<pin name="IN-" x="-7.62" y="-2.54" visible="pin" length="short" direction="in" swaplevel="1"/>
+<pin name="IN-" x="-7.62" y="2.54" visible="pin" length="short" direction="in" swaplevel="1"/>
+<pin name="IN+" x="-7.62" y="-2.54" visible="pin" length="short" direction="in" swaplevel="1"/>
 <pin name="OUT" x="5.08" y="0" visible="pin" length="short" direction="out" rot="R180"/>
 <pin name="-VS" x="0" y="-5.08" visible="pin" length="short" direction="in" rot="R90"/>
 <pin name="+VS" x="0" y="5.08" visible="pin" length="short" direction="in" rot="R270"/>
@@ -13187,7 +13187,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <net name="N$18" class="0">
 <segment>
 <pinref part="R13" gate="G$1" pin="1"/>
-<pinref part="U$5" gate="G$1" pin="IN+"/>
+<pinref part="U$5" gate="G$1" pin="IN-"/>
 <wire x1="134.62" y1="106.68" x2="139.7" y2="106.68" width="0.1524" layer="91"/>
 <wire x1="139.7" y1="106.68" x2="142.24" y2="106.68" width="0.1524" layer="91"/>
 <wire x1="139.7" y1="106.68" x2="139.7" y2="114.3" width="0.1524" layer="91"/>
@@ -13203,7 +13203,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 </net>
 <net name="N$20" class="0">
 <segment>
-<pinref part="U$5" gate="G$1" pin="IN-"/>
+<pinref part="U$5" gate="G$1" pin="IN+"/>
 <wire x1="142.24" y1="101.6" x2="137.16" y2="101.6" width="0.1524" layer="91"/>
 <pinref part="R17" gate="G$1" pin="2"/>
 <wire x1="137.16" y1="114.3" x2="137.16" y2="101.6" width="0.1524" layer="91"/>
