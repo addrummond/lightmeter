@@ -18,15 +18,15 @@ void accel_write_register(uint8_t reg, uint8_t byte)
 
 uint8_t accel_read_register(uint8_t reg)
 {
-    I2C_WAIT_ON_FLAG_NO_RESET_NORET(I2C_ISR_BUSY, "accel_read_reg 1");
+    I2C_WAIT_ON_FLAG_NO_RESET_NORET(I2C_ISR_BUSY, "accel_read_register 1");
     I2C_TransferHandling(I2C_I2C, ACCEL_I2C_ADDR, 1, I2C_SoftEnd_Mode, I2C_Generate_Start_Write);
-    I2C_WAIT_ON_FLAG_RESET_NORET(I2C_ISR_TXIS, "accel_read_reg 2");
+    I2C_WAIT_ON_FLAG_RESET_NORET(I2C_ISR_TXIS, "accel_read_register 2");
     I2C_SendData(I2C_I2C, reg);
-    I2C_WAIT_ON_FLAG_RESET_NORET(I2C_ISR_TC, "accel_read_rec 3");
+    I2C_WAIT_ON_FLAG_RESET_NORET(I2C_ISR_TC, "accel_read_register 3");
     I2C_TransferHandling(I2C_I2C, ACCEL_I2C_ADDR, 1, I2C_AutoEnd_Mode, I2C_Generate_Start_Read);
-    I2C_WAIT_ON_FLAG_RESET_NORET(I2C_ISR_RXNE, "accel_read_reg 4");
+    I2C_WAIT_ON_FLAG_RESET_NORET(I2C_ISR_RXNE, "accel_read_register 4");
     uint8_t v = I2C_ReceiveData(I2C_I2C);
-    I2C_WAIT_ON_FLAG_RESET_NORET(I2C_ISR_STOPF, "accel_read_reg 5");
+    I2C_WAIT_ON_FLAG_RESET_NORET(I2C_ISR_STOPF, "accel_read_register 5");
     I2C_ClearFlag(I2C_I2C, I2C_ICR_STOPCF);
     return v;
 }
