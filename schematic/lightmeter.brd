@@ -3243,10 +3243,10 @@ design rules under a new name.</description>
 <element name="S$1" library="lightmeter" package="PTS540BTM" value="PTS540" x="6.35" y="3.4544"/>
 <element name="S$2" library="lightmeter" package="PTS540BTM" value="PTS540" x="22.89" y="3.4544"/>
 <element name="D2" library="lightmeter" package="SC-79" value="" x="22.1488" y="24.2824" smashed="yes" rot="R270">
-<attribute name="NAME" x="21.5392" y="23.2918" size="0.762" layer="25" rot="R270"/>
+<attribute name="NAME" x="21.7932" y="22.8854" size="0.762" layer="25" rot="R270"/>
 </element>
 <element name="D3" library="lightmeter" package="SC-79" value="" x="23.1902" y="24.2824" smashed="yes" rot="R270">
-<attribute name="NAME" x="22.8854" y="23.1648" size="0.762" layer="25" rot="R270"/>
+<attribute name="NAME" x="22.8346" y="22.9362" size="0.762" layer="25" rot="R270"/>
 </element>
 <element name="J5" library="lightmeter" package="JUMPER_R0402" value="CONNECTEDJUMPER" x="14.7574" y="34.6456" smashed="yes">
 <attribute name="NAME" x="15.7734" y="34.2138" size="0.762" layer="25"/>
