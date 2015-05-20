@@ -11716,14 +11716,14 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="GND2" library="supply1" deviceset="GND" device=""/>
 <part name="GND44" library="supply1" deviceset="GND" device=""/>
 <part name="C14" library="lightmeter" deviceset="C" device="" value="1u"/>
-<part name="C1" library="rcl" deviceset="C-EU" device="C0402" value="4u7"/>
-<part name="R13" library="resistor" deviceset="R-EU_" device="R0402" value="1k5"/>
+<part name="C1" library="rcl" deviceset="C-EU" device="C0402" value="3300p"/>
+<part name="R13" library="resistor" deviceset="R-EU_" device="R0402" value="6k9"/>
 <part name="GND42" library="supply1" deviceset="GND" device=""/>
 <part name="R17" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
 <part name="R18" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
-<part name="R19" library="resistor" deviceset="R-EU_" device="R0402" value="100k"/>
-<part name="C27" library="rcl" deviceset="C-EU" device="C0402" value="100p"/>
-<part name="C28" library="rcl" deviceset="C-EU" device="C0402" value="1u"/>
+<part name="R19" library="resistor" deviceset="R-EU_" device="R0402" value="390k"/>
+<part name="C27" library="rcl" deviceset="C-EU" device="C0402" value="51p"/>
+<part name="C28" library="rcl" deviceset="C-EU" device="C0402" value="2u2"/>
 <part name="U$5" library="lightmeter" deviceset="MAX4466EXK+T" device=""/>
 <part name="J8" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
 </parts>
