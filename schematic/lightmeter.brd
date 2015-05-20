@@ -3433,7 +3433,6 @@ design rules under a new name.</description>
 <attribute name="NAME" x="26.1366" y="4.0894" size="0.762" layer="25" rot="R180"/>
 <attribute name="VALUE" x="27.2796" y="6.9088" size="1.27" layer="27" rot="R180"/>
 </element>
-<element name="U$8" library="lightmeter" package="SOT-553-5" value="SN74LVC1G66" x="-22.86" y="-5.08"/>
 </elements>
 <signals>
 <signal name="GND">
