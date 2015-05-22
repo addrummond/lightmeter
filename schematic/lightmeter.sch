@@ -11485,6 +11485,8 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="GND43" library="supply1" deviceset="GND" device=""/>
 <part name="Y1" library="lightmeter" deviceset="SI501" device="MEMS2.5X2" value="8MHz"/>
 <part name="GND45" library="supply1" deviceset="GND" device=""/>
+<part name="C30" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
+<part name="GND46" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -11644,6 +11646,8 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <instance part="GND43" gate="1" x="-99.06" y="15.24" rot="R180"/>
 <instance part="Y1" gate="G$1" x="-137.16" y="20.32"/>
 <instance part="GND45" gate="1" x="-157.48" y="17.78" rot="R270"/>
+<instance part="C30" gate="G$1" x="-119.38" y="33.02"/>
+<instance part="GND46" gate="1" x="-119.38" y="40.64" rot="R180"/>
 </instances>
 <busses>
 </busses>
@@ -12024,6 +12028,11 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="-152.4" y1="17.78" x2="-154.94" y2="17.78" width="0.1524" layer="91"/>
 <pinref part="GND45" gate="1" pin="GND"/>
 </segment>
+<segment>
+<pinref part="C30" gate="G$1" pin="1"/>
+<pinref part="GND46" gate="1" pin="GND"/>
+<wire x1="-119.38" y1="35.56" x2="-119.38" y2="38.1" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="VCC" class="0">
 <segment>
@@ -12149,7 +12158,11 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <segment>
 <pinref part="Y1" gate="G$1" pin="VDD"/>
 <label x="-116.84" y="22.86" size="1.778" layer="95" xref="yes"/>
-<wire x1="-121.92" y1="22.86" x2="-116.84" y2="22.86" width="0.1524" layer="91"/>
+<wire x1="-121.92" y1="22.86" x2="-119.38" y2="22.86" width="0.1524" layer="91"/>
+<wire x1="-119.38" y1="22.86" x2="-116.84" y2="22.86" width="0.1524" layer="91"/>
+<wire x1="-119.38" y1="22.86" x2="-119.38" y2="27.94" width="0.1524" layer="91"/>
+<junction x="-119.38" y="22.86"/>
+<pinref part="C30" gate="G$1" pin="2"/>
 </segment>
 </net>
 <net name="N$19" class="0">
