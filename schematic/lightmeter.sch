@@ -9050,10 +9050,10 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <text x="-2.54" y="1.27" size="1.27" layer="25">&gt;NAME</text>
 </package>
 <package name="MEMS2.5X2">
-<smd name="P$1" x="-0.95" y="-0.75" dx="1.1" dy="1" layer="1"/>
-<smd name="P$2" x="0.95" y="-0.75" dx="1.1" dy="1" layer="1"/>
-<smd name="P$3" x="0.95" y="0.75" dx="1.1" dy="1" layer="1"/>
-<smd name="P$4" x="-0.95" y="0.75" dx="1.1" dy="1" layer="1"/>
+<smd name="P$1" x="-0.8484" y="-0.623" dx="0.8968" dy="0.746" layer="1"/>
+<smd name="P$2" x="0.8484" y="-0.623" dx="0.8968" dy="0.746" layer="1"/>
+<smd name="P$3" x="0.8484" y="0.623" dx="0.8968" dy="0.746" layer="1"/>
+<smd name="P$4" x="-0.8484" y="0.623" dx="0.8968" dy="0.746" layer="1"/>
 <wire x1="-1.25" y1="1" x2="1.25" y2="1" width="0.127" layer="21"/>
 <wire x1="-1.25" y1="-1" x2="1.25" y2="-1" width="0.127" layer="21"/>
 <wire x1="-1.25" y1="1" x2="-1.25" y2="-1" width="0.127" layer="21"/>
@@ -11484,6 +11484,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="C13" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
 <part name="GND43" library="supply1" deviceset="GND" device=""/>
 <part name="Y1" library="lightmeter" deviceset="SI501" device="MEMS2.5X2" value="8MHz"/>
+<part name="GND45" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -11642,6 +11643,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <instance part="C13" gate="G$1" x="-99.06" y="5.08" rot="R180"/>
 <instance part="GND43" gate="1" x="-99.06" y="15.24" rot="R180"/>
 <instance part="Y1" gate="G$1" x="-137.16" y="20.32"/>
+<instance part="GND45" gate="1" x="-157.48" y="17.78" rot="R270"/>
 </instances>
 <busses>
 </busses>
@@ -12017,6 +12019,11 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pinref part="GND43" gate="1" pin="GND"/>
 <wire x1="-99.06" y1="10.16" x2="-99.06" y2="12.7" width="0.1524" layer="91"/>
 </segment>
+<segment>
+<pinref part="Y1" gate="G$1" pin="GND"/>
+<wire x1="-152.4" y1="17.78" x2="-154.94" y2="17.78" width="0.1524" layer="91"/>
+<pinref part="GND45" gate="1" pin="GND"/>
+</segment>
 </net>
 <net name="VCC" class="0">
 <segment>
@@ -12138,6 +12145,11 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pinref part="R15" gate="G$1" pin="2"/>
 <wire x1="-68.58" y1="-99.06" x2="-68.58" y2="-104.14" width="0.1524" layer="91"/>
 <label x="-68.58" y="-104.14" size="1.778" layer="95" rot="R270" xref="yes"/>
+</segment>
+<segment>
+<pinref part="Y1" gate="G$1" pin="VDD"/>
+<label x="-116.84" y="22.86" size="1.778" layer="95" xref="yes"/>
+<wire x1="-121.92" y1="22.86" x2="-116.84" y2="22.86" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$19" class="0">
@@ -12965,6 +12977,11 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pinref part="IC$4" gate="G$1" pin="PF0/OSC_IN"/>
 <wire x1="-66.04" y1="2.54" x2="-68.58" y2="2.54" width="0.1524" layer="91"/>
 <label x="-68.58" y="2.54" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="Y1" gate="G$1" pin="CLK"/>
+<wire x1="-121.92" y1="17.78" x2="-116.84" y2="17.78" width="0.1524" layer="91"/>
+<label x="-116.84" y="17.78" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 </nets>
