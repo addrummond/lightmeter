@@ -11441,7 +11441,6 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="R12" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
 <part name="D6" library="adafruit" deviceset="DIODE" device="SOD-323F"/>
 <part name="D1" library="lightmeter" deviceset="SCHOTTKY-DIODE" device="SOD-929"/>
-<part name="TP1" library="testpad" deviceset="TP" device="B1,27"/>
 <part name="TM1" library="testpad" deviceset="TP" device="B1,27"/>
 <part name="TM2" library="testpad" deviceset="TP" device="B1,27"/>
 <part name="U$1" library="lightmeter" deviceset="SPU0410LR5H-QB" device="SPU0410LRSH-QB"/>
@@ -11602,7 +11601,6 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <instance part="R12" gate="G$1" x="106.68" y="-7.62" rot="R90"/>
 <instance part="D6" gate="G$1" x="-15.24" y="-86.36"/>
 <instance part="D1" gate="G$1" x="96.52" y="40.64" rot="R90"/>
-<instance part="TP1" gate="G$1" x="-119.38" y="-43.18" rot="R180"/>
 <instance part="TM1" gate="G$1" x="93.98" y="0" rot="R90"/>
 <instance part="TM2" gate="G$1" x="129.54" y="0" rot="R90"/>
 <instance part="U$1" gate="G$1" x="93.98" y="104.14"/>
@@ -12050,17 +12048,13 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 </segment>
 <segment>
 <pinref part="P+1" gate="VCC" pin="VCC"/>
-<wire x1="-121.92" y1="-33.02" x2="-119.38" y2="-33.02" width="0.1524" layer="91"/>
 <pinref part="D2" gate="G$1" pin="C"/>
-<wire x1="-119.38" y1="-33.02" x2="-116.84" y2="-33.02" width="0.1524" layer="91"/>
+<wire x1="-121.92" y1="-33.02" x2="-116.84" y2="-33.02" width="0.1524" layer="91"/>
 <wire x1="-127" y1="-33.02" x2="-121.92" y2="-33.02" width="0.1524" layer="91"/>
 <pinref part="D3" gate="G$1" pin="C"/>
 <wire x1="-127" y1="-38.1" x2="-121.92" y2="-38.1" width="0.1524" layer="91"/>
 <wire x1="-121.92" y1="-38.1" x2="-121.92" y2="-33.02" width="0.1524" layer="91"/>
 <junction x="-121.92" y="-33.02"/>
-<pinref part="TP1" gate="G$1" pin="TP"/>
-<wire x1="-119.38" y1="-33.02" x2="-119.38" y2="-40.64" width="0.1524" layer="91"/>
-<junction x="-119.38" y="-33.02"/>
 </segment>
 <segment>
 <pinref part="P+2" gate="VCC" pin="VCC"/>
@@ -12897,6 +12891,11 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pinref part="IC$4" gate="G$1" pin="PB5"/>
 <wire x1="-30.48" y1="22.86" x2="-30.48" y2="25.4" width="0.1524" layer="91"/>
 <label x="-30.48" y="25.4" size="1.778" layer="95" rot="R90" xref="yes"/>
+</segment>
+<segment>
+<pinref part="Y1" gate="G$1" pin="FS/OE"/>
+<wire x1="-152.4" y1="22.86" x2="-154.94" y2="22.86" width="0.1524" layer="91"/>
+<label x="-154.94" y="22.86" size="1.778" layer="95" rot="R90" xref="yes"/>
 </segment>
 </net>
 <net name="ACCELINT2" class="0">
