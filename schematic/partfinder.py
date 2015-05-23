@@ -40,34 +40,60 @@ def parse_value(v):
     else:
         assert False
 
-ex= """'https://octopart.com/search?filter[fields][category_uids][]=5c6a91606d4187ad&filter[fields][specs.resistance.value][]=100000&filter[fields][specs.case_package.value][]=0402'"""
-def get_resistor(opts, by='price'):
+def append_generic_urlopts(opts, searchopts, urlopts):
+    if opts is None:
+        opts = { }
+    if searchopts is None:
+        searchopts = { }
+
+    urlopts = []
+    if opts.get('rohs') is True:
+        urlopts.append(('filter[fields][specs.rohs_status.value][]', 'Compiant'))
+    elif opts.get('rohs') is not None and opts.get('rohs') is not False:
+        assert False
+
+    if searchopts.get('by') is None or searchopts.get('by') == 'price':
+        urlopts.append(('sortby', 'avg_price asc'))
+    else:
+        assert False
+
+def get_rescapind(kind, opts, searchopts):
+    if kind != 'resistor' and kind != 'capacitor' and kind != 'inductor':
+        assert False
+
     url = API_BASE_URL + 'parts/search?'
+
+    ance = dict(resistor='resistance', capacitor='capacitance', inductor='inductance')
+    uids = dict(resistor='cd01000bfc2916c6', capacitor='f8883582c9a8234f', inductor='bf4e72448e766489')
 
     urlopts = [
         ('apikey', API_KEY),
         ('start', 0),
         ('limit', 1),
-        ('filter[fields][category_uids][]', 'cd01000bfc2916c6')
+        ('filter[fields][category_uids][]', uids[kind])
     ]
-
-    if by is None:
-        pass
-    elif by == 'price':
-        urlopts.append(('sortby', 'avg_price asc'))
-    else:
-        assert False
+    append_generic_urlopts(opts, searchopts, urlopts)
 
     if opts.get('value') is not None:
         urlopts.append(('filter[fields][specs.resistance.value][]', parse_value(opts['value'])))
     if opts.get('package') is not None:
         urlopts.append(('filter[fields][specs.case_package.value][]', opts['package']))
+    if opts.get('tolerance') is not None:
+        urlopts.append(('filter[fields][specs.%s_tolerance.value][]' % ance[kind], '±' + opts['tolerance']))
 
     url += urllib.parse.urlencode(urlopts)
-    print(url)
     data = urllib.request.urlopen(url).read()
     j = json.loads(data.decode('utf-8'))
     for r in j['results']:
         print(r['item']['octopart_url'])
 
-get_resistor(dict(value="10k", package="0402"))
+def get_resistor(opts, searchopts=None):
+    return get_rescapind('resistor', opts, searchopts)
+
+def get_capacitor(opts, searchopts):
+    return get_rescapind('capacitor', opts, searchopts)
+
+def get_inductor(opts, searchopts):
+    return get_rescapind('inductor', opts, searchopts)
+
+get_resistor(dict(value="10k", package="0402", rohs=True), dict(by='price'))
