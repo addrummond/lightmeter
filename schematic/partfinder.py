@@ -4,9 +4,21 @@ import urllib.parse
 import re
 import json
 import sys
+import pprint
+
+CURRENCY = 'USD'
 
 API_KEY = os.environ['OCTOPART_API_KEY']
 API_BASE_URL = """http://octopart.com/api/v3/"""
+
+def jsk(d, *ks):
+    current = d
+    for k in ks[:-1]:
+        v = current.get(k)
+        if v is None:
+            return None
+        current = v
+    return current.get(ks[-1])
 
 def convert_value(v):
     if type(v) == type(0):
@@ -60,8 +72,33 @@ def append_generic_urlopts(opts, searchopts, urlopts):
     else:
         assert False
 
+    if searchopts.get('seller'):
+        urlopts.append(('filter[fields][offer.seller.name][]', searchopts['seller']))
+
+def get_seller_info(seller, offers):
+    prices = [ ]
+    sku = None
+    for o in offers:
+        if o['seller']['name'] != seller:
+            continue
+        assert o.get('seller') is not None
+        assert o['seller'].get('name') is not None
+        assert type(o.get('prices')) == type({ })
+        assert type(o['prices'].get(CURRENCY)) == type([])
+        prices = o['prices'][CURRENCY]
+        sku = o.get('sku')
+
+    if sku is None or prices is None:
+        return [ ]
+    else:
+        return [
+            dict(prices=prices, sku=sku)
+        ]
+
 def get_rescapind(kind, opts, searchopts):
     if kind != 'resistor' and kind != 'capacitor' and kind != 'inductor':
+        assert False
+    if type(searchopts.get('seller')) != type(''):
         assert False
 
     url = API_BASE_URL + 'parts/search?'
@@ -72,7 +109,7 @@ def get_rescapind(kind, opts, searchopts):
     urlopts = [
         ('apikey', API_KEY),
         ('start', 0),
-        ('limit', 1),
+        ('limit', 10),
         ('filter[fields][category_uids][]', uids[kind])
     ]
     append_generic_urlopts(opts, searchopts, urlopts)
@@ -85,11 +122,27 @@ def get_rescapind(kind, opts, searchopts):
         urlopts.append(('filter[fields][specs.%s_tolerance.value][]' % ance[kind], '±' + opts['tolerance']))
 
     url += urllib.parse.urlencode(urlopts)
-    print (url)
     data = urllib.request.urlopen(url).read()
     j = json.loads(data.decode('utf-8'))
+
+    rets = []
     for r in j['results']:
-        print(r['item']['octopart_url'])
+       assert type(r.get('item')) == type({ })
+       assert type(r['item'].get('offers')) == type([ ])
+       info = get_seller_info(searchopts['seller'], r['item']['offers'])
+       if len(info) == 0:
+           continue
+
+       d = dict(
+           kind=kind,
+           value=opts.get('value'),
+           prices=info[0]['prices'],
+           sku=info[0]['sku'],
+           octopart_url=jsk(r, 'item', 'octopart_url')
+       )
+       rets.append(d)
+       break
+    return rets
 
 def get_resistor(opts, searchopts=None):
     return get_rescapind('resistor', opts, searchopts)
@@ -100,4 +153,4 @@ def get_capacitor(opts, searchopts):
 def get_inductor(opts, searchopts):
     return get_rescapind('inductor', opts, searchopts)
 
-get_capacitor(dict(value="10u", package="0402", rohs=True), dict(by='price'))
+print(get_capacitor(dict(value="10u", package="0402", rohs=True), dict(by='price', seller='Digi-Key')))
