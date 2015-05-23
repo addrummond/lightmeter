@@ -1,24 +1,23 @@
-import pysimplesoap
-import datetime
 import os
+import urllib.request
+import urllib.parse
+import json
 
-PARTNER_ID = os.environ['MOUSER_PARTNER_ID']
+API_KEY = os.environ['OCTOPART_API_KEY']
+API_BASE_URL = """http://octopart.com/api/v3/"""
 
-def get_mouser_client():
-    client = pysimplesoap.client.SoapClient(wsdl="http://www.mouser.com/service/searchapi.asmx?WSDL", trace=os.environ.get('DEBUG', False))
-    namespace = "http://api.mouser.com/service"
-    header = pysimplesoap.client.SimpleXMLElement("<Headers/>", namespace=namespace)
-    mh = header.add_child("MouserHeader")
-    mh['xmlns'] = namespace
-    ai = mh.add_child("AccountInfo")
-    ai.marshall("PartnerID", PARTNER_ID)
-    client['MouserHeader'] = mh
-    return client
+def get_resistor():
+    url = API_BASE_URL + 'parts/search?' + urllib.parse.urlencode([
+        ('apikey', API_KEY),
+        ('start', 0),
+        ('limit', 10),
+        ('filter[fields][category_uids][]', 'cd01000bfc2916c6'),
+        ('filter[value]', '100k')
+    ])
+    print(url)
+    data = urllib.request.urlopen(url).read()
+    j = json.loads(data.decode('utf-8'))
+    for r in j['results']:
+        print(r['item']['octopart_url'])
 
-def find_resistor(case, value):
-    
-
-if __name__ == '__main__':
-    client = get_mouser_client()
-    response = client.SearchByPartNumber(mouserPartNumber="667-ERJ-P6WF4701V")
-    print(response['SearchByPartNumberResult'])
+get_resistor()
