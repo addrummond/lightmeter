@@ -83,6 +83,8 @@ def generic_urlopts(opts, searchopts):
     urlopts.append(('filter[fields][avg_avail][]', '[1 TO *]'))
     # ROHS compliant.
     urlopts.append(('filter[fields][specs.rohs_status.value][]', 'Compliant'))
+    # Not at end of life.
+    urlopts.append(('filter[fields][specs.lifecycle_status.value][]', 'Active'))
 
     return urlopts
 
@@ -196,6 +198,8 @@ def get_rescapind(kind, opts, searchopts):
         urlopts.append(('filter[fields][specs.case_package.value][]', opts['package']))
     if opts.get('tolerance') is not None:
         urlopts.append(('filter[fields][specs.%s_tolerance.value][]' % ance[kind], '±' + opts['tolerance']))
+    if opts.get('max_temperature_coefficient') is not None:
+        urlopts.append(('filter[fields][specs.temperature_coefficient.value][]', '[* TO ' + convert_value(opts['max_temperature_coefficient']) + ']'))
 
     url += urllib.parse.urlencode(urlopts)
     data = urllib.request.urlopen(url).read()
