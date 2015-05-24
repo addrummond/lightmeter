@@ -70,10 +70,6 @@ def generic_urlopts(opts, searchopts):
         searchopts = { }
 
     urlopts = []
-    if opts.get('rohs') is True:
-        urlopts.append(('filter[fields][specs.rohs_status.value][]', 'Compliant'))
-    elif opts.get('rohs') is not None and opts.get('rohs') is not False:
-        assert False
 
     if searchopts.get('by') is None or searchopts.get('by') == 'price':
         urlopts.append(('sortby', 'avg_price asc'))
@@ -82,6 +78,11 @@ def generic_urlopts(opts, searchopts):
 
     if searchopts.get('seller'):
         urlopts.append(('filter[fields][offers.seller.name][]', searchopts['seller']))
+
+    # In stock only.
+    urlopts.append(('filter[fields][avg_avail][]', '[1 TO *]'))
+    # ROHS compliant.
+    urlopts.append(('filter[fields][specs.rohs_status.value][]', 'Compliant'))
 
     return urlopts
 
@@ -133,7 +134,7 @@ def best_results(searchopts, results):
     if searchopts.get('by') == 'price':
         return find_best_price(searchopts['seller'], searchopts.get('bulk'), results)
     else:
-        return [results]
+        return results
 
 def from_best(seller, best, **extras):
     for r in best:
@@ -148,26 +149,31 @@ def from_best(seller, best, **extras):
         )
         for k, v in extras.items():
             d[k] = v
-        return d
+        return [d]
     return [ ]
 
 def check_searchopts(searchopts):
     assert type(searchopts.get('seller')) == type('')
 
 def get_mfg_part(opts, searchopts):
-    assert type(opts.get('partnum')) == type('')
+    assert type(opts.get('mfg_part_num')) == type('')
     check_searchopts(searchopts)
 
-    url = API_BASE_URL + 'parts/search'
+    partnum = opts['mfg_part_num']
+
+    url = API_BASE_URL + 'parts/search?'
     urlopts = (basic_urlopts() +
-               [('filter[fields][mpn][]', opts['partnum'])] + \
+               [('filter[fields][mpn][]', partnum)] +
                generic_urlopts(opts, searchopts))
+    url += urllib.parse.urlencode(urlopts)
+    data = urllib.request.urlopen(url).read()
+    j = json.loads(data.decode('utf-8'))
 
     best = best_results(searchopts, j['results'])
     return from_best(
         searchopts['seller'],
         best,
-        kind='component_by_mfg_id'
+        kind='component_by_mfg_part_num'
     )
 
 def get_rescapind(kind, opts, searchopts):
@@ -213,4 +219,5 @@ def get_capacitor(opts, searchopts):
 def get_inductor(opts, searchopts):
     return get_rescapind('inductor', opts, searchopts)
 
-print(get_resistor(dict(value="10k", package="0402", rohs=True), dict(by='price', bulk=1000, seller='Digi-Key')))
+#print(get_resistor(dict(value="10k", package="0402"), dict(by='price', bulk=1000, seller='Digi-Key')))
+print(get_mfg_part(dict(mfg_part_num="MMA8653FCR1"), dict(seller="Digi-Key", by='price', bulk=1000)))
