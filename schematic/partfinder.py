@@ -129,6 +129,12 @@ def find_best_price(seller, q, results):
     prs.sort(key=lambda x: x[1])
     return [prs[0][0]]
 
+def best_results(searchopts, results):
+    if searchopts.get('by') == 'price':
+        return find_best_price(searchopts['seller'], searchopts.get('bulk'), results)
+    else:
+        return [results]
+
 def get_mfg_part(opts, searchopts):
     assert type(opts.get('partnum')) == type('')
 
@@ -136,6 +142,8 @@ def get_mfg_part(opts, searchopts):
     urlopts = (basic_urlopts() +
                [('filter[fields][mpn][]', opts['partnum'])] + \
                generic_urlopts(opts, searchopts))
+
+    best = best_results(searchopts, j['results'])
 
 def get_rescapind(kind, opts, searchopts):
     if kind != 'resistor' and kind != 'capacitor' and kind != 'inductor':
@@ -165,11 +173,7 @@ def get_rescapind(kind, opts, searchopts):
     if j.get('results') is None or len(j['results']) == 0:
         return [ ]
 
-    best = None
-    if searchopts.get('by') == 'price':
-        best = find_best_price(searchopts['seller'], searchopts.get('bulk'), j['results'])
-    else:
-        best = [j['results'][0]]
+    best = best_results(searchopts, j['results'])
 
     rets = []
     for r in best:
