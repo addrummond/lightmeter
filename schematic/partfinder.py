@@ -135,17 +135,7 @@ def best_results(searchopts, results):
     else:
         return [results]
 
-def get_mfg_part(opts, searchopts):
-    assert type(opts.get('partnum')) == type('')
-
-    url = API_BASE_URL + 'parts/search'
-    urlopts = (basic_urlopts() +
-               [('filter[fields][mpn][]', opts['partnum'])] + \
-               generic_urlopts(opts, searchopts))
-
-    best = best_results(searchopts, j['results'])
-
-def from_best(seller, best, extras):
+def from_best(seller, best, **extras):
     for r in best:
         info = pull_seller_info(seller, r['item']['offers'])
         if len(info) == 0:
@@ -161,11 +151,28 @@ def from_best(seller, best, extras):
         return d
     return [ ]
 
+def check_searchopts(searchopts):
+    assert type(searchopts.get('seller')) == type('')
+
+def get_mfg_part(opts, searchopts):
+    assert type(opts.get('partnum')) == type('')
+    check_searchopts(searchopts)
+
+    url = API_BASE_URL + 'parts/search'
+    urlopts = (basic_urlopts() +
+               [('filter[fields][mpn][]', opts['partnum'])] + \
+               generic_urlopts(opts, searchopts))
+
+    best = best_results(searchopts, j['results'])
+    return from_best(
+        searchopts['seller'],
+        best,
+        kind='component_by_mfg_id'
+    )
+
 def get_rescapind(kind, opts, searchopts):
-    if kind != 'resistor' and kind != 'capacitor' and kind != 'inductor':
-        assert False
-    if type(searchopts.get('seller')) != type(''):
-        assert False
+    assert kind == 'resistor' or kind == 'capacitor' or kind == 'inductor'
+    check_searchopts(searchopts)
 
     ance = dict(resistor='resistance', capacitor='capacitance', inductor='inductance')
     uids = dict(resistor='cd01000bfc2916c6', capacitor='f8883582c9a8234f', inductor='bf4e72448e766489')
@@ -190,10 +197,12 @@ def get_rescapind(kind, opts, searchopts):
         return [ ]
 
     best = best_results(searchopts, j['results'])
-    return from_best(searchopts['seller'], best, dict(
-         kind=kind,
-         value=opts.get('value'),
-    ))
+    return from_best(
+        searchopts['seller'],
+        best,
+        kind=kind,
+        value=opts.get('value'),
+    )
 
 def get_resistor(opts, searchopts=None):
     return get_rescapind('resistor', opts, searchopts)
