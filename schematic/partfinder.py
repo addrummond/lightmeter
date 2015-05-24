@@ -146,15 +146,12 @@ def get_rescapind(kind, opts, searchopts):
             prcs = list(sorted(info[0]['prices'], key=lambda x: -x[0]))
             for num,prc in prcs:
                 if num <= q:
-                    print("\n\nAPPENDING\n\n", i, prc, num, r, "\n")
-                    prs.append((i, prc))
+                    prs.append((r, prc))
             i += 1
         if len(prs) == 0:
             return [ ]
-        print("PRS", prs)
         prs.sort(key=lambda x: x[1])
-        best = [j['results'][prs[0][0]]]
-        print("BEST", best)
+        best = [prs[0][0]]
     else:
         best = [j['results'][0]]
 
