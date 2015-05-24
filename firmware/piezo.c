@@ -15,7 +15,7 @@
 // Microphone stuff.
 //
 
-#define MIC_OFFSET_ADC_V ((int)((1.1/2.8)*4096.0))
+#define MIC_OFFSET_ADC_V ((int)((1.3/3.3)*4096.0))
 
 __IO int16_t piezo_mic_buffer[PIEZO_MIC_BUFFER_N_SAMPLES];
 
