@@ -11382,7 +11382,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="IC$2" library="lightmeter" deviceset="MMA8653" device=""/>
 <part name="C6" library="rcl" deviceset="C-EU" device="C0603" value="1u"/>
 <part name="GND4" library="supply1" deviceset="GND" device=""/>
-<part name="C10" library="rcl" deviceset="C-EU" device="C0603" value="u1"/>
+<part name="C10" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
 <part name="GND16" library="supply1" deviceset="GND" device=""/>
 <part name="R6" library="resistor" deviceset="R-EU_" device="R0402" value="6k49"/>
 <part name="R7" library="resistor" deviceset="R-EU_" device="R0402" value="6k49"/>
@@ -11434,9 +11434,9 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="J7" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
 <part name="C22" library="rcl" deviceset="C-EU" device="C0402" value="4u7"/>
 <part name="C16" library="lightmeter" deviceset="C" device="GAP0402" value="u01"/>
-<part name="C21" library="rcl" deviceset="C-EU" device="C0603" value="u1"/>
+<part name="C21" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
 <part name="C29" library="rcl" deviceset="C-EU" device="C0603" value="u1"/>
-<part name="R11" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
+<part name="R11" library="resistor" deviceset="R-EU_" device="R0402" value="10k%"/>
 <part name="R14" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
 <part name="R12" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
 <part name="D6" library="adafruit" deviceset="DIODE" device="SOD-323F"/>
@@ -11453,10 +11453,10 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="GND10" library="supply1" deviceset="GND" device=""/>
 <part name="IC$7" library="lightmeter" deviceset="PNJ4K01F" device=""/>
 <part name="GND13" library="supply1" deviceset="GND" device=""/>
-<part name="C24" library="rcl" deviceset="C-EU" device="C0603" value="u1"/>
+<part name="C24" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
 <part name="IC$8" library="lightmeter" deviceset="PNJ4K01F" device=""/>
 <part name="GND14" library="supply1" deviceset="GND" device=""/>
-<part name="C27" library="rcl" deviceset="C-EU" device="C0603" value="u1"/>
+<part name="C27" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
 <part name="IC$10" library="lightmeter" deviceset="PNJ4K01F" device=""/>
 <part name="GND30" library="supply1" deviceset="GND" device=""/>
 <part name="D4" library="adafruit" deviceset="DIODE" device="SOD-323F"/>
