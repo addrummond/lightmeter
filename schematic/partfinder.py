@@ -88,12 +88,13 @@ def get_seller_info(seller, offers):
         assert type(o['prices'].get(CURRENCY)) == type([])
         prices = o['prices'][CURRENCY]
         sku = o.get('sku')
+        product_url = o.get('product_url')
 
-    if sku is None or prices is None:
+    if sku is None or prices is None or product_url is None:
         return [ ]
     else:
         return [
-            dict(prices=prices, sku=sku)
+            dict(prices=prices, sku=sku, product_url=product_url)
         ]
 
 def get_rescapind(kind, opts, searchopts):
@@ -145,25 +146,30 @@ def get_rescapind(kind, opts, searchopts):
             prcs = list(sorted(info[0]['prices'], key=lambda x: -x[0]))
             for num,prc in prcs:
                 if num <= q:
+                    print("\n\nAPPENDING\n\n", i, prc, num, r, "\n")
                     prs.append((i, prc))
             i += 1
         if len(prs) == 0:
             return [ ]
+        print("PRS", prs)
         prs.sort(key=lambda x: x[1])
-        print(prs)
         best = [j['results'][prs[0][0]]]
+        print("BEST", best)
     else:
-        best = j['results'][0]
+        best = [j['results'][0]]
 
     rets = []
     for r in best:
        info = get_seller_info(searchopts['seller'], r['item']['offers'])
+       if len(info) == 0:
+           return [ ]
        d = dict(
            kind=kind,
            value=opts.get('value'),
            prices=info[0]['prices'],
            sku=info[0]['sku'],
-           octopart_url=jsk(r, 'item', 'octopart_url')
+           octopart_url=jsk(r, 'item', 'octopart_url'),
+           product_url=info[0]['product_url']
        )
        rets.append(d)
        break
