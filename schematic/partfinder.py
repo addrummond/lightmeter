@@ -56,7 +56,14 @@ def convert_value(v):
     else:
         assert False
 
-def append_generic_urlopts(opts, searchopts, urlopts):
+def basic_urlopts():
+    return [
+        ('apikey', API_KEY),
+        ('start', 0),
+        ('limit', LIMIT)
+    ]
+
+def generic_urlopts(opts, searchopts):
     if opts is None:
         opts = { }
     if searchopts is None:
@@ -64,7 +71,7 @@ def append_generic_urlopts(opts, searchopts, urlopts):
 
     urlopts = []
     if opts.get('rohs') is True:
-        urlopts.append(('filter[fields][specs.rohs_status.value][]', 'Compiant'))
+        urlopts.append(('filter[fields][specs.rohs_status.value][]', 'Compliant'))
     elif opts.get('rohs') is not None and opts.get('rohs') is not False:
         assert False
 
@@ -74,7 +81,9 @@ def append_generic_urlopts(opts, searchopts, urlopts):
         assert False
 
     if searchopts.get('seller'):
-        urlopts.append(('filter[fields][offer.seller.name][]', searchopts['seller']))
+        urlopts.append(('filter[fields][offers.seller.name][]', searchopts['seller']))
+
+    return urlopts
 
 def pull_seller_info(seller, offers):
     prices = [ ]
@@ -120,24 +129,27 @@ def find_best_price(seller, q, results):
     prs.sort(key=lambda x: x[1])
     return [prs[0][0]]
 
+def get_mfg_part(opts, searchopts):
+    assert type(opts.get('partnum')) == type('')
+
+    url = API_BASE_URL + 'parts/search'
+    urlopts = (basic_urlopts() +
+               [('filter[fields][mpn][]', opts['partnum'])] + \
+               generic_urlopts(opts, searchopts))
+
 def get_rescapind(kind, opts, searchopts):
     if kind != 'resistor' and kind != 'capacitor' and kind != 'inductor':
         assert False
     if type(searchopts.get('seller')) != type(''):
         assert False
 
-    url = API_BASE_URL + 'parts/search?'
-
     ance = dict(resistor='resistance', capacitor='capacitance', inductor='inductance')
     uids = dict(resistor='cd01000bfc2916c6', capacitor='f8883582c9a8234f', inductor='bf4e72448e766489')
 
-    urlopts = [
-        ('apikey', API_KEY),
-        ('start', 0),
-        ('limit', LIMIT),
-        ('filter[fields][category_uids][]', uids[kind])
-    ]
-    append_generic_urlopts(opts, searchopts, urlopts)
+    url = API_BASE_URL + 'parts/search?'
+    urlopts = (basic_urlopts() +
+               [('filter[fields][category_uids][]', uids[kind])] +
+               generic_urlopts(opts, searchopts))
 
     if opts.get('value') is not None:
         urlopts.append(('filter[fields][specs.%s.value][]' % ance[kind], convert_value(opts['value'])))
