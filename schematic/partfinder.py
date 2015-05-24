@@ -7,6 +7,7 @@ import sys
 import pprint
 
 CURRENCY = 'USD'
+LIMIT = 100
 
 API_KEY = os.environ['OCTOPART_API_KEY']
 API_BASE_URL = """http://octopart.com/api/v3/"""
@@ -109,7 +110,7 @@ def get_rescapind(kind, opts, searchopts):
     urlopts = [
         ('apikey', API_KEY),
         ('start', 0),
-        ('limit', 10),
+        ('limit', LIMIT),
         ('filter[fields][category_uids][]', uids[kind])
     ]
     append_generic_urlopts(opts, searchopts, urlopts)
@@ -125,14 +126,38 @@ def get_rescapind(kind, opts, searchopts):
     data = urllib.request.urlopen(url).read()
     j = json.loads(data.decode('utf-8'))
 
-    rets = []
-    for r in j['results']:
-       assert type(r.get('item')) == type({ })
-       assert type(r['item'].get('offers')) == type([ ])
-       info = get_seller_info(searchopts['seller'], r['item']['offers'])
-       if len(info) == 0:
-           continue
+    if j.get('results') is None or len(j['results']) == 0:
+        return [ ]
 
+    best = [ ]
+    if searchopts.get('by') == 'price':
+        q = searchopts.get('bulk', 1)
+        # Find lowest price for selected seller in selected quantity.
+        i = 0
+        prs = [ ]
+        for r in j['results']:
+            assert jsk(r, 'item', 'offers') is not None
+            info = get_seller_info(searchopts['seller'], r['item']['offers'])
+            if len(info) == 0:
+                continue
+            for pr in info[0]['prices']:
+                pr[1] = float(pr[1])
+            prcs = list(sorted(info[0]['prices'], key=lambda x: -x[0]))
+            for num,prc in prcs:
+                if num <= q:
+                    prs.append((i, prc))
+            i += 1
+        if len(prs) == 0:
+            return [ ]
+        prs.sort(key=lambda x: x[1])
+        print(prs)
+        best = [j['results'][prs[0][0]]]
+    else:
+        best = j['results'][0]
+
+    rets = []
+    for r in best:
+       info = get_seller_info(searchopts['seller'], r['item']['offers'])
        d = dict(
            kind=kind,
            value=opts.get('value'),
@@ -153,4 +178,4 @@ def get_capacitor(opts, searchopts):
 def get_inductor(opts, searchopts):
     return get_rescapind('inductor', opts, searchopts)
 
-print(get_capacitor(dict(value="10u", package="0402", rohs=True), dict(by='price', seller='Digi-Key')))
+print(get_resistor(dict(value="10k", package="0402", rohs=True), dict(by='price', bulk=1000, seller='Digi-Key')))
