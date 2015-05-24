@@ -87,8 +87,12 @@ def generic_urlopts(opts, searchopts):
     return urlopts
 
 def pull_seller_info(seller, offers):
-    prices = [ ]
+    # Bit of a hack. We want a merged list of all prices, but potentially the
+    # sku and product URL could be different for different price lists. We
+    # assume that they're not.
+    pricess = [ ]
     sku = None
+    product_url = None
     for o in offers:
         if o['seller']['name'] != seller:
             continue
@@ -96,22 +100,22 @@ def pull_seller_info(seller, offers):
         assert o['seller'].get('name') is not None
         assert type(o.get('prices')) == type({ })
         assert type(o['prices'].get(CURRENCY)) == type([])
-        prices = o['prices'][CURRENCY]
+        pricess.append(o['prices'][CURRENCY])
         sku = o.get('sku')
         product_url = o.get('product_url')
 
-    if sku is None or prices is None or product_url is None:
+    if sku is None or product_url is None:
         return [ ]
     else:
-        return [
-            dict(prices=prices, sku=sku, product_url=product_url)
-        ]
+        prices = [ ]
+        for l in pricess:
+            prices += l
+        return [dict(prices=prices, sku=sku, product_url=product_url)]
 
 def find_best_price(seller, q, results):
     if q is None:
         q = 1
     # Find lowest price for selected seller in selected quantity.
-    i = 0
     prs = [ ]
     for r in results:
         assert jsk(r, 'item', 'offers') is not None
@@ -120,15 +124,13 @@ def find_best_price(seller, q, results):
             continue
         for pr in info[0]['prices']:
             pr[1] = float(pr[1])
-        prcs = list(sorted(info[0]['prices'], key=lambda x: -x[0]))
-        for num,prc in prcs:
-            if num <= q:
-                prs.append((r, prc))
-        i += 1
-    if len(prs) == 0:
-        return [ ]
-    prs.sort(key=lambda x: x[1])
-    return [prs[0][0]]
+            prs.append((r, pr))
+    prs.sort(key=lambda x: (x[1][1], x[1][0]))
+    for r,pr in prs:
+        num,_ = pr
+        if num <= q:
+            return [r]
+    return [ ]
 
 def best_results(searchopts, results):
     if searchopts.get('by') == 'price':
@@ -220,4 +222,4 @@ def get_inductor(opts, searchopts):
     return get_rescapind('inductor', opts, searchopts)
 
 #print(get_resistor(dict(value="10k", package="0402"), dict(by='price', bulk=1000, seller='Digi-Key')))
-print(get_mfg_part(dict(mfg_part_num="MMA8653FCR1"), dict(seller="Digi-Key", by='price', bulk=1000)))
+print(get_mfg_part(dict(mfg_part_num="MMA8653FCR1"), dict(seller="Digi-Key", by='price', bulk=1)))
