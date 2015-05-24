@@ -76,7 +76,7 @@ def append_generic_urlopts(opts, searchopts, urlopts):
     if searchopts.get('seller'):
         urlopts.append(('filter[fields][offer.seller.name][]', searchopts['seller']))
 
-def get_seller_info(seller, offers):
+def pull_seller_info(seller, offers):
     prices = [ ]
     sku = None
     for o in offers:
@@ -96,6 +96,29 @@ def get_seller_info(seller, offers):
         return [
             dict(prices=prices, sku=sku, product_url=product_url)
         ]
+
+def find_best_price(seller, q, results):
+    if q is None:
+        q = 1
+    # Find lowest price for selected seller in selected quantity.
+    i = 0
+    prs = [ ]
+    for r in results:
+        assert jsk(r, 'item', 'offers') is not None
+        info = pull_seller_info(seller, r['item']['offers'])
+        if len(info) == 0:
+            continue
+        for pr in info[0]['prices']:
+            pr[1] = float(pr[1])
+        prcs = list(sorted(info[0]['prices'], key=lambda x: -x[0]))
+        for num,prc in prcs:
+            if num <= q:
+                prs.append((r, prc))
+        i += 1
+    if len(prs) == 0:
+        return [ ]
+    prs.sort(key=lambda x: x[1])
+    return [prs[0][0]]
 
 def get_rescapind(kind, opts, searchopts):
     if kind != 'resistor' and kind != 'capacitor' and kind != 'inductor':
@@ -130,34 +153,15 @@ def get_rescapind(kind, opts, searchopts):
     if j.get('results') is None or len(j['results']) == 0:
         return [ ]
 
-    best = [ ]
+    best = None
     if searchopts.get('by') == 'price':
-        q = searchopts.get('bulk', 1)
-        # Find lowest price for selected seller in selected quantity.
-        i = 0
-        prs = [ ]
-        for r in j['results']:
-            assert jsk(r, 'item', 'offers') is not None
-            info = get_seller_info(searchopts['seller'], r['item']['offers'])
-            if len(info) == 0:
-                continue
-            for pr in info[0]['prices']:
-                pr[1] = float(pr[1])
-            prcs = list(sorted(info[0]['prices'], key=lambda x: -x[0]))
-            for num,prc in prcs:
-                if num <= q:
-                    prs.append((r, prc))
-            i += 1
-        if len(prs) == 0:
-            return [ ]
-        prs.sort(key=lambda x: x[1])
-        best = [prs[0][0]]
+        best = find_best_price(searchopts['seller'], searchopts.get('bulk'), j['results'])
     else:
         best = [j['results'][0]]
 
     rets = []
     for r in best:
-       info = get_seller_info(searchopts['seller'], r['item']['offers'])
+       info = pull_seller_info(searchopts['seller'], r['item']['offers'])
        if len(info) == 0:
            return [ ]
        d = dict(
