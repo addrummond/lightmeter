@@ -145,6 +145,22 @@ def get_mfg_part(opts, searchopts):
 
     best = best_results(searchopts, j['results'])
 
+def from_best(seller, best, extras):
+    for r in best:
+        info = pull_seller_info(seller, r['item']['offers'])
+        if len(info) == 0:
+            continue
+        d = dict(
+            prices=info[0]['prices'],
+            sku=info[0]['sku'],
+            octopart_url=jsk(r, 'item', 'octopart_url'),
+            product_url=info[0]['product_url']
+        )
+        for k, v in extras.items():
+            d[k] = v
+        return d
+    return [ ]
+
 def get_rescapind(kind, opts, searchopts):
     if kind != 'resistor' and kind != 'capacitor' and kind != 'inductor':
         assert False
@@ -174,23 +190,10 @@ def get_rescapind(kind, opts, searchopts):
         return [ ]
 
     best = best_results(searchopts, j['results'])
-
-    rets = []
-    for r in best:
-       info = pull_seller_info(searchopts['seller'], r['item']['offers'])
-       if len(info) == 0:
-           return [ ]
-       d = dict(
-           kind=kind,
-           value=opts.get('value'),
-           prices=info[0]['prices'],
-           sku=info[0]['sku'],
-           octopart_url=jsk(r, 'item', 'octopart_url'),
-           product_url=info[0]['product_url']
-       )
-       rets.append(d)
-       break
-    return rets
+    return from_best(searchopts['seller'], best, dict(
+         kind=kind,
+         value=opts.get('value'),
+    ))
 
 def get_resistor(opts, searchopts=None):
     return get_rescapind('resistor', opts, searchopts)
