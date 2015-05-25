@@ -28,7 +28,7 @@
 1  $LP5907MFX-3.3/NOPB      # 3.3V LDO regulator
 1  $47491-0001              # Midmount USB connector
 1  $MAX4466EXK+T            # Mic preamp op amp
-1  $MCP73831T-3ACI/OT       # LIPO battery charger
+1  $MCP73831T-3ACI/OT       # LIPO battery charger IC
 1  $DMG1013T-7              # P-channel MOSFET for SCRPWR
 2  $SN74LVC1G66DRLR         # SPST analogue switch
 1  $SPU0410LR5H-QB          # Microphone
