@@ -21,38 +21,43 @@ def jsk(d, *ks):
         current = v
     return current.get(ks[-1])
 
+VAL_RE = r"(\d+)([.kunpmM]?)(\d*)([kunpmM]?)"
+
+def convert_split_value(g1, g2, g3, g4):
+    if g2 != '.' and g2 != '' and g4 != '':
+        return False
+    mul = 0
+    multiplier = g2 if g2 != '' and g2 != '.' else g4
+    if multiplier == 'M':
+        mul = 6
+    elif multiplier == 'k':
+        mul = 3
+    elif multiplier == 'm':
+        mul = -3
+    elif multiplier == 'u':
+        mul = -6
+    elif multiplier == 'n':
+        mul = -9
+    elif multiplier == 'p':
+        mul = -12
+    n = g1
+    if g2 != '':
+        n += '.'
+    n += g3
+    if mul != 0:
+        n += 'e' + str(mul)
+    return n
+
 def convert_value(v):
     if type(v) == type(0):
         return v
     elif type(v) == type(1.0):
         return v
     elif type(v) == type(""):
-        m = re.match(r"^(\d+)([.kunpmM]?)(\d*)([kunpmM]?)", v)
+        m = re.match("^" + VAL_RE + "$", v)
         if not m:
             return False
-        if m.group(2) != '.' and m.group(2) != '' and m.group(4) != '':
-            return False
-        mul = 0
-        multiplier = m.group(2) if m.group(2) != '' and m.group(2) != '.' else m.group(4)
-        if multiplier == 'M':
-            mul = 6
-        elif multiplier == 'k':
-            mul = 3
-        elif multiplier == 'm':
-            mul = -3
-        elif multiplier == 'u':
-            mul = -6
-        elif multiplier == 'n':
-            mul = -9
-        elif multiplier == 'p':
-            mul = -12
-        n = m.group(1)
-        if m.group(2) != '':
-            n += '.'
-        n += m.group(3)
-        if mul != 0:
-            n += 'e' + str(mul)
-        return n
+        return convert_split_value(m.group(1), m.group(2), m.group(3), m.group(4))
     else:
         assert False
 
@@ -182,6 +187,7 @@ def get_mfg_part(opts, searchopts):
 
 def get_rescapind(kind, opts, searchopts):
     assert kind == 'resistor' or kind == 'capacitor' or kind == 'inductor'
+    assert type(opts.get('tolerance')) is type(None) or type(opts.get('tolerance')) is type(0) or type(opts.get('tolerance')) is type(0.0)
     check_searchopts(searchopts)
 
     ance = dict(resistor='resistance', capacitor='capacitance', inductor='inductance')
@@ -197,7 +203,7 @@ def get_rescapind(kind, opts, searchopts):
     if opts.get('package') is not None:
         urlopts.append(('filter[fields][specs.case_package.value][]', opts['package']))
     if opts.get('tolerance') is not None:
-        urlopts.append(('filter[fields][specs.%s_tolerance.value][]' % ance[kind], '±' + opts['tolerance']))
+        urlopts.append(('filter[fields][specs.%s_tolerance.value][]' % ance[kind], '±' + opts['tolerance'] + '%'))
     if opts.get('max_temperature_coefficient') is not None:
         urlopts.append(('filter[fields][specs.temperature_coefficient.value][]', '[* TO ' + convert_value(opts['max_temperature_coefficient']) + ']'))
 
@@ -225,5 +231,55 @@ def get_capacitor(opts, searchopts):
 def get_inductor(opts, searchopts):
     return get_rescapind('inductor', opts, searchopts)
 
-#print(get_resistor(dict(value="10k", package="0402"), dict(by='price', bulk=1000, seller='Digi-Key')))
-print(get_mfg_part(dict(mfg_part_num="MMA8653FCR1"), dict(seller="Digi-Key", by='price', bulk=1)))
+def parse_bom(input):
+    parse = [ ]
+
+    lines = re.split(r"\r?\n", input)
+    num = 1
+    for l in lines:
+        # Strip any comment.
+        m = re.match(r"^([^#]*)#?.*$", l)
+        assert m
+        l = m.group(1)
+
+        if re.match("^\s*$", l):
+            continue
+
+        m = re.match(r"^\s*(\d+)\s+([RIC$])([\w-]*)(?:~(\d+\.?\d*)%)?\s+(" + VAL_RE + r")\s*$", l)
+        if m:
+            print(m.groups())
+            quantity = int(m.group(1))
+            kind = m.group(2)
+            f = None
+            if kind == 'R':
+                f = get_resistor
+            elif kind == 'I':
+                f = get_inductor
+            elif kind == 'C':
+                f = get_capacitor
+            package = None
+            if m.group(3) is not None:
+                package = m.group(3)
+            tolerance = None
+            if m.group(4) is not None:
+                tolerance = float(m.group(4))
+            parse.append((
+                quantity,
+                f,
+                dict(
+                    value=m.group(5),
+                    tolerance=tolerance,
+                    package=package
+                )
+            ))
+        else:
+            m = re.match(r"^\s*(\d+)\s+\$((?:[\w-]+)|(?:\{[^\}]+\}))", l)
+            if not m:
+                sys.stderr.write("Parse error on line %i.\n" % num)
+                sys.exit(1)
+
+            parse.append((int(m.group(1)), get_mfg_part, dict(mfg_part_num=m.group(2))))
+    return parse
+
+f = open("bom.partslist")
+pprint.pprint(parse_bom(f.read()))
