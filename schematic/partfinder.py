@@ -5,6 +5,8 @@ import re
 import json
 import sys
 import pprint
+import csv
+import time
 
 CURRENCY = 'USD'
 LIMIT = 100
@@ -175,6 +177,7 @@ def get_mfg_part(opts, searchopts):
                [('filter[fields][mpn][]', partnum)] +
                generic_urlopts(opts, searchopts))
     url += urllib.parse.urlencode(urlopts)
+    print("Requesting: ", url, "\n")
     data = urllib.request.urlopen(url).read()
     j = json.loads(data.decode('utf-8'))
 
@@ -203,11 +206,12 @@ def get_rescapind(kind, opts, searchopts):
     if opts.get('package') is not None:
         urlopts.append(('filter[fields][specs.case_package.value][]', opts['package']))
     if opts.get('tolerance') is not None:
-        urlopts.append(('filter[fields][specs.%s_tolerance.value][]' % ance[kind], '±' + opts['tolerance'] + '%'))
+        urlopts.append(('filter[fields][specs.%s_tolerance.value][]' % ance[kind], '±' + str(opts['tolerance']) + '%'))
     if opts.get('max_temperature_coefficient') is not None:
         urlopts.append(('filter[fields][specs.temperature_coefficient.value][]', '[* TO ' + convert_value(opts['max_temperature_coefficient']) + ']'))
 
     url += urllib.parse.urlencode(urlopts)
+    print("Requesting: ", url, "\n")
     data = urllib.request.urlopen(url).read()
     j = json.loads(data.decode('utf-8'))
 
@@ -232,7 +236,7 @@ def get_inductor(opts, searchopts):
     return get_rescapind('inductor', opts, searchopts)
 
 def parse_bom(input):
-    parse = [ ]
+    bom = [ ]
 
     lines = re.split(r"\r?\n", input)
     num = 1
@@ -243,11 +247,11 @@ def parse_bom(input):
         l = m.group(1)
 
         if re.match("^\s*$", l):
+            num += 1
             continue
 
         m = re.match(r"^\s*(\d+)\s+([RIC$])([\w-]*)(?:~(\d+\.?\d*)%)?\s+(" + VAL_RE + r")\s*$", l)
         if m:
-            print(m.groups())
             quantity = int(m.group(1))
             kind = m.group(2)
             f = None
@@ -263,7 +267,7 @@ def parse_bom(input):
             tolerance = None
             if m.group(4) is not None:
                 tolerance = float(m.group(4))
-            parse.append((
+            bom.append((
                 quantity,
                 f,
                 dict(
@@ -273,13 +277,41 @@ def parse_bom(input):
                 )
             ))
         else:
-            m = re.match(r"^\s*(\d+)\s+\$((?:[\w-]+)|(?:\{[^\}]+\}))", l)
+            m = re.match(r"^\s*(\d+)\s+\$(?:(?:([\w.+/-]+))|(?:\{([^\}]+)\}))\s*$", l)
             if not m:
+                print(l)
                 sys.stderr.write("Parse error on line %i.\n" % num)
                 sys.exit(1)
 
-            parse.append((int(m.group(1)), get_mfg_part, dict(mfg_part_num=m.group(2))))
-    return parse
+            pn = (("" if m.group(2) is None else m.group(2)) +
+                  ("" if m.group(3) is None else m.group(3)))
+            bom.append((int(m.group(1)), get_mfg_part, dict(mfg_part_num=pn)))
+        num += 1
+
+    return bom
+
+def output_mouser_bom(bom, ofname, searchopts):
+    couldnt_get = [ ]
+    with open(ofname, 'w', newline='') as f:
+        writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(['Mfg Part Number', 'Quantity 1', 'Description', 'Mouser Part Number'])
+
+        for b in bom:
+            r = b[1](b[2], searchopts)
+            if len(r) == 0:
+                couldnt_get.append(b)
+            else:
+                r = r[0]
+                writer.writerow([r['sku'], b[0], '', ''])
+
+            # Hack to prevent 'too many requests' HTTP error.
+            time.sleep(0.2)
+
+    if len(couldnt_get) > 0:
+        sys.stderr.write("Couldn't get some parts\n")
+        sys.stderr.write(pprint.pformat(couldnt_get))
+        sys.stderr.write("\n")
 
 f = open("bom.partslist")
-pprint.pprint(parse_bom(f.read()))
+bom = parse_bom(f.read())
+output_mouser_bom(bom, "/tmp/o.csv", dict(bulk=1000, seller='Mouser'))
