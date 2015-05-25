@@ -1,0 +1,46 @@
+#
+# Generic parts to be ordered from Mouser/Digikey.
+#
+5  R0402       10k
+2  R0402~0.05% 10k
+1  C0402       10u
+1  R0603       130
+1  R0402       15k
+6  C0603       1u
+1  I0603       2u2
+2  C0603~1%    3300p
+1  C0402       3300p
+6  R0402       390k
+8  C0402       4u7
+1  C0402       51p
+3  R0402       6k49
+8  R0402       0
+1  C0402       0u01
+10 C0402       0u1
+
+#
+# Specific part numbers to be ordered from Mouser/Digikey.
+#
+1  $MMA8653FCR1             # Accelerometer
+1  $NLAS5223BMNR2G          # Dual SPDT analogue switch
+1  $P13165-1                # Piezo bender
+1  $LM3671MF-2.8/NOPB       # 2.8V buck regulator
+1  $LP5907MFX-3.3/NOPB      # 3.3V LDO regulator
+1  $47491-0001              # Midmount USB connector
+1  $MAX4466EXK+T            # Mic preamp op amp
+1  $MCP73831T-3ACI/OT       # LIPO battery charger
+1  $DMG1013T-7              # P-channel MOSFET for SCRPWR
+2  $SN74LVC1G66DRLR         # SPST analogue switch
+1  $SPU0410LR5H-QB          # Microphone
+1  $STM32F030K6T6           # uc
+3  ${PTS540 JM035 SMTR LFS} # Pushbuttons
+4  $PNJ4K01F                # Light sensors
+4  $BAT54WS-E3-18           # Diodes for pushbuttons
+2  ${BAT 63-02V H6327}      # Low forward voltage diodes for power mux
+1  $ESD9B3.3ST5G            # Protection diode
+
+#
+# Parts to be ordered elsewhere.
+#
+# LIBAT
+# DISPLAY
