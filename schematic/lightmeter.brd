@@ -1288,10 +1288,10 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <smd name="P$1" x="0" y="0.7747" dx="0.5334" dy="0.762" layer="16"/>
 <smd name="P$2" x="-0.510540625" y="-0.7747" dx="0.5334" dy="0.762" layer="16"/>
 <smd name="P$3" x="0.510540625" y="-0.7747" dx="0.5334" dy="0.762" layer="16"/>
-<wire x1="-0.8" y1="0.38" x2="0.8" y2="0.38" width="0.127" layer="21"/>
-<wire x1="-0.8" y1="-0.38" x2="0.8" y2="-0.38" width="0.127" layer="21"/>
-<wire x1="-0.8" y1="0.38" x2="-0.8" y2="-0.38" width="0.127" layer="21"/>
-<wire x1="0.8" y1="0.38" x2="0.8" y2="-0.38" width="0.127" layer="21"/>
+<wire x1="-0.8" y1="0.38" x2="0.8" y2="0.38" width="0.127" layer="22"/>
+<wire x1="-0.8" y1="-0.38" x2="0.8" y2="-0.38" width="0.127" layer="22"/>
+<wire x1="-0.8" y1="0.38" x2="-0.8" y2="-0.38" width="0.127" layer="22"/>
+<wire x1="0.8" y1="0.38" x2="0.8" y2="-0.38" width="0.127" layer="22"/>
 <text x="-1.905" y="1.27" size="0.762" layer="25">&gt;NAME</text>
 </package>
 <package name="PIEZOBENDER165">
@@ -1324,11 +1324,11 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <smd name="P$6" x="0.695959375" y="-0.199390625" dx="0.1778" dy="0.815340625" layer="1" rot="R90"/>
 <smd name="P$2" x="-0.695959375" y="-0.199390625" dx="0.1778" dy="0.815340625" layer="1" rot="R90"/>
 <smd name="P$1" x="-0.746759375" y="0.199390625" dx="0.1778" dy="0.916940625" layer="1" rot="R90"/>
-<wire x1="-0.7" y1="0.9" x2="0.7" y2="0.9" width="0.0762" layer="21"/>
-<wire x1="-0.7" y1="-0.9" x2="0.7" y2="-0.9" width="0.0762" layer="21"/>
-<wire x1="-0.7" y1="0.9" x2="-0.7" y2="-0.9" width="0.0762" layer="21"/>
-<wire x1="0.7" y1="0.9" x2="0.7" y2="-0.9" width="0.0762" layer="21"/>
-<circle x="-0.635" y="0.635" radius="0.0508" width="0.127" layer="21"/>
+<wire x1="-0.7" y1="0.9" x2="0.7" y2="0.9" width="0.254" layer="21"/>
+<wire x1="-0.7" y1="-0.9" x2="0.7" y2="-0.9" width="0.254" layer="21"/>
+<wire x1="-0.7" y1="0.9" x2="-0.7" y2="-0.9" width="0.254" layer="21"/>
+<wire x1="0.7" y1="0.9" x2="0.7" y2="-0.9" width="0.254" layer="21"/>
+<circle x="-1.016" y="0.635" radius="0.1016" width="0.127" layer="21"/>
 </package>
 <package name="QFP-32">
 <description>&lt;b&gt;Quad Flat Package&lt;/b&gt;</description>
