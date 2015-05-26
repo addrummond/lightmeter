@@ -3096,7 +3096,7 @@ design rules under a new name.</description>
 <attribute name="VALUE" x="17.830796875" y="5.7912" size="1.27" layer="27"/>
 </element>
 <element name="C12" library="rcl" package="C0402" value="u1" x="4.6482" y="29.5656" smashed="yes" rot="R90">
-<attribute name="NAME" x="2.3876" y="28.7782" size="0.762" layer="25"/>
+<attribute name="NAME" x="1.9812" y="28.7274" size="0.762" layer="25"/>
 <attribute name="VALUE" x="6.5532" y="28.9306" size="1.27" layer="27" rot="R90"/>
 </element>
 <element name="C28" library="rcl" package="C0402" value="4u7" x="11.1252" y="11.9634" smashed="yes" rot="R270">
@@ -3128,15 +3128,15 @@ design rules under a new name.</description>
 <attribute name="VALUE" x="19.7358" y="24.5618" size="1.27" layer="27" rot="R90"/>
 </element>
 <element name="C25" library="rcl" package="C0603" value="1u" x="26.67" y="33.8836" smashed="yes" rot="R270">
-<attribute name="NAME" x="26.3652" y="37.846" size="0.762" layer="25" rot="R270"/>
+<attribute name="NAME" x="26.4668" y="37.4142" size="0.762" layer="25" rot="R270"/>
 <attribute name="VALUE" x="24.765" y="34.5186" size="1.27" layer="27" rot="R270"/>
 </element>
 <element name="C27" library="rcl" package="C0603" value="1u" x="24.5618" y="36.8046" smashed="yes">
-<attribute name="NAME" x="23.6728" y="37.7698" size="0.762" layer="25"/>
+<attribute name="NAME" x="23.4188" y="37.5412" size="0.762" layer="25"/>
 <attribute name="VALUE" x="23.9268" y="34.8996" size="1.27" layer="27"/>
 </element>
 <element name="C6" library="rcl" package="C0603" value="1u" x="4.4196" y="26.5049" smashed="yes" rot="R90">
-<attribute name="NAME" x="3.429" y="26.0223" size="0.762" layer="25" rot="R90"/>
+<attribute name="NAME" x="3.6322" y="25.8445" size="0.762" layer="25" rot="R90"/>
 <attribute name="VALUE" x="6.3246" y="25.8699" size="1.27" layer="27" rot="R90"/>
 </element>
 <element name="C11" library="rcl" package="C0402" value="u1" x="7.1882" y="24.1554" smashed="yes" rot="R180">
@@ -3257,7 +3257,7 @@ design rules under a new name.</description>
 <attribute name="VALUE" x="25.3746" y="23.3934" size="1.27" layer="27"/>
 </element>
 <element name="J7" library="lightmeter" package="JUMPER_R0402" value="CONNECTEDJUMPER" x="21.0058" y="33.1724" smashed="yes" rot="R180">
-<attribute name="NAME" x="21.291375" y="32.299515625" size="0.762" layer="25" rot="R180"/>
+<attribute name="NAME" x="21.189775" y="32.502715625" size="0.762" layer="25" rot="R180"/>
 <attribute name="VALUE" x="21.640796875" y="35.204396875" size="1.27" layer="27" rot="R180"/>
 </element>
 <element name="C24" library="rcl" package="C0402" value="4u7" x="6.1722" y="13.4366" smashed="yes" rot="R180">
@@ -3269,16 +3269,16 @@ design rules under a new name.</description>
 <attribute name="VALUE" x="11.7602" y="29.3116" size="1.27" layer="27" rot="R180"/>
 </element>
 <element name="C23" library="rcl" package="C0402" value="u1" x="5.3848" y="34.24681875" smashed="yes" rot="R180">
-<attribute name="NAME" x="7.07898125" y="35.052" size="0.762" layer="25" rot="R270"/>
+<attribute name="NAME" x="8.42518125" y="34.6202" size="0.762" layer="25" rot="R180"/>
 <attribute name="VALUE" x="6.0198" y="36.15181875" size="1.27" layer="27" rot="R180"/>
 </element>
 <element name="C31" library="rcl" package="C0402" value="u1" x="18.5166" y="34.163" smashed="yes" rot="R165">
-<attribute name="NAME" x="21.970678125" y="33.972003125" size="0.762" layer="25" rot="R165"/>
+<attribute name="NAME" x="21.589678125" y="34.708603125" size="0.762" layer="25" rot="R180"/>
 <attribute name="VALUE" x="19.623009375" y="35.83873125" size="1.27" layer="27" rot="R165"/>
 </element>
 <element name="R11" library="resistor" package="R0402" value="10k%" x="16.9926" y="31.4198" smashed="yes" rot="R90">
 <attribute name="SPICEPREFIX" value="R" x="16.9926" y="31.4198" size="1.778" layer="27" rot="R90" display="off"/>
-<attribute name="NAME" x="17.9832" y="33.6042" size="0.762" layer="25" rot="R180"/>
+<attribute name="NAME" x="19.5326" y="32.893" size="0.762" layer="25" rot="R180"/>
 <attribute name="VALUE" x="19.0246" y="30.7848" size="1.27" layer="27" rot="R90"/>
 </element>
 <element name="R14" library="resistor" package="R0402" value="10k" x="14.3002" y="28.702" smashed="yes">
@@ -3288,7 +3288,7 @@ design rules under a new name.</description>
 </element>
 <element name="R12" library="resistor" package="R0402" value="10k" x="4.445" y="32.1056" smashed="yes" rot="R90">
 <attribute name="SPICEPREFIX" value="R" x="4.445" y="32.1056" size="1.778" layer="27" rot="R90" display="off"/>
-<attribute name="NAME" x="3.6576" y="31.5722" size="0.762" layer="25" rot="R90"/>
+<attribute name="NAME" x="3.6322" y="30.7086" size="0.762" layer="25" rot="R90"/>
 <attribute name="VALUE" x="6.477" y="31.4706" size="1.27" layer="27" rot="R90"/>
 </element>
 <element name="D6" library="adafruit" package="SOD-323F" value="" x="13.97" y="3.8354" smashed="yes" rot="R240">
@@ -3300,7 +3300,7 @@ design rules under a new name.</description>
 </element>
 <element name="TM1" library="testpad" package="B1,27" value="TPB1,27" x="12.7762" y="33.0708" smashed="yes">
 <attribute name="TP_SIGNAL_NAME" value="" x="12.1412" y="31.1658" size="1" layer="37"/>
-<attribute name="NAME" x="10.2362" y="34.5948" size="0.762" layer="25" ratio="10"/>
+<attribute name="NAME" x="11.684" y="33.7566" size="0.635" layer="25" ratio="10"/>
 <attribute name="VALUE" x="12.1412" y="32.3088" size="0.0254" layer="27"/>
 </element>
 <element name="TM2" library="testpad" package="B1,27" value="TPB1,27" x="3.175" y="33.4518" smashed="yes">
@@ -3311,7 +3311,9 @@ design rules under a new name.</description>
 <element name="U$1" library="lightmeter" package="SPU0410LR5H-QB" value="SPU0410LR5H-QBSPU0410LRSH-QB" x="18.542" y="4.2164" smashed="yes">
 <attribute name="NAME" x="15.113" y="6.1468" size="0.762" layer="25"/>
 </element>
-<element name="Q1" library="lightmeter" package="SOT-523-3-BTTM" value="PCHANNELMOSFETSOT-523-3-BTTM" x="19.685" y="13.4366" rot="R180"/>
+<element name="Q1" library="lightmeter" package="SOT-523-3-BTTM" value="PCHANNELMOSFETSOT-523-3-BTTM" x="19.685" y="13.4366" smashed="yes" rot="R180">
+<attribute name="NAME" x="18.7198" y="13.0556" size="0.762" layer="25" rot="R180"/>
+</element>
 <element name="D7" library="adafruit" package="SOD-323F" value="" x="15.7988" y="3.7084" smashed="yes" rot="R240">
 <attribute name="NAME" x="16.792421875" y="3.64884375" size="0.8128" layer="25" font="vector" rot="R240"/>
 <attribute name="VALUE" x="15.37655625" y="6.377053125" size="0.8128" layer="27" font="vector" rot="R240"/>
@@ -3322,13 +3324,13 @@ design rules under a new name.</description>
 <attribute name="VALUE" x="9.9568" y="30.0482" size="0.0254" layer="27"/>
 </element>
 <element name="IC$5" library="lightmeter" package="PNJ4K01F" value="PNJ4K01F" x="5.08" y="36.83" smashed="yes" rot="R90">
-<attribute name="NAME" x="3.5814" y="35.5854" size="0.762" layer="25" rot="R90"/>
+<attribute name="NAME" x="6.3246" y="39.3446" size="0.762" layer="25" rot="R180"/>
 </element>
 <element name="IC$7" library="lightmeter" package="PNJ4K01F" value="PNJ4K01F" x="7.62" y="36.83" smashed="yes" rot="R90">
 <attribute name="NAME" x="9.0678" y="39.2684" size="0.762" layer="25" rot="R180"/>
 </element>
 <element name="C26" library="rcl" package="C0402" value="u1" x="9.6012" y="35.6362" smashed="yes" rot="R270">
-<attribute name="NAME" x="10.3632" y="35.306" size="0.762" layer="25" rot="R270"/>
+<attribute name="NAME" x="10.287" y="36.0426" size="0.508" layer="25" rot="R270"/>
 <attribute name="VALUE" x="7.6962" y="36.2712" size="1.27" layer="27" rot="R270"/>
 </element>
 <element name="IC$8" library="lightmeter" package="PNJ4K01F" value="PNJ4K01F" x="16.51" y="36.83" smashed="yes" rot="R90">
@@ -3362,7 +3364,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="14.351" y="30.226" size="0.762" layer="25" rot="R180"/>
 </element>
 <element name="U$6" library="lightmeter" package="SOT-553-5" value="SN74LVC1G66" x="8.5598" y="32.512" smashed="yes">
-<attribute name="NAME" x="10.287" y="31.5722" size="0.762" layer="25" rot="R90"/>
+<attribute name="NAME" x="10.3124" y="31.8262" size="0.762" layer="25" rot="R90"/>
 </element>
 <element name="C19" library="lightmeter" package="GAP0603" value="1u" x="11.1252" y="28.4734" smashed="yes" rot="R180">
 <attribute name="NAME" x="12.3952" y="30.0228" size="0.762" layer="25" rot="R180"/>
@@ -3374,12 +3376,12 @@ design rules under a new name.</description>
 </element>
 <element name="R3" library="resistor" package="R0402" value="6k49" x="21.5392" y="8.0137" smashed="yes" rot="R180">
 <attribute name="SPICEPREFIX" value="R" x="21.5392" y="8.0137" size="1.778" layer="27" rot="R180" display="off"/>
-<attribute name="NAME" x="19.6215" y="9.6266" size="0.762" layer="25" rot="R270"/>
+<attribute name="NAME" x="19.6723" y="8.5344" size="0.635" layer="25" rot="R270"/>
 <attribute name="VALUE" x="22.1742" y="10.0457" size="1.27" layer="27" rot="R180"/>
 </element>
 <element name="R1" library="resistor" package="R0402" value="10k" x="25.7302" y="8.382" smashed="yes">
 <attribute name="SPICEPREFIX" value="R" x="25.7302" y="8.382" size="1.778" layer="27" display="off"/>
-<attribute name="NAME" x="22.733" y="7.8486" size="0.762" layer="25"/>
+<attribute name="NAME" x="26.6954" y="8.001" size="0.762" layer="25"/>
 <attribute name="VALUE" x="25.0952" y="6.35" size="1.27" layer="27"/>
 </element>
 <element name="R4" library="resistor" package="R0402" value="10k" x="22.5044" y="3.7084" smashed="yes" rot="R180">
@@ -3389,7 +3391,7 @@ design rules under a new name.</description>
 </element>
 <element name="R2" library="resistor" package="R0402" value="390k" x="22.2631" y="6.4516" smashed="yes" rot="R270">
 <attribute name="SPICEPREFIX" value="R" x="22.2631" y="6.4516" size="1.778" layer="27" rot="R270" display="off"/>
-<attribute name="NAME" x="22.9489" y="7.2898" size="0.508" layer="25" rot="R270"/>
+<attribute name="NAME" x="23.3045" y="8.7376" size="0.635" layer="25" rot="R240"/>
 <attribute name="VALUE" x="20.2311" y="7.0866" size="1.27" layer="27" rot="R270"/>
 </element>
 <element name="C1" library="rcl" package="C0402" value="51p" x="17.78" y="9.9314" smashed="yes">
@@ -3397,7 +3399,7 @@ design rules under a new name.</description>
 <attribute name="VALUE" x="17.145" y="8.0264" size="1.27" layer="27"/>
 </element>
 <element name="C5" library="rcl" package="C0402" value="4u7" x="22.9616" y="2.61111875" smashed="yes">
-<attribute name="NAME" x="19.2024" y="2.02691875" size="0.762" layer="25"/>
+<attribute name="NAME" x="24.0792" y="2.12851875" size="0.762" layer="25"/>
 <attribute name="VALUE" x="22.3266" y="0.70611875" size="1.27" layer="27"/>
 </element>
 <element name="U$2" library="lightmeter" package="SC-70-5" value="MAX4466EXK+T" x="24.8412" y="6.7564" smashed="yes">
@@ -3421,7 +3423,9 @@ design rules under a new name.</description>
 <attribute name="NAME" x="15.8496" y="26.8478" size="0.762" layer="25" rot="R180"/>
 <attribute name="VALUE" x="14.9352" y="29.464" size="1.27" layer="27" rot="R180"/>
 </element>
-<element name="Y1" library="lightmeter" package="CRYSTAL3.2X5MM" value="8MHz" x="18.3388" y="27.94"/>
+<element name="Y1" library="lightmeter" package="CRYSTAL3.2X5MM" value="8MHz" x="18.3388" y="27.94" smashed="yes">
+<attribute name="NAME" x="17.9832" y="29.9466" size="0.762" layer="25"/>
+</element>
 <element name="C13" library="rcl" package="C0402" value="27p" x="22.6314" y="26.3144" rot="R180"/>
 <element name="C9" library="lightmeter" package="GAP0402" value="27p" x="16.3068" y="25.146" rot="R90"/>
 </elements>
