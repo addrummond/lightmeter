@@ -91,7 +91,8 @@ def generic_urlopts(opts, searchopts):
     # ROHS compliant.
     urlopts.append(('filter[fields][specs.rohs_status.value][]', 'Compliant'))
     # Not at end of life.
-    urlopts.append(('filter[fields][specs.lifecycle_status.value][]', 'Active'))
+    # Appears to rule out lots of components.
+    # urlopts.append(('filter[fields][specs.lifecycle_status.value][]', 'Active'))
 
     return urlopts
 

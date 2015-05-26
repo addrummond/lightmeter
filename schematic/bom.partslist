@@ -2,13 +2,12 @@
 # Generic parts to be ordered from Mouser/Digikey.
 #
 5  R0402       10k
-2  R0402~0.05% 10k
+2  R0402~0.1%  10k
 1  C0402       10u
 1  R0603       130
 1  R0402       15k
 6  C0603       1u
 1  I0603       2u2
-2  C0603~1%    3300p
 1  C0402       3300p
 6  R0402       390k
 8  C0402       4u7
@@ -17,6 +16,9 @@
 8  R0402       0
 1  C0402       0u01
 10 C0402       0u1
+
+# High tolerance capacitors to be ordered from Mouser/Digikey
+2  $VJ0603A332FXJCW1BC      # 3300pF 1% tolerance 0603 capacitors
 
 #
 # Specific part numbers to be ordered from Mouser/Digikey.
