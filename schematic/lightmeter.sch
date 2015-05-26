@@ -9049,17 +9049,14 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <smd name="P$4" x="0.9779" y="-0.6604" dx="0.7112" dy="0.4064" layer="1"/>
 <text x="-2.54" y="1.27" size="1.27" layer="25">&gt;NAME</text>
 </package>
-<package name="MEMS2.5X2">
-<smd name="P$1" x="-0.8484" y="-0.623" dx="0.8968" dy="0.746" layer="1"/>
-<smd name="P$2" x="0.8484" y="-0.623" dx="0.8968" dy="0.746" layer="1"/>
-<smd name="P$3" x="0.8484" y="0.623" dx="0.8968" dy="0.746" layer="1"/>
-<smd name="P$4" x="-0.8484" y="0.623" dx="0.8968" dy="0.746" layer="1"/>
-<wire x1="-1.25" y1="1" x2="1.25" y2="1" width="0.127" layer="21"/>
-<wire x1="-1.25" y1="-1" x2="1.25" y2="-1" width="0.127" layer="21"/>
-<wire x1="-1.25" y1="1" x2="-1.25" y2="-1" width="0.127" layer="21"/>
-<wire x1="1.29" y1="1" x2="1.29" y2="-1" width="0.127" layer="21"/>
-<circle x="-1.27" y="-1.778" radius="0.254" width="0.127" layer="21"/>
-<text x="-2.54" y="1.27" size="1.27" layer="25">&gt;NAME</text>
+<package name="CRYSTAL3.2X5MM">
+<smd name="P$1" x="-1.85" y="0" dx="1.7" dy="2.4" layer="1"/>
+<smd name="P$2" x="1.85" y="0" dx="1.7" dy="2.4" layer="1"/>
+<wire x1="-2.5" y1="1.6" x2="2.5" y2="1.6" width="0.254" layer="21"/>
+<wire x1="-2.5" y1="-1.6" x2="2.5" y2="-1.6" width="0.254" layer="21"/>
+<wire x1="-2.5" y1="1.6" x2="-2.5" y2="-1.6" width="0.254" layer="21"/>
+<wire x1="2.5" y1="1.6" x2="2.5" y2="-1.6" width="0.254" layer="21"/>
+<text x="-2.54" y="2.54" size="1.27" layer="25">&gt;NAME</text>
 </package>
 </packages>
 <symbols>
@@ -9344,18 +9341,21 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <pin name="-VS" x="2.54" y="-5.08" visible="pin" length="short" direction="in" rot="R90"/>
 <pin name="+VS" x="2.54" y="5.08" visible="pin" length="short" direction="in" rot="R270"/>
 </symbol>
-<symbol name="SI501">
-<pin name="FS/OE" x="-15.24" y="2.54" visible="pin" length="middle"/>
-<pin name="GND" x="-15.24" y="-2.54" visible="pin" length="middle"/>
-<pin name="CLK" x="15.24" y="-2.54" visible="pin" length="middle" rot="R180"/>
-<pin name="VDD" x="15.24" y="2.54" visible="pin" length="middle" rot="R180"/>
-<wire x1="-10.16" y1="5.08" x2="10.16" y2="5.08" width="0.254" layer="94"/>
-<wire x1="10.16" y1="5.08" x2="10.16" y2="-5.08" width="0.254" layer="94"/>
-<wire x1="10.16" y1="-5.08" x2="-10.16" y2="-5.08" width="0.254" layer="94"/>
-<wire x1="-10.16" y1="-5.08" x2="-10.16" y2="5.08" width="0.254" layer="94"/>
-<text x="-2.54" y="0" size="1.778" layer="94">Si501</text>
-<text x="-10.16" y="7.62" size="1.778" layer="95">&gt;NAME</text>
-<text x="-10.16" y="-7.62" size="1.778" layer="96">&gt;VALUE</text>
+<symbol name="CRYSTAL">
+<wire x1="-0.381" y1="1.524" x2="-0.381" y2="-1.524" width="0.254" layer="94"/>
+<wire x1="-0.381" y1="-1.524" x2="0.381" y2="-1.524" width="0.254" layer="94"/>
+<wire x1="0.381" y1="-1.524" x2="0.381" y2="1.524" width="0.254" layer="94"/>
+<wire x1="0.381" y1="1.524" x2="-0.381" y2="1.524" width="0.254" layer="94"/>
+<wire x1="-1.016" y1="1.778" x2="-1.016" y2="0" width="0.254" layer="94"/>
+<wire x1="-1.016" y1="0" x2="-1.016" y2="-1.778" width="0.254" layer="94"/>
+<wire x1="1.016" y1="1.778" x2="1.016" y2="0" width="0.254" layer="94"/>
+<wire x1="1.016" y1="0" x2="1.016" y2="-1.778" width="0.254" layer="94"/>
+<wire x1="-2.54" y1="0" x2="-1.016" y2="0" width="0.254" layer="94"/>
+<wire x1="2.54" y1="0" x2="1.016" y2="0" width="0.254" layer="94"/>
+<text x="-2.54" y="2.54" size="1.27" layer="95">&gt;NAME</text>
+<pin name="1" x="-2.54" y="0" visible="off" length="point" direction="pas" swaplevel="1"/>
+<pin name="2" x="2.54" y="0" visible="off" length="point" direction="pas" swaplevel="1" rot="R180"/>
+<text x="-2.54" y="-3.302" size="1.27" layer="96">&gt;VALUE</text>
 </symbol>
 </symbols>
 <devicesets>
@@ -10278,17 +10278,15 @@ naming: grid - package width</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="SI501">
+<deviceset name="CRYSTAL">
 <gates>
-<gate name="G$1" symbol="SI501" x="0" y="0"/>
+<gate name="G$1" symbol="CRYSTAL" x="0" y="0"/>
 </gates>
 <devices>
-<device name="MEMS2.5X2" package="MEMS2.5X2">
+<device name="" package="CRYSTAL3.2X5MM">
 <connects>
-<connect gate="G$1" pin="CLK" pad="P$3"/>
-<connect gate="G$1" pin="FS/OE" pad="P$1"/>
-<connect gate="G$1" pin="GND" pad="P$2"/>
-<connect gate="G$1" pin="VDD" pad="P$4"/>
+<connect gate="G$1" pin="1" pad="P$1"/>
+<connect gate="G$1" pin="2" pad="P$2"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -11482,11 +11480,13 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="J2" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
 <part name="C13" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
 <part name="GND43" library="supply1" deviceset="GND" device=""/>
-<part name="Y1" library="lightmeter" deviceset="SI501" device="MEMS2.5X2" value="8MHz"/>
-<part name="GND45" library="supply1" deviceset="GND" device=""/>
-<part name="C30" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
-<part name="GND46" library="supply1" deviceset="GND" device=""/>
 <part name="R9" library="resistor" deviceset="R-EU_" device="R0402" value="390k"/>
+<part name="R19" library="resistor" deviceset="R-EU_" device="R0402" value="???"/>
+<part name="Y1" library="lightmeter" deviceset="CRYSTAL" device="" value="8MHz"/>
+<part name="C30" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
+<part name="C31" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
+<part name="GND45" library="supply1" deviceset="GND" device=""/>
+<part name="GND46" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -11643,11 +11643,13 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <instance part="J2" gate="G$1" x="137.16" y="93.98" rot="R90"/>
 <instance part="C13" gate="G$1" x="-99.06" y="5.08" rot="R180"/>
 <instance part="GND43" gate="1" x="-99.06" y="15.24" rot="R180"/>
-<instance part="Y1" gate="G$1" x="-137.16" y="20.32"/>
-<instance part="GND45" gate="1" x="-157.48" y="17.78" rot="R270"/>
-<instance part="C30" gate="G$1" x="-119.38" y="33.02"/>
-<instance part="GND46" gate="1" x="-119.38" y="40.64" rot="R180"/>
 <instance part="R9" gate="G$1" x="-109.22" y="-124.46"/>
+<instance part="R19" gate="G$1" x="-118.618" y="22.86"/>
+<instance part="Y1" gate="G$1" x="-129.54" y="33.02" rot="R90"/>
+<instance part="C30" gate="G$1" x="-139.7" y="40.64" rot="R90"/>
+<instance part="C31" gate="G$1" x="-139.7" y="22.86" rot="R90"/>
+<instance part="GND45" gate="1" x="-147.32" y="22.86" rot="R270"/>
+<instance part="GND46" gate="1" x="-147.32" y="40.64" rot="R270"/>
 </instances>
 <busses>
 </busses>
@@ -12024,14 +12026,14 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="-99.06" y1="10.16" x2="-99.06" y2="12.7" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="Y1" gate="G$1" pin="GND"/>
-<wire x1="-152.4" y1="17.78" x2="-154.94" y2="17.78" width="0.1524" layer="91"/>
+<pinref part="C31" gate="G$1" pin="1"/>
+<wire x1="-142.24" y1="22.86" x2="-144.78" y2="22.86" width="0.1524" layer="91"/>
 <pinref part="GND45" gate="1" pin="GND"/>
 </segment>
 <segment>
 <pinref part="C30" gate="G$1" pin="1"/>
+<wire x1="-142.24" y1="40.64" x2="-144.78" y2="40.64" width="0.1524" layer="91"/>
 <pinref part="GND46" gate="1" pin="GND"/>
-<wire x1="-119.38" y1="35.56" x2="-119.38" y2="38.1" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="VCC" class="0">
@@ -12150,15 +12152,6 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <pinref part="R15" gate="G$1" pin="2"/>
 <wire x1="-68.58" y1="-99.06" x2="-68.58" y2="-104.14" width="0.1524" layer="91"/>
 <label x="-68.58" y="-104.14" size="1.778" layer="95" rot="R270" xref="yes"/>
-</segment>
-<segment>
-<pinref part="Y1" gate="G$1" pin="VDD"/>
-<label x="-116.84" y="22.86" size="1.778" layer="95" xref="yes"/>
-<wire x1="-121.92" y1="22.86" x2="-119.38" y2="22.86" width="0.1524" layer="91"/>
-<wire x1="-119.38" y1="22.86" x2="-116.84" y2="22.86" width="0.1524" layer="91"/>
-<wire x1="-119.38" y1="22.86" x2="-119.38" y2="27.94" width="0.1524" layer="91"/>
-<junction x="-119.38" y="22.86"/>
-<pinref part="C30" gate="G$1" pin="2"/>
 </segment>
 </net>
 <net name="N$19" class="0">
@@ -12897,11 +12890,6 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="-30.48" y1="22.86" x2="-30.48" y2="25.4" width="0.1524" layer="91"/>
 <label x="-30.48" y="25.4" size="1.778" layer="95" rot="R90" xref="yes"/>
 </segment>
-<segment>
-<pinref part="Y1" gate="G$1" pin="FS/OE"/>
-<wire x1="-152.4" y1="22.86" x2="-154.94" y2="22.86" width="0.1524" layer="91"/>
-<label x="-154.94" y="22.86" size="1.778" layer="95" rot="R90" xref="yes"/>
-</segment>
 </net>
 <net name="ACCELINT2" class="0">
 <segment>
@@ -12989,23 +12977,49 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <junction x="137.16" y="83.82"/>
 </segment>
 </net>
-<net name="STMEXTCLK" class="0">
+<net name="N$8" class="0">
+<segment>
+<pinref part="R16" gate="G$1" pin="2"/>
+<pinref part="R9" gate="G$1" pin="1"/>
+<wire x1="-119.38" y1="-124.46" x2="-114.3" y2="-124.46" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="OSC_IN" class="0">
 <segment>
 <pinref part="IC$4" gate="G$1" pin="PF0/OSC_IN"/>
 <wire x1="-66.04" y1="2.54" x2="-68.58" y2="2.54" width="0.1524" layer="91"/>
 <label x="-68.58" y="2.54" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<pinref part="Y1" gate="G$1" pin="CLK"/>
-<wire x1="-121.92" y1="17.78" x2="-116.84" y2="17.78" width="0.1524" layer="91"/>
-<label x="-116.84" y="17.78" size="1.778" layer="95" rot="R270" xref="yes"/>
+<pinref part="Y1" gate="G$1" pin="2"/>
+<wire x1="-129.54" y1="35.56" x2="-129.54" y2="40.64" width="0.1524" layer="91"/>
+<wire x1="-129.54" y1="40.64" x2="-104.14" y2="40.64" width="0.1524" layer="91"/>
+<label x="-104.14" y="40.64" size="1.778" layer="95" xref="yes"/>
+<pinref part="C30" gate="G$1" pin="2"/>
+<wire x1="-134.62" y1="40.64" x2="-129.54" y2="40.64" width="0.1524" layer="91"/>
+<junction x="-129.54" y="40.64"/>
 </segment>
 </net>
-<net name="N$8" class="0">
+<net name="OSC_OUT" class="0">
 <segment>
-<pinref part="R16" gate="G$1" pin="2"/>
-<pinref part="R9" gate="G$1" pin="1"/>
-<wire x1="-119.38" y1="-124.46" x2="-114.3" y2="-124.46" width="0.1524" layer="91"/>
+<pinref part="IC$4" gate="G$1" pin="PF1/OSC_OUT"/>
+<wire x1="-66.04" y1="-2.54" x2="-68.58" y2="-2.54" width="0.1524" layer="91"/>
+<label x="-68.58" y="-2.54" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<label x="-104.14" y="22.86" size="1.778" layer="95" xref="yes"/>
+<pinref part="R19" gate="G$1" pin="2"/>
+<wire x1="-113.538" y1="22.86" x2="-104.14" y2="22.86" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$9" class="0">
+<segment>
+<wire x1="-124.46" y1="22.86" x2="-129.54" y2="22.86" width="0.1524" layer="91"/>
+<pinref part="Y1" gate="G$1" pin="1"/>
+<wire x1="-129.54" y1="22.86" x2="-129.54" y2="30.48" width="0.1524" layer="91"/>
+<pinref part="C31" gate="G$1" pin="2"/>
+<wire x1="-134.62" y1="22.86" x2="-129.54" y2="22.86" width="0.1524" layer="91"/>
+<junction x="-129.54" y="22.86"/>
 </segment>
 </net>
 </nets>
