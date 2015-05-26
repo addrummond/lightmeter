@@ -1304,14 +1304,14 @@ for trimmer refence see : &lt;u&gt;www.electrospec-inc.com/cross_references/trim
 <circle x="0" y="0" radius="4.3875" width="0.381" layer="52"/>
 </package>
 <package name="78171-0002">
-<smd name="P$1" x="-0.6" y="2.54" dx="0.6" dy="2.882" layer="1" cream="no"/>
-<smd name="P$2" x="0.6" y="2.54" dx="0.6" dy="2.882" layer="1"/>
-<smd name="P$300" x="-3.02" y="-1.8875" dx="2.732" dy="0.8" layer="1"/>
-<smd name="P$400" x="3.02" y="-1.8875" dx="2.732" dy="0.8" layer="1"/>
-<wire x1="-3.175" y1="-3.175" x2="-3.175" y2="3.175" width="0.127" layer="21"/>
-<wire x1="-3.175" y1="3.175" x2="3.175" y2="3.175" width="0.127" layer="21"/>
-<wire x1="3.175" y1="3.175" x2="3.175" y2="-3.175" width="0.127" layer="21"/>
-<wire x1="3.175" y1="-3.175" x2="-3.175" y2="-3.175" width="0.127" layer="21"/>
+<smd name="P$1" x="-0.6" y="2.54" dx="0.6" dy="1.397" layer="1" cream="no"/>
+<smd name="P$2" x="0.6" y="2.54" dx="0.6" dy="1.397" layer="1"/>
+<smd name="P$300" x="-1.75" y="-1.8875" dx="1.397" dy="0.8" layer="1"/>
+<smd name="P$400" x="1.75" y="-1.8875" dx="1.397" dy="0.8" layer="1"/>
+<wire x1="-1.4" y1="-2.25" x2="-1.4" y2="2.25" width="0.254" layer="21"/>
+<wire x1="-1.4" y1="2.25" x2="1.4" y2="2.25" width="0.254" layer="21"/>
+<wire x1="1.4" y1="2.25" x2="1.4" y2="-2.25" width="0.254" layer="21"/>
+<wire x1="1.4" y1="-2.25" x2="-1.4" y2="-2.25" width="0.254" layer="21"/>
 </package>
 <package name="WQFN10">
 <smd name="P$9" x="0" y="0.9144" dx="0.1778" dy="0.80518125" layer="1"/>

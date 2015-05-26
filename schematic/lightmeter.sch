@@ -9000,16 +9000,6 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <circle x="-0.5588" y="1.0922" radius="0.0762" width="0.127" layer="21"/>
 <text x="-2.54" y="1.27" size="1.27" layer="25">&gt;NAME</text>
 </package>
-<package name="78171-0002">
-<smd name="P$1" x="-0.6" y="2.54" dx="0.6" dy="2.882" layer="1" cream="no"/>
-<smd name="P$2" x="0.6" y="2.54" dx="0.6" dy="2.882" layer="1"/>
-<smd name="P$300" x="-3.02" y="-1.8875" dx="2.732" dy="0.8" layer="1"/>
-<smd name="P$400" x="3.02" y="-1.8875" dx="2.732" dy="0.8" layer="1"/>
-<wire x1="-3.175" y1="-3.175" x2="-3.175" y2="3.175" width="0.127" layer="21"/>
-<wire x1="-3.175" y1="3.175" x2="3.175" y2="3.175" width="0.127" layer="21"/>
-<wire x1="3.175" y1="3.175" x2="3.175" y2="-3.175" width="0.127" layer="21"/>
-<wire x1="3.175" y1="-3.175" x2="-3.175" y2="-3.175" width="0.127" layer="21"/>
-</package>
 <package name="SOT-553-5">
 <smd name="P$1" x="-0.675" y="0.5" dx="0.45" dy="0.2794" layer="1"/>
 <smd name="P$2" x="-0.675" y="0" dx="0.45" dy="0.2794" layer="1"/>
@@ -9057,6 +9047,16 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <wire x1="-2.5" y1="1.6" x2="-2.5" y2="-1.6" width="0.254" layer="21"/>
 <wire x1="2.5" y1="1.6" x2="2.5" y2="-1.6" width="0.254" layer="21"/>
 <text x="-2.54" y="2.54" size="1.27" layer="25">&gt;NAME</text>
+</package>
+<package name="78171-0002">
+<smd name="P$1" x="-0.6" y="2.54" dx="0.6" dy="1.397" layer="1" cream="no"/>
+<smd name="P$2" x="0.6" y="2.54" dx="0.6" dy="1.397" layer="1"/>
+<smd name="P$300" x="-1.75" y="-1.8875" dx="1.397" dy="0.8" layer="1"/>
+<smd name="P$400" x="1.75" y="-1.8875" dx="1.397" dy="0.8" layer="1"/>
+<wire x1="-1.4" y1="-2.25" x2="-1.4" y2="2.25" width="0.254" layer="21"/>
+<wire x1="-1.4" y1="2.25" x2="1.4" y2="2.25" width="0.254" layer="21"/>
+<wire x1="1.4" y1="2.25" x2="1.4" y2="-2.25" width="0.254" layer="21"/>
+<wire x1="1.4" y1="-2.25" x2="-1.4" y2="-2.25" width="0.254" layer="21"/>
 </package>
 </packages>
 <symbols>
