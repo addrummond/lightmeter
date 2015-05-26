@@ -16,9 +16,13 @@
 8  R0402       0
 1  C0402       0u01
 10 C0402       0u1
+1  R0402~1%    750
 
+#
 # High tolerance capacitors to be ordered from Mouser/Digikey
-2  $VJ0603A332FXJCW1BC      # 3300pF 1% tolerance 0603 capacitors
+#
+2  $VJ0603A332FXJCW1BC      # 3300pF 1% tolerance 0603 capacitors (for integrator)
+2  $GRM1555C1H270FA01D      # 27pF 1% tolerance capacitors (for oscillator)
 
 #
 # Specific part numbers to be ordered from Mouser/Digikey.
@@ -40,6 +44,9 @@
 4  $BAT54WS-E3-18           # Diodes for pushbuttons
 2  ${BAT 63-02V H6327}      # Low forward voltage diodes for power mux
 1  $ESD9B3.3ST5G            # Protection diode
+1  $7A-8.000MAAE-T          # 8MHz crystal
+1  $78171-0002              # Battery connector board header.
+1  $78172-0002              # Battery connector.
 
 #
 # Parts to be ordered elsewhere.
