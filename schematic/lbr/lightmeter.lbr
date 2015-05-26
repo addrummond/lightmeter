@@ -1391,11 +1391,11 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <smd name="P$6" x="0.695959375" y="-0.199390625" dx="0.1778" dy="0.815340625" layer="1" rot="R90"/>
 <smd name="P$2" x="-0.695959375" y="-0.199390625" dx="0.1778" dy="0.815340625" layer="1" rot="R90"/>
 <smd name="P$1" x="-0.746759375" y="0.199390625" dx="0.1778" dy="0.916940625" layer="1" rot="R90"/>
-<wire x1="-0.7" y1="0.9" x2="0.7" y2="0.9" width="0.0762" layer="21"/>
-<wire x1="-0.7" y1="-0.9" x2="0.7" y2="-0.9" width="0.0762" layer="21"/>
-<wire x1="-0.7" y1="0.9" x2="-0.7" y2="-0.9" width="0.0762" layer="21"/>
-<wire x1="0.7" y1="0.9" x2="0.7" y2="-0.9" width="0.0762" layer="21"/>
-<circle x="-0.635" y="0.635" radius="0.0508" width="0.127" layer="21"/>
+<wire x1="-0.7" y1="0.9" x2="0.7" y2="0.9" width="0.254" layer="21"/>
+<wire x1="-0.7" y1="-0.9" x2="0.7" y2="-0.9" width="0.254" layer="21"/>
+<wire x1="-0.7" y1="0.9" x2="-0.7" y2="-0.9" width="0.254" layer="21"/>
+<wire x1="0.7" y1="0.9" x2="0.7" y2="-0.9" width="0.254" layer="21"/>
+<circle x="-1.016" y="0.635" radius="0.1016" width="0.127" layer="21"/>
 </package>
 <package name="SOD323">
 <description>&lt;b&gt;Small Outline Diode&lt;/b&gt;</description>
