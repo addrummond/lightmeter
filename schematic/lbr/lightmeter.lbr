@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
+<grid distance="0.05" unitdist="inch" unit="inch" style="lines" multiple="1" display="yes" altdistance="0.025" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="yes"/>
@@ -2740,6 +2740,10 @@ diameter 7.62 mm, horizontal, grid 12.7 mm</description>
 <text x="-1.3208" y="0.5842" size="0.762" layer="26">&gt;NAME</text>
 <wire x1="1.016" y1="-0.4826" x2="1.016" y2="0.4826" width="0.127" layer="22"/>
 </package>
+<package name="SMALLROUNDWIREHOLE">
+<pad name="P$1" x="0" y="0" drill="0.75" diameter="1.125"/>
+<text x="-2.54" y="1.27" size="1.27" layer="25">&gt;NAME</text>
+</package>
 </packages>
 <symbols>
 <symbol name="74HC164">
@@ -3551,6 +3555,10 @@ diameter 7.62 mm, horizontal, grid 12.7 mm</description>
 <pin name="1" x="-2.54" y="0" visible="off" length="point" direction="pas" swaplevel="1"/>
 <pin name="2" x="2.54" y="0" visible="off" length="point" direction="pas" swaplevel="1" rot="R180"/>
 <text x="-2.54" y="-3.302" size="1.27" layer="96">&gt;VALUE</text>
+</symbol>
+<symbol name="WIREATTACHMENT">
+<wire x1="-5.08" y1="0" x2="5.08" y2="0" width="0.254" layer="94"/>
+<pin name="P$1" x="7.62" y="0" visible="pin" length="middle" rot="R180"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -5388,6 +5396,21 @@ naming: grid - package width</description>
 <connects>
 <connect gate="G$1" pin="1" pad="1"/>
 <connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="WIREATTACHMENT">
+<gates>
+<gate name="G$1" symbol="WIREATTACHMENT" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="SMALLROUNDWIREHOLE">
+<connects>
+<connect gate="G$1" pin="P$1" pad="P$1"/>
 </connects>
 <technologies>
 <technology name=""/>
