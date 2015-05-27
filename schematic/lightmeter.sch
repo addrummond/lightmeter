@@ -11533,7 +11533,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <text x="177.8" y="-101.6" size="1.778" layer="91">REFL,NOND</text>
 <text x="177.8" y="-127" size="1.778" layer="91">REFL,ND</text>
 <text x="101.6" y="38.1" size="1.778" layer="91">5V breakdown</text>
-<text x="109.22" y="124.46" size="1.778" layer="91">Microphone preamp</text>
+<text x="105.156" y="124.46" size="1.778" layer="91">Microphone and preamp</text>
 </plain>
 <instances>
 <instance part="IC$3" gate="G$1" x="228.6" y="17.78"/>
