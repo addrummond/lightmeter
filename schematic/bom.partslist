@@ -27,26 +27,26 @@
 #
 # Specific part numbers to be ordered from Mouser/Digikey.
 #
-1  $MMA8653FCR1             # Accelerometer
-1  $NLAS5223BMNR2G          # Dual SPDT analogue switch
-1  $P13165-1                # Piezo bender
-1  $LM3671MF-2.8/NOPB       # 2.8V buck regulator
-1  $LP5907MFX-3.3/NOPB      # 3.3V LDO regulator
-1  $47491-0001              # Midmount USB connector
-1  $MAX4466EXK+T            # Mic preamp op amp
-1  $MCP73831T-3ACI/OT       # LIPO battery charger IC
-1  $DMG1013T-7              # P-channel MOSFET for SCRPWR
-2  $SN74LVC1G66DRLR         # SPST analogue switch
-1  $SPU0410LR5H-QB          # Microphone
-1  $STM32F030K6T6           # uc
-3  ${PTS540 JM035 SMTR LFS} # Pushbuttons
-4  $PNJ4K01F                # Light sensors
-4  $BAT54WS-E3-18           # Diodes for pushbuttons
-2  ${BAT 63-02V H6327}      # Low forward voltage diodes for power mux
-1  $ESD9B3.3ST5G            # Protection diode
-1  $7A-8.000MAAE-T          # 8MHz crystal
-1  $78171-0002              # Battery connector board header.
-1  $78172-0002              # Battery connector.
+1  $MMA8653FCR1             # Accelerometer                                 http://www2.mouser.com/ProductDetail/Freescale-Semiconductor/MMA8653FCR1/?qs=%2fha2pyFaduhgHMtClyI%2fW4qNUqEUKPs7ydp90IGoyPMPIABYp64Fqw%3d%3d
+1  $NLAS5223BMNR2G          # Dual SPDT analogue switch                     http://www2.mouser.com/ProductDetail/ON-Semiconductor/NLAS5223BMNR2G/?qs=%2fha2pyFaduj5KXfVaFbsSqETtxvti8Ot4Ot9LAkMydCtyFXXu%2f4AvQ%3d%3d
+1  $P13165-1                # Piezo bender                                  http://www2.mouser.com/ProductDetail/DB-Unlimited/P13165-1/?qs=sGAEpiMZZMvxTCYhU%252bW9mXjY60jM%2flOSfuD9xrvhdaM%3d
+1  $LM3671MF-2.8/NOPB       # 2.8V buck regulator                           http://www2.mouser.com/ProductDetail/Texas-Instruments/LM3671MF-28-NOPB/?qs=sGAEpiMZZMtitjHzVIkrqaeIqJaO9bXJT%2f46WShkcrQ%3d
+1  $LP5907MFX-3.3/NOPB      # 3.3V LDO regulator                            http://www2.mouser.com/ProductDetail/Texas-Instruments/LP5907MFX-33-NOPB/?qs=%2fha2pyFaduh2Ph%2frSDS5WOkv6S6E%2fOKKyECTt0nlT46IWoCFItD0LFz%2fERmCSvsE
+1  $47491-0001              # Midmount USB connector                        http://www2.mouser.com/ProductDetail/Molex/47491-0001/?qs=%2fha2pyFadujzs%2fkc0f%2fEefbNlYhnHrR1tZMOZGo1i%2fQ%3d
+1  $MAX4466EXK+T            # Mic preamp op amp                             http://www2.mouser.com/ProductDetail/Maxim-Integrated/MAX4466EXK+T/?qs=sGAEpiMZZMv9yaQC4TiGCeSjdmYBFiXjFdkzW1NXCo4%3d
+1  $MCP73831T-3ACI/OT       # LIPO battery charger IC                       http://www2.mouser.com/ProductDetail/Microchip/MCP73831T-3ACI-OT/?qs=%2fha2pyFaduiClKNaCa00By0eRnd1Zt0hUYkmBmUJ0xEdVZJDx%2fmS7g%3d%3d
+1  $DMG1013T-7              # P-channel MOSFET for SCRPWR                   http://www2.mouser.com/ProductDetail/Diodes-Incorporated/DMG1013T-7/?qs=%2fha2pyFaduiS2Q1vGDX3gHRMAFPmP%252b1PMtjGPA4WtRr8gEtAPVkLtQ%3d%3d
+2  $SN74LVC1G66DRLR         # SPST analogue switch                          http://www2.mouser.com/ProductDetail/Texas-Instruments/SN74LVC1G66DRLR/?qs=%2fha2pyFaduhBQxXURUOFp70xRLAt%252bjUe9cNb2BxFvGDSoUzHebzR2Q%3d%3d
+1  $SPU0410LR5H-QB          # Microphone                                    http://www2.mouser.com/ProductDetail/Knowles/SPU0410LR5H-QB/?qs=%2fha2pyFadujsOyq9m86PskfJJTo%2f6w8gLVlLZDQM1tgnAEafFx2amg%3d%3d
+1  $STM32F030K6T6           # uc                                            http://www2.mouser.com/ProductDetail/STMicroelectronics/STM32F030K6T6/?qs=%2fha2pyFadujR%2fWSfahMbfqNxy8AOR702lobnZPPAgDjioxyhIVrlUw%3d%3d
+3  ${PTS540 JM035 SMTR LFS} # Pushbuttons                                   http://www2.mouser.com/ProductDetail/CK-Components/PTS540-JM035-SMTR-LFS/?qs=sGAEpiMZZMsgNhPy3wz0s0%2f8S9pyhweGEgSOBwJOlaQ%3d
+4  $PNJ4K01F                # Light sensors                                 http://www2.mouser.com/ProductDetail/Panasonic/PNJ4K01F/?qs=bEWkMhb0NhNUUA6y9BF4fQ%3D%3D
+4  $BAT54WS-E3-18           # Diodes for pushbuttons                        http://www2.mouser.com/ProductDetail/Vishay-Semiconductors/BAT54WS-E3-18/?qs=sGAEpiMZZMtQ8nqTKtFS%2fD7QH7JJs%2flZ9YSVt88cA%2fQ%3d
+2  ${BAT 63-02V H6327}      # Low forward voltage diodes for power mux      http://www2.mouser.com/ProductDetail/Infineon/BAT-63-02V-H6327/?qs=%2fha2pyFaduhgr270Vp5VM0c3UQ4regg5ICQx0xIXESFepy2kRCOvMQ%3d%3d
+1  $ESD9B3.3ST5G            # Protection diode                              http://www2.mouser.com/ProductDetail/ON-Semiconductor/ESD9B33ST5G/?qs=sGAEpiMZZMsV8lMX1HNLj6UoLCX5vlRw
+1  $7A-8.000MAAE-T          # 8MHz crystal                                  http://www2.mouser.com/ProductDetail/TXC-Corporation/7A-8000MAAE-T/?qs=2ISWkumneuG8ToeCJKRyAw%3D%3D
+1  $78171-0002              # Battery connector board header.               http://www2.mouser.com/ProductDetail/Molex/78171-0002/?qs=%2fha2pyFadujDYgbimE1tA0G9UYfEnSYVpQUcBkiYDylNxrKBFTTj5A%3d%3d
+1  $78172-0002              # Battery connector.                            http://www2.mouser.com/ProductDetail/Molex/78172-0002/?qs=%2fha2pyFadugB4HhgcxVWckhSeIb2pYHTri64FjDYM3IhGiznbRRWpA%3d%3d
 
 #
 # Parts to be ordered elsewhere.
