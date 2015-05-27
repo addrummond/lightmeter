@@ -9059,8 +9059,8 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <text x="-1.3208" y="0.5842" size="0.762" layer="26">&gt;NAME</text>
 <wire x1="1.016" y1="-0.4826" x2="1.016" y2="0.4826" width="0.127" layer="22"/>
 </package>
-<package name="SMALLROUNDWIREHOLE">
-<pad name="P$1" x="0" y="0" drill="0.75" diameter="1.125"/>
+<package name="SMALLSQUAREWIREHOLE">
+<pad name="P$1" x="0" y="0" drill="0.75" diameter="1.125" shape="square"/>
 <text x="-2.54" y="1.27" size="1.27" layer="25">&gt;NAME</text>
 </package>
 </packages>
@@ -10314,7 +10314,7 @@ naming: grid - package width</description>
 <gate name="G$1" symbol="WIREATTACHMENT" x="0" y="0"/>
 </gates>
 <devices>
-<device name="" package="SMALLROUNDWIREHOLE">
+<device name="" package="SMALLSQUAREWIREHOLE">
 <connects>
 <connect gate="G$1" pin="P$1" pad="P$1"/>
 </connects>
