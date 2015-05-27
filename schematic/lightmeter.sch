@@ -12443,9 +12443,9 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <label x="2.54" y="7.62" size="1.778" layer="95" xref="yes"/>
 </segment>
 <segment>
-<wire x1="-83.82" y1="63.5" x2="-124.46" y2="63.5" width="0.1524" layer="91"/>
+<wire x1="-83.82" y1="63.5" x2="-129.54" y2="63.5" width="0.1524" layer="91"/>
 <pinref part="U1" gate="G$1" pin="D+"/>
-<label x="-124.46" y="63.5" size="1.778" layer="95" rot="R180" xref="yes"/>
+<label x="-129.54" y="63.5" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="I2CSDA" class="0">
