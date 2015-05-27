@@ -11493,7 +11493,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="GND2" library="supply1" deviceset="GND" device=""/>
 <part name="GND44" library="supply1" deviceset="GND" device=""/>
 <part name="C19" library="lightmeter" deviceset="C" device="" value="1u"/>
-<part name="C2" library="rcl" deviceset="C-EU" device="C0402" value="3300p"/>
+<part name="C2" library="rcl" deviceset="C-EU" device="C0603" value="3300p"/>
 <part name="R3" library="resistor" deviceset="R-EU_" device="R0402" value="6k49"/>
 <part name="GND42" library="supply1" deviceset="GND" device=""/>
 <part name="R1" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>

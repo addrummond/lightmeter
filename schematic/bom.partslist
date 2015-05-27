@@ -8,7 +8,6 @@
 1  R0402       15k
 6  C0603       1u
 1  I0603       2u2
-1  C0402       3300p
 5  R0402       390k
 8  C0402       4u7
 1  C0402       51p
@@ -21,7 +20,7 @@
 #
 # High tolerance capacitors to be ordered from Mouser/Digikey
 #
-2  $VJ0603A332FXJCW1BC      # 3300pF 1% tolerance 0603 capacitors (for integrator)
+3  $VJ0603A332FXJCW1BC      # 3300pF 1% tolerance 0603 capacitors (for integrator and mic preamp)
 2  $GRM1555C1H270FA01D      # 27pF 1% tolerance capacitors (for oscillator)
 
 #
