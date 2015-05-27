@@ -11532,7 +11532,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <text x="177.8" y="-76.2" size="1.778" layer="91">INC,ND</text>
 <text x="177.8" y="-101.6" size="1.778" layer="91">REFL,NOND</text>
 <text x="177.8" y="-127" size="1.778" layer="91">REFL,ND</text>
-<text x="101.6" y="38.1" size="1.778" layer="91">5V breakdown</text>
+<text x="106.68" y="33.02" size="1.778" layer="91">5V breakdown</text>
 <text x="105.156" y="124.46" size="1.778" layer="91">Microphone and preamp</text>
 </plain>
 <instances>
@@ -11603,11 +11603,11 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <instance part="R17" gate="G$1" x="-91.44" y="-124.46"/>
 <instance part="GND7" gate="1" x="-81.788" y="-124.46" rot="R90"/>
 <instance part="P+4" gate="VCC" x="-124.46" y="-124.46" rot="R90"/>
-<instance part="GND32" gate="1" x="96.52" y="20.32"/>
+<instance part="GND32" gate="1" x="101.6" y="15.24"/>
 <instance part="GND18" gate="1" x="147.32" y="-86.36" rot="R270"/>
 <instance part="GND19" gate="1" x="147.32" y="-111.76" rot="R270"/>
 <instance part="GND20" gate="1" x="139.7" y="-137.16" rot="R270"/>
-<instance part="R8" gate="G$1" x="106.68" y="45.72" rot="R180"/>
+<instance part="R8" gate="G$1" x="111.76" y="40.64" rot="R180"/>
 <instance part="S$3" gate="G$1" x="-24.638" y="-97.282" rot="R270"/>
 <instance part="S$1" gate="G$1" x="-6.858" y="-95.504" rot="R270"/>
 <instance part="S$2" gate="G$1" x="8.382" y="-95.504" rot="R270"/>
@@ -11627,7 +11627,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <instance part="R14" gate="G$1" x="55.88" y="-30.48" rot="R180"/>
 <instance part="R12" gate="G$1" x="106.68" y="-7.62" rot="R90"/>
 <instance part="D6" gate="G$1" x="-15.24" y="-86.36"/>
-<instance part="D1" gate="G$1" x="96.52" y="38.1" rot="R90"/>
+<instance part="D1" gate="G$1" x="101.6" y="33.02" rot="R90"/>
 <instance part="TM1" gate="G$1" x="93.98" y="0" rot="R90"/>
 <instance part="TM2" gate="G$1" x="129.54" y="0" rot="R90"/>
 <instance part="U$1" gate="G$1" x="93.98" y="104.14"/>
@@ -11673,8 +11673,8 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <instance part="GND46" gate="1" x="-147.32" y="40.64" rot="R270"/>
 <instance part="C9" gate="G$1" x="-139.7" y="40.64" rot="R90"/>
 <instance part="R16" gate="G$1" x="-111.76" y="-124.46"/>
-<instance part="ZP" gate="G$1" x="103.632" y="64.262"/>
-<instance part="ZN" gate="G$1" x="103.632" y="54.102"/>
+<instance part="ZP" gate="G$1" x="108.712" y="59.182"/>
+<instance part="ZN" gate="G$1" x="108.712" y="49.022"/>
 </instances>
 <busses>
 </busses>
@@ -11938,7 +11938,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <segment>
 <pinref part="GND32" gate="1" pin="GND"/>
 <pinref part="D1" gate="G$1" pin="A"/>
-<wire x1="96.52" y1="22.86" x2="96.52" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="101.6" y1="17.78" x2="101.6" y2="30.48" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="U$1" gate="G$1" pin="GND1"/>
@@ -12497,13 +12497,13 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <net name="PIEZONEG" class="0">
 <segment>
 <pinref part="R8" gate="G$1" pin="2"/>
-<wire x1="88.9" y1="53.594" x2="88.9" y2="45.72" width="0.1524" layer="91"/>
+<wire x1="93.98" y1="48.514" x2="93.98" y2="40.64" width="0.1524" layer="91"/>
 <pinref part="D1" gate="G$1" pin="C"/>
-<wire x1="101.6" y1="45.72" x2="96.52" y2="45.72" width="0.1524" layer="91"/>
-<wire x1="96.52" y1="45.72" x2="88.9" y2="45.72" width="0.1524" layer="91"/>
-<wire x1="96.52" y1="40.64" x2="96.52" y2="45.72" width="0.1524" layer="91"/>
-<junction x="96.52" y="45.72"/>
-<label x="88.9" y="53.34" size="1.778" layer="95" rot="R180" xref="yes"/>
+<wire x1="106.68" y1="40.64" x2="101.6" y2="40.64" width="0.1524" layer="91"/>
+<wire x1="101.6" y1="40.64" x2="93.98" y2="40.64" width="0.1524" layer="91"/>
+<wire x1="101.6" y1="35.56" x2="101.6" y2="40.64" width="0.1524" layer="91"/>
+<junction x="101.6" y="40.64"/>
+<label x="93.98" y="48.26" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
 <pinref part="IC$4" gate="G$1" pin="PA10"/>
@@ -12516,8 +12516,8 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <label x="-30.48" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 <segment>
-<wire x1="111.252" y1="54.102" x2="121.412" y2="54.102" width="0.1524" layer="91"/>
-<label x="121.412" y="54.102" size="1.778" layer="95" xref="yes"/>
+<wire x1="116.332" y1="49.022" x2="126.492" y2="49.022" width="0.1524" layer="91"/>
+<label x="126.492" y="49.022" size="1.778" layer="95" xref="yes"/>
 <pinref part="ZN" gate="G$1" pin="P$1"/>
 </segment>
 </net>
@@ -12777,9 +12777,9 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 </net>
 <net name="PIEZOPOS" class="0">
 <segment>
-<label x="116.84" y="45.72" size="1.778" layer="95" xref="yes"/>
+<label x="121.92" y="40.64" size="1.778" layer="95" xref="yes"/>
 <pinref part="R8" gate="G$1" pin="1"/>
-<wire x1="111.76" y1="45.72" x2="116.84" y2="45.72" width="0.1524" layer="91"/>
+<wire x1="116.84" y1="40.64" x2="121.92" y2="40.64" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="IC$4" gate="G$1" pin="PA11"/>
@@ -12792,8 +12792,8 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <label x="-35.56" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 <segment>
-<wire x1="111.252" y1="64.262" x2="121.412" y2="64.262" width="0.1524" layer="91"/>
-<label x="121.412" y="64.262" size="1.778" layer="95" xref="yes"/>
+<wire x1="116.332" y1="59.182" x2="126.492" y2="59.182" width="0.1524" layer="91"/>
+<label x="126.492" y="59.182" size="1.778" layer="95" xref="yes"/>
 <pinref part="ZP" gate="G$1" pin="P$1"/>
 </segment>
 </net>
