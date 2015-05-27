@@ -9049,14 +9049,14 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <text x="-2.54" y="2.54" size="1.27" layer="25">&gt;NAME</text>
 </package>
 <package name="78171-0002">
-<smd name="P$1" x="-0.6" y="2.54" dx="0.6" dy="1.397" layer="1" cream="no"/>
-<smd name="P$2" x="0.6" y="2.54" dx="0.6" dy="1.397" layer="1"/>
-<smd name="P$300" x="-1.75" y="-1.8875" dx="1.397" dy="0.8" layer="1"/>
-<smd name="P$400" x="1.75" y="-1.8875" dx="1.397" dy="0.8" layer="1"/>
-<wire x1="-1.4" y1="-2.25" x2="-1.4" y2="2.25" width="0.254" layer="21"/>
-<wire x1="-1.4" y1="2.25" x2="1.4" y2="2.25" width="0.254" layer="21"/>
-<wire x1="1.4" y1="2.25" x2="1.4" y2="-2.25" width="0.254" layer="21"/>
-<wire x1="1.4" y1="-2.25" x2="-1.4" y2="-2.25" width="0.254" layer="21"/>
+<smd name="P$1" x="-0.6" y="1.61" dx="0.6" dy="2.54" layer="1" cream="no"/>
+<smd name="P$2" x="0.6" y="1.61" dx="0.6" dy="2.54" layer="1"/>
+<smd name="P$300" x="-1.75" y="-1.8875" dx="1.905" dy="0.8" layer="1"/>
+<smd name="P$400" x="1.75" y="-1.8875" dx="1.905" dy="0.8" layer="1"/>
+<wire x1="-2.1" y1="-2.25" x2="-2.1" y2="2.25" width="0.254" layer="21"/>
+<wire x1="-2.1" y1="2.25" x2="2.1" y2="2.25" width="0.254" layer="21"/>
+<wire x1="2.1" y1="2.25" x2="2.1" y2="-2.25" width="0.254" layer="21"/>
+<wire x1="2.1" y1="-2.25" x2="-2.1" y2="-2.25" width="0.254" layer="21"/>
 </package>
 </packages>
 <symbols>
