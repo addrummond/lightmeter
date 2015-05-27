@@ -9426,6 +9426,18 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <pin name="2" x="2.54" y="0" visible="off" length="point" direction="pas" swaplevel="1" rot="R180"/>
 <text x="-2.54" y="-3.302" size="1.27" layer="96">&gt;VALUE</text>
 </symbol>
+<symbol name="RESISTOR">
+<wire x1="-2.54" y1="-0.889" x2="2.54" y2="-0.889" width="0.254" layer="94"/>
+<wire x1="2.54" y1="0.889" x2="-2.54" y2="0.889" width="0.254" layer="94"/>
+<wire x1="2.54" y1="-0.889" x2="2.54" y2="0.889" width="0.254" layer="94"/>
+<wire x1="-2.54" y1="-0.889" x2="-2.54" y2="0.889" width="0.254" layer="94"/>
+<text x="-3.81" y="1.4986" size="1.778" layer="95">&gt;NAME</text>
+<text x="-3.81" y="-3.302" size="1.778" layer="96">&gt;VALUE</text>
+<pin name="2" x="5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1" rot="R180"/>
+<pin name="1" x="-5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1"/>
+<text x="-5.08" y="0" size="0.4064" layer="99" align="center">SpiceOrder 1</text>
+<text x="5.08" y="0" size="0.4064" layer="99" align="center">SpiceOrder 2</text>
+</symbol>
 </symbols>
 <devicesets>
 <deviceset name="PCHANNELMOSFET" prefix="Q">
@@ -10340,6 +10352,22 @@ naming: grid - package width</description>
 <connects>
 <connect gate="G$1" pin="1" pad="P$1"/>
 <connect gate="G$1" pin="2" pad="P$2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="RGAP">
+<gates>
+<gate name="G$1" symbol="RESISTOR" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="JUMPER_R0402">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -11462,7 +11490,6 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="GND35" library="supply1" deviceset="GND" device=""/>
 <part name="C27" library="rcl" deviceset="C-EU" device="C0603" value="1u"/>
 <part name="U$4" library="lightmeter" deviceset="LIBAT" device=""/>
-<part name="R16" library="resistor" deviceset="R-EU_" device="R0402" value="390k"/>
 <part name="R18" library="resistor" deviceset="R-EU_" device="R0402" value="390k"/>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
 <part name="P+4" library="supply1" deviceset="VCC" device=""/>
@@ -11537,6 +11564,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="C9" library="lightmeter" deviceset="C" device="GAP0402" value="27p"/>
 <part name="ZP" library="microbuilder" deviceset="HEADER-1X1" device="ROUND"/>
 <part name="ZN" library="microbuilder" deviceset="HEADER-1X1" device="ROUND"/>
+<part name="R1000" library="lightmeter" deviceset="RGAP" device="" value="390k"/>
 </parts>
 <sheets>
 <sheet>
@@ -11622,7 +11650,6 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <instance part="GND35" gate="1" x="-124.46" y="-99.06"/>
 <instance part="C27" gate="G$1" x="-93.98" y="-81.28"/>
 <instance part="U$4" gate="G$1" x="-132.08" y="-12.7"/>
-<instance part="R16" gate="G$1" x="-111.76" y="-124.46"/>
 <instance part="R18" gate="G$1" x="-91.44" y="-124.46"/>
 <instance part="GND7" gate="1" x="-81.788" y="-124.46" rot="R90"/>
 <instance part="P+4" gate="VCC" x="-124.46" y="-124.46" rot="R90"/>
@@ -11697,6 +11724,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <instance part="C9" gate="G$1" x="-139.7" y="40.64" rot="R90"/>
 <instance part="ZP" gate="G$1" x="66.04" y="78.74" rot="R180"/>
 <instance part="ZN" gate="G$1" x="66.04" y="68.58" rot="R180"/>
+<instance part="R1000" gate="G$1" x="-111.76" y="-124.46"/>
 </instances>
 <busses>
 </busses>
@@ -12107,9 +12135,9 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <junction x="-124.46" y="-73.66"/>
 </segment>
 <segment>
-<pinref part="R16" gate="G$1" pin="1"/>
 <pinref part="P+4" gate="VCC" pin="VCC"/>
 <wire x1="-121.92" y1="-124.46" x2="-116.84" y2="-124.46" width="0.1524" layer="91"/>
+<pinref part="R1000" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="VREG" class="0">
@@ -12740,8 +12768,8 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="-101.6" y1="-124.46" x2="-101.6" y2="-119.38" width="0.1524" layer="91"/>
 <junction x="-101.6" y="-124.46"/>
 <label x="-101.6" y="-119.38" size="1.778" layer="95" rot="R90" xref="yes"/>
-<pinref part="R16" gate="G$1" pin="2"/>
 <wire x1="-106.68" y1="-124.46" x2="-101.6" y2="-124.46" width="0.1524" layer="91"/>
+<pinref part="R1000" gate="G$1" pin="2"/>
 </segment>
 <segment>
 <pinref part="IC$4" gate="G$1" pin="PB0"/>
