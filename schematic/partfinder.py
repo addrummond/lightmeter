@@ -156,6 +156,7 @@ def from_best(seller, best, **extras):
         d = dict(
             prices=info[0]['prices'],
             sku=info[0]['sku'],
+            mpn=jsk(r, 'item', 'mpn'),
             octopart_url=jsk(r, 'item', 'octopart_url'),
             product_url=info[0]['product_url']
         )
@@ -280,7 +281,6 @@ def parse_bom(input):
         else:
             m = re.match(r"^\s*(\d+)\s+\$(?:(?:([\w.+/-]+))|(?:\{([^\}]+)\}))\s*$", l)
             if not m:
-                print(l)
                 sys.stderr.write("Parse error on line %i.\n" % num)
                 sys.exit(1)
 
@@ -303,7 +303,7 @@ def output_mouser_bom(bom, ofname, searchopts):
                 couldnt_get.append(b)
             else:
                 r = r[0]
-                writer.writerow([r['sku'], b[0], '', ''])
+                writer.writerow([r['mpn'], b[0], '', r['sku']])
 
             # Hack to prevent 'too many requests' HTTP error.
             time.sleep(0.2)
