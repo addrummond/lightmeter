@@ -96,12 +96,8 @@ MEASURE2 --|                       |-- VDD
 #define MEASURE2_ADC_CHANNEL ADC_Channel_2
 #define DIODESW_GPIO_PORT    GPIOA
 #define DIODESW_PIN          GPIO_Pin_3
-#define INTEGCLR_GPIO_PORT   GPIOB
-#define INTEGCLR_PIN         GPIO_Pin_0
-#define GB1_GPIO_PORT        GPIOB
-#define GB1_PIN              GPIO_Pin_3
-#define GB2_GPIO_PORT        GPIOA
-#define GB2_PIN              GPIO_Pin_15
+#define INTEGCLR_GPIO_PORT   GPIOA
+#define INTEGCLR_PIN         GPIO_Pin_5
 
 
 //
@@ -126,7 +122,7 @@ MEASURE2 --|                       |-- VDD
 
 #define DISPLAY_RESET_GPIO_PORT  GPIOA
 #define DISPLAY_RESET_PIN        GPIO_Pin_8
-#define DISPLAY_POWER_GPIO_PORT  GPIOA
-#define DISPLAY_POWER_PIN        GPIO_Pin_1
+#define DISPLAY_POWER_GPIO_PORT  GPIOB
+#define DISPLAY_POWER_PIN        GPIO_Pin_4
 
 #endif

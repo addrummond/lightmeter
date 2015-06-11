@@ -30,20 +30,13 @@ void meter_init()
     GPIO_Init(GB2_GPIO_PORT, &gpi);
 
     //
-    // Set GB1/2 low, because with the Phillips IC the relevant pins should
-    // really be connected to ground.
-    //
-    GPIO_WriteBit(GB1_GPIO_PORT, GB1_PIN, 0);
-    GPIO_WriteBit(GB2_GPIO_PORT, GB2_PIN, 0);
-
-    //
     // Init ADC.
     //
     ADC_InitTypeDef adci;
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
 
-    gpi.GPIO_Pin = GPIO_Pin_0;
+    gpi.GPIO_Pin = GPIO_Pin_1;
     gpi.GPIO_Mode = GPIO_Mode_AN;
     gpi.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_Init(GPIOA, &gpi);
@@ -61,7 +54,7 @@ void meter_init()
     ADC_Init(ADC1, &adci);
 
     // TODO: config to use both channels.
-    ADC_ChannelConfig(ADC1, ADC_Channel_0, ADC_SampleTime_13_5Cycles);
+    ADC_ChannelConfig(ADC1, ADC_Channel_1, ADC_SampleTime_13_5Cycles);
     ADC_GetCalibrationFactor(ADC1);
 
     ADC_Cmd(ADC1, ENABLE);
