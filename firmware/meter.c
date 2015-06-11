@@ -24,10 +24,6 @@ void meter_init()
     GPIO_Init(DIODESW_GPIO_PORT, &gpi);
     gpi.GPIO_Pin = INTEGCLR_PIN;
     GPIO_Init(INTEGCLR_GPIO_PORT, &gpi);
-    gpi.GPIO_Pin = GB1_PIN;
-    GPIO_Init(GB1_GPIO_PORT, &gpi);
-    gpi.GPIO_Pin = GB2_PIN;
-    GPIO_Init(GB2_GPIO_PORT, &gpi);
 
     //
     // Init ADC.
