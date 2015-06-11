@@ -308,11 +308,33 @@ def output_mouser_bom(bom, ofname, searchopts):
             # Hack to prevent 'too many requests' HTTP error.
             time.sleep(0.2)
 
-    if len(couldnt_get) > 0:
-        sys.stderr.write("Couldn't get some parts\n")
-        sys.stderr.write(pprint.pformat(couldnt_get))
-        sys.stderr.write("\n")
+    return couldnt_get
 
-f = open("bom.partslist")
-bom = parse_bom(f.read())
-output_mouser_bom(bom, "/tmp/o.csv", dict(bulk=1000, seller='Mouser'))
+if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        sys.stderr.write("No command given\n")
+        sys.exit(1)
+
+    command = sys.argv[1]
+    if command == 'outputbom':
+        if len(sys.argv) < 4:
+            sys.stderr.write("Command 'outputbom' requires partslist input file and bom and (optionally) notfound file names\n")
+            sys.exit(1)
+
+        partslist = sys.argv[2]
+        bomout = sys.argv[3]
+        notfoundout = None
+        if len(sys.argv) > 4:
+            notfoundout = sys.argv[4]
+
+        with open(partslist) as pf:
+            bom = parse_bom(pf.read())
+            couldnt_get = output_mouser_bom(bom, bomout, dict(bulk=1000, seller='Mouser', by='price'))
+            if notfoundout is None:
+                notfoundout = sys.stderr
+            else:
+                with open(notfoundout, 'w') if notfoundout is not None else sys.stderr as nfo:
+                    pprint.pprint(couldnt_get, nfo)
+    else:
+        sys.stderr.write("Bad command\n")
+        sys.exit(1)
