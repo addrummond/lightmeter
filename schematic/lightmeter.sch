@@ -9402,8 +9402,8 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <device name="SOT-523-3-BTTM" package="SOT-523-3-BTTM">
 <connects>
 <connect gate="G$1" pin="D" pad="P$1"/>
-<connect gate="G$1" pin="G" pad="P$2"/>
-<connect gate="G$1" pin="S" pad="P$3"/>
+<connect gate="G$1" pin="G" pad="P$3"/>
+<connect gate="G$1" pin="S" pad="P$2"/>
 </connects>
 <technologies>
 <technology name=""/>
