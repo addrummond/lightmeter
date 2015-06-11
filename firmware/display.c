@@ -104,8 +104,8 @@ void display_init()
     gpi.GPIO_OType = GPIO_OType_PP;
     gpi.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_Init(DISPLAY_POWER_GPIO_PORT, &gpi);
-    // It's a P-channel MOSFET so we set the pin low to turn it on.
-    GPIO_WriteBit(DISPLAY_POWER_GPIO_PORT, DISPLAY_POWER_PIN, 0);
+    // Turn on power to screen.
+    GPIO_WriteBit(DISPLAY_POWER_GPIO_PORT, DISPLAY_POWER_PIN, 1);
 
     display_reset();
 
