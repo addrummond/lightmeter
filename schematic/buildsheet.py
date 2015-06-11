@@ -3,6 +3,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib import colors
 import math
 import re
+import sys
 
 angle_re = re.compile(r"^M?R(\d+)$")
 
@@ -51,7 +52,7 @@ def getfloat(elem, name):
     return v
 
 
-def getBoardInfo(filename):
+def getBoardInfo(filename, layer):
     bi = BoardInfo()
 
     tree = ET.parse(filename)
@@ -112,6 +113,14 @@ def getBoardInfo(filename):
         ppads = package[0].xpath("smd")
         if len(ppads) == 0:
             print("Skipping package '%s' (component '%s') since it has no pads" % (package_name, compname))
+            continue
+        foundOurLayer = False
+        for p in ppads:
+            if p.get("layer") == layer:
+                foundOurLayer = True
+                break
+        if not foundOurLayer:
+            print("Skipping package '%s' (component '%s') since it is on the wrong layer" % (package_name, compname))
             continue
 
         compx = getfloat(c, "x")
@@ -221,8 +230,10 @@ def layout_by_same_value(cv, bi):
         render_components(cv, bi, on_layer="1", with_value=val)
         cv.showPage()
 
-bi = getBoardInfo("lightmeter.brd")
-print("Width %f, height %f" % (bi.width, bi.height))
-cv = canvas.Canvas("test.pdf")
-layout_by_same_value(cv, bi)
-cv.save()
+if __name__ == '__main__':
+    layer = sys.argv[2]
+    bi = getBoardInfo(sys.argv[1], layer)
+    print("Width %f, height %f" % (bi.width, bi.height))
+    cv = canvas.Canvas("test.pdf")
+    layout_by_same_value(cv, bi)
+    cv.save()
