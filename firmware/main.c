@@ -207,8 +207,8 @@ int main()
     accel_init();
     meter_init();
 
-    test_meter();
-    for(;;);
+    //test_meter();
+    //for(;;);
 
     uint32_t last_systick = SysTick->VAL;
     after_release_t wait_for_release = AFTER_RELEASE_NOWAIT;
