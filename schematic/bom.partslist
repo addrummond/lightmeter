@@ -46,7 +46,7 @@
 1  $7A-8.000MAAE-T          # 8MHz crystal                                  http://www2.mouser.com/ProductDetail/TXC-Corporation/7A-8000MAAE-T/?qs=2ISWkumneuG8ToeCJKRyAw%3D%3D
 1  $78171-0002              # Battery connector board header.               http://www2.mouser.com/ProductDetail/Molex/78171-0002/?qs=%2fha2pyFadujDYgbimE1tA0G9UYfEnSYVpQUcBkiYDylNxrKBFTTj5A%3d%3d
 1  $78172-0002              # Battery connector.                            http://www2.mouser.com/ProductDetail/Molex/78172-0002/?qs=%2fha2pyFadugB4HhgcxVWckhSeIb2pYHTri64FjDYM3IhGiznbRRWpA%3d%3d
-2  $78172-0411              # Battery crimp terminals.
+2  $78172-0411              # Battery crimp terminals.                      http://www.mouser.com/ProductDetail/Molex/78172-0411-Loose-Piece/?qs=sGAEpiMZZMurOll%2fasxKYWpaY7Ib3DiPf61NB7kXtDk%3d
 
 #
 # Parts to be ordered elsewhere.
