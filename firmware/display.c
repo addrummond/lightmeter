@@ -105,7 +105,7 @@ void display_init()
     gpi.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_Init(DISPLAY_POWER_GPIO_PORT, &gpi);
     // Turn on power to screen.
-    GPIO_WriteBit(DISPLAY_POWER_GPIO_PORT, DISPLAY_POWER_PIN, 1);
+    GPIO_WriteBit(DISPLAY_POWER_GPIO_PORT, DISPLAY_POWER_PIN, 0);
 
     display_reset();
 
