@@ -54,6 +54,7 @@ void meter_init()
     ADC_GetCalibrationFactor(ADC1);
 
     ADC_Cmd(ADC1, ENABLE);
+    while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
 }
 
 static meter_mode_t current_mode;
@@ -70,6 +71,9 @@ void meter_set_mode(meter_mode_t mode)
 uint32_t meter_take_raw_nonintegrated_reading()
 {
     GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 1);
+    // Wait a bit for things to stablize.
+    unsigned i;
+    for (i = 0; i < 3000; ++i);
 
     while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
     ADC_StartOfConversion(ADC1);
@@ -113,9 +117,6 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
 
     uint32_t st = SysTick->VAL;
 
-    // We switch pins to input mode to get them to high impedance virtually
-    // instantly, then switch them to analogue mode (which might take a little
-    // bit longer).
     set_measure_pins_back_to_adc();
 
     //uint32_t st2 = SysTick->VAL;
@@ -127,9 +128,11 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
     for (i = 0; i < NUM_AMP_STAGES; ++i)
         ends[i] = st - STAGES[i];
 
-    while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
+    //while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
 
-    // Currently takes about 81 ticks.
+    // Currently takes about 81 ticks if we wait for ADC_FLAG_ADRDY or 29
+    // otherwise. (Not waiting for the flag at this point doesn't appear to
+    // do any harm.)
     //uint32_t st2 = SysTick->VAL;
     //debugging_writec("GAP: ");
     //debugging_write_uint32(st-st2);
