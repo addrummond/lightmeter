@@ -72,9 +72,6 @@ void sysinit_init()
 
     i2c_init();
     buttons_setup();
-
-    display_init();
-    display_clear();
 }
 
 static void set_pins_low_analogue()
