@@ -11594,7 +11594,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <instance part="GND5" gate="1" x="109.22" y="5.08" rot="R180"/>
 <instance part="C21" gate="G$1" x="121.92" y="-20.32" rot="R270"/>
 <instance part="IC$6" gate="G$1" x="-109.22" y="-81.28"/>
-<instance part="P+2" gate="VCC" x="-134.62" y="-73.66" rot="R90"/>
+<instance part="P+2" gate="VCC" x="-129.54" y="-73.66" rot="R90"/>
 <instance part="C25" gate="G$1" x="-124.46" y="-63.5"/>
 <instance part="GND27" gate="1" x="-129.54" y="-58.42" rot="R270"/>
 <instance part="GND35" gate="1" x="-124.46" y="-99.06"/>
@@ -12078,7 +12078,7 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <segment>
 <pinref part="P+2" gate="VCC" pin="VCC"/>
 <pinref part="IC$6" gate="G$1" pin="IN"/>
-<wire x1="-132.08" y1="-73.66" x2="-124.46" y2="-73.66" width="0.1524" layer="91"/>
+<wire x1="-127" y1="-73.66" x2="-124.46" y2="-73.66" width="0.1524" layer="91"/>
 <pinref part="C25" gate="G$1" pin="2"/>
 <wire x1="-124.46" y1="-73.66" x2="-121.92" y2="-73.66" width="0.1524" layer="91"/>
 <wire x1="-124.46" y1="-68.58" x2="-124.46" y2="-73.66" width="0.1524" layer="91"/>
