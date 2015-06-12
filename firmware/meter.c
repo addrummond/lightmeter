@@ -52,6 +52,17 @@ static void set_measure_pins_to_gnd()
     GPIO_WriteBit(GPIOA, GPIO_Pin_1, 0);
 }
 
+static void set_measure_pins_to_input()
+{
+    GPIO_InitTypeDef gpi;
+    gpi.GPIO_Pin = GPIO_Pin_1;
+    gpi.GPIO_Mode = GPIO_Mode_IN;
+    gpi.GPIO_Speed = GPIO_Speed_Level_1;
+    gpi.GPIO_OType = GPIO_OType_PP;
+    gpi.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_Init(GPIOA, &gpi);
+}
+
 void meter_init()
 {
     GPIO_InitTypeDef gpi;
@@ -114,15 +125,22 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
 
     set_measure_pins_for_adc();
 
-    while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
-
     // Open the switch.
     GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 0);
 
-    // Determine value of SysTick for each endpoint.
     uint32_t st = SysTick->VAL;
+
+    // We switch pins to input mode to get them to high impedance virtually
+    // instantly, then switch them to analogue mode (which might take a little
+    // bit longer).
+    set_measure_pins_to_input();
+
+    // Determine value of SysTick for each endpoint.
     for (i = 0; i < NUM_AMP_STAGES; ++i)
         ends[i] = st - STAGES[i];
+
+    set_measure_pins_for_adc();
+    while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
 
     // Read cap voltage at each stage.
     for (i = 0; i < NUM_AMP_STAGES;) {
