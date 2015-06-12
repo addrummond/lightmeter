@@ -15,7 +15,7 @@ void meter_init()
     GPIO_InitTypeDef gpi;
 
     //
-    // Init DIODESW, INTEGCLR and GB1/2 GPIO pins.
+    // Init DIODESW. INTEGCLR is already set up in sysinit.
     //
     gpi.GPIO_Pin = DIODESW_PIN;
     gpi.GPIO_Mode = GPIO_Mode_OUT;
@@ -23,8 +23,6 @@ void meter_init()
     gpi.GPIO_OType = GPIO_OType_PP;
     gpi.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_Init(DIODESW_GPIO_PORT, &gpi);
-    gpi.GPIO_Pin = INTEGCLR_PIN;
-    GPIO_Init(INTEGCLR_GPIO_PORT, &gpi);
 
     //
     // Init ADC.
@@ -50,7 +48,7 @@ void meter_init()
     ADC_Init(ADC1, &adci);
 
     // TODO: config to use both channels.
-    ADC_ChannelConfig(ADC1, ADC_Channel_1, ADC_SampleTime_13_5Cycles);
+    ADC_ChannelConfig(ADC1, ADC_Channel_1, ADC_SampleTime_239_5Cycles);
     ADC_GetCalibrationFactor(ADC1);
 
     ADC_Cmd(ADC1, ENABLE);
@@ -220,6 +218,15 @@ ev_with_fracs_t meter_take_integrated_reading()
             return get_ev100_at_voltage(getv(outputs[0]), 1);
     }
     else {
+        /*debugging_writec("EV8s: ");
+        unsigned j;
+        for (j = 0; j < n; ++j) {
+            if (j != 0)
+                debugging_writec(", ");
+            debugging_write_uint32(ev_with_fracs_get_ev8(evs[j]));
+        }
+        debugging_writec("\n");*/
+
         return average_ev_with_fracs(evs, n);
     }
 }

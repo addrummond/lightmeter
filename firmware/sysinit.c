@@ -62,6 +62,25 @@ void sysinit_init()
 
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOB, ENABLE);
 
+    // Make sure photosensor current flows through resistor by default.
+    GPIO_InitTypeDef gpi;
+    gpi.GPIO_Pin = INTEGCLR_PIN;
+    gpi.GPIO_Mode = GPIO_Mode_OUT;
+    gpi.GPIO_Speed = GPIO_Speed_Level_3;
+    gpi.GPIO_OType = GPIO_OType_PP;
+    gpi.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_Init(INTEGCLR_GPIO_PORT, &gpi);
+    GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 1);
+
+    // Only required for Seeed prototype 2 -- enable LREG so that the uc isn't
+    // fighting the connection between the LREG's enable pin and VCC.
+    gpi.GPIO_Pin = GPIO_Pin_5;
+    gpi.GPIO_Mode = GPIO_Mode_IN;
+    gpi.GPIO_Speed = GPIO_Speed_Level_1;
+    gpi.GPIO_OType = GPIO_OType_PP;
+    gpi.GPIO_PuPd = GPIO_PuPd_UP;
+    GPIO_Init(GPIOB, &gpi);
+
     SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK);
     SysTick_Config(SYS_TICK_MAX+1);
     NVIC_InitTypeDef nvic;

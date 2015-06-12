@@ -121,7 +121,7 @@ static __attribute__ ((unused)) void test_meter()
     meter_set_mode(METER_MODE_INCIDENT);
     uint16_t outputs[NUM_AMP_STAGES];
     for (;;) {
-        meter_take_raw_integrated_readings(outputs);
+        /*meter_take_raw_integrated_readings(outputs);
         debugging_writec("V: ");
         unsigned i;
         for (i = 0; i < NUM_AMP_STAGES; ++i) {
@@ -129,13 +129,51 @@ static __attribute__ ((unused)) void test_meter()
                 debugging_writec(", ");
             debugging_write_uint32(outputs[i]);
         }
+
         debugging_writec("\n");
+
+        uint32_t v = meter_take_raw_nonintegrated_reading();
+        debugging_writec("NI: ");
+        debugging_write_uint32(v);
+        debugging_writec("\n");*/
+
         ev_with_fracs_t evwf = meter_take_integrated_reading();
-        debugging_writec("EV: ");
-        debugging_write_uint32(ev_with_fracs_get_ev8(evwf));
+        debugging_writec("EV 10ths: ");
+        debugging_write_uint32(ev_with_fracs_get_wholes(evwf)*10 + ev_with_fracs_get_tenths(evwf));
         debugging_writec("\n");
     }
 }
+
+static __attribute__ ((unused)) void test_meter2()
+{
+    meter_init();
+    meter_set_mode(METER_MODE_INCIDENT);
+    const unsigned n = 20;
+    uint16_t outputs[(NUM_AMP_STAGES+1)*n];
+
+    for (;;) {
+
+    unsigned i;
+    for (i = 0; i < (NUM_AMP_STAGES+1)*n; i += NUM_AMP_STAGES+1) {
+        outputs[i] = meter_take_raw_nonintegrated_reading();
+        meter_take_raw_integrated_readings(outputs + i + 1);
+    }
+
+    debugging_writec("-----\n");
+    for (i = 0; i < (NUM_AMP_STAGES+1)*n; i += NUM_AMP_STAGES+1) {
+        debugging_writec("V: ");
+        unsigned j;
+        for (j = 0; j < (NUM_AMP_STAGES+1); ++j) {
+            if (j > 0)
+                debugging_writec(", ");
+            debugging_write_uint32(outputs[i+j]);
+        }
+        debugging_writec("\n");
+    }
+    debugging_writec("-----\n");
+    }
+}
+
 
 static __attribute__ ((unused)) void test_menu_scroll()
 {
@@ -203,12 +241,12 @@ int main()
     sysinit_init();
     initialize_global_meter_state();
     initialize_global_transient_meter_state();
-    i2c_init();
-    accel_init();
+    //i2c_init();
+    //accel_init();
     meter_init();
 
-    //test_meter();
-    //for(;;);
+    test_meter();
+    for(;;);
 
     uint32_t last_systick = SysTick->VAL;
     after_release_t wait_for_release = AFTER_RELEASE_NOWAIT;
