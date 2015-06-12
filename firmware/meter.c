@@ -91,12 +91,6 @@ static uint32_t STAGES[] = {
         GPIO_WriteBit(GPIOA, GPIO_Pin_1, 0); \
     } while(0)
 
-#define set_measure_pins_to_input() \
-    do { \
-        GPIOA->OTYPER &= ~((GPIO_OTYPER_OT_0) << 1); \
-        /*GPIOA->OTYPER |= (uint16_t)(((uint16_t)GPIO_Mode_IN) << 1);*/ \
-    } while (0)
-
 #define set_measure_pins_back_to_adc() \
     do { \
         /*GPIOA->OTYPER &= ~((GPIO_OTYPER_OT_0) << 1);*/ \
@@ -122,7 +116,7 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
     // We switch pins to input mode to get them to high impedance virtually
     // instantly, then switch them to analogue mode (which might take a little
     // bit longer).
-    set_measure_pins_to_input();
+    set_measure_pins_back_to_adc();
 
     //uint32_t st2 = SysTick->VAL;
     //debugging_writec("GAP: ");
@@ -133,10 +127,9 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
     for (i = 0; i < NUM_AMP_STAGES; ++i)
         ends[i] = st - STAGES[i];
 
-    set_measure_pins_back_to_adc();
     while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
 
-    // Currently takes about 87 ticks.
+    // Currently takes about 81 ticks.
     //uint32_t st2 = SysTick->VAL;
     //debugging_writec("GAP: ");
     //debugging_write_uint32(st-st2);
