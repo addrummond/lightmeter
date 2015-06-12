@@ -56,9 +56,15 @@ void meter_init()
     ADC_Cmd(ADC1, ENABLE);
 }
 
+static meter_mode_t current_mode;
+
+#define MODE_TO_DIODESW(m) ((m) == METER_MODE_INCIDENT)
+#define MODE_OTHER(m)      ((m) == METER_MODE_INCIDENT ? METER_MODE_REFLECTIVE : METER_MODE_INCIDENT)
+
 void meter_set_mode(meter_mode_t mode)
 {
-    GPIO_WriteBit(DIODESW_GPIO_PORT, DIODESW_PIN, mode == METER_MODE_REFLECTIVE);
+    GPIO_WriteBit(DIODESW_GPIO_PORT, DIODESW_PIN, MODE_TO_DIODESW(mode));
+    current_mode = mode;
 }
 
 uint32_t meter_take_raw_nonintegrated_reading()
@@ -84,17 +90,25 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
     while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
 
     // Close switch, discharge integrating cap to baseline voltage.
-    GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 0);
+    // Before closing the switch, we also switch to the other pair of
+    // photodiodes so that no current will flow through the resistor.
+    // (Otherwise there'll be a voltage across the resistor and the capacitor
+    // won't start out at ground.)
+    meter_set_mode(MODE_OTHER(current_mode));
+    GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 1);
     unsigned i;
     for (i = 0; i < 1000; ++i); // Leave some time for cap to discharge.
 
+    // Switch back to the meter mode we're actually using.
+    meter_set_mode(MODE_OTHER(current_mode));
+
     // Get baseline voltage.
-    ADC_StartOfConversion(ADC1);
-    while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
-    uint16_t baselinev = ADC_GetConversionValue(ADC1);
+    //ADC_StartOfConversion(ADC1);
+    //while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
+    //uint16_t baselinev = ADC_GetConversionValue(ADC1);
 
     // Open the switch.
-    GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 1);
+    GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 0);
 
     // Determine value of SysTick for each endpoint.
     uint32_t st = SysTick->VAL;
@@ -118,7 +132,7 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
     }
 
     // Close the switch again.
-    GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 0);
+    GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 1);
 }
 
 void meter_take_averaged_raw_integrated_readings(uint16_t *outputs, unsigned n)
