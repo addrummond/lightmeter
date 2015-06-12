@@ -1,3 +1,4 @@
+#include <stm32f0xx.h>
 #include <stm32f0xx_gpio.h>
 #include <stm32f0xx_tim.h>
 #include <stm32f0xx_rcc.h>
@@ -9,9 +10,27 @@
 #include <meter.h>
 #include <debugging.h>
 
-static void set_measure_pins_for_adc()
+void meter_init()
 {
     GPIO_InitTypeDef gpi;
+
+    //
+    // Init DIODESW, INTEGCLR and GB1/2 GPIO pins.
+    //
+    gpi.GPIO_Pin = DIODESW_PIN;
+    gpi.GPIO_Mode = GPIO_Mode_OUT;
+    gpi.GPIO_Speed = GPIO_Speed_Level_3;
+    gpi.GPIO_OType = GPIO_OType_PP;
+    gpi.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_Init(DIODESW_GPIO_PORT, &gpi);
+    gpi.GPIO_Pin = INTEGCLR_PIN;
+    GPIO_Init(INTEGCLR_GPIO_PORT, &gpi);
+
+    //
+    // Init ADC.
+    //
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+
     gpi.GPIO_Pin = GPIO_Pin_1;
     gpi.GPIO_Mode = GPIO_Mode_AN;
     gpi.GPIO_PuPd = GPIO_PuPd_NOPULL;
@@ -35,55 +54,6 @@ static void set_measure_pins_for_adc()
     ADC_GetCalibrationFactor(ADC1);
 
     ADC_Cmd(ADC1, ENABLE);
-}
-
-static void set_measure_pins_to_gnd()
-{
-    ADC_Cmd(ADC1, DISABLE);
-
-    GPIO_InitTypeDef gpi;
-    gpi.GPIO_Pin = GPIO_Pin_1;
-    gpi.GPIO_Mode = GPIO_Mode_OUT;
-    gpi.GPIO_Speed = GPIO_Speed_Level_1;
-    gpi.GPIO_OType = GPIO_OType_PP;
-    gpi.GPIO_PuPd = GPIO_PuPd_NOPULL;
-    GPIO_Init(GPIOA, &gpi);
-
-    GPIO_WriteBit(GPIOA, GPIO_Pin_1, 0);
-}
-
-static void set_measure_pins_to_input()
-{
-    GPIO_InitTypeDef gpi;
-    gpi.GPIO_Pin = GPIO_Pin_1;
-    gpi.GPIO_Mode = GPIO_Mode_IN;
-    gpi.GPIO_Speed = GPIO_Speed_Level_1;
-    gpi.GPIO_OType = GPIO_OType_PP;
-    gpi.GPIO_PuPd = GPIO_PuPd_NOPULL;
-    GPIO_Init(GPIOA, &gpi);
-}
-
-void meter_init()
-{
-    GPIO_InitTypeDef gpi;
-
-    //
-    // Init DIODESW, INTEGCLR and GB1/2 GPIO pins.
-    //
-    gpi.GPIO_Pin = DIODESW_PIN;
-    gpi.GPIO_Mode = GPIO_Mode_OUT;
-    gpi.GPIO_Speed = GPIO_Speed_Level_1;
-    gpi.GPIO_OType = GPIO_OType_PP;
-    gpi.GPIO_PuPd = GPIO_PuPd_NOPULL;
-    GPIO_Init(DIODESW_GPIO_PORT, &gpi);
-    gpi.GPIO_Pin = INTEGCLR_PIN;
-    GPIO_Init(INTEGCLR_GPIO_PORT, &gpi);
-
-    //
-    // Init ADC.
-    //
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
-    set_measure_pins_for_adc();
 }
 
 static meter_mode_t current_mode;
@@ -113,6 +83,27 @@ static uint32_t STAGES[] = {
 };
 #undef st
 
+#define set_measure_pins_to_gnd() \
+    do { \
+        /*ADC_Cmd(ADC1, DISABLE);*/ \
+        GPIOA->OTYPER &= ~((GPIO_OTYPER_OT_0) << 1); \
+        GPIOA->OTYPER |= (uint16_t)(((uint16_t)GPIO_Mode_OUT) << 1); \
+        GPIO_WriteBit(GPIOA, GPIO_Pin_1, 0); \
+    } while(0)
+
+#define set_measure_pins_to_input() \
+    do { \
+        GPIOA->OTYPER &= ~((GPIO_OTYPER_OT_0) << 1); \
+        /*GPIOA->OTYPER |= (uint16_t)(((uint16_t)GPIO_Mode_IN) << 1);*/ \
+    } while (0)
+
+#define set_measure_pins_back_to_adc() \
+    do { \
+        /*GPIOA->OTYPER &= ~((GPIO_OTYPER_OT_0) << 1);*/ \
+        GPIOA->OTYPER |= (uint16_t)(((uint16_t)GPIO_Mode_AN) << 1); \
+        /*ADC_Cmd(ADC1, ENABLE);*/ \
+    } while(0)
+
 void meter_take_raw_integrated_readings(uint16_t *outputs)
 {
     uint32_t ends[NUM_AMP_STAGES];
@@ -122,8 +113,6 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
     set_measure_pins_to_gnd();
     unsigned i;
     for (i = 0; i < 3000; ++i); // Leave some time for cap to discharge.
-
-    set_measure_pins_for_adc();
 
     // Open the switch.
     GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 0);
@@ -135,12 +124,23 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
     // bit longer).
     set_measure_pins_to_input();
 
+    //uint32_t st2 = SysTick->VAL;
+    //debugging_writec("GAP: ");
+    //debugging_write_uint32(st-st2);
+    //debugging_writec("\n");
+
     // Determine value of SysTick for each endpoint.
     for (i = 0; i < NUM_AMP_STAGES; ++i)
         ends[i] = st - STAGES[i];
 
-    set_measure_pins_for_adc();
+    set_measure_pins_back_to_adc();
     while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
+
+    // Currently takes about 87 ticks.
+    //uint32_t st2 = SysTick->VAL;
+    //debugging_writec("GAP: ");
+    //debugging_write_uint32(st-st2);
+    //debugging_writec("\n");
 
     // Read cap voltage at each stage.
     for (i = 0; i < NUM_AMP_STAGES;) {
