@@ -56,7 +56,7 @@ $CC $CFLAGS -c mymemset.c -o mymemset.o
 OBJS="$OBJS mymemset.o"
 $CC $CFLAGS -c exposure.c -o exposure.o
 OBJS="$OBJS exposure.o"
-$CC $CFLAGS -c meter.c -o meter.o
+$CC $CFLAGS -O2 -c meter.c -o meter.o
 OBJS="$OBJS meter.o"
 $CC $CFLAGS -c bcd.c -o bcd.o
 OBJS="$OBJS bcd.o"
@@ -82,7 +82,7 @@ $CC $CFLAGS -c menus/menu_strings.c -o menus/menu_strings.o
 OBJS="$OBJS menus/menu_strings.o"
 $CC $CFLAGS -c menus/menu_strings_table.c -o menus/menu_strings_table.o
 OBJS="$OBJS menus/menu_strings_table.o"
-$CC $CFLAGS -c goetzel.c -o goetzel.o
+$CC $CFLAGS -O2 -c goetzel.c -o goetzel.o
 OBJS="$OBJS goetzel.o"
 
 $CC $CFLAGS -c main.c -o main.o

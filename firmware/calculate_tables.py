@@ -16,13 +16,14 @@ reference_voltage = 3300 # mV
 voltage_offset = 135 # mV
 
 sensor_cap_value = 3300 # pF
+sensor_resistor_value = 500 # ohms
 
 amp_timings = [ # In microseconds
-    0.25,
-    1.5,
+    1.8,
     9,
     55,
-    300
+    300,
+    1000
 ]
 
 amp_normal_timing = 50.0
@@ -42,7 +43,11 @@ def sensor_ua_to_lux(ua):
     return ((100.0/43.0)*ua)/incand_ratio
 
 def sensor_cap_time_and_mv_to_ua(us, mv):
-    return ((sensor_cap_value*mv)/(us*1000.0))
+    t = us/10e6
+    v = mv/10e3
+    c = sensor_cap_value/10e12
+    r = sensor_resistor_value
+    return (v*c/((r*c)+t))*10e6
 
 def sensor_cap_time_and_mv_to_lux(us, mv):
     return sensor_ua_to_lux(sensor_cap_time_and_mv_to_ua(us, mv))

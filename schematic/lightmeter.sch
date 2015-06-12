@@ -11462,9 +11462,9 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <part name="C18" library="lightmeter" deviceset="C" device="GAP0402" value="u01"/>
 <part name="C23" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
 <part name="C31" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
-<part name="R11" library="resistor" deviceset="R-EU_" device="R0402" value="10k (0.1%)"/>
+<part name="R11" library="resistor" deviceset="R-EU_" device="R0402" value="500 (0.1%)"/>
 <part name="R14" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
-<part name="R12" library="resistor" deviceset="R-EU_" device="R0402" value="10k (0.1%"/>
+<part name="R12" library="resistor" deviceset="R-EU_" device="R0402" value="500 (0.1%"/>
 <part name="D6" library="adafruit" deviceset="DIODE" device="SOD-323F"/>
 <part name="D1" library="lightmeter" deviceset="SCHOTTKY-DIODE" device="SOD-923-BTTM"/>
 <part name="TM1" library="testpad" deviceset="TP" device="B1,27"/>

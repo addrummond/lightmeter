@@ -121,21 +121,20 @@ static __attribute__ ((unused)) void test_meter()
     meter_set_mode(METER_MODE_INCIDENT);
     uint16_t outputs[NUM_AMP_STAGES];
     for (;;) {
-        /*meter_take_raw_integrated_readings(outputs);
-        debugging_writec("V: ");
-        unsigned i;
-        for (i = 0; i < NUM_AMP_STAGES; ++i) {
-            if (i != 0)
-                debugging_writec(", ");
-            debugging_write_uint32(outputs[i]);
-        }
+        // meter_take_raw_integrated_readings(outputs);
+        // debugging_writec("V: ");
+        // unsigned i;
+        // for (i = 0; i < NUM_AMP_STAGES; ++i) {
+        //     if (i != 0)
+        //         debugging_writec(", ");
+        //     debugging_write_uint32(outputs[i]);
+        // }
+        // debugging_writec("\n");
 
-        debugging_writec("\n");
-
-        uint32_t v = meter_take_raw_nonintegrated_reading();
-        debugging_writec("NI: ");
-        debugging_write_uint32(v);
-        debugging_writec("\n");*/
+        //uint32_t v = meter_take_raw_nonintegrated_reading();
+        //debugging_writec("NI: ");
+        //debugging_write_uint32(v);
+        //debugging_writec("\n");
 
         ev_with_fracs_t evwf = meter_take_integrated_reading();
         debugging_writec("EV 10ths: ");

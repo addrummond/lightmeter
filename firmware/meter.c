@@ -48,7 +48,7 @@ void meter_init()
     ADC_Init(ADC1, &adci);
 
     // TODO: config to use both channels.
-    ADC_ChannelConfig(ADC1, ADC_Channel_1, ADC_SampleTime_239_5Cycles);
+    ADC_ChannelConfig(ADC1, ADC_Channel_1, ADC_SampleTime_1_5Cycles);
     ADC_GetCalibrationFactor(ADC1);
 
     ADC_Cmd(ADC1, ENABLE);
@@ -85,37 +85,31 @@ static uint32_t STAGES[] = {
 };
 #undef st
 
-#define set_measure_pins_to_gnd() \
-    do { \
-        /*ADC_Cmd(ADC1, DISABLE);*/ \
-        GPIOA->OTYPER &= ~((GPIO_OTYPER_OT_0) << 1); \
-        GPIOA->OTYPER |= (uint16_t)(((uint16_t)GPIO_Mode_OUT) << 1); \
-        GPIO_WriteBit(GPIOA, GPIO_Pin_1, 0); \
-    } while(0)
-
-#define set_measure_pins_back_to_adc() \
-    do { \
-        /*GPIOA->OTYPER &= ~((GPIO_OTYPER_OT_0) << 1);*/ \
-        GPIOA->OTYPER |= (uint16_t)(((uint16_t)GPIO_Mode_AN) << 1); \
-        /*ADC_Cmd(ADC1, ENABLE);*/ \
-    } while(0)
-
 void meter_take_raw_integrated_readings(uint16_t *outputs)
 {
     uint32_t ends[NUM_AMP_STAGES];
 
-    // Close switch, discharge integrating cap to baseline voltage.
+    // Close switch to discharge integrating cap.
     GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 1);
-    set_measure_pins_to_gnd();
     unsigned i;
     for (i = 0; i < 3000; ++i); // Leave some time for cap to discharge.
 
+    //ADC1->CR |= (uint32_t)ADC_CR_ADSTART;
+    //while ((ADC1->ISR & ADC_FLAG_EOC) == RESET);
+    //uint16_t baseline = ADC1->DR;
+    //debugging_writec("B: ");
+    //debugging_write_uint32(baseline);
+    //debugging_writec("\n");
+
     // Open the switch.
-    GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 0);
 
+    // Following line is equivalent to:
+    //    GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 0);
+    INTEGCLR_GPIO_PORT->BRR = INTEGCLR_PIN;
+
+    // From here to start of first ADC conversion currently takes 66 cycles.
+    // 107 cycles to end of ADC conversion.
     uint32_t st = SysTick->VAL;
-
-    set_measure_pins_back_to_adc();
 
     //uint32_t st2 = SysTick->VAL;
     //debugging_writec("GAP: ");
@@ -126,11 +120,10 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
     for (i = 0; i < NUM_AMP_STAGES; ++i)
         ends[i] = st - STAGES[i];
 
-    //while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
+    // Appears not to be necessary. (Has no discernable effect on accuracy.)
+    //
+    // while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
 
-    // Currently takes about 81 ticks if we wait for ADC_FLAG_ADRDY or 29
-    // otherwise. (Not waiting for the flag at this point doesn't appear to
-    // do any harm.)
     //uint32_t st2 = SysTick->VAL;
     //debugging_writec("GAP: ");
     //debugging_write_uint32(st-st2);
@@ -139,11 +132,27 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
     // Read cap voltage at each stage.
     for (i = 0; i < NUM_AMP_STAGES;) {
         if (SysTick->VAL <= ends[i]) {
-            ADC_StartOfConversion(ADC1);
-            while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
-            uint16_t val = ADC_GetConversionValue(ADC1);
+            //uint32_t stb = SysTick->VAL;
+            //debugging_writec("GAP: ");
+            //debugging_write_uint32(st-stb);
+            //debugging_writec("\n");
 
-            outputs[i] = val;
+            // Following line is equivalent to:
+            //     ADC_StartOfConversion(ADC1); // Function call overhead is significant.
+            ADC1->CR |= (uint32_t)ADC_CR_ADSTART;
+
+            // Following line is equivalent to:
+            //     while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET); // Function call overhead is signficant.
+            while ((ADC1->ISR & ADC_FLAG_EOC) == RESET);
+
+            // Following line is equivalent to:
+            //     outputs[i] = ADC_GetConversionValue(ADC1);
+            outputs[i] = ADC1->DR;
+
+            //uint32_t stb = SysTick->VAL;
+            //debugging_writec("GAP: ");
+            //debugging_write_uint32(st-stb);
+            //debugging_writec("\n");
 
             ++i;
         }
@@ -186,22 +195,21 @@ static uint_fast8_t getv(uint16_t v)
     return (uint_fast8_t)v;
 }
 
-#define MIN12BITV 300
+#define MIN12BITV 800
 #define MAX12BITV 3500
 ev_with_fracs_t meter_take_integrated_reading()
 {
     uint16_t outputs[NUM_AMP_STAGES];
     meter_take_raw_integrated_readings(outputs);
 
-    /*unsigned x;
-    debugging_writec("RAW: ");
-    for (x = 0; x < NUM_AMP_STAGES; ++x) {
-        if (x > 0)
-            debugging_writec(", ");
-        debugging_write_uint32(outputs[x]);
-        debugging_writec("[");
-    }
-    debugging_writec("\n");*/
+    // unsigned x;
+    // debugging_writec("RAW: ");
+    // for (x = 0; x < NUM_AMP_STAGES; ++x) {
+    //     if (x > 0)
+    //         debugging_writec(", ");
+    //     debugging_write_uint32(outputs[x]);
+    // }
+    // debugging_writec("\n");
 
     ev_with_fracs_t evs[NUM_AMP_STAGES];
 
@@ -218,14 +226,14 @@ ev_with_fracs_t meter_take_integrated_reading()
             return get_ev100_at_voltage(getv(outputs[0]), 1);
     }
     else {
-        /*debugging_writec("EV8s: ");
-        unsigned j;
-        for (j = 0; j < n; ++j) {
-            if (j != 0)
-                debugging_writec(", ");
-            debugging_write_uint32(ev_with_fracs_get_ev8(evs[j]));
-        }
-        debugging_writec("\n");*/
+        // debugging_writec("EV10s: ");
+        // unsigned j;
+        // for (j = 0; j < n; ++j) {
+        //     if (j != 0)
+        //         debugging_writec(", ");
+        //     debugging_write_uint32(ev_with_fracs_get_wholes(evs[j])*10 + ev_with_fracs_get_tenths(evs[j]));
+        // }
+        // debugging_writec("\n");
 
         return average_ev_with_fracs(evs, n);
     }
