@@ -195,7 +195,6 @@ static uint_fast8_t getv(uint16_t v)
     return (uint_fast8_t)v;
 }
 
-#define MIN12BITV 800
 #define MAX12BITV 3500
 ev_with_fracs_t meter_take_integrated_reading()
 {
@@ -215,12 +214,12 @@ ev_with_fracs_t meter_take_integrated_reading()
 
     unsigned n = 0, i;
     for (i = 0; i < NUM_AMP_STAGES; ++i) {
-        if (! (outputs[i] < MIN12BITV || outputs[i] > MAX12BITV)) {
+        if (! (outputs[i] < VOLTAGE_OFFSET_12BIT || outputs[i] > MAX12BITV)) {
             evs[n++] = get_ev100_at_voltage(getv(outputs[i]), i + 1);
         }
     }
     if (n == 0) {
-        if (outputs[0] < MIN12BITV)
+        if (outputs[NUM_AMP_STAGES-1] < VOLTAGE_OFFSET_12BIT)
             return get_ev100_at_voltage(getv(outputs[NUM_AMP_STAGES-1]), NUM_AMP_STAGES);
         else
             return get_ev100_at_voltage(getv(outputs[0]), 1);

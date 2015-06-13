@@ -572,12 +572,11 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
             return;
 
         // Compute strings for fractional EV values according to precision mode.
-        uint8_t ev = tms.last_ev_with_fracs.ev;
+        uint8_t ev = ev_with_fracs_get_ev8(tms.last_ev_with_fracs);
         uint8_t tenths = ev_with_fracs_get_tenths(tms.last_ev_with_fracs);
-        uint8_t eighths = ev & 0b111;
+        uint8_t eighths = ev_with_fracs_get_eighths(tms.last_ev_with_fracs);
+        uint8_t thirds = ev_with_fracs_get_thirds(tms.last_ev_with_fracs);
         if (ev < 5*8) {
-            eighths = 8-eighths;
-
             func_state->ev_length = 2;
             func_state->ev_chars[0] = CHAR_8PX_MINUS_O;
             func_state->ev_chars[1] = CHAR_8PX_0_O + CHAR_OFFSET_8PX(5 - (ev >> 3));
@@ -598,6 +597,9 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
         else if (ms.precision_mode == PRECISION_MODE_TENTH && tenths != 0 && tenths != 10) {
             func_state->ev_chars[l++] = CHAR_8PX_PERIOD_O;
             func_state->ev_chars[l++] = CHAR_OFFSET_8PX(tenths) + CHAR_8PX_0_O;
+        }
+        else if (ms.precision_mode == PRECISION_MODE_THIRD && thirds != 0 && thirds != 3) {
+            // TODO
         }
 
         func_state->ev_length = l;

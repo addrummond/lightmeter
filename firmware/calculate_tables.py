@@ -47,7 +47,7 @@ def sensor_cap_time_and_mv_to_ua(us, mv):
     v = mv/10e3
     c = sensor_cap_value/10e12
     r = sensor_resistor_value
-    return (v*c/((r*c)+t))*10e6
+    return (((v*c)/((r*c)+t))*10e6) - 0.01 # Estimate of base current.
 
 def sensor_cap_time_and_mv_to_lux(us, mv):
     return sensor_ua_to_lux(sensor_cap_time_and_mv_to_ua(us, mv))
@@ -555,6 +555,7 @@ def output():
 
     ofh.write("#define VOLTAGE_TO_EV_ABS_OFFSET " + str(b_voltage_offset) + '\n')
     ofh.write("#define LUMINANCE_COMPENSATION " + str(int(round(LUMINANCE_COMPENSATION*8.0))) + '\n')
+    ofh.write("#define VOLTAGE_OFFSET_12BIT " + str(int(round((voltage_offset/reference_voltage)*4096.0))) + '\n')
 
     ofc.write('\n#ifdef TEST\n')
     ofc.write('const uint8_t TEST_VOLTAGE_TO_EV[] =\n')

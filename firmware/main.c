@@ -23,9 +23,11 @@
 static __attribute__ ((unused)) void test_mic()
 {
     piezo_mic_init();
-    piezo_hfsdp_listen_for_masters_init();
-    debugging_writec("Init heard!\n");
-    for (;;);
+    for (;;) {
+        piezo_mic_read_buffer();
+        debugging_write_uint32(piezo_get_magnitude());
+        debugging_writec("\n");
+    }
 }
 
 static __attribute__ ((unused)) void test_speaker()
@@ -138,7 +140,7 @@ static __attribute__ ((unused)) void test_meter()
 
         ev_with_fracs_t evwf = meter_take_integrated_reading();
         debugging_writec("EV 10ths: ");
-        debugging_write_uint32(ev_with_fracs_get_wholes(evwf)*10 + ev_with_fracs_get_tenths(evwf));
+        debugging_write_uint32(((int16_t)(ev_with_fracs_get_wholes(evwf))-5)*10 + ev_with_fracs_get_tenths(evwf));
         debugging_writec("\n");
     }
 }
@@ -240,12 +242,14 @@ int main()
     sysinit_init();
     initialize_global_meter_state();
     initialize_global_transient_meter_state();
-    //i2c_init();
-    //accel_init();
-    meter_init();
 
     test_meter();
     for(;;);
+
+    accel_init();
+    meter_init();
+    i2c_init();
+    display_init();
 
     uint32_t last_systick = SysTick->VAL;
     after_release_t wait_for_release = AFTER_RELEASE_NOWAIT;
@@ -290,9 +294,11 @@ int main()
             else if (gms->ui_mode == UI_MODE_INIT) {
                 // If we're on the main screen, do a reading.
                 tms->last_ev_with_fracs = meter_take_integrated_reading();
-                debugging_writec("EV8: ");
-                debugging_write_uint32(ev_with_fracs_get_ev8(tms->last_ev_with_fracs));
+
+                debugging_writec("EV10: ");
+                debugging_write_uint32(ev_with_fracs_get_wholes(tms->last_ev_with_fracs)*10 + ev_with_fracs_get_tenths(tms->last_ev_with_fracs));
                 debugging_writec("\n");
+
                 ev_with_fracs_init_from_ev8(tms->shutter_speed, 10*8);
                 ev_with_fracs_t isoev;
                 ev_with_fracs_init_from_thirds(isoev, gms->iso);
