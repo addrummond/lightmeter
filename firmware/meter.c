@@ -48,7 +48,7 @@ void meter_init()
     ADC_Init(ADC1, &adci);
 
     // TODO: config to use both channels.
-    ADC_ChannelConfig(ADC1, ADC_Channel_1, ADC_SampleTime_1_5Cycles);
+    ADC_ChannelConfig(ADC1, ADC_Channel_1, ADC_SampleTime_13_5Cycles);
     ADC_GetCalibrationFactor(ADC1);
 
     ADC_Cmd(ADC1, ENABLE);
@@ -68,15 +68,19 @@ void meter_set_mode(meter_mode_t mode)
 
 uint32_t meter_take_raw_nonintegrated_reading()
 {
+    ADC_ChannelConfig(ADC1, ADC_Channel_1, ADC_SampleTime_239_5Cycles);
+    ADC1->CHSELR = ADC_Channel_1;
     GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 1);
     // Wait a bit for things to stablize.
-    unsigned i;
-    for (i = 0; i < 3000; ++i);
+    //unsigned i;
+    //for (i = 0; i < 3000; ++i);
 
     while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
     ADC_StartOfConversion(ADC1);
     while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
-    return ADC_GetConversionValue(ADC1);
+    uint16_t r = ADC_GetConversionValue(ADC1);
+    ADC_ClearFlag(ADC1, ADC_FLAG_EOC);
+    return r;
 }
 
 #define st(x) STAGE ## x ##_TICKS,
@@ -87,6 +91,9 @@ static uint32_t STAGES[] = {
 
 void meter_take_raw_integrated_readings(uint16_t *outputs)
 {
+    ADC_ChannelConfig(ADC1, ADC_Channel_1, ADC_SampleTime_13_5Cycles);
+    ADC1->CHSELR = ADC_Channel_1;
+
     uint32_t ends[NUM_AMP_STAGES];
 
     // Close switch to discharge integrating cap.
@@ -104,7 +111,7 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
     // Open the switch.
 
     // Following line is equivalent to:
-    //    GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 0);
+    //GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 0);
     INTEGCLR_GPIO_PORT->BRR = INTEGCLR_PIN;
 
     // From here to start of first ADC conversion currently takes 66 cycles.

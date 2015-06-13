@@ -19,11 +19,11 @@ sensor_cap_value = 3300 # pF
 sensor_resistor_value = 500 # ohms
 
 amp_timings = [ # In microseconds
-    1.8,
+    1.2,
     9,
-    55,
-    300,
-    1000
+    45,
+    200#,
+    #1000
 ]
 
 amp_normal_timing = 50.0
@@ -39,15 +39,18 @@ b_voltage_offset = int(round((voltage_offset/reference_voltage)*256))
 # See http://www.semicon.panasonic.co.jp/en/products/detail/?cat=CED7000&part=PNJ4K01F
 # http://www.mathportal.org/calculators/analytic-geometry/two-point-form-calculator.php
 def sensor_ua_to_lux(ua):
-    incand_ratio = 1.1
-    return ((100.0/43.0)*ua)/incand_ratio
+    #incand_ratio = 1.1
+    #return ((100.0/43.0)*ua)/incand_ratio
+    # Using 'high gain' graph from http://www.mouser.com/ds/2/308/NOA1212-D-260440.pdf
+    return (1110.0/1111.0)*ua + 100.0/1111.0
 
 def sensor_cap_time_and_mv_to_ua(us, mv):
     t = us/10e6
     v = mv/10e3
     c = sensor_cap_value/10e12
     r = sensor_resistor_value
-    return (((v*c)/((r*c)+t))*10e6) - 0.01 # Estimate of base current.
+    v = (((v*c)/((r*c)+t))*10e6)
+    return v
 
 def sensor_cap_time_and_mv_to_lux(us, mv):
     return sensor_ua_to_lux(sensor_cap_time_and_mv_to_ua(us, mv))
@@ -61,28 +64,14 @@ def us_to_ticks(us):
 
 bv_to_voltage = ((1/256.0) * reference_voltage)
 
-# Convert luminance to EV at ISO 100.
+# Convert illuminance to EV at ISO 100.
 # See http://stackoverflow.com/questions/5401738/how-to-convert-between-lux-and-exposure-value
 # http://en.wikipedia.org/wiki/Exposure_value#EV_as_a_measure_of_luminance_and_illuminance
 # This is (implicitly) using C=12.5.
-def luminance_to_ev_at_100(lux):
-    if lux == 0:
-        lux = 0.00001
-    return math.log(lux, 2) + 3.0
-
 def illuminance_to_ev_at_100(lux):
     if lux == 0:
         lux = 0.00001
     return math.log(lux/2.5, 2)
-
-def illuminance_to_luminance(lux):
-    return lux/math.pi
-
-# Difference between luminance and illuminance will be a constant in log space.
-# We store illuminance values in the table then add extra if we're measuring
-# illuminance. This calculates how much extra.
-LUMINANCE_COMPENSATION = luminance_to_ev_at_100(illuminance_to_luminance(10)) - illuminance_to_ev_at_100(10)
-assert LUMINANCE_COMPENSATION >= 2.0 and LUMINANCE_COMPENSATION <= 3.0
 
 # Voltage in mV, timing in us.
 def voltage_and_timing_to_ev(v, timing):
@@ -263,7 +252,7 @@ def output_sanity_graph():
     f.write("lux,loglux,logillum,loglum\n")
     lux = 5
     while lux <= 656000:
-        f.write("%i,%f,%f,%f\n" % (lux, math.log(lux,10), illuminance_to_ev_at_100(lux), luminance_to_ev_at_100(lux)))
+        f.write("%i,%f,%f\n" % (lux, math.log(lux,10), illuminance_to_ev_at_100(lux)))
         lux += lux
     f.close()
 
@@ -554,7 +543,6 @@ def output():
             break
 
     ofh.write("#define VOLTAGE_TO_EV_ABS_OFFSET " + str(b_voltage_offset) + '\n')
-    ofh.write("#define LUMINANCE_COMPENSATION " + str(int(round(LUMINANCE_COMPENSATION*8.0))) + '\n')
     ofh.write("#define VOLTAGE_OFFSET_12BIT " + str(int(round((voltage_offset/reference_voltage)*4096.0))) + '\n')
 
     ofc.write('\n#ifdef TEST\n')

@@ -123,25 +123,25 @@ static __attribute__ ((unused)) void test_meter()
     meter_set_mode(METER_MODE_INCIDENT);
     uint16_t outputs[NUM_AMP_STAGES];
     for (;;) {
-        // meter_take_raw_integrated_readings(outputs);
-        // debugging_writec("V: ");
-        // unsigned i;
-        // for (i = 0; i < NUM_AMP_STAGES; ++i) {
-        //     if (i != 0)
-        //         debugging_writec(", ");
-        //     debugging_write_uint32(outputs[i]);
-        // }
+        meter_take_raw_integrated_readings(outputs);
+        debugging_writec("V: ");
+        unsigned i;
+        for (i = 0; i < NUM_AMP_STAGES; ++i) {
+            if (i != 0)
+                debugging_writec(", ");
+            debugging_write_uint32(outputs[i]);
+        }
+        debugging_writec("\n");
+
+        // uint32_t v = meter_take_raw_nonintegrated_reading();
+        // debugging_writec("NI: ");
+        // debugging_write_uint32(v);
         // debugging_writec("\n");
 
-        //uint32_t v = meter_take_raw_nonintegrated_reading();
-        //debugging_writec("NI: ");
-        //debugging_write_uint32(v);
+        //ev_with_fracs_t evwf = meter_take_integrated_reading();
+        //debugging_writec("EV 10ths: ");
+        //debugging_write_uint32((((int16_t)(ev_with_fracs_get_wholes(evwf)))-5)*10 + ev_with_fracs_get_tenths(evwf));
         //debugging_writec("\n");
-
-        ev_with_fracs_t evwf = meter_take_integrated_reading();
-        debugging_writec("EV 10ths: ");
-        debugging_write_uint32(((int16_t)(ev_with_fracs_get_wholes(evwf))-5)*10 + ev_with_fracs_get_tenths(evwf));
-        debugging_writec("\n");
     }
 }
 
@@ -246,10 +246,11 @@ int main()
     test_meter();
     for(;;);
 
-    accel_init();
-    meter_init();
-    i2c_init();
-    display_init();
+    //accel_init();
+    //meter_init();
+    //meter_set_mode(METER_MODE_INCIDENT);
+    //i2c_init();
+    //display_init();
 
     uint32_t last_systick = SysTick->VAL;
     after_release_t wait_for_release = AFTER_RELEASE_NOWAIT;
