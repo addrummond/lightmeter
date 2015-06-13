@@ -122,6 +122,7 @@ static __attribute__ ((unused)) void test_meter()
     meter_init();
     meter_set_mode(METER_MODE_INCIDENT);
     uint16_t outputs[NUM_AMP_STAGES];
+    unsigned m = 0;
     for (;;) {
         meter_take_raw_integrated_readings(outputs);
         debugging_writec("V: ");
@@ -133,10 +134,13 @@ static __attribute__ ((unused)) void test_meter()
         }
         debugging_writec("\n");
 
-        // uint32_t v = meter_take_raw_nonintegrated_reading();
-        // debugging_writec("NI: ");
-        // debugging_write_uint32(v);
-        // debugging_writec("\n");
+        uint32_t v = meter_take_raw_nonintegrated_reading();
+        debugging_writec("NI: ");
+        debugging_write_uint32(v);
+        debugging_writec("\n");
+
+        meter_set_mode(m == 0 ? METER_MODE_INCIDENT : METER_MODE_REFLECTIVE);
+        m = !m;
 
         //ev_with_fracs_t evwf = meter_take_integrated_reading();
         //debugging_writec("EV 10ths: ");
@@ -148,7 +152,7 @@ static __attribute__ ((unused)) void test_meter()
 static __attribute__ ((unused)) void test_meter2()
 {
     meter_init();
-    meter_set_mode(METER_MODE_INCIDENT);
+    meter_set_mode(METER_MODE_REFLECTIVE);
     const unsigned n = 20;
     uint16_t outputs[(NUM_AMP_STAGES+1)*n];
 

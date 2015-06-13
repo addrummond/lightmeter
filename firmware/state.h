@@ -37,7 +37,7 @@ typedef union ui_mode_state {
 
 typedef enum meter_mode {
     METER_MODE_REFLECTIVE=0,
-    METER_MODE_INCIDENT
+    METER_MODE_INCIDENT=1
 } meter_mode_t;
 
 // Full, half, quarter and eighth stops are calculated from
