@@ -27,16 +27,22 @@ static void stabilize()
     // switch, and this seems to shake it out somehow.
 
     meter_mode_t mode = current_mode;
+    // Following line is equivalent to:
+    //     GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 1);
+    INTEGCLR_GPIO_PORT->BSRR = INTEGCLR_PIN;
     unsigned i;
-    GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 1);
-    for (i = 0; i < 100; ++i) {
-        GPIO_WriteBit(DIODESW_GPIO_PORT, DIODESW_PIN, 1);
+    for (i = 0; i < 10; ++i) {
+        // Following lines is equivalent to:
+        //     GPIO_WriteBit(DIODESW_GPIO_PORT, DIODESW_PIN, 1);
+        DIODESW_GPIO_PORT->BSRR = DIODESW_PIN;
         unsigned j;
-        for (j = 0; j < 50; ++j);
-        GPIO_WriteBit(DIODESW_GPIO_PORT, DIODESW_PIN, 0);
-        for (j = 0; j < 50; ++j);
+        for (j = 0; j < 100; ++j);
+        // Following line is equivalent to:
+        //     GPIO_WriteBit(DIODESW_GPIO_PORT, DIODESW_PIN, 0);
+        DIODESW_GPIO_PORT->BRR = DIODESW_PIN;
+        for (j = 0; j < 100; ++j);
     }
-    meter_set_mode(mode);
+    GPIO_WriteBit(DIODESW_GPIO_PORT, DIODESW_PIN, MODE_TO_DIODESW(mode));
 }
 
 void meter_init()
