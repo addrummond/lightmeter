@@ -10,6 +10,8 @@
 #include <meter.h>
 #include <debugging.h>
 
+#define CHAN ADC_Channel_2
+
 static meter_mode_t current_mode;
 
 #define MODE_TO_DIODESW(m) ((m) == METER_MODE_INCIDENT)
@@ -21,29 +23,8 @@ void meter_set_mode(meter_mode_t mode)
     current_mode = mode;
 }
 
-static void stabilize()
-{
-    // No idea why this works. Some kind of weird state seems to get trapped in the SPDT
-    // switch, and this seems to shake it out somehow.
-
-    meter_mode_t mode = current_mode;
-    // Following line is equivalent to:
-    //     GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 1);
-    INTEGCLR_GPIO_PORT->BSRR = INTEGCLR_PIN;
-    unsigned i;
-    for (i = 0; i < 10; ++i) {
-        // Following lines is equivalent to:
-        //     GPIO_WriteBit(DIODESW_GPIO_PORT, DIODESW_PIN, 1);
-        DIODESW_GPIO_PORT->BSRR = DIODESW_PIN;
-        unsigned j;
-        for (j = 0; j < 100; ++j);
-        // Following line is equivalent to:
-        //     GPIO_WriteBit(DIODESW_GPIO_PORT, DIODESW_PIN, 0);
-        DIODESW_GPIO_PORT->BRR = DIODESW_PIN;
-        for (j = 0; j < 100; ++j);
-    }
-    GPIO_WriteBit(DIODESW_GPIO_PORT, DIODESW_PIN, MODE_TO_DIODESW(mode));
-}
+#define fast_set_channel(channel)  (ADC1->CHSELR = (channel))
+#define fast_set_sample_time(time) ((ADC1->SMPR &= ADC_SMPR1_SMPR), (ADC1->SMPR |= (time)))
 
 void meter_init()
 {
@@ -83,22 +64,17 @@ void meter_init()
     ADC_Init(ADC1, &adci);
 
     // TODO: config to use both channels.
-    ADC1->CHSELR = ADC_Channel_1;
-    ADC_ChannelConfig(ADC1, ADC_Channel_1, ADC_SampleTime_13_5Cycles);
+    ADC1->CHSELR = CHAN;
+    ADC_ChannelConfig(ADC1, CHAN, ADC_SampleTime_13_5Cycles);
     ADC_GetCalibrationFactor(ADC1);
 
     ADC_Cmd(ADC1, ENABLE);
     while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
 }
 
-#define fast_set_channel(channel)  (ADC1->CHSELR = ADC_Channel_1)
-#define fast_set_sample_time(time) ((ADC1->SMPR &= ADC_SMPR1_SMPR), (ADC1->SMPR |= (time)))
-
 uint32_t meter_take_raw_nonintegrated_reading()
 {
-    stabilize();
-
-    fast_set_channel(ADC_Channel_1);
+    fast_set_channel(CHAN);
     fast_set_sample_time(ADC_SampleTime_239_5Cycles);
 
     GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 1);
@@ -110,7 +86,6 @@ uint32_t meter_take_raw_nonintegrated_reading()
     ADC_StartOfConversion(ADC1);
     while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
     uint16_t r = ADC_GetConversionValue(ADC1);
-    //ADC_ClearFlag(ADC1, ADC_FLAG_EOC);
 
     return r;
 }
@@ -123,9 +98,7 @@ static uint32_t STAGES[] = {
 
 void meter_take_raw_integrated_readings(uint16_t *outputs)
 {
-    stabilize();
-
-    fast_set_channel(ADC_Channel_1);
+    fast_set_channel(CHAN);
     fast_set_sample_time(ADC_SampleTime_13_5Cycles);
 
     uint32_t ends[NUM_AMP_STAGES];
@@ -182,7 +155,6 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
             // Following line is equivalent to:
             //     outputs[i] = ADC_GetConversionValue(ADC1);
             outputs[i] = ADC1->DR;
-            //ADC_ClearFlag(ADC1, ADC_FLAG_EOC);
 
             //uint32_t stb = SysTick->VAL;
             //debugging_writec("GAP: ");

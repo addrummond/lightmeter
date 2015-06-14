@@ -183,6 +183,8 @@ static __attribute__ ((unused)) void test_meter2()
 static __attribute__ ((unused)) void test_menu_scroll()
 {
     accel_init();
+    i2c_init();
+    display_init();
 
     meter_state_t *gms = &global_meter_state;
     gms->ui_mode = UI_MODE_MAIN_MENU;
