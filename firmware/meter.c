@@ -10,6 +10,7 @@
 #include <deviceconfig.h>
 #include <meter.h>
 #include <debugging.h>
+#include <exposure.h>
 
 #define CHAN (ADC_Channel_1 | ADC_Channel_2)
 
@@ -28,7 +29,7 @@ void meter_set_mode(meter_mode_t mode)
 
 static uint16_t adc_buffer[2];
 
-static void initial_dma_config()
+static void dma_config()
 {
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
     DMA_InitTypeDef dmai;
@@ -48,11 +49,6 @@ static void initial_dma_config()
     dmai.DMA_M2M = DMA_M2M_Disable;
     DMA_Init(DMA1_Channel1, &dmai);
     // DMA1 Channel1 enable.
-    DMA_Cmd(DMA1_Channel1, ENABLE);
-}
-
-static void refresh_dma_config()
-{
     DMA_Cmd(DMA1_Channel1, ENABLE);
 }
 
@@ -93,7 +89,6 @@ void meter_init()
     adci.ADC_ScanDirection = ADC_ScanDirection_Upward;
     ADC_Init(ADC1, &adci);
 
-    // TODO: config to use both channels.
     ADC1->CHSELR = CHAN;
     ADC_ChannelConfig(ADC1, CHAN, ADC_SampleTime_13_5Cycles);
     ADC_GetCalibrationFactor(ADC1);
@@ -104,7 +99,7 @@ void meter_init()
     ADC_Cmd(ADC1, ENABLE);
     while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
 
-    initial_dma_config();
+    dma_config();
 }
 
 uint32_t meter_take_raw_nonintegrated_reading()
@@ -113,7 +108,7 @@ uint32_t meter_take_raw_nonintegrated_reading()
     fast_set_sample_time(ADC_SampleTime_239_5Cycles);
 
     GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 1);
-    // Wait a bit for things to stablize.
+    // Wait a bit for things to stabilize.
     unsigned i;
     for (i = 0; i < 3000; ++i);
 
@@ -127,9 +122,7 @@ uint32_t meter_take_raw_nonintegrated_reading()
     //     while((DMA_GetFlagStatus(DMA1_FLAG_TC1)) == RESET);
     while ((DMA1->ISR & DMA1_FLAG_TC1) == RESET);
 
-    uint16_t r = adc_buffer[0];
-
-    return r;
+    return adc_buffer[0] | (adc_buffer[1] << 16);
 }
 
 #define st(x) STAGE ## x ##_TICKS,
@@ -181,6 +174,7 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
     //debugging_writec("\n");
 
     // Read cap voltage at each stage.
+    unsigned oi = 0;
     for (i = 0; i < NUM_AMP_STAGES;) {
         if (SysTick->VAL <= ends[i]) {
             //uint32_t stb = SysTick->VAL;
@@ -196,7 +190,8 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
             //     while((DMA_GetFlagStatus(DMA1_FLAG_TC1)) == RESET);
             while ((DMA1->ISR & DMA1_FLAG_TC1) == RESET);
 
-            outputs[i] = adc_buffer[0];
+            outputs[oi]   = adc_buffer[0];
+            outputs[oi+1] = adc_buffer[1];
 
             //uint32_t stb = SysTick->VAL;
             //debugging_writec("GAP: ");
@@ -204,6 +199,7 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
             //debugging_writec("\n");
 
             ++i;
+            oi += 2;
         }
     }
 
@@ -236,6 +232,34 @@ void meter_take_averaged_raw_integrated_readings(uint16_t *outputs, unsigned n)
         outputs[i] = outputs_total[i];
 }
 
+#define ND_FILTER_120TH_STOPS      (4*120)
+#define ND_FILTER_WHOLE_STOPS      (ND_FILTER_120TH_STOPS / 120)
+#define ND_FILTER_THIRD_REMAINDER  (ND_FILTER_120TH_STOPS % (120/3))
+#define ND_FILTER_EIGHTH_REMAINDER (ND_FILTER_120TH_STOPS % (120/8))
+#define ND_FILTER_TENTH_REMAINDER  (ND_FILTER_120TH_STOPS % (120/10))
+
+static ev_with_fracs_t add_extra_stops_for_nd_filter(ev_with_fracs_t evwf)
+{
+    // Since we don't currently have ND filter attached.
+    return evwf;
+
+    uint_fast8_t ev8 = ev_with_fracs_get_ev8(evwf);
+    ev8 += (8*ND_FILTER_WHOLE_STOPS) + ND_FILTER_EIGHTH_REMAINDER;
+    int_fast8_t thirds = ev_with_fracs_get_thirds(evwf);
+    thirds += ND_FILTER_THIRD_REMAINDER;
+    if (thirds >= 3)
+        thirds -= 3;
+    int_fast8_t tenths = ev_with_fracs_get_tenths(evwf);
+    tenths += ND_FILTER_TENTH_REMAINDER;
+    if (tenths >= 10)
+        tenths -= 10;
+    ev_with_fracs_t ret;
+    ev_with_fracs_init_from_ev8(ret, ev8);
+    ev_with_fracs_set_thirds(ret, thirds);
+    ev_with_fracs_set_tenths(ret, tenths);
+    return ret;
+}
+
 static uint_fast8_t getv(uint16_t v)
 {
     if (v % 16 >= 8)
@@ -247,31 +271,35 @@ static uint_fast8_t getv(uint16_t v)
 #define MAX12BITV 3500
 ev_with_fracs_t meter_take_integrated_reading()
 {
-    uint16_t outputs[NUM_AMP_STAGES];
+    uint16_t outputs[NUM_AMP_STAGES*2];
     meter_take_raw_integrated_readings(outputs);
 
     // unsigned x;
     // debugging_writec("RAW: ");
-    // for (x = 0; x < NUM_AMP_STAGES; ++x) {
+    // for (x = 0; x < NUM_AMP_STAGES*2; ++x) {
     //     if (x > 0)
     //         debugging_writec(", ");
     //     debugging_write_uint32(outputs[x]);
     // }
     // debugging_writec("\n");
 
-    ev_with_fracs_t evs[NUM_AMP_STAGES];
+    ev_with_fracs_t evs[NUM_AMP_STAGES*2];
 
-    unsigned n = 0, i;
-    for (i = 0; i < NUM_AMP_STAGES; ++i) {
+    unsigned n, i;
+    for (n = 0, i = 0; i < NUM_AMP_STAGES*2; ++i) {
         if (! (outputs[i] < VOLTAGE_OFFSET_12BIT || outputs[i] > MAX12BITV)) {
-            evs[n++] = get_ev100_at_voltage(getv(outputs[i]), i + 1);
+            ev_with_fracs_t ev = get_ev100_at_voltage(getv(outputs[i]), i + 1);
+            if (i % 2 == 1)
+                ev = add_extra_stops_for_nd_filter(ev);
+            evs[n++] = ev;
         }
     }
+
     if (n == 0) {
         if (outputs[NUM_AMP_STAGES-1] < VOLTAGE_OFFSET_12BIT)
-            return get_ev100_at_voltage(getv(outputs[NUM_AMP_STAGES-1]), NUM_AMP_STAGES);
+            return get_ev100_at_voltage(getv(outputs[NUM_AMP_STAGES-2]), NUM_AMP_STAGES);
         else
-            return get_ev100_at_voltage(getv(outputs[0]), 1);
+            return add_extra_stops_for_nd_filter(get_ev100_at_voltage(getv(outputs[0]), 1));
     }
     else {
         // debugging_writec("EV10s: ");

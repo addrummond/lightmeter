@@ -121,64 +121,53 @@ static __attribute__ ((unused)) void test_meter()
 {
     meter_init();
     meter_set_mode(METER_MODE_INCIDENT);
-    uint16_t outputs[NUM_AMP_STAGES];
+    uint16_t outputs[NUM_AMP_STAGES*2];
     unsigned m = 0;
     for (;;) {
+        /*debugging_writec("----- ");
+        if (m == 0)
+            debugging_writec("INCIDENT -----\n");
+        else
+            debugging_writec("REFLECTIVE -----\n");
+
         meter_take_raw_integrated_readings(outputs);
         debugging_writec("V: ");
         unsigned i;
-        for (i = 0; i < NUM_AMP_STAGES; ++i) {
-            if (i != 0)
-                debugging_writec(", ");
+        for (i = 0; i < NUM_AMP_STAGES*2; ++i) {
+            if (i != 0) {
+                if (i % 2 == 0)
+                    debugging_writec(";  ");
+                else
+                    debugging_writec(", ");
+            }
             debugging_write_uint32(outputs[i]);
         }
         debugging_writec("\n");
 
-        uint32_t v = meter_take_raw_nonintegrated_reading();
+        uint32_t vs = meter_take_raw_nonintegrated_reading();
         debugging_writec("NI: ");
-        debugging_write_uint32(v);
-        debugging_writec("\n");
+        debugging_write_uint32(vs & 0xFFFF);
+        debugging_writec(", ");
+        debugging_write_uint32(vs >> 16);
+        debugging_writec("\n");*/
 
         meter_set_mode(m == 0 ? METER_MODE_INCIDENT : METER_MODE_REFLECTIVE);
         m = !m;
 
-        //ev_with_fracs_t evwf = meter_take_integrated_reading();
-        //debugging_writec("EV 10ths: ");
-        //debugging_write_uint32((((int16_t)(ev_with_fracs_get_wholes(evwf)))-5)*10 + ev_with_fracs_get_tenths(evwf));
-        //debugging_writec("\n");
-    }
-}
+        ev_with_fracs_t evwf = meter_take_integrated_reading();
+        debugging_writec("EV 10ths: ");
 
-static __attribute__ ((unused)) void test_meter2()
-{
-    meter_init();
-    meter_set_mode(METER_MODE_REFLECTIVE);
-    const unsigned n = 20;
-    uint16_t outputs[(NUM_AMP_STAGES+1)*n];
-
-    for (;;) {
-
-    unsigned i;
-    for (i = 0; i < (NUM_AMP_STAGES+1)*n; i += NUM_AMP_STAGES+1) {
-        outputs[i] = meter_take_raw_nonintegrated_reading();
-        meter_take_raw_integrated_readings(outputs + i + 1);
-    }
-
-    debugging_writec("-----\n");
-    for (i = 0; i < (NUM_AMP_STAGES+1)*n; i += NUM_AMP_STAGES+1) {
-        debugging_writec("V: ");
-        unsigned j;
-        for (j = 0; j < (NUM_AMP_STAGES+1); ++j) {
-            if (j > 0)
-                debugging_writec(", ");
-            debugging_write_uint32(outputs[i+j]);
+        int16_t val = (((int16_t)(ev_with_fracs_get_wholes(evwf)))-5)*10 + (int16_t)ev_with_fracs_get_tenths(evwf);
+        if (val < 0) {
+            debugging_writec("-");
+            val = -val;
         }
+        debugging_write_uint32(val / 10);
+        debugging_writec(".");
+        debugging_write_uint32(val % 10);
         debugging_writec("\n");
     }
-    debugging_writec("-----\n");
-    }
 }
-
 
 static __attribute__ ((unused)) void test_menu_scroll()
 {
