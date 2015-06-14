@@ -14,8 +14,7 @@
 
 static meter_mode_t current_mode;
 
-#define MODE_TO_DIODESW(m) ((m) == METER_MODE_INCIDENT)
-#define MODE_OTHER(m)      ((m) == METER_MODE_INCIDENT ? METER_MODE_REFLECTIVE : METER_MODE_INCIDENT)
+#define MODE_TO_DIODESW(m) ((m) == METER_MODE_REFLECTIVE)
 
 void meter_set_mode(meter_mode_t mode)
 {
