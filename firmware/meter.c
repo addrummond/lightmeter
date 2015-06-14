@@ -91,12 +91,16 @@ void meter_init()
     while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
 }
 
+#define fast_set_channel(channel)  (ADC1->CHSELR = ADC_Channel_1)
+#define fast_set_sample_time(time) ((ADC1->SMPR &= ADC_SMPR1_SMPR), (ADC1->SMPR |= (time)))
+
 uint32_t meter_take_raw_nonintegrated_reading()
 {
     stabilize();
 
-    ADC1->CHSELR = ADC_Channel_1;
-    ADC_ChannelConfig(ADC1, ADC_Channel_1, ADC_SampleTime_239_5Cycles);
+    fast_set_channel(ADC_Channel_1);
+    fast_set_sample_time(ADC_SampleTime_239_5Cycles);
+
     GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 1);
     // Wait a bit for things to stablize.
     unsigned i;
@@ -121,8 +125,8 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
 {
     stabilize();
 
-    ADC1->CHSELR = ADC_Channel_1;
-    ADC_ChannelConfig(ADC1, ADC_Channel_1, ADC_SampleTime_13_5Cycles);
+    fast_set_channel(ADC_Channel_1);
+    fast_set_sample_time(ADC_SampleTime_13_5Cycles);
 
     uint32_t ends[NUM_AMP_STAGES];
 
