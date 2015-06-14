@@ -4,13 +4,14 @@
 #include <stm32f0xx_rcc.h>
 #include <stm32f0xx_adc.h>
 #include <stm32f0xx_misc.h>
+#include <stm32f0xx_dma.h>
 
 #include <tables.h>
 #include <deviceconfig.h>
 #include <meter.h>
 #include <debugging.h>
 
-#define CHAN ADC_Channel_2
+#define CHAN (ADC_Channel_1 | ADC_Channel_2)
 
 static meter_mode_t current_mode;
 
@@ -24,6 +25,36 @@ void meter_set_mode(meter_mode_t mode)
 
 #define fast_set_channel(channel)  (ADC1->CHSELR = (channel))
 #define fast_set_sample_time(time) ((ADC1->SMPR &= ADC_SMPR1_SMPR), (ADC1->SMPR |= (time)))
+
+static uint16_t adc_buffer[2];
+
+static void initial_dma_config()
+{
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
+    DMA_InitTypeDef dmai;
+
+    // DMA1 Channel1 Config.
+    DMA_DeInit(DMA1_Channel1);
+    dmai.DMA_PeripheralBaseAddr = (uint32_t)(&(ADC1->DR));
+    dmai.DMA_MemoryBaseAddr = (uint32_t)adc_buffer;
+    dmai.DMA_DIR = DMA_DIR_PeripheralSRC;
+    dmai.DMA_BufferSize = sizeof(adc_buffer)/sizeof(uint16_t);
+    dmai.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+    dmai.DMA_MemoryInc = DMA_MemoryInc_Enable;
+    dmai.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
+    dmai.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
+    dmai.DMA_Mode = DMA_Mode_Circular;
+    dmai.DMA_Priority = DMA_Priority_High;
+    dmai.DMA_M2M = DMA_M2M_Disable;
+    DMA_Init(DMA1_Channel1, &dmai);
+    // DMA1 Channel1 enable.
+    DMA_Cmd(DMA1_Channel1, ENABLE);
+}
+
+static void refresh_dma_config()
+{
+    DMA_Cmd(DMA1_Channel1, ENABLE);
+}
 
 void meter_init()
 {
@@ -67,8 +98,13 @@ void meter_init()
     ADC_ChannelConfig(ADC1, CHAN, ADC_SampleTime_13_5Cycles);
     ADC_GetCalibrationFactor(ADC1);
 
+    ADC_DMARequestModeConfig(ADC1, ADC_DMAMode_OneShot);
+    ADC_DMACmd(ADC1, ENABLE);
+
     ADC_Cmd(ADC1, ENABLE);
     while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
+
+    initial_dma_config();
 }
 
 uint32_t meter_take_raw_nonintegrated_reading()
@@ -82,9 +118,16 @@ uint32_t meter_take_raw_nonintegrated_reading()
     for (i = 0; i < 3000; ++i);
 
     while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
-    ADC_StartOfConversion(ADC1);
-    while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
-    uint16_t r = ADC_GetConversionValue(ADC1);
+
+    // Following line is equivalent to:
+    //     ADC_StartOfConversion(ADC1); // Function call overhead is significant.
+    ADC1->CR |= (uint32_t)ADC_CR_ADSTART;
+
+    // Following line is equivalent to:
+    //     while((DMA_GetFlagStatus(DMA1_FLAG_TC1)) == RESET);
+    while ((DMA1->ISR & DMA1_FLAG_TC1) == RESET);
+
+    uint16_t r = adc_buffer[0];
 
     return r;
 }
@@ -99,6 +142,8 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
 {
     fast_set_channel(CHAN);
     fast_set_sample_time(ADC_SampleTime_13_5Cycles);
+
+    while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
 
     uint32_t ends[NUM_AMP_STAGES];
 
@@ -148,12 +193,10 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
             ADC1->CR |= (uint32_t)ADC_CR_ADSTART;
 
             // Following line is equivalent to:
-            //     while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET); // Function call overhead is signficant.
-            while ((ADC1->ISR & ADC_FLAG_EOC) == RESET);
+            //     while((DMA_GetFlagStatus(DMA1_FLAG_TC1)) == RESET);
+            while ((DMA1->ISR & DMA1_FLAG_TC1) == RESET);
 
-            // Following line is equivalent to:
-            //     outputs[i] = ADC_GetConversionValue(ADC1);
-            outputs[i] = ADC1->DR;
+            outputs[i] = adc_buffer[0];
 
             //uint32_t stb = SysTick->VAL;
             //debugging_writec("GAP: ");
