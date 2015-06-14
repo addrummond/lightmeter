@@ -146,13 +146,13 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
     for (i = 0; i < 3000; ++i); // Leave some time for cap to discharge.
 
     // Open the switch.
-
+    //
     // Following line is equivalent to:
-    //GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 0);
+    //     GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 0);
     INTEGCLR_GPIO_PORT->BRR = INTEGCLR_PIN;
 
-    // From here to start of first ADC conversion currently takes 66 cycles.
-    // 107 cycles to end of ADC conversion.
+    // From here to start of first ADC conversion currently takes 83 cycles.
+    // 148 cycles to end of ADC conversion.
     uint32_t st = SysTick->VAL;
 
     //uint32_t st2 = SysTick->VAL;
