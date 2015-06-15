@@ -49,7 +49,7 @@ FOR_EACH_AMP_STAGE(CASE)
         voltage -= VOLTAGE_TO_EV_ABS_OFFSET;
 
     uint_fast8_t absi = voltage >> 4;
-    uint_fast8_t bits_to_add = (voltage & 15) + 1; // (voltage % 16) + 1
+    uint_fast8_t bits_to_add = (voltage % 16) + 1;
 
     uint_fast8_t bit_pattern_indices = ev_diffs[absi];
     uint_fast8_t bits1 = ev_bitpatterns[bit_pattern_indices >> 4];
@@ -63,28 +63,24 @@ FOR_EACH_AMP_STAGE(CASE)
     }
 
     // See http://stackoverflow.com/questions/109023/how-to-count-the-number-of-set-bits-in-a-32-bit-integer
-    ret.ev = ev_abs[absi];
-    for (; bits1; ++ret.ev)
+    ev_with_fracs_set_ev8(ret, ev_abs[absi]);
+    for (; bits1; ev_with_fracs_set_ev8(ret, ev_with_fracs_get_ev8(ret)+1))
         bits1 &= bits1 - 1;
-    for (; bits2; ++ret.ev)
+    for (; bits2; ev_with_fracs_set_ev8(ret, ev_with_fracs_get_ev8(ret)+1))
         bits2 &= bits2 - 1;
-//#ifdef DEBUG
-//    tx_byte('B');
-//    tx_byte(ret.ev);
-//#endif
 
     // Calculate tenths.
     uint_fast8_t tenths_bit = ev_tenths[voltage >> 3];
     tenths_bit >>= (voltage & 0b111);
     tenths_bit &= 1;
-    int_fast8_t ret_tenths = tenth_below_eighth(ret.ev);
+    int_fast8_t ret_tenths = tenth_below_eighth(ev_with_fracs_get_ev8(ret));
     ret_tenths += tenths_bit;
 
     // Calculate thirds.
     uint_fast8_t thirds_bit = ev_thirds[voltage >> 3];
     thirds_bit >>= (voltage & 0b111);
     thirds_bit &= 0b11;
-    int_fast8_t ret_thirds = third_below_eighth(ret.ev);
+    int_fast8_t ret_thirds = third_below_eighth(ev_with_fracs_get_ev8(ret));
     ret_thirds += thirds_bit;
 
     // Note behavior of '%' with respect to negative numbers. E.g. -3 % 8 == 5.
@@ -122,12 +118,12 @@ void shutter_speed_to_string(ev_with_fracs_t evwf, shutter_string_output_t *sso,
     //precision_mode_t orig_precision_mode = precision_mode;
     normalize_precision_to_tenth_eighth_or_third(&precision_mode, &evwf);
 
-    if (evwf.ev >= SHUTTER_SPEED_MAX) {
-        evwf.ev = SHUTTER_SPEED_MAX;
+    if (ev_with_fracs_get_ev8(evwf) >= SHUTTER_SPEED_MAX) {
+        ev_with_fracs_set_ev8(evwf, SHUTTER_SPEED_MAX);
         ev_with_fracs_zero_fracs(evwf);
     }
 
-    uint_fast8_t shutev = evwf.ev;
+    uint_fast8_t shutev = ev_with_fracs_get_ev8(evwf);
 
     uint8_t *schars;
     if (precision_mode == PRECISION_MODE_THIRD) {
@@ -176,12 +172,12 @@ void aperture_to_string(ev_with_fracs_t evwf, aperture_string_output_t *aso, pre
     //precision_mode_t orig_precision_mode = precision_mode;
     normalize_precision_to_tenth_eighth_or_third(&precision_mode, &evwf);
 
-    if (evwf.ev >= AP_MAX) {
+    if (ev_with_fracs_get_ev8(evwf) >= AP_MAX) {
         evwf.ev = AP_MAX;
         ev_with_fracs_zero_fracs(evwf);
     }
 
-    uint_fast8_t apev = evwf.ev;
+    uint_fast8_t apev = ev_with_fracs_get_ev8(evwf);
 
     uint_fast8_t last = 0;
     if (precision_mode == PRECISION_MODE_THIRD) {

@@ -120,7 +120,7 @@ static __attribute__ ((unused)) void test_accel()
 static __attribute__ ((unused)) void test_meter()
 {
     meter_init();
-    meter_set_mode(METER_MODE_INCIDENT);
+    meter_set_mode(METER_MODE_REFLECTIVE);
     uint16_t outputs[NUM_AMP_STAGES*2];
     unsigned m = 0;
     for (;;) {
@@ -149,10 +149,10 @@ static __attribute__ ((unused)) void test_meter()
         debugging_write_uint32(vs & 0xFFFF);
         debugging_writec(", ");
         debugging_write_uint32(vs >> 16);
-        debugging_writec("\n");*/
+        debugging_writec("\n");
 
         meter_set_mode(m == 0 ? METER_MODE_INCIDENT : METER_MODE_REFLECTIVE);
-        m = !m;
+        m = !m;*/
 
         ev_with_fracs_t evwf = meter_take_integrated_reading();
         debugging_writec("EV 10ths: ");

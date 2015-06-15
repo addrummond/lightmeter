@@ -22,8 +22,8 @@ amp_timings = [ # In microseconds
     1.2,
     9,
     45,
-    200#,
-    #1000
+    200,
+    1000
 ]
 
 amp_normal_timing = 50.0
@@ -39,10 +39,8 @@ b_voltage_offset = int(round((voltage_offset/reference_voltage)*256))
 # See http://www.semicon.panasonic.co.jp/en/products/detail/?cat=CED7000&part=PNJ4K01F
 # http://www.mathportal.org/calculators/analytic-geometry/two-point-form-calculator.php
 def sensor_ua_to_lux(ua):
-    #incand_ratio = 1.1
-    #return ((100.0/43.0)*ua)/incand_ratio
-    # Using 'high gain' graph from http://www.mouser.com/ds/2/308/NOA1212-D-260440.pdf
-    return (1110.0/1111.0)*ua + 100.0/1111.0
+    incand_ratio = 1.1
+    return ((100.0/43.0)*ua)/incand_ratio
 
 def sensor_cap_time_and_mv_to_ua(us, mv):
     t = us/10e6

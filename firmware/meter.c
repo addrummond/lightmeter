@@ -151,8 +151,8 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
     //     GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 0);
     INTEGCLR_GPIO_PORT->BRR = INTEGCLR_PIN;
 
-    // From here to start of first ADC conversion currently takes 83 cycles.
-    // 148 cycles to end of ADC conversion.
+    // From here to start of first ADC conversion currently takes 65 cycles.
+    // 141 cycles to end of ADC conversion.
     uint32_t st = SysTick->VAL;
 
     //uint32_t st2 = SysTick->VAL;
@@ -205,6 +205,17 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
 
     // Close the switch again.
     GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 1);
+
+    // Necessary to get things back to a stable state before next reading
+    // (probably because it allows ADC cap to discharge?)
+    //
+    // Following line is equivalent to:
+    //     ADC_StartOfConversion(ADC1); // Function call overhead is significant.
+    ADC1->CR |= (uint32_t)ADC_CR_ADSTART;
+
+    // Following line is equivalent to:
+    //     while((DMA_GetFlagStatus(DMA1_FLAG_TC1)) == RESET);
+    while ((DMA1->ISR & DMA1_FLAG_TC1) == RESET);
 }
 
 void meter_take_averaged_raw_integrated_readings(uint16_t *outputs, unsigned n)
@@ -232,7 +243,7 @@ void meter_take_averaged_raw_integrated_readings(uint16_t *outputs, unsigned n)
         outputs[i] = outputs_total[i];
 }
 
-#define ND_FILTER_120TH_STOPS      (4*120)
+#define ND_FILTER_120TH_STOPS      ((int)(3.5f*120.0f))
 #define ND_FILTER_WHOLE_STOPS      (ND_FILTER_120TH_STOPS / 120)
 #define ND_FILTER_THIRD_REMAINDER  (ND_FILTER_120TH_STOPS % (120/3))
 #define ND_FILTER_EIGHTH_REMAINDER (ND_FILTER_120TH_STOPS % (120/8))
@@ -240,9 +251,6 @@ void meter_take_averaged_raw_integrated_readings(uint16_t *outputs, unsigned n)
 
 static ev_with_fracs_t add_extra_stops_for_nd_filter(ev_with_fracs_t evwf)
 {
-    // Since we don't currently have ND filter attached.
-    return evwf;
-
     uint_fast8_t ev8 = ev_with_fracs_get_ev8(evwf);
     ev8 += (8*ND_FILTER_WHOLE_STOPS) + ND_FILTER_EIGHTH_REMAINDER;
     int_fast8_t thirds = ev_with_fracs_get_thirds(evwf);
@@ -263,43 +271,71 @@ static ev_with_fracs_t add_extra_stops_for_nd_filter(ev_with_fracs_t evwf)
 static uint_fast8_t getv(uint16_t v)
 {
     if (v % 16 >= 8)
-        v += 16;
+        v += 8;
     v >>= 4;
     return (uint_fast8_t)v;
 }
 
 #define MAX12BITV 3500
+
+//#define EXCLUDE_ND_SENSORS
+
+#define HAS_ND_FILTER(n) \
+    ((current_mode == METER_MODE_REFLECTIVE && (n) % 2 == 0) || (current_mode == METER_MODE_INCIDENT && (n) % 2 == 1))
+#define LOWEST_AMPLIFICATION_WITH_ND_FILTER \
+    (current_mode == METER_MODE_REFLECTIVE ? 0 : 1)
+#define HIGHEST_AMPLIFICATION_WITHOUT_ND_FILTER \
+    (current_mode == METER_MODE_REFLECTIVE ? NUM_AMP_STAGES-1 : NUM_AMP_STAGES-2)
+
 ev_with_fracs_t meter_take_integrated_reading()
 {
     uint16_t outputs[NUM_AMP_STAGES*2];
     meter_take_raw_integrated_readings(outputs);
 
-    // unsigned x;
-    // debugging_writec("RAW: ");
-    // for (x = 0; x < NUM_AMP_STAGES*2; ++x) {
-    //     if (x > 0)
-    //         debugging_writec(", ");
-    //     debugging_write_uint32(outputs[x]);
-    // }
-    // debugging_writec("\n");
+//     unsigned x;
+//     debugging_writec("RAW: ");
+//     for (x = 0; x < NUM_AMP_STAGES*2; ++x) {
+// #ifdef EXCLUDE_ND_SENSORS
+//         if (HAS_ND_FILTER(x))
+//             continue;
+// #endif
+//
+//         if (x > 0) {
+// #ifdef EXLCUDE_ND_SENSORS
+//             debugging_writec(", ");
+// #else
+//             if (x % 2 == 0)
+//                 debugging_writec(";  ");
+//             else
+//                 debugging_writec(", ");
+// #endif
+//         }
+//         debugging_write_uint32(outputs[x]);
+//     }
+//     debugging_writec("\n");
 
     ev_with_fracs_t evs[NUM_AMP_STAGES*2];
 
     unsigned n, i;
     for (n = 0, i = 0; i < NUM_AMP_STAGES*2; ++i) {
+#ifdef EXCLUDE_ND_SENSORS
+        if (HAS_ND_FILTER(i))
+            continue;
+#endif
+
         if (! (outputs[i] < VOLTAGE_OFFSET_12BIT || outputs[i] > MAX12BITV)) {
-            ev_with_fracs_t ev = get_ev100_at_voltage(getv(outputs[i]), i + 1);
-            if (i % 2 == 1)
+            ev_with_fracs_t ev = get_ev100_at_voltage(getv(outputs[i]), i/2 + 1);
+            if (HAS_ND_FILTER(i))
                 ev = add_extra_stops_for_nd_filter(ev);
             evs[n++] = ev;
         }
     }
 
     if (n == 0) {
-        if (outputs[NUM_AMP_STAGES-1] < VOLTAGE_OFFSET_12BIT)
-            return get_ev100_at_voltage(getv(outputs[NUM_AMP_STAGES-2]), NUM_AMP_STAGES);
+        if (outputs[HIGHEST_AMPLIFICATION_WITHOUT_ND_FILTER] < VOLTAGE_OFFSET_12BIT)
+            return get_ev100_at_voltage(getv(outputs[HIGHEST_AMPLIFICATION_WITHOUT_ND_FILTER]), NUM_AMP_STAGES);
         else
-            return add_extra_stops_for_nd_filter(get_ev100_at_voltage(getv(outputs[0]), 1));
+            return add_extra_stops_for_nd_filter(get_ev100_at_voltage(getv(outputs[LOWEST_AMPLIFICATION_WITH_ND_FILTER]), 1));
     }
     else {
         // debugging_writec("EV10s: ");
