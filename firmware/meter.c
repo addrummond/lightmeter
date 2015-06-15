@@ -131,7 +131,7 @@ static uint32_t STAGES[] = {
 };
 #undef st
 
-void meter_take_raw_integrated_readings(uint16_t *outputs)
+void __attribute__((optimize("O2"))) meter_take_raw_integrated_readings(uint16_t *outputs)
 {
     fast_set_channel(CHAN);
     fast_set_sample_time(ADC_SampleTime_13_5Cycles);
@@ -177,10 +177,10 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
     unsigned oi = 0;
     for (i = 0; i < NUM_AMP_STAGES;) {
         if (SysTick->VAL <= ends[i]) {
-            //uint32_t stb = SysTick->VAL;
-            //debugging_writec("GAP: ");
-            //debugging_write_uint32(st-stb);
-            //debugging_writec("\n");
+            // uint32_t stb = SysTick->VAL;
+            // debugging_writec("GAP: ");
+            // debugging_write_uint32(st-stb);
+            // debugging_writec("\n");
 
             // Following line is equivalent to:
             //     ADC_StartOfConversion(ADC1); // Function call overhead is significant.
