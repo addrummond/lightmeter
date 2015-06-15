@@ -218,28 +218,36 @@ void meter_take_raw_integrated_readings(uint16_t *outputs)
     while ((DMA1->ISR & DMA1_FLAG_TC1) == RESET);
 }
 
-void meter_take_averaged_raw_integrated_readings(uint16_t *outputs, unsigned n)
+void meter_take_averaged_raw_readings_(uint16_t *outputs, unsigned n, int mode)
 {
-    uint32_t outputs_total[NUM_AMP_STAGES];
+    unsigned len = (mode == 0 ? NUM_AMP_STAGES*2 : 2);
+    uint32_t outputs_total[len];
 
     unsigned i;
-    for (i = 0; i < NUM_AMP_STAGES; ++i)
+    for (i = 0; i < len; ++i)
         outputs_total[i] = 0;
     for (i = 0; i < n; ++i) {
-        meter_take_raw_integrated_readings(outputs);
+        if (mode == 0) {
+            meter_take_raw_integrated_readings(outputs);
+        }
+        else {
+            uint32_t vs = meter_take_raw_nonintegrated_reading();
+            outputs[0] = vs & 0xFFFF;
+            outputs[1] = vs >> 16;
+        }
         unsigned j;
-        for (j = 0; j < NUM_AMP_STAGES; ++j) {
+        for (j = 0; j < len; ++j) {
             outputs_total[j] += outputs[j] << 4;
         }
     }
-    for (i = 0; i < NUM_AMP_STAGES; ++i) {
+    for (i = 0; i < len; ++i) {
         outputs_total[i] /= n;
         if ((outputs_total[i] & 0b1111) >= 8)
             outputs_total[i] += 8;
         outputs_total[i] >>= 4;
     }
 
-    for (i = 0; i < NUM_AMP_STAGES; ++i)
+    for (i = 0; i < len; ++i)
         outputs[i] = outputs_total[i];
 }
 

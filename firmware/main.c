@@ -117,6 +117,42 @@ static __attribute__ ((unused)) void test_accel()
     }
 }
 
+static __attribute__ ((unused)) void show_calibration_info()
+{
+    meter_init();
+
+    uint16_t outputs_refl_integ[NUM_AMP_STAGES*2];
+    uint16_t outputs_inc_integ[NUM_AMP_STAGES*2];
+    uint16_t outputs_refl_noninteg[2];
+    uint16_t outputs_inc_noninteg[2];
+
+    for (;;) {
+        meter_set_mode(METER_MODE_REFLECTIVE);
+        meter_take_averaged_raw_integrated_readings(outputs_refl_integ, 10);
+        meter_take_averaged_raw_nonintegrated_readings(outputs_refl_noninteg, 10);
+
+        meter_set_mode(METER_MODE_INCIDENT);
+        meter_take_averaged_raw_integrated_readings(outputs_inc_integ, 10);
+        meter_take_averaged_raw_nonintegrated_readings(outputs_inc_noninteg, 10);
+
+        unsigned i;
+
+#define OUT(arr, n) \
+        for (i = 0; i < n; ++i) { \
+            debugging_write_uint32(outputs_refl_integ[i]); \
+            debugging_writec(", "); \
+        }
+
+        OUT(outputs_refl_integ, NUM_AMP_STAGES*2);
+        OUT(outputs_inc_integ, NUM_AMP_STAGES*2);
+        OUT(outputs_refl_noninteg, 2);
+        OUT(outputs_inc_noninteg, 2);
+#undef OUT
+
+        debugging_writec("\n");
+    }
+}
+
 static __attribute__ ((unused)) void test_meter()
 {
     meter_init();
@@ -238,7 +274,7 @@ int main()
     initialize_global_meter_state();
     initialize_global_transient_meter_state();
 
-    test_meter();
+    show_calibration_info();
     for(;;);
 
     //accel_init();
