@@ -143,9 +143,9 @@ static __attribute__ ((unused)) void show_calibration_info()
             debugging_writec(", "); \
         }
 
-        OUT(outputs_refl_integ, NUM_AMP_STAGES*2);
-        OUT(outputs_inc_integ, NUM_AMP_STAGES*2);
-        OUT(outputs_refl_noninteg, 2);
+        //OUT(outputs_refl_integ, NUM_AMP_STAGES*2);
+        //OUT(outputs_inc_integ, NUM_AMP_STAGES*2);
+        //OUT(outputs_refl_noninteg, 2);
         OUT(outputs_inc_noninteg, 2);
 #undef OUT
 
@@ -178,7 +178,7 @@ static __attribute__ ((unused)) void test_meter()
             }
             debugging_write_uint32(outputs[i]);
         }
-        debugging_writec("\n");
+        debugging_writec("\n");*/
 
         uint32_t vs = meter_take_raw_nonintegrated_reading();
         debugging_writec("NI: ");
@@ -188,9 +188,9 @@ static __attribute__ ((unused)) void test_meter()
         debugging_writec("\n");
 
         meter_set_mode(m == 0 ? METER_MODE_INCIDENT : METER_MODE_REFLECTIVE);
-        m = !m;*/
+        m = !m;
 
-        ev_with_fracs_t evwf = meter_take_integrated_reading();
+        /*ev_with_fracs_t evwf = meter_take_integrated_reading();
         debugging_writec("EV 10ths: ");
 
         int16_t val = (((int16_t)(ev_with_fracs_get_wholes(evwf)))-5)*10 + (int16_t)ev_with_fracs_get_tenths(evwf);
@@ -201,7 +201,7 @@ static __attribute__ ((unused)) void test_meter()
         debugging_write_uint32(val / 10);
         debugging_writec(".");
         debugging_write_uint32(val % 10);
-        debugging_writec("\n");
+        debugging_writec("\n");*/
     }
 }
 
@@ -275,6 +275,7 @@ int main()
     initialize_global_transient_meter_state();
 
     show_calibration_info();
+    //test_meter();
     for(;;);
 
     //accel_init();
