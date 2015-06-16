@@ -133,12 +133,12 @@ static __attribute__ ((unused)) void show_calibration_info()
         //buttons_clear_mask();
 
         meter_set_mode(METER_MODE_REFLECTIVE);
-        meter_take_averaged_raw_integrated_readings(outputs_refl_integ, 10);
-        meter_take_averaged_raw_nonintegrated_readings(outputs_refl_noninteg, 10);
+        meter_take_averaged_raw_integrated_readings(outputs_refl_integ, NOISE_FILTER_MODE_MAINS, 20);
+        meter_take_averaged_raw_nonintegrated_readings(outputs_refl_noninteg, NOISE_FILTER_MODE_MAINS, 20);
 
         meter_set_mode(METER_MODE_INCIDENT);
-        meter_take_averaged_raw_integrated_readings(outputs_inc_integ, 10);
-        meter_take_averaged_raw_nonintegrated_readings(outputs_inc_noninteg, 10);
+        meter_take_averaged_raw_integrated_readings(outputs_inc_integ, NOISE_FILTER_MODE_MAINS, 20);
+        meter_take_averaged_raw_nonintegrated_readings(outputs_inc_noninteg, NOISE_FILTER_MODE_MAINS, 20);
 
         unsigned i;
 
