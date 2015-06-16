@@ -127,6 +127,11 @@ static __attribute__ ((unused)) void show_calibration_info()
     uint16_t outputs_inc_noninteg[2];
 
     for (;;) {
+        unsigned mask = buttons_get_mask();
+        if (mask == 0)
+            continue;
+        buttons_clear_mask();
+
         meter_set_mode(METER_MODE_REFLECTIVE);
         meter_take_averaged_raw_integrated_readings(outputs_refl_integ, 10);
         meter_take_averaged_raw_nonintegrated_readings(outputs_refl_noninteg, 10);
@@ -143,9 +148,9 @@ static __attribute__ ((unused)) void show_calibration_info()
             debugging_writec(", "); \
         }
 
-        //OUT(outputs_refl_integ, NUM_AMP_STAGES*2);
-        //OUT(outputs_inc_integ, NUM_AMP_STAGES*2);
-        //OUT(outputs_refl_noninteg, 2);
+        OUT(outputs_refl_integ, NUM_AMP_STAGES*2);
+        OUT(outputs_inc_integ, NUM_AMP_STAGES*2);
+        OUT(outputs_refl_noninteg, 2);
         OUT(outputs_inc_noninteg, 2);
 #undef OUT
 
@@ -274,8 +279,8 @@ int main()
     initialize_global_meter_state();
     initialize_global_transient_meter_state();
 
-    //show_calibration_info();
-    test_meter();
+    show_calibration_info();
+    //test_meter();
     for(;;);
 
     //accel_init();
