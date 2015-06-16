@@ -127,10 +127,10 @@ static __attribute__ ((unused)) void show_calibration_info()
     uint16_t outputs_inc_noninteg[2];
 
     for (;;) {
-        unsigned mask = buttons_get_mask();
-        if (mask == 0)
-            continue;
-        buttons_clear_mask();
+        //unsigned mask = buttons_get_mask();
+        //if (mask == 0)
+        //    continue;
+        //buttons_clear_mask();
 
         meter_set_mode(METER_MODE_REFLECTIVE);
         meter_take_averaged_raw_integrated_readings(outputs_refl_integ, 10);
@@ -165,7 +165,7 @@ static __attribute__ ((unused)) void test_meter()
     uint16_t outputs[NUM_AMP_STAGES*2];
     unsigned m = 0;
     for (;;) {
-        /*debugging_writec("----- ");
+        debugging_writec("----- ");
         if (m == 0)
             debugging_writec("INCIDENT -----\n");
         else
@@ -185,7 +185,7 @@ static __attribute__ ((unused)) void test_meter()
         }
         debugging_writec("\n");
 
-        uint32_t vs = meter_take_raw_nonintegrated_reading();
+        /*uint32_t vs = meter_take_raw_nonintegrated_reading();
         debugging_writec("NI: ");
         debugging_write_uint32(vs & 0xFFFF);
         debugging_writec(", ");
@@ -193,7 +193,7 @@ static __attribute__ ((unused)) void test_meter()
         debugging_writec("\n");
 
         meter_set_mode(m == 0 ? METER_MODE_INCIDENT : METER_MODE_REFLECTIVE);
-        m = !m;*/
+        m = !m;
 
         ev_with_fracs_t evwf = meter_take_integrated_reading();
         debugging_writec("EV 10ths: ");
@@ -206,7 +206,7 @@ static __attribute__ ((unused)) void test_meter()
         debugging_write_uint32(val / 10);
         debugging_writec(".");
         debugging_write_uint32(val % 10);
-        debugging_writec("\n");
+        debugging_writec("\n");*/
     }
 }
 

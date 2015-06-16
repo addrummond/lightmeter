@@ -29,29 +29,6 @@ void meter_set_mode(meter_mode_t mode)
 
 static uint16_t adc_buffer[2];
 
-static void dma_config()
-{
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
-    DMA_InitTypeDef dmai;
-
-    // DMA1 Channel1 Config.
-    DMA_DeInit(DMA1_Channel1);
-    dmai.DMA_PeripheralBaseAddr = (uint32_t)(&(ADC1->DR));
-    dmai.DMA_MemoryBaseAddr = (uint32_t)adc_buffer;
-    dmai.DMA_DIR = DMA_DIR_PeripheralSRC;
-    dmai.DMA_BufferSize = sizeof(adc_buffer)/sizeof(uint16_t);
-    dmai.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-    dmai.DMA_MemoryInc = DMA_MemoryInc_Enable;
-    dmai.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
-    dmai.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
-    dmai.DMA_Mode = DMA_Mode_Circular;
-    dmai.DMA_Priority = DMA_Priority_High;
-    dmai.DMA_M2M = DMA_M2M_Disable;
-    DMA_Init(DMA1_Channel1, &dmai);
-    // DMA1 Channel1 enable.
-    DMA_Cmd(DMA1_Channel1, ENABLE);
-}
-
 void meter_init()
 {
     GPIO_InitTypeDef gpi;
@@ -99,7 +76,25 @@ void meter_init()
     ADC_Cmd(ADC1, ENABLE);
     while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
 
-    dma_config();
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
+    DMA_InitTypeDef dmai;
+
+    // DMA1 Channel1 Config.
+    DMA_DeInit(DMA1_Channel1);
+    dmai.DMA_PeripheralBaseAddr = (uint32_t)(&(ADC1->DR));
+    dmai.DMA_MemoryBaseAddr = (uint32_t)adc_buffer;
+    dmai.DMA_DIR = DMA_DIR_PeripheralSRC;
+    dmai.DMA_BufferSize = sizeof(adc_buffer)/sizeof(uint16_t);
+    dmai.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+    dmai.DMA_MemoryInc = DMA_MemoryInc_Enable;
+    dmai.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
+    dmai.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
+    dmai.DMA_Mode = DMA_Mode_Circular;
+    dmai.DMA_Priority = DMA_Priority_High;
+    dmai.DMA_M2M = DMA_M2M_Disable;
+    DMA_Init(DMA1_Channel1, &dmai);
+    // DMA1 Channel1 enable.
+    DMA_Cmd(DMA1_Channel1, ENABLE);
 }
 
 uint32_t meter_take_raw_nonintegrated_reading()
