@@ -149,8 +149,8 @@ void __attribute__((optimize("O2"))) meter_take_raw_integrated_readings(uint16_t
     //     GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 0);
     INTEGCLR_GPIO_PORT->BRR = INTEGCLR_PIN;
 
-    // From here to start of first ADC conversion currently takes 26 cycles.
-    // 91 cycles to end of ADC conversion.
+    // From here to start of first ADC conversion currently takes 35 cycles.
+    // 99 cycles to end of ADC conversion.
     uint32_t st = SysTick->VAL;
 
     //uint32_t st2 = SysTick->VAL;
@@ -160,6 +160,7 @@ void __attribute__((optimize("O2"))) meter_take_raw_integrated_readings(uint16_t
 
     // Determine value of SysTick for each endpoint.
     uint32_t current_endpoint = st - STAGES[i];
+    bool lt = (current_endpoint <= st);
 
     // Appears not to be necessary. (Has no discernable effect on accuracy.)
     //
@@ -173,7 +174,7 @@ void __attribute__((optimize("O2"))) meter_take_raw_integrated_readings(uint16_t
     // Read cap voltage at each stage.
     unsigned oi = 0;
     for (i = 0;;) {
-        if (SysTick->VAL <= current_endpoint) {
+        if ((lt && (SysTick->VAL <= current_endpoint)) || (!lt && (SysTick->VAL >= current_endpoint))) {
             //uint32_t stb = SysTick->VAL;
             //debugging_writec("GAP: ");
             //debugging_write_uint32(st-stb);
@@ -198,10 +199,13 @@ void __attribute__((optimize("O2"))) meter_take_raw_integrated_readings(uint16_t
             ++i;
             oi += 2;
 
-            if (i < NUM_AMP_STAGES)
+            if (i < NUM_AMP_STAGES) {
                 current_endpoint = st - STAGES[i];
-            else
+                lt = (current_endpoint < st);
+            }
+            else {
                 break;
+            }
         }
     }
 
