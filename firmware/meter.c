@@ -131,7 +131,7 @@ static uint32_t STAGES[] = {
 };
 #undef st
 
-void __attribute__((optimize("O2"))) meter_take_raw_integrated_readings(uint16_t *outputs)
+void meter_take_raw_integrated_readings(uint16_t *outputs)
 {
     fast_set_channel(CHAN);
     fast_set_sample_time(ADC_SampleTime_13_5Cycles);
@@ -149,8 +149,8 @@ void __attribute__((optimize("O2"))) meter_take_raw_integrated_readings(uint16_t
     //     GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 0);
     INTEGCLR_GPIO_PORT->BRR = INTEGCLR_PIN;
 
-    // From here to start of first ADC conversion currently takes 35 cycles.
-    // 99 cycles to end of ADC conversion.
+    // From here to first check against SysTick takes 21 cycles.
+    // ADC conversion itself takes 20 cycles.
     uint32_t st = SysTick->VAL;
 
     //uint32_t st2 = SysTick->VAL;
@@ -174,11 +174,13 @@ void __attribute__((optimize("O2"))) meter_take_raw_integrated_readings(uint16_t
     // Read cap voltage at each stage.
     unsigned oi = 0;
     for (i = 0;;) {
+        //uint32_t stb = SysTick->VAL;
+        //debugging_writec("GAP: ");
+        //debugging_write_uint32(st-stb);
+        //debugging_writec("\n");
+
         if ((lt && (SysTick->VAL <= current_endpoint)) || (!lt && (SysTick->VAL >= current_endpoint))) {
-            //uint32_t stb = SysTick->VAL;
-            //debugging_writec("GAP: ");
-            //debugging_write_uint32(st-stb);
-            //debugging_writec("\n");
+            //uint32_t sta = SysTick->VAL;
 
             // Following line is equivalent to:
             //     ADC_StartOfConversion(ADC1); // Function call overhead is significant.
@@ -190,7 +192,7 @@ void __attribute__((optimize("O2"))) meter_take_raw_integrated_readings(uint16_t
 
             //uint32_t stb = SysTick->VAL;
             //debugging_writec("GAP: ");
-            //debugging_write_uint32(st-stb);
+            //debugging_write_uint32(sta-stb);
             //debugging_writec("\n");
 
             outputs[oi]   = adc_buffer[0];
@@ -212,7 +214,7 @@ void __attribute__((optimize("O2"))) meter_take_raw_integrated_readings(uint16_t
     // Close the switch again.
     //
     // Following line is equivalent to:
-    //     GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 1);
+    //     GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 0);
     INTEGCLR_GPIO_PORT->BSRR = INTEGCLR_PIN;
 
     // Subsequent code is necessary to get things back to a stable state before
