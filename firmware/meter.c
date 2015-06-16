@@ -206,7 +206,10 @@ void __attribute__((optimize("O2"))) meter_take_raw_integrated_readings(uint16_t
     }
 
     // Close the switch again.
-    GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 1);
+    //
+    // Following line is equivalent to:
+    //     GPIO_WriteBit(INTEGCLR_GPIO_PORT, INTEGCLR_PIN, 1);
+    INTEGCLR_GPIO_PORT->BSRR = INTEGCLR_PIN;
 
     // Subsequent code is necessary to get things back to a stable state before
     // next reading (probably because it allows ADC cap to discharge?)
