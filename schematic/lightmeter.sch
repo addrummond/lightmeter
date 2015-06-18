@@ -12507,11 +12507,6 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <label x="93.98" y="48.26" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<pinref part="IC$4" gate="G$1" pin="PA10"/>
-<wire x1="0" y1="-12.7" x2="2.54" y2="-12.7" width="0.1524" layer="91"/>
-<label x="2.54" y="-12.7" size="1.778" layer="95" xref="yes"/>
-</segment>
-<segment>
 <pinref part="IC$4" gate="G$1" pin="PA7"/>
 <wire x1="-30.48" y1="-43.18" x2="-30.48" y2="-45.72" width="0.1524" layer="91"/>
 <label x="-30.48" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
@@ -12520,6 +12515,11 @@ new: Attribute TP_SIGNAL_NAME&lt;br&gt;
 <wire x1="116.332" y1="49.022" x2="126.492" y2="49.022" width="0.1524" layer="91"/>
 <label x="126.492" y="49.022" size="1.778" layer="95" xref="yes"/>
 <pinref part="ZN" gate="G$1" pin="P$1"/>
+</segment>
+<segment>
+<pinref part="IC$4" gate="G$1" pin="PB0"/>
+<wire x1="-25.4" y1="-43.18" x2="-25.4" y2="-45.72" width="0.1524" layer="91"/>
+<label x="-25.4" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 <net name="NRST" class="0">
