@@ -7,7 +7,6 @@
 1  R0402       130
 1  R0402       15k
 6  C0603       1u
-1  I0603       2u2
 5  R0402       390k
 8  C0402       4u7
 1  C0402       51p
@@ -26,6 +25,7 @@
 #
 # Specific part numbers to be ordered from Mouser/Digikey.
 #
+1  $MLZ1608N2R2L            # Shielded inductor for boost convertor         http://www.mouser.com/ProductDetail/TDK/MLZ1608N2R2L/?qs=QrqDVxFwtXntlYt4Qo1uwA%3D%3D
 1  $MMA8653FCR1             # Accelerometer                                 http://www2.mouser.com/ProductDetail/Freescale-Semiconductor/MMA8653FCR1/?qs=%2fha2pyFaduhgHMtClyI%2fW4qNUqEUKPs7ydp90IGoyPMPIABYp64Fqw%3d%3d
 1  $NLAS5223BMNR2G          # Dual SPDT analogue switch                     http://www2.mouser.com/ProductDetail/ON-Semiconductor/NLAS5223BMNR2G/?qs=%2fha2pyFaduj5KXfVaFbsSqETtxvti8Ot4Ot9LAkMydCtyFXXu%2f4AvQ%3d%3d
 1  $P13165-1                # Piezo bender                                  http://www2.mouser.com/ProductDetail/DB-Unlimited/P13165-1/?qs=sGAEpiMZZMvxTCYhU%252bW9mXjY60jM%2flOSfuD9xrvhdaM%3d
