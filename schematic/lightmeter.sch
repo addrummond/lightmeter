@@ -10328,7 +10328,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="P+1" library="supply1" deviceset="VCC" device=""/>
 <part name="IC$9" library="adafruit" deviceset="MCP73831" device="/OT"/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
-<part name="R18" library="resistor" deviceset="R-EU_" device="R0402" value="10k%"/>
+<part name="R18" library="resistor" deviceset="R-EU_" device="R0402" value="11k (1%)"/>
 <part name="GND26" library="supply1" deviceset="GND" device=""/>
 <part name="IC$1" library="lightmeter" deviceset="LM3671" device=""/>
 <part name="P+3" library="supply1" deviceset="VCC" device=""/>
@@ -10458,7 +10458,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <text x="-17.018" y="-75.438" size="1.778" layer="91">Pushbuttons (mouser 611-PTS540JM035SMTRL)</text>
 <text x="213.36" y="60.96" size="1.778" layer="91">Screen (C2P right, IREF left)</text>
 <text x="-152.4" y="-27.94" size="1.778" layer="91">Power muxer</text>
-<text x="-1.778" y="-141.478" size="1.778" layer="91">Charges at 100mA</text>
+<text x="-1.778" y="-141.478" size="1.778" layer="91">Charges at 90mA</text>
 <text x="-1.778" y="-141.478" size="1.778" layer="91">Charges at 100mA</text>
 <text x="30.48" y="66.04" size="1.778" layer="91">Acellerometer </text>
 <text x="-132.08" y="-53.34" size="1.778" layer="91">Linear regulator for ADC voltage supply (outputs 3.3V)</text>
@@ -10497,7 +10497,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="C28" gate="G$1" x="-1.778" y="-118.618" rot="R90"/>
 <instance part="GND28" gate="1" x="11.684" y="-118.618" rot="R90"/>
 <instance part="GND31" gate="1" x="-101.6" y="68.58" rot="R270"/>
-<instance part="R5" gate="G$1" x="-110.998" y="60.96"/>
+<instance part="R5" gate="G$1" x="-114.3" y="60.96"/>
 <instance part="C30" gate="G$1" x="-39.37" y="-132.588" rot="R180"/>
 <instance part="GND34" gate="1" x="-52.07" y="-135.128" rot="R270"/>
 <instance part="C17" gate="G$1" x="170.434" y="-15.24" rot="R90"/>
@@ -11030,8 +11030,9 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="R16" gate="G$1" pin="1"/>
 </segment>
 <segment>
-<wire x1="-116.84" y1="60.96" x2="-119.38" y2="60.96" width="0.1524" layer="91"/>
-<label x="-119.38" y="60.96" size="1.778" layer="95" rot="R180" xref="yes"/>
+<pinref part="R5" gate="G$1" pin="1"/>
+<wire x1="-119.38" y1="60.96" x2="-121.92" y2="60.96" width="0.1524" layer="91"/>
+<label x="-121.92" y="60.96" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="VREG" class="0">
@@ -11729,7 +11730,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="-83.82" y1="60.96" x2="-101.6" y2="60.96" width="0.1524" layer="91"/>
 <pinref part="R5" gate="G$1" pin="2"/>
 <pinref part="U1" gate="G$1" pin="D-"/>
-<wire x1="-101.6" y1="60.96" x2="-105.918" y2="60.96" width="0.1524" layer="91"/>
+<wire x1="-101.6" y1="60.96" x2="-109.22" y2="60.96" width="0.1524" layer="91"/>
 <junction x="-101.6" y="60.96"/>
 <wire x1="-101.6" y1="60.96" x2="-101.6" y2="53.34" width="0.1524" layer="91"/>
 <label x="-101.6" y="53.34" size="1.778" layer="95" xref="yes"/>

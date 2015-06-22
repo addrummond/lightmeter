@@ -2,8 +2,9 @@
 # Generic parts to be ordered from Mouser/Digikey.
 #
 # TODO TODO Add two caps for ADC input pins (values to be determined).
-4  R0402       10k
-2  R0402~0.1%  10k
+3  R0402       10k
+1  R0402~1%    11k
+2  R0402~0.1%  500
 1  R0402       130
 1  R0402       15k
 6  C0603       1u
