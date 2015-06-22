@@ -10454,7 +10454,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <sheet>
 <plain>
 <text x="-152.4" y="-7.62" size="1.778" layer="91">Battery (3.7V nominal)</text>
-<text x="-41.656" y="109.728" size="1.778" layer="91">Buck regulator LM3671 (outputs 2.8 volts)</text>
+<text x="-41.656" y="109.728" size="1.778" layer="91">Buck regulator LM3671 (outputs 3.3 volts)</text>
 <text x="-17.018" y="-75.438" size="1.778" layer="91">Pushbuttons (mouser 611-PTS540JM035SMTRL)</text>
 <text x="213.36" y="60.96" size="1.778" layer="91">Screen (C2P right, IREF left)</text>
 <text x="-152.4" y="-27.94" size="1.778" layer="91">Power muxer</text>
