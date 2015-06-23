@@ -11029,11 +11029,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="-121.92" y1="-124.46" x2="-116.84" y2="-124.46" width="0.1524" layer="91"/>
 <pinref part="R16" gate="G$1" pin="1"/>
 </segment>
-<segment>
-<pinref part="R5" gate="G$1" pin="1"/>
-<wire x1="-119.38" y1="60.96" x2="-121.92" y2="60.96" width="0.1524" layer="91"/>
-<label x="-121.92" y="60.96" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
 </net>
 <net name="VREG" class="0">
 <segment>
@@ -11113,6 +11108,11 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="R15" gate="G$1" pin="2"/>
 <wire x1="-68.58" y1="-99.06" x2="-68.58" y2="-104.14" width="0.1524" layer="91"/>
 <label x="-68.58" y="-104.14" size="1.778" layer="95" rot="R270" xref="yes"/>
+</segment>
+<segment>
+<pinref part="R5" gate="G$1" pin="1"/>
+<wire x1="-119.38" y1="60.96" x2="-121.92" y2="60.96" width="0.1524" layer="91"/>
+<label x="-121.92" y="60.96" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="N$19" class="0">
