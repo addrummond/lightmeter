@@ -10466,6 +10466,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <text x="210.058" y="-113.03" size="1.778" layer="91">Incident, no ND filter</text>
 <text x="106.68" y="33.02" size="1.778" layer="91">5V breakdown</text>
 <text x="105.156" y="124.46" size="1.778" layer="91">Microphone and preamp</text>
+<text x="33.02" y="106.68" size="1.778" layer="91">Jumper(s) for continuity of ground plane</text>
 </plain>
 <instances>
 <instance part="IC$3" gate="G$1" x="228.6" y="17.78"/>
