@@ -2554,8 +2554,8 @@ diameter 7.62 mm, horizontal, grid 12.7 mm</description>
 <wire x1="0.5588" y1="0.3302" x2="0.5588" y2="-0.3048" width="0.127" layer="22"/>
 </package>
 <package name="SOD-923">
-<smd name="P$1" x="-0.45" y="0" dx="0.45" dy="0.6" layer="1"/>
-<smd name="P$2" x="0.45" y="0" dx="0.45" dy="0.6" layer="1"/>
+<smd name="P$1" x="-0.45" y="0" dx="0.4246" dy="0.6" layer="1"/>
+<smd name="P$2" x="0.45" y="0" dx="0.4246" dy="0.6" layer="1"/>
 <wire x1="-0.7874" y1="0.381" x2="-0.7874" y2="-0.381" width="0.127" layer="21"/>
 <wire x1="-0.7874" y1="-0.381" x2="0.7874" y2="-0.381" width="0.127" layer="21"/>
 <wire x1="0.7874" y1="-0.381" x2="0.7874" y2="0.381" width="0.127" layer="21"/>
