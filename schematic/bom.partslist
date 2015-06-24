@@ -3,7 +3,7 @@
 #
 # TODO TODO Add two caps for ADC input pins (values to be determined).
 3  R0402       10k
-1  R0402~1%    11k
+1  R0402~1%    12k
 2  R0402~0.1%  500
 1  R0402       130
 1  R0402       15k
