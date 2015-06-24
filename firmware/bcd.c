@@ -16,8 +16,9 @@
 unsigned uint32_to_bcd(uint32_t n, uint8_t *digits)
 {
     uint32_t divisor = 10, l = 1;
-    while (n / divisor > 0)
+    while (n / divisor > 0 && divisor < UINT32_MAX/10) {
         ++l, divisor *= 10;
+    }
 
     unsigned j = l - 1;
     uint32_t d = 1;

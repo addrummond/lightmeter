@@ -13,7 +13,7 @@ if sys.version < '3':
 reference_voltage = 3300 # mV
 
 # Table cells not calculated for voltages lower than this.
-voltage_offset = 135 # mV
+voltage_offset = 200 # mV
 
 sensor_cap_value = 3300 # pF
 sensor_resistor_value = 500 # ohms
@@ -82,7 +82,7 @@ def voltage_and_timing_to_ev(v, timing):
 # values on the microcontroller.
 #
 # Voltage: from 0 up in 1/256ths of the reference voltage.
-# EV: from -5 to 26EV in 1/8 EV intervals.
+# EV: from -5 to 26EV in 1/10 EV intervals.
 #
 # The table is an array mapping voltage to EV*8. The resulting table
 # would take up 256 bytes.  To make
@@ -91,11 +91,6 @@ def voltage_and_timing_to_ev(v, timing):
 # values, where each 1-bit value indicates the (always positive)
 # difference with the previous value.  The table is therefore grouped
 # into triples of the form [ev diffs diffs].
-#
-# As it turns out, there are only a small number of distinct 8-bit
-# diffs patterns. We can therefore replace each [diffs diffs] sequence
-# with the sequence [ev i], where i is a single byte containing two
-# 4-bit indices (one for each 8-bit bit pattern) into an array.
 #
 # Finally, we split the array into two arrays (one for the absolute
 # value bytes and one for the diff bit pattern index bytes). This was
@@ -108,19 +103,32 @@ def voltage_and_timing_to_ev(v, timing):
 #
 
 def get_xth_bit(ev, x):
-    """Given a representation of a voltage, return either 0 or 1,
+    """Given an exposure value, return either 0 or 1,
        indicating respectively whether the voltage is nearest to the
        xth immediately below/equal to the eighth or to the xth
        immediately above it. If the differences are identical, returns 1.
        Storing these additional "tenth/third bits" makes it possible to report
        exposures to a 1/10EV and 1/3EV resolution with full accuracy."""
-    eighths = int(round(ev*8.0))
-    evv = ev % 1.0
-    first_third_above = 0.0
-    while first_third_above <= evv:
-        first_third_above += 1.0/x
-    diffdown = evv - (first_third_above - (1.0/x))
-    diffup = first_third_above - evv
+    ev10 = float(int(round(ev*10.0)))/10.0
+    ev10_1 = ev10%1.0
+    xth_above = 0.0
+    xth_below = 0.0
+    f = 0
+    while True:
+        if f > ev10_1:
+            xth_above = f
+            break
+        else:
+            xth_below = f
+        f += 1/x
+
+    above = float(int(ev10)) + xth_above
+    below = float(int(ev10)) + xth_below
+
+    #print("ev=%f, ev8=%f, ev8_1=%f, above=%f, below=%f" % (ev, ev8, ev8_1, above, below))
+
+    diffdown = abs(ev - below)
+    diffup = abs(ev - above)
     if diffdown < diffup:
         return 0
     else:
@@ -128,14 +136,14 @@ def get_xth_bit(ev, x):
 
 def get_third_bit(ev):
     return get_xth_bit(ev, 3.0)
-def get_tenth_bit(ev):
-    return get_xth_bit(ev, 10.0)
+def get_eighth_bit(ev):
+    return get_xth_bit(ev, 8.0)
 
 def output_ev_table(of, name_prefix, timing):
     bitpatterns = [ ]
     vallist_abs = [ ]
-    vallist_diffs = [ ]
-    tenth_bits = [ ]
+    diffbits = ""
+    eighth_bits = [ ]
     third_bits = [ ]
     for sv in range(b_voltage_offset, 256, 16):
         # Write the absolute 8-bit EV value.
@@ -144,21 +152,20 @@ def output_ev_table(of, name_prefix, timing):
         if voltage > reference_voltage:
             break
         ev = voltage_and_timing_to_ev(voltage, timing)
-        eight = int(round((ev+5.0) * 8.0))
+        eight = int(round((ev+5.0) * 10.0))
         if eight < 0:
             eight = 0
 
         # Write the 1-bit differences (two bytes).
         prev = eight
         num = ""
-        bpis = [ None, None ]
         for j in range(0, 2):
             eight2 = None
             o = ""
             for k in range(0, 8):
                 v = ((sv + (j * 8.0) + k) * bv_to_voltage)
                 ev2 = voltage_and_timing_to_ev(v, timing)
-                eight2 = int(round((ev2+5.0) * 8.0))
+                eight2 = int(round((ev2+5.0) * 10.0))
                 if eight2 < 0:
                     eight2 = 0
 #               sys.stderr.write(">>> %i %i\n" % (eight2, prev))
@@ -172,20 +179,13 @@ def output_ev_table(of, name_prefix, timing):
                     o += '1'
                 prev = eight2
 
-                tenth_bits.append(get_tenth_bit(ev2))
+                #print("ev2=%f, eight=%i, eight//8-5=%i, tenth=%i" % (ev2, eight, eight//8-5, get_tenth_bit(ev2)))
+                eighth_bits.append(get_eighth_bit(ev2))
                 third_bits.append(get_third_bit(ev2))
 
-            ix = None
-            try:
-                ix = bitpatterns.index(o)
-            except ValueError:
-                bitpatterns.append(o)
-                ix = len(bitpatterns)-1
-            assert ix < 16
-            bpis[j] = ix
+            diffbits += o
 
         vallist_abs.append(eight)
-        vallist_diffs.append(bpis[0] << 4 | bpis[1])
 
 #    for v in range(0, 16):
 #        for t in range(0, 256, 16):
@@ -204,16 +204,20 @@ def output_ev_table(of, name_prefix, timing):
         of.write('%i,' % vallist_abs[i])
     of.write('\n};\n')
 
-    of.write('const uint8_t ' + name_prefix + '_LIGHT_VOLTAGE_TO_EV_DIFFS[] = {')
-    for i in range(len(vallist_diffs)):
-        if i % 32 == 0:
-            of.write('\n    ');
-        of.write('%i,' % vallist_diffs[i])
+    of.write('const uint8_t ' + name_prefix + '_LIGHT_VOLTAGE_TO_EV_DIFFS[] = {\n    0b')
+    for i in range(0, len(diffbits), 8):
+        if i != 0:
+            of.write(", ")
+            if i % (4*8) == 0:
+                of.write("\n    ")
+            of.write("0b")
+        for j in range(min(i+7, len(diffbits)-1), i-1, -1):
+            of.write(diffbits[j])
     of.write('\n};\n')
 
     def write_x_bits(x):
-        name = "TENTHS" if x == 10 else "THIRDS"
-        xth_bits = tenth_bits if x == 10 else third_bits
+        name = "EIGHTHS" if x == 8 else "THIRDS"
+        xth_bits = eighth_bits if x == 8 else third_bits
         of.write('const uint8_t ' + name_prefix + ('_LIGHT_VOLTAGE_TO_EV_%s[] = { ' % name))
         bits = ['1' if x == 1 else '0' for x in xth_bits]
         bytes = [ ]
@@ -222,7 +226,7 @@ def output_ev_table(of, name_prefix, timing):
         of.write(', '.join(bytes))
         of.write(' };\n')
     write_x_bits(3)
-    write_x_bits(10)
+    write_x_bits(8)
 
     return True, None, ()
 
@@ -231,7 +235,7 @@ def output_ev_table(of, name_prefix, timing):
 # input pin.
 def output_sanity_graph():
     f = open("sanitygraph.csv", "w")
-    f.write("v," + ','.join(["s" + str(n+1) for n in range(len(amp_timings))]) + ',')
+    f.write("v," + ','.join(["s" + str(n+1) + ",ev8,f3,f10" for n in range(len(amp_timings))]) + ',')
     f.write(','.join(["b" + str(n+1) for n in range(len(amp_timings))]) + '\n')
     for v in range(b_voltage_offset, 256):
         f.write("%i" % v)
@@ -241,7 +245,7 @@ def output_sanity_graph():
             ev = voltage_and_timing_to_ev(voltage, amp_timings[stage])
             ev8 = int(round((ev + 5.0) * 8.0))
             bins.append(ev8)
-            f.write(",%f" % ev)
+            f.write(",%f,%f,%i,%i" % (ev, float(int(round(ev*8.0)))/8.0, get_third_bit(ev), get_eighth_bit(ev)))
         f.write("," + ",".join(map(str,bins)))
         f.write("\n")
     f.close()
@@ -266,13 +270,6 @@ def output_test_table(of):
         of.write("%i," % eight)
     of.write('\n')
     of.write('    }');
-
-def test_get_tenth_bit():
-    assert get_tenth_bit(0.5, True)    == 0
-    assert get_tenth_bit(0.4, True)    == 0
-    assert get_tenth_bit(0.875, True ) == 1
-    assert get_tenth_bit(99.875, True) == 1
-    assert get_tenth_bit(1.625, True)  == 0
 
 #
 # Shutter speed and aperture tables.
@@ -413,7 +410,7 @@ apertures_eighth = [
     '100', '104', '109', '114', '119', '124', '130', '135',
     '140', '148', '154', '161', '168', '176', '183', '192',
     '200', '209', '218', '228', '238', '248', '259', '271',
-    '280', '295', '308', '322', '336', '351', '367', '383',
+    '280', '295', '308', '322', '334', '351', '367', '383',
     '400', '418', '436', '456', '476', '497', '519', '542',
     '560', '591', '617', '644', '673', '703', '734', '766',
     '800', '835', '872', '911', '951', '993', '103', '108',
@@ -534,7 +531,7 @@ def output():
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_BITPATTERNS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_ABS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_DIFFS[];\n" % (i+1))
-        ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_TENTHS[];\n" % (i+1))
+        ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_EIGHTHS[];\n" % (i+1))
         ofh.write("extern const uint8_t STAGE%i_LIGHT_VOLTAGE_TO_EV_THIRDS[];\n" % (i+1))
         if not e:
             sys.stderr.write("R ERROR %.3f: %i (%.3f, %.3f) at stage %i\n" % (amp_timings[i], sv, pr[0], pr[1], i))
