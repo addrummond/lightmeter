@@ -572,17 +572,18 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
             return;
 
         // Compute strings for fractional EV values according to precision mode.
-        uint8_t ev = ev_with_fracs_get_ev8(tms.last_ev_with_fracs);
-        uint8_t tenths = ev_with_fracs_get_tenths(tms.last_ev_with_fracs);
-        uint8_t eighths = ev_with_fracs_get_eighths(tms.last_ev_with_fracs);
-        uint8_t thirds = ev_with_fracs_get_thirds(tms.last_ev_with_fracs);
-        if (ev < 5*8) {
+        int evwhole = ev_with_fracs_get_wholes(tms.last_ev_with_fracs);
+        int tenths = ev_with_fracs_get_nearest_tenths(tms.last_ev_with_fracs);
+        int eighths = ev_with_fracs_get_nearest_eighths(tms.last_ev_with_fracs);
+        int thirds = ev_with_fracs_get_nearest_thirds(tms.last_ev_with_fracs);
+        if (evwhole < 0) {
+            assert(evwhole > -10);
             func_state->ev_length = 2;
             func_state->ev_chars[0] = CHAR_8PX_MINUS_O;
-            func_state->ev_chars[1] = CHAR_8PX_0_O + CHAR_OFFSET_8PX(5 - (ev >> 3));
+            func_state->ev_chars[1] = CHAR_8PX_0_O + CHAR_OFFSET_8PX(-evwhole);
         }
         else {
-            func_state->ev_length = uint32_to_bcd((ev >> 3) - 5, func_state->ev_chars);
+            func_state->ev_length = uint32_to_bcd(evwhole, func_state->ev_chars);
             uint8_t i;
             for (i = 0; i < func_state->ev_length; ++i)
                 func_state->ev_chars[i] = CHAR_OFFSET_8PX(func_state->ev_chars[i]) + CHAR_8PX_0_O;
@@ -620,9 +621,8 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
 
     uint8_t i = 0;
 
-    int8_t exp_comp = ev_with_fracs_get_ev8(global_meter_state.exp_comp) * global_meter_state.exp_comp_sign;
-    if (exp_comp & 128) { // It's negative.
-        exp_comp = ~exp_comp + 1;
+    int32_t exp_comp_120 = ev_with_fracs_to_int32_120th(global_meter_state.exp_comp) * global_meter_state.exp_comp_sign;
+    if (exp_comp_120 < 0) { // It's negative.
         func_state->expcomp_chars[i++] = CHAR_8PX_MINUS_O;
     }
     else {
@@ -630,7 +630,7 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
     }
 
     // exp_comp is now positive.
-    uint8_t full_comp = exp_comp >> 3;
+    uint8_t full_comp = ev_with_fracs_get_wholes(global_meter_state.exp_comp);
     uint8_t full_d1 = 0, full_d2 = 0;
     if (full_comp > 9) {
         full_d1 = 1;
@@ -642,7 +642,7 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
         func_state->expcomp_chars[i++] = CHAR_8PX_0_O + CHAR_OFFSET_8PX(full_d1);
     func_state->expcomp_chars[i++] = CHAR_8PX_0_O + CHAR_OFFSET_8PX(full_d2);
 
-    uint8_t eighths = exp_comp & 0b111;
+    uint8_t eighths = ev_with_fracs_get_nearest_eighths(global_meter_state.exp_comp);
     if (eighths) {
         func_state->expcomp_chars[i++] = CHAR_8PX_PLUS_O;
         write_eighths_8px_chars(func_state->expcomp_chars + i, eighths);
@@ -668,7 +668,7 @@ void ui_bttm_status_line_at_6col(ui_bttm_status_line_state_t *func_state,
         }
     }
 
-    if (exp_comp == 0)
+    if (ev_with_fracs_is_zero(global_meter_state.exp_comp))
         return;
 
     // We're now two pixels behind alignment with the right edge of the display.

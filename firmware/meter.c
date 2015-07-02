@@ -274,28 +274,10 @@ void meter_take_averaged_raw_readings_(uint16_t *outputs, unsigned n, noise_filt
 }
 
 #define ND_FILTER_120TH_STOPS      ((int)(3.5f*120.0f))
-#define ND_FILTER_WHOLE_STOPS      (ND_FILTER_120TH_STOPS / 120)
-#define ND_FILTER_THIRD_REMAINDER  (ND_FILTER_120TH_STOPS % (120/3))
-#define ND_FILTER_EIGHTH_REMAINDER (ND_FILTER_120TH_STOPS % (120/8))
-#define ND_FILTER_TENTH_REMAINDER  (ND_FILTER_120TH_STOPS % (120/10))
 
 static ev_with_fracs_t add_extra_stops_for_nd_filter(ev_with_fracs_t evwf)
 {
-    uint_fast8_t ev8 = ev_with_fracs_get_ev8(evwf);
-    ev8 += (8*ND_FILTER_WHOLE_STOPS) + ND_FILTER_EIGHTH_REMAINDER;
-    int_fast8_t thirds = ev_with_fracs_get_thirds(evwf);
-    thirds += ND_FILTER_THIRD_REMAINDER;
-    if (thirds >= 3)
-        thirds -= 3;
-    int_fast8_t tenths = ev_with_fracs_get_tenths(evwf);
-    tenths += ND_FILTER_TENTH_REMAINDER;
-    if (tenths >= 10)
-        tenths -= 10;
-    ev_with_fracs_t ret;
-    ev_with_fracs_init_from_ev8(ret, ev8);
-    ev_with_fracs_set_thirds(ret, thirds);
-    ev_with_fracs_set_tenths(ret, tenths);
-    return ret;
+    return evwf + ND_FILTER_120TH_STOPS;
 }
 
 static uint_fast8_t getv(uint16_t v)

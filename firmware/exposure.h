@@ -63,6 +63,12 @@ typedef int_fast16_t ev_with_fracs_t;
 #define ev_with_fracs_is_whole(evwf)               ((evwf) % EV_WITH_FRACS_TH == 0)
 #define ev_with_fracs_zero_fracs(evwf)             ((evwf) -= ((evwf)%EV_WITH_FRACS_TH))
 
+#define ev_with_fracs_to_int32_256th(x) round_divide((((int32_t)(x))*256), 120)
+#define ev_with_fracs_to_int32_120th(x) ((int32_t)(x))
+#define ev_with_fracs_to_int32_100th(x) round_divide(((int32_t)(x))*100, 120)
+
+#define ev_with_fracs_is_zero(x) ((x) == 0)
+
 enum precision_mode;
 void shutter_speed_to_string(ev_with_fracs_t shutter_speed, shutter_string_output_t *eso, enum precision_mode precision_mode);
 void aperture_to_string(ev_with_fracs_t aperture, aperture_string_output_t *aso, enum precision_mode precision_mode);

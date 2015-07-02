@@ -28,10 +28,9 @@
 // 'voltage' is in 1/256ths of the reference voltage.
 ev_with_fracs_t get_ev100_at_voltage(uint_fast8_t voltage, uint_fast8_t amp_stage)
 {
-    const uint8_t *ev_abs = NULL, *ev_diffs = NULL, *ev_bitpatterns = NULL, *ev_eighths = NULL, *ev_thirds = NULL;
+    const uint8_t *ev_abs = NULL, *ev_diffs = NULL, *ev_eighths = NULL, *ev_thirds = NULL;
 #define ASSIGN(n) (ev_abs = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_ABS,                 \
                    ev_diffs = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_DIFFS,             \
-                   ev_bitpatterns = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_BITPATTERNS, \
                    ev_eighths = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_EIGHTHS,         \
                    ev_thirds = STAGE ## n ## _LIGHT_VOLTAGE_TO_EV_THIRDS)
 #define CASE(n) case n: ASSIGN(n); break;
@@ -372,10 +371,6 @@ uint_fast8_t iso_bcd_to_third_stops(uint8_t *digits, unsigned length)
         return t;
     }
 }
-
-#define ev_with_fracs_to_int32_256th(x) round_divide((((int32_t)(x))*256), 120)
-#define ev_with_fracs_to_int32_120th(x) ((int32_t)(x))
-#define ev_with_fracs_to_int32_100th(x) round_divide(((int32_t)(x))*100, 120)
 
 // This is called by the following macros defined in exposure.h:
 //

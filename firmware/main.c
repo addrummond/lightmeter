@@ -198,7 +198,7 @@ static __attribute__ ((unused)) void test_meter()
         ev_with_fracs_t evwf = meter_take_integrated_reading();
         debugging_writec("EV 10ths: ");
 
-        int16_t val = (((int16_t)(ev_with_fracs_get_wholes(evwf)))-5)*10 + (int16_t)ev_with_fracs_get_tenths(evwf);
+        int16_t val = (((int16_t)(ev_with_fracs_get_wholes(evwf)))-5)*10 + (int16_t)ev_with_fracs_get_nearest_tenths(evwf);
         if (val < 0) {
             debugging_writec("-");
             val = -val;
@@ -334,10 +334,10 @@ int main()
                 tms->last_ev_with_fracs = meter_take_integrated_reading();
 
                 debugging_writec("EV10: ");
-                debugging_write_uint32(ev_with_fracs_get_wholes(tms->last_ev_with_fracs)*10 + ev_with_fracs_get_tenths(tms->last_ev_with_fracs));
+                debugging_write_uint32(ev_with_fracs_get_wholes(tms->last_ev_with_fracs)*10 + ev_with_fracs_get_nearest_tenths(tms->last_ev_with_fracs));
                 debugging_writec("\n");
 
-                ev_with_fracs_init_from_ev8(tms->shutter_speed, 10*8);
+                ev_with_fracs_init_from_wholes(tms->shutter_speed, 10);
                 ev_with_fracs_t isoev;
                 ev_with_fracs_init_from_thirds(isoev, gms->iso);
                 tms->aperture = shutter_speed_given_aperture_iso_ev(tms->shutter_speed, isoev, tms->last_ev_with_fracs);
