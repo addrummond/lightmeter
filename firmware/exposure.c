@@ -91,7 +91,6 @@ FOR_EACH_AMP_STAGE(CASE)
     // sure we get back the right number of tenths, eighths and thirds.
     unsigned i;
     int32_t e1 = avg+1, e2 = avg-1;
-    int32_t r = -1000000;
     int32_t lowest = 1000000, highest = -1000000;
     for (i = 0; i < 120/4; ++i, ++e1, --e2) {
         int32_t ctenths1  = ev_with_fracs_get_nearest_tenths((ev_with_fracs_t)e1);
