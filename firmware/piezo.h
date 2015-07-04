@@ -14,17 +14,18 @@
 #define PIEZO_MIC_BUFFER_N_SAMPLES       256
 
 //
-// We're sampling at 239.5 clock cycles, running at 48MHz.
-// Thus, our sample rate is 200418Hz.
+// We're sampling at 239.5 clock cycles. ADC is running on asynch 14MHz clock.
+// Thus, our sample rate is 58455Hz.
 //
 // The coefficient for the Goetzel algorithm is calculated using the following
-// formula:
+// formula (JS code):
 //
-//     coeff = 2cos(2*pi*(f/200418))
+//     coeff = 2*Math.cos(2*Math.PI*(f/58455))
 //
 
 #define PIEZO_HFSDP_A_MODE_MASTER_CLOCK_HZ    5000.0
-#define PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF GOETZEL_FLOAT_TO_FIX(1.9754790747099111)
+//#define PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF GOETZEL_FLOAT_TO_FIX(1.9754790747099111)
+#define PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF GOETZEL_FLOAT_TO_FIX(1.7180463686839544)
 #define PIEZO_HFSDP_A_MODE_MASTER_DATA_HZ     6000.0
 #define PIEZO_HFSDP_A_MODE_MASTER_DATA_COEFF  GOETZEL_FLOAT_TO_FIX(1.9647216815939208)
 

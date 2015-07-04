@@ -81,6 +81,8 @@ void piezo_mic_init()
 
     ADC_DeInit(ADC1);
 
+    ADC_ClockModeConfig(ADC1, ADC_ClockMode_AsynClk);
+
     ADC_StructInit(&adci);
     adci.ADC_Resolution = ADC_Resolution_12b;
     adci.ADC_ContinuousConvMode = ENABLE;
@@ -293,9 +295,9 @@ bool piezo_hfsdp_listen_for_masters_init()
         //     debugging_writec("\n");
         // }
 
-        //debugging_writec("val ");
-        //debugging_write_uint32(p);
-        //debugging_writec("\n");
+        debugging_writec("val ");
+        debugging_write_uint32(p);
+        debugging_writec("\n");
 
         //uint32_t after = SysTick->VAL;
         //debugging_writec("time ");
