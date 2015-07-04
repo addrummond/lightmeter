@@ -2,9 +2,6 @@
 #include <stm32f0xx_gpio.h>
 #include <stm32f0xx_tim.h>
 #include <stm32f0xx_rcc.h>
-#include <stm32f0xx_adc.h>
-#include <stm32f0xx_misc.h>
-#include <stm32f0xx_dma.h>
 #include <goetzel.h>
 #include <piezo.h>
 #include <deviceconfig.h>
@@ -15,12 +12,11 @@
 // Microphone stuff.
 //
 
-#define MIC_OFFSET_ADC_V ((int)((1.3/3.3)*4096.0))
+//#define MIC_OFFSET_ADC_V ((int32_t)((1.3/3.3)*4096.0))
+// Empirically determined.
+#define MIC_OFFSET_ADC_V 1736
 
 __IO int16_t piezo_mic_buffer[PIEZO_MIC_BUFFER_N_SAMPLES];
-
-#define USE_DMA
-//#undef USE_DMA
 
 #ifdef USE_DMA
 static void dma_config()
@@ -38,13 +34,20 @@ static void dma_config()
     dmai.DMA_MemoryInc = DMA_MemoryInc_Enable;
     dmai.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
     dmai.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
-    dmai.DMA_Mode = DMA_Mode_Circular;
+    dmai.DMA_Mode = DMA_Mode_Normal;
     dmai.DMA_Priority = DMA_Priority_High;
     dmai.DMA_M2M = DMA_M2M_Disable;
     DMA_Init(DMA1_Channel1, &dmai);
     // DMA1 Channel1 enable.
     DMA_Cmd(DMA1_Channel1, ENABLE);
 }
+
+// TODO: See if we can trim this down a bit.
+static void dma_restart()
+{
+    dma_config();
+}
+
 #endif
 
 void piezo_mic_init()
@@ -90,7 +93,7 @@ void piezo_mic_init()
     ADC_GetCalibrationFactor(ADC1);
 
 #ifdef USE_DMA
-    ADC_DMARequestModeConfig(ADC1, ADC_DMAMode_Circular);
+    ADC_DMARequestModeConfig(ADC1, ADC_DMAMode_OneShot);
     ADC_DMACmd(ADC1, ENABLE);
 #endif
 
@@ -120,6 +123,9 @@ static void piezo_mic_wait_on_ready()
 void piezo_mic_read_buffer()
 {
 #ifdef USE_DMA
+    while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
+    ADC_StartOfConversion(ADC1);
+    dma_restart();
     while((DMA_GetFlagStatus(DMA1_FLAG_TC1)) == RESET);
     DMA_ClearFlag(DMA1_FLAG_TC1);
 #else
@@ -131,17 +137,15 @@ void piezo_mic_read_buffer()
 #endif
 }
 
-int16_t piezo_get_magnitude()
+int32_t piezo_get_magnitude()
 {
     int32_t total = 0;
     unsigned i;
     for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {
-        int16_t v = piezo_mic_buffer[i] - MIC_OFFSET_ADC_V;
-        if (v < 0)
-            v = -v;
-        total += v;
+        int32_t v = (int32_t)piezo_mic_buffer[i] - MIC_OFFSET_ADC_V;
+        total += v*v;
     }
-    return (int16_t)(total/PIEZO_MIC_BUFFER_N_SAMPLES);
+    return (total/PIEZO_MIC_BUFFER_N_SAMPLES);
 }
 
 
@@ -268,9 +272,6 @@ bool piezo_hfsdp_listen_for_masters_init()
         //uint32_t before = SysTick->VAL;
 
         piezo_mic_read_buffer();
-#ifdef USE_DMA
-        DMA_Cmd(DMA1_Channel1, DISABLE);
-#endif
 
         //unsigned i;
         //for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {
@@ -279,24 +280,18 @@ bool piezo_hfsdp_listen_for_masters_init()
         //}
         //debugging_writec("\n---\n");
 
-        debugging_writec("V: ");
-        debugging_write_uint32(piezo_get_magnitude());
-        debugging_writec("\n");
+        // debugging_writec("M: ");
+        // debugging_write_uint32(piezo_get_magnitude());
+        // debugging_writec("\n");
 
-        int p = 0;//goetzel((const uint16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF);
+        int p = goetzel((const uint16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF);
 
-        /*unsigned i;
-        for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i)
-            piezo_mic_buffer[i] = 3;
-        for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {
-            debugging_writec("V: ");
-            debugging_write_uint32(piezo_mic_buffer[i]);
-            debugging_writec("\n");
-        }*/
-
-#ifdef USE_DMA
-        DMA_Cmd(DMA1_Channel1, ENABLE);
-#endif
+        // unsigned i;
+        // for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {
+        //     debugging_writec("V: ");
+        //     debugging_write_uint32(piezo_mic_buffer[i]);
+        //     debugging_writec("\n");
+        // }
 
         //debugging_writec("val ");
         //debugging_write_uint32(p);

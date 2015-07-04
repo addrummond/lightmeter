@@ -20,6 +20,11 @@
 #include <meter.h>
 #include <tables.h>
 
+void HardFault_Handler()
+{
+    debugging_writec("HARD FAULT\n");
+}
+
 static __attribute__ ((unused)) void test_mic()
 {
     piezo_mic_init();
@@ -27,6 +32,7 @@ static __attribute__ ((unused)) void test_mic()
         piezo_mic_read_buffer();
         debugging_write_uint32(piezo_get_magnitude());
         debugging_writec("\n");
+        //piezo_hfsdp_listen_for_masters_init();
     }
 }
 
@@ -279,8 +285,7 @@ int main()
     initialize_global_meter_state();
     initialize_global_transient_meter_state();
 
-    show_calibration_info();
-    //test_meter();
+    test_mic();
     for(;;);
 
     //accel_init();
