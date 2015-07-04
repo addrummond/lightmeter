@@ -26,15 +26,12 @@ int32_t goetzel(const int16_t *samples, unsigned length, int32_t coeff)
     unsigned i;
     for (i = 0; i < length; ++i) {
         int32_t samplesi = samples[i];
-        total_power += MUL(samplesi,samplesi);
         int32_t s = samplesi + MUL(coeff, prev1) - prev2;
         prev2 = prev1;
         prev1 = s;
     }
 
     int32_t r = MUL(prev2,prev2) + MUL(prev1,prev1) - MUL(MUL(coeff,prev1),prev2);
-
-    r = DIV(r, total_power);
 
     // No point normalizing for length because we'll always be comparing buffers
     // of the same length.
