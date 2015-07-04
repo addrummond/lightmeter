@@ -10487,6 +10487,8 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
 <part name="P+4" library="supply1" deviceset="VCC" device=""/>
 <part name="D9" library="lightmeter" deviceset="SCHOTTKY-DIODE" device="SOD-929"/>
+<part name="C34" library="rcl" deviceset="C-EU" device="C0402" value="u1"/>
+<part name="GND48" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -10646,6 +10648,8 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="GND7" gate="1" x="-101.6" y="-136.652"/>
 <instance part="P+4" gate="VCC" x="-114.3" y="-124.46" rot="R90"/>
 <instance part="D9" gate="G$1" x="-101.6" y="-129.54" rot="R90"/>
+<instance part="C34" gate="G$1" x="83.82" y="127" rot="R90"/>
+<instance part="GND48" gate="1" x="76.2" y="127" rot="R270"/>
 </instances>
 <busses>
 </busses>
@@ -11031,6 +11035,11 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="GND7" gate="1" pin="GND"/>
 <pinref part="D9" gate="G$1" pin="A"/>
 </segment>
+<segment>
+<pinref part="C34" gate="G$1" pin="1"/>
+<wire x1="81.28" y1="127" x2="78.74" y2="127" width="0.1524" layer="91"/>
+<pinref part="GND48" gate="1" pin="GND"/>
+</segment>
 </net>
 <net name="VCC" class="0">
 <segment>
@@ -11276,7 +11285,11 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <segment>
 <pinref part="IC$1" gate="G$1" pin="VDD"/>
 <wire x1="93.98" y1="121.92" x2="93.98" y2="127" width="0.1524" layer="91"/>
-<label x="93.98" y="127" size="1.778" layer="95" rot="R90" xref="yes"/>
+<label x="93.98" y="129.54" size="1.778" layer="95" rot="R90" xref="yes"/>
+<pinref part="C34" gate="G$1" pin="2"/>
+<wire x1="93.98" y1="127" x2="93.98" y2="129.54" width="0.1524" layer="91"/>
+<wire x1="88.9" y1="127" x2="93.98" y2="127" width="0.1524" layer="91"/>
+<junction x="93.98" y="127"/>
 </segment>
 <segment>
 <pinref part="Q1" gate="G$1" pin="D"/>
