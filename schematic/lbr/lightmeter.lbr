@@ -2609,12 +2609,12 @@ diameter 7.62 mm, horizontal, grid 12.7 mm</description>
 <wire x1="-1.1176" y1="-0.4826" x2="-1.1176" y2="0.4826" width="0.127" layer="21"/>
 </package>
 <package name="PNJ4K01F">
-<smd name="P$1" x="-0.8425" y="0.56" dx="0.925" dy="0.40131875" layer="1"/>
-<smd name="P$2" x="-0.8425" y="0" dx="0.925" dy="0.3" layer="1"/>
-<smd name="P$3" x="-0.8425" y="-0.56" dx="0.925" dy="0.40131875" layer="1"/>
-<smd name="P$4" x="0.8425" y="-0.56" dx="0.925" dy="0.40131875" layer="1"/>
-<smd name="P$5" x="0.8425" y="0" dx="0.925" dy="0.3" layer="1"/>
-<smd name="P$6" x="0.8425" y="0.56" dx="0.925" dy="0.40131875" layer="1"/>
+<smd name="P$1" x="-0.8425" y="0.56" dx="0.8128" dy="0.40131875" layer="1"/>
+<smd name="P$2" x="-0.8425" y="0" dx="0.8128" dy="0.3" layer="1"/>
+<smd name="P$3" x="-0.8425" y="-0.56" dx="0.8128" dy="0.40131875" layer="1"/>
+<smd name="P$4" x="0.8425" y="-0.56" dx="0.8128" dy="0.40131875" layer="1"/>
+<smd name="P$5" x="0.8425" y="0" dx="0.8128" dy="0.3" layer="1"/>
+<smd name="P$6" x="0.8425" y="0.56" dx="0.8128" dy="0.40131875" layer="1"/>
 <wire x1="-0.55" y1="0.775" x2="0.55" y2="0.775" width="0.127" layer="21"/>
 <wire x1="-0.55" y1="-0.775" x2="0.55" y2="-0.775" width="0.127" layer="21"/>
 <wire x1="-0.55" y1="0.775" x2="-0.55" y2="-0.775" width="0.127" layer="21"/>
