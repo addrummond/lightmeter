@@ -91,7 +91,7 @@ void piezo_mic_init()
 
     ADC_ClockModeConfig(ADC1, ADC_ClockMode_AsynClk);
 
-    ADC_ChannelConfig(ADC1, ADC_Channel_9, ADC_SampleTime_239_5Cycles);
+    ADC_ChannelConfig(ADC1, ADC_Channel_9, ADC_SampleTime_71_5Cycles);
     ADC_GetCalibrationFactor(ADC1);
 
 #ifdef USE_DMA
@@ -124,6 +124,11 @@ static void piezo_mic_wait_on_ready()
 
 void piezo_mic_read_buffer()
 {
+#define sbuf ((int16_t *)piezo_mic_buffer)
+#define ubuf ((uint16_t *)piezo_mic_buffer)
+
+    unsigned i;
+
 #ifdef USE_DMA
     while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
     ADC_StartOfConversion(ADC1);
@@ -131,12 +136,22 @@ void piezo_mic_read_buffer()
     while((DMA_GetFlagStatus(DMA1_FLAG_TC1)) == RESET);
     DMA_ClearFlag(DMA1_FLAG_TC1);
 #else
-    unsigned i;
     for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i, piezo_mic_wait_on_ready()) {
-        int16_t v = ADC_GetConversionValue(ADC1);
+        uint16_t v = ADC_GetConversionValue(ADC1);
         piezo_mic_buffer[i] = v;
     }
 #endif
+
+    // Convert each value to signed 16-bit value using appropriate offset.
+    for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {
+        if (ubuf[i] < MIC_OFFSET_ADC_V)
+            sbuf[i] = -(int16_t)(MIC_OFFSET_ADC_V - ubuf[i]);
+        else
+            sbuf[i] = (int16_t)(ubuf[i]-MIC_OFFSET_ADC_V);
+    }
+
+#undef sbuf
+#undef ubuf
 }
 
 int32_t piezo_get_magnitude()
@@ -144,7 +159,7 @@ int32_t piezo_get_magnitude()
     int32_t total = 0;
     unsigned i;
     for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {
-        int32_t v = (int32_t)piezo_mic_buffer[i] - MIC_OFFSET_ADC_V;
+        int32_t v = piezo_mic_buffer[i];
         total += v*v;
     }
     return (total/PIEZO_MIC_BUFFER_N_SAMPLES);
@@ -286,7 +301,7 @@ bool piezo_hfsdp_listen_for_masters_init()
         // debugging_write_uint32(piezo_get_magnitude());
         // debugging_writec("\n");
 
-        int p = goetzel((const uint16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF);
+        int p = goetzel((const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF);
 
         // unsigned i;
         // for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {

@@ -8,12 +8,6 @@
 #include <assert.h>
 #endif
 
-// ADC samples are 12-bit.
-//
-// This module assumes that the raw ADC value has been converted to a SIGNED
-// 12-bit value.
-//
-
 static inline int32_t MUL(int32_t x, int32_t y)
 {
     return (x * y) >> (GOETZEL_ADC_VAL_BITS-1);
@@ -24,19 +18,15 @@ static inline int32_t DIV(int32_t x, int32_t y)
    return (x << (GOETZEL_ADC_VAL_BITS-1)) / y;
 }
 
-#define GOETZEL_NORMALIZE
-int32_t goetzel(const uint16_t *samples, unsigned length, int32_t coeff)
+int32_t goetzel(const int16_t *samples, unsigned length, int32_t coeff)
 {
-#ifdef GOETZEL_NORMALIZE
     int32_t total_power = 0;
-#endif
+
     int32_t prev1 = 0, prev2 = 0;
     unsigned i;
     for (i = 0; i < length; ++i) {
-        int32_t samplesi = samples[i] - 4096/2;
-#ifdef GOETZEL_NORMALIZE
+        int32_t samplesi = samples[i];
         total_power += MUL(samplesi,samplesi);
-#endif
         int32_t s = samplesi + MUL(coeff, prev1) - prev2;
         prev2 = prev1;
         prev1 = s;
@@ -44,13 +34,12 @@ int32_t goetzel(const uint16_t *samples, unsigned length, int32_t coeff)
 
     int32_t r = MUL(prev2,prev2) + MUL(prev1,prev1) - MUL(MUL(coeff,prev1),prev2);
 
-#ifdef GOETZEL_NORMALIZE
     r = DIV(r, total_power);
+
     // No point normalizing for length because we'll always be comparing buffers
     // of the same length.
     //
     // r = DIV(r, length);
-#endif
 
     if (r < 0)
         r = -r;
