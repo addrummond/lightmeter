@@ -81,8 +81,6 @@ void piezo_mic_init()
 
     ADC_DeInit(ADC1);
 
-    ADC_ClockModeConfig(ADC1, ADC_ClockMode_AsynClk);
-
     ADC_StructInit(&adci);
     adci.ADC_Resolution = ADC_Resolution_12b;
     adci.ADC_ContinuousConvMode = ENABLE;
@@ -90,6 +88,8 @@ void piezo_mic_init()
     adci.ADC_DataAlign = ADC_DataAlign_Right;
     adci.ADC_ScanDirection = ADC_ScanDirection_Upward;
     ADC_Init(ADC1, &adci);
+
+    ADC_ClockModeConfig(ADC1, ADC_ClockMode_AsynClk);
 
     ADC_ChannelConfig(ADC1, ADC_Channel_9, ADC_SampleTime_239_5Cycles);
     ADC_GetCalibrationFactor(ADC1);
