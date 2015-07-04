@@ -763,7 +763,7 @@ int main()
         evwf = aperture_given_shutter_speed_iso_ev(ssevwf, isoevwf, evwf);
         shutter_speed_to_string(ssevwf, &sso, PRECISION_MODE_EIGHTH);
         aperture_to_string(evwf, &aso, PRECISION_MODE_EIGHTH);
-        printf("ISO %f stops from 6,  %s  %s (EV = %.2f)   [%i, %i, %i : %i]\n",
+        printf("ISO %f stops from 0.8,  %s  %s (EV = %.2f)   [%i, %i, %i : %i]\n",
                ((float)is) / 3.0,
                SHUTTER_STRING_OUTPUT_STRING(sso),
                APERTURE_STRING_OUTPUT_STRING(aso),
@@ -784,11 +784,11 @@ int main()
         evwf = shutter_speed_given_aperture_iso_ev(apevwf, isoevwf, evwf);
         shutter_speed_to_string(evwf, &sso, PRECISION_MODE_EIGHTH);
         aperture_to_string(apevwf, &aso, PRECISION_MODE_EIGHTH);
-        printf("ISO %f stops from 6,  %s  %s (EV = %.2f)   [%i, %i, %i : %i]\n",
+        printf("ISO %f stops from 0.8,  %s  %s (EV = %.2f)   [%i, %i, %i : %i]\n",
                ((float)is) / 3.0,
                SHUTTER_STRING_OUTPUT_STRING(sso),
                APERTURE_STRING_OUTPUT_STRING(aso),
-               ((float)(((int_fast16_t)(ev))-(5*8)))/8.0,
+               ((float)(((int_fast16_t)(ev))))/8.0,
                is, ss, ev, ap);
     }
 
