@@ -48,12 +48,32 @@ static char *debugging_write_uint32_to_string(char *ds, uint32_t i)
     return ds;
 }
 
+static char *debugging_write_int32_to_string(char *ds, int32_t i)
+{
+    if (i >= 0) {
+        return debugging_write_uint32_to_string(ds, (uint32_t)i);
+    }
+    else {
+        char *beg = debugging_write_uint32_to_string(ds, (uint32_t)-i);
+        --beg;
+        *beg = '-';
+        return beg;
+    }
+}
+
 #ifndef TEST
 void debugging_write_uint32(uint32_t i)
 {
     char ds[10];
     char *beg = debugging_write_uint32_to_string(ds, i);
     debugging_write(beg, 10-(beg-ds));
+}
+
+void debugging_write_int32(int32_t i)
+{
+    char ds[11];
+    char *beg = debugging_write_int32_to_string(ds, i);
+    debugging_write(beg, 11-(beg-ds));
 }
 
 void debugging_write_uint16(uint16_t i)
@@ -76,7 +96,7 @@ int main()
 {
     char s8[11];
     s8[10] = '\0';
-    uint16_t i = 0;
+    uint32_t i = 0;
     const char *beg;
     do {
         beg = debugging_write_uint32_to_string(s8, i);
@@ -84,6 +104,17 @@ int main()
     } while (i++ < 65535);
     beg = debugging_write_uint32_to_string(s8, 1000000023);
     printf("%s\n", beg);
+
+    printf("\n\n*****\n\n");
+
+    int32_t j;
+    char s8_2[12];
+    s8_2[11] = '\0';
+    j = -65536;
+    do {
+        beg = debugging_write_int32_to_string(s8_2, j);
+        printf("%s\n", beg);
+    } while (j++ < 65536);
 }
 
 #endif

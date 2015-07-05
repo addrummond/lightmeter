@@ -7,5 +7,6 @@ void debugging_write(const char *string, uint32_t length);
 void debugging_write_uint8(uint8_t i);
 void debugging_write_uint16(uint16_t i);
 void debugging_write_uint32(uint32_t i);
+void debugging_write_int32(int32_t i);
 
 #endif
