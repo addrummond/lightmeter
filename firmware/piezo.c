@@ -14,9 +14,12 @@
 
 //#define MIC_OFFSET_ADC_V ((int32_t)((1.3/3.3)*4096.0))
 // Empirically determined.
-#define MIC_OFFSET_ADC_V 1736
+#define MIC_OFFSET_ADC_V 1113
 
-__IO int16_t piezo_mic_buffer[PIEZO_MIC_BUFFER_N_SAMPLES];
+// Some extra space at beginning to absorb junk values from first conversions.
+#define JUNK_SPACE 1
+__IO int16_t piezo_mic_buffer_[PIEZO_MIC_BUFFER_N_SAMPLES+JUNK_SPACE];
+__IO int16_t *piezo_mic_buffer = piezo_mic_buffer_ + JUNK_SPACE;
 
 #ifdef USE_DMA
 static void dma_config()
@@ -29,7 +32,7 @@ static void dma_config()
     dmai.DMA_PeripheralBaseAddr = (uint32_t)(&(ADC1->DR));
     dmai.DMA_MemoryBaseAddr = (uint32_t)piezo_mic_buffer;
     dmai.DMA_DIR = DMA_DIR_PeripheralSRC;
-    dmai.DMA_BufferSize = PIEZO_MIC_BUFFER_N_SAMPLES;
+    dmai.DMA_BufferSize = PIEZO_MIC_BUFFER_N_SAMPLES+JUNK_SPACE;
     dmai.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
     dmai.DMA_MemoryInc = DMA_MemoryInc_Enable;
     dmai.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
@@ -91,7 +94,7 @@ void piezo_mic_init()
 
     ADC_ClockModeConfig(ADC1, ADC_ClockMode_AsynClk);
 
-    ADC_ChannelConfig(ADC1, ADC_Channel_9, ADC_SampleTime_71_5Cycles);
+    ADC_ChannelConfig(ADC1, ADC_Channel_9, ADC_SampleTime_239_5Cycles);
     ADC_GetCalibrationFactor(ADC1);
 
 #ifdef USE_DMA
@@ -124,8 +127,8 @@ static void piezo_mic_wait_on_ready()
 
 void piezo_mic_read_buffer()
 {
-#define sbuf ((int16_t *)piezo_mic_buffer)
-#define ubuf ((uint16_t *)piezo_mic_buffer)
+#define sbuf ((int16_t *)piezo_mic_buffer_)
+#define ubuf ((uint16_t *)piezo_mic_buffer_)
 
     unsigned i;
 
@@ -136,19 +139,34 @@ void piezo_mic_read_buffer()
     while((DMA_GetFlagStatus(DMA1_FLAG_TC1)) == RESET);
     DMA_ClearFlag(DMA1_FLAG_TC1);
 #else
-    for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i, piezo_mic_wait_on_ready()) {
+    for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES+JUNK_SPACE; ++i, piezo_mic_wait_on_ready()) {
         uint16_t v = ADC_GetConversionValue(ADC1);
-        piezo_mic_buffer[i] = v;
+        piezo_mic_buffer_[i] = v;
     }
 #endif
 
+    //
     // Convert each value to signed 16-bit value using appropriate offset.
-    for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {
+    //
+
+    //
+    // HACK: We subtract a certain value more every N samples to make up for the fact
+    // that impedance of preamp is a little too high.
+    //
+#define SUBTRACT_EVERY 7
+#define TO_SUBTRACT    4
+
+    int16_t sub = 0;
+    for (i = JUNK_SPACE; i < PIEZO_MIC_BUFFER_N_SAMPLES+JUNK_SPACE; ++i, sub += (i % SUBTRACT_EVERY == 0)*TO_SUBTRACT) {
         if (ubuf[i] < MIC_OFFSET_ADC_V)
             sbuf[i] = -(int16_t)(MIC_OFFSET_ADC_V - ubuf[i]);
         else
             sbuf[i] = (int16_t)(ubuf[i]-MIC_OFFSET_ADC_V);
+        sbuf[i] -= sub;
     }
+
+#undef SUBTRACT_EVERY
+#undef TO_SUBTRACT
 
 #undef sbuf
 #undef ubuf
@@ -290,12 +308,12 @@ bool piezo_hfsdp_listen_for_masters_init()
 
         piezo_mic_read_buffer();
 
-        //unsigned i;
-        //for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {
-        //    debugging_write_uint32((int32_t)(piezo_mic_buffer[i] - 4096/2));
+        // unsigned i;
+        // for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {
+        //    debugging_write_int32(piezo_mic_buffer[i]);
         //    debugging_writec("\n");
-        //}
-        //debugging_writec("\n---\n");
+        // }
+        // debugging_writec("\n---\n");
 
         // debugging_writec("M: ");
         // debugging_write_uint32(piezo_get_magnitude());
