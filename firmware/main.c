@@ -32,7 +32,25 @@ static __attribute__ ((unused)) void test_mic()
         //piezo_mic_read_buffer();
         //debugging_write_int32(piezo_get_magnitude());
         //debugging_writec("\n");
-        piezo_hfsdp_listen_for_masters_init();
+
+        //piezo_hfsdp_listen_for_masters_init();
+
+        uint8_t buf[16];
+        memset8_zero(buf, sizeof(buf));
+        bool decoded_successfully = piezo_read_data(buf, sizeof(buf)/sizeof(buf[0]));
+
+        if (! decoded_successfully) {
+            debugging_writec("DECODE FAIL\n");
+            continue;
+        }
+
+        unsigned i;
+        for (i = 0; i < sizeof(buf)/sizeof(buf[0]); ++i) {
+            debugging_writec("B: ");
+            debugging_write_uint32(buf[i]);
+            debugging_writec("\n");
+        }
+        debugging_writec("*****\n\n");
     }
 }
 

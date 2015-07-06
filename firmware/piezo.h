@@ -41,6 +41,7 @@ void piezo_pause(unsigned channels);
 void piezo_unpause(unsigned channels);
 void piezo_out_deinit(void);
 
+bool piezo_read_data(uint8_t *buffer, unsigned nbits);
 bool piezo_hfsdp_listen_for_masters_init(void);
 
 #endif

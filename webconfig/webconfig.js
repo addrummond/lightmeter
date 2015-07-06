@@ -206,27 +206,28 @@ function hilbert_of_approximate_triangle_wave(freq, mag, dutyCycle, phaseShift) 
     return approximate_triangle_wave(freq, mag, dutyCycle, phaseShift, true);
 }
 
-function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
+// TODO: Bug. Messages beginning with a [0, 1] transition give rise to NaN.
+function encode_signal(out, sampleRate, signal, repeat, signalFreq, carrierFreq, mag) {
     if (signal.length == 0)
         return;
 
-    if (out.length < signal.length/2 * parseInt(carrierFreq/signalFreq))
+    if (out.length < (signal.length*repeat)/2 * parseInt(carrierFreq/signalFreq))
         throw new Error("Assertion error in encode_signal: output buffer too short");
 
     var oi = 0;
     var m = 1;
     var elapsedTime = 0;
-    for (var i = 0; i < signal.length; m = (!m+0)) {
+    for (var i = 0; i < signal.length*repeat; m = (!m+0)) {
         var seq1Count = 1;
         var seq2Count = 0;
-        var seq1V = signal[i];
+        var seq1V = signal[i % signal.length];
         var lastOne = false;
-        for (++i; signal[i] == seq1V && i < signal.length; ++i)
+        for (++i; signal[i % signal.length] == seq1V && i < signal.length*repeat; ++i)
             ++seq1Count;
 
-        if (i < signal.length) {
-            var seq2V = signal[i];
-            for (++i; signal[i] == seq2V && i < signal.length; ++i);
+        if (i < signal.length*repeat) {
+            var seq2V = signal[i % signal.length];
+            for (++i; signal[i % signal.length] == seq2V && i < signal.length*repeat; ++i);
                 ++seq2Count;
         }
         else {
@@ -257,7 +258,7 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
             t = j/sampleRate;
             var v = ssb(wf, hwf, carrierFreq, elapsedTime+t);
             //v = 0.5*wf(elapsedTime+t);
-            out[oi++] = v;
+            out[oi++] += v;
         }
         elapsedTime += dd/sampleRate;
     }
@@ -277,13 +278,15 @@ function test_message() {
     }
     //myMessage = [0,0,1];//[1,0,1,1,0,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0];//1,1,0,0,0];//[1,0,1,0,1,1,1,0,0,0,1,1,0,0];//1,0,1,0,1];
     console.log(JSON.stringify(myMessage));
-    var MAG = 0.35;
-    var siglen = encode_signal(samples, audioCtx.sampleRate, myMessage, SIGNAL_FREQ, MASTER_DATA_HZ, MAG);
+    var MAG = 0.35/2;
+    var siglen  = encode_signal(samples, audioCtx.sampleRate, myMessage, 1,                  SIGNAL_FREQ, MASTER_DATA_HZ,  MAG);
+    var siglen2 = encode_signal(samples, audioCtx.sampleRate, [1, 0],    myMessage.length/2, SIGNAL_FREQ, MASTER_CLOCK_HZ, MAG);
+    if (siglen != siglen2)
+        throw new Error("LENGTH MISMATCH!!");
     var samples2 = new Float32Array(samples.length);
     for (j = 0; j < samples.length; ++j)
         samples2[j] = samples[j];
-    filter_below_17500_at_44100(samples, samples2);
-    ////filter_below_17500_at_44100(samples2, samples);
+    //filter_below_17500_at_44100(samples, samples2);
     samples = samples2;
     for (var i = 0; i < siglen; ++i) {
         var t = i/audioCtx.sampleRate;
@@ -340,4 +343,13 @@ if (FILTER) {
 else {
     bufS.connect(audioCtx.destination);
 }
+
+function ended () {
+    console.log("ONENDED");
+    bufS = audioCtx.createBufferSource();
+    bufS.buffer = buffer;
+    bufS.onended = ended;
+    bufS.start();
+};
+bufS.onended = ended;
 bufS.start();

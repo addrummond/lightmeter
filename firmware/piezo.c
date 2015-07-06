@@ -289,10 +289,72 @@ void piezo_out_deinit()
 // HFSDP stuff.
 //
 
+#define SIGNAL_FREQ    126
+#define SAMPLE_FREQ    (SIGNAL_FREQ*4)
+#define SAMPLE_CYCLES  (48000000/SAMPLE_FREQ)
+#define THRESHOLD      200
+
+bool piezo_read_data(uint8_t *buffer, unsigned nbits)
+{
+    uint32_t tn = SysTick->VAL;
+    uint32_t te;
+    if (tn >= SAMPLE_CYCLES)
+        te = tn - SAMPLE_CYCLES;
+    else
+        te = SYS_TICK_MAX - (SAMPLE_CYCLES - tn);
+
+    int prev_clock_direction = 0; // -1 -> unknown, 0 -> rising, 1 -> falling.
+    int32_t prev_pclock = -1, prev_pdata = -1;
+    unsigned nreceived = 0;
+    for (;;) {
+        piezo_mic_read_buffer();
+        int32_t pclock, pdata;
+        goetzel2((const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES,
+                 PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF,
+                 PIEZO_HFSDP_A_MODE_MASTER_DATA_COEFF,
+                 &pclock, &pdata);
+
+        unsigned clock_direction;
+        int32_t pclockdiff = pclock - prev_pclock;
+        if (pclockdiff >= THRESHOLD)
+            clock_direction = 0;
+        else if (pclockdiff <= THRESHOLD)
+            clock_direction = 1;
+        else
+            clock_direction = -1;
+
+        // Has the clock changed direction, indicating that we should read a
+        // data bit?
+        if (clock_direction != 0 && clock_direction != prev_clock_direction) {
+            // At this point, we'd better have a significant difference between
+            // prev_pdata and pdata. If not, we return false to indicate that
+            // the signal could not be decoded.
+            int32_t pdatadiff = pdata - prev_pdata;
+            if (pdatadiff > -THRESHOLD && pdatadiff < THRESHOLD)
+                return false;
+
+            buffer[nreceived++] = (prev_pdata <= pdata);
+
+            if (nreceived == nbits)
+                return true;
+        }
+
+        prev_pclock = pclock;
+        prev_pdata = pdata;
+        prev_clock_direction = clock_direction;
+
+        // Wait until it's time to take the next sample.
+        if (te < tn)
+            while (SysTick->VAL > te);
+        else
+            while (SysTick->VAL <= te);
+    }
+}
+
 bool piezo_hfsdp_listen_for_masters_init()
 {
     for (;;) {
-        //uint32_t before = SysTick->VAL;
+        // uint32_t t = SysTick->VAL;
 
         piezo_mic_read_buffer();
 
