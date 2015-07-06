@@ -307,7 +307,7 @@ bool piezo_hfsdp_listen_for_masters_init()
         // debugging_write_uint32(piezo_get_magnitude());
         // debugging_writec("\n");
 
-        //unsigned t = SysTick->VAL;
+        unsigned t = SysTick->VAL;
 
         int32_t p1, p2;
         goetzel2((const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES,
@@ -315,11 +315,11 @@ bool piezo_hfsdp_listen_for_masters_init()
                  PIEZO_HFSDP_A_MODE_MASTER_DATA_COEFF,
                  &p1, &p2);
 
-        // unsigned t2 = SysTick->VAL;
-        // t -= t2;
-        // debugging_writec("CYCLES: ");
-        // debugging_write_uint32(t);
-        // debugging_writec("\n");
+        unsigned t2 = SysTick->VAL;
+        t -= t2;
+        debugging_writec("CYCLES: ");
+        debugging_write_uint32(t);
+        debugging_writec("\n");
 
         // unsigned i;
         // for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {
