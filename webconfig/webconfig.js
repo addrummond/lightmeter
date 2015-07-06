@@ -1,6 +1,6 @@
 var SIGNAL_FREQ = 1050;
-var I_MODE_F1 = 18500;
-var I_MODE_F2 = 19000;
+var I_MODE_F1 = 19000;
+var I_MODE_F2 = 20000;
 
 function goetzel(freq, input, output) {
     var inter = new Float32Array(input.length);
@@ -266,7 +266,7 @@ function encode_signal(out, sampleRate, signal, signalFreq, carrierFreq, mag) {
 }
 
 audioCtx = new AudioContext();
-var buffer = audioCtx.createBuffer(1, audioCtx.sampleRate, audioCtx.sampleRate);
+var buffer = audioCtx.createBuffer(1, audioCtx.sampleRate*3, audioCtx.sampleRate);
 
 function test_message() {
     var samples = buffer.getChannelData(0);
@@ -282,9 +282,9 @@ function test_message() {
     var samples2 = new Float32Array(samples.length);
     for (j = 0; j < samples.length; ++j)
         samples2[j] = samples[j];
-    //filter_below_17500_at_44100(samples, samples2);
-    //filter_below_17500_at_44100(samples2, samples);
-    //samples = samples2;
+    filter_below_17500_at_44100(samples, samples2);
+    ////filter_below_17500_at_44100(samples2, samples);
+    samples = samples2;
     for (var i = 0; i < siglen; ++i) {
         var t = i/audioCtx.sampleRate;
         var v = samples[i];
@@ -314,8 +314,8 @@ function test_f() {
 
 var FILTER = false;
 
-test_f();
-//test_message();
+//test_f();
+test_message();
 
 var bufS = audioCtx.createBufferSource();
 bufS.buffer = buffer;
