@@ -1,6 +1,6 @@
-var SIGNAL_FREQ = 1050;
-var I_MODE_F1 = 19000;
-var I_MODE_F2 = 20000;
+var SIGNAL_FREQ = 126;
+var MASTER_CLOCK_HZ = 20000;
+var MASTER_DATA_HZ = 19000;
 
 function goetzel(freq, input, output) {
     var inter = new Float32Array(input.length);
@@ -278,7 +278,7 @@ function test_message() {
     //myMessage = [0,0,1];//[1,0,1,1,0,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0];//1,1,0,0,0];//[1,0,1,0,1,1,1,0,0,0,1,1,0,0];//1,0,1,0,1];
     console.log(JSON.stringify(myMessage));
     var MAG = 0.35;
-    var siglen = encode_signal(samples, audioCtx.sampleRate, myMessage, SIGNAL_FREQ, I_MODE_F1, MAG);
+    var siglen = encode_signal(samples, audioCtx.sampleRate, myMessage, SIGNAL_FREQ, MASTER_DATA_HZ, MAG);
     var samples2 = new Float32Array(samples.length);
     for (j = 0; j < samples.length; ++j)
         samples2[j] = samples[j];
@@ -299,7 +299,7 @@ function test_f() {
     function myf(t) {
         //return 0.5*ssb(function (t) { return Math.cos(2*Math.PI*1050*t) + 0.3*Math.sin(2*Math.PI*950*t); }, function (t) { return Math.sin(2*Math.PI*1050*t) - 0.3*Math.cos(2*Math.PI*950*t); }, 18500, t);
         //return 0.5*hilbert_of_approximate_triangle_wave(1000, 0.5, 0.5, 0)(t);//*Math.cos(2*Math.PI*I_MODE_F1*t);
-        return ssb(approximate_triangle_wave(1050,0.25,0.5), hilbert_of_approximate_triangle_wave(1050,0.25,0.5), I_MODE_F1, t)*
+        return ssb(approximate_triangle_wave(1050,0.25,0.5), hilbert_of_approximate_triangle_wave(1050,0.25,0.5), MASTER_DATA_HZ, t)*
                1;
                //0.5*Math.cos(2*Math.PI*19000*t);
         //return hilbert_of_approximate_triangle_wave(1050, 0.25, 0.5)(t);
@@ -323,13 +323,13 @@ if (FILTER) {
     var filter1;
     filter1 = audioCtx.createBiquadFilter();
     filter1.type = 'bandpass';
-    filter1.frequency.value = (I_MODE_F1+(SIGNAL_FREQ/2) + I_MODE_F2+(SIGNAL_FREQ/2))/2;
-    filter1.Q.value = filter1.frequency.value / (I_MODE_F2-I_MODE_F1+50);
+    filter1.frequency.value = (MASTER_DATA_HZ+(SIGNAL_FREQ/2) + MASTER_CLOCK_HZ+(SIGNAL_FREQ/2))/2;
+    filter1.Q.value = filter1.frequency.value / (MASTER_CLOCK_HZ-MASTER_DATA_HZ+50);
     filter1.gain.value = 1;
 
     var filter2 = audioCtx.createBiquadFilter();
     filter2.type = 'highpass';
-    filter2.frequency.value = I_MODE_F1-50;
+    filter2.frequency.value = MASTER_DATA_HZ-50;
     filter2.gain.value = 100;
 
     bufS.connect(filter2);
