@@ -256,6 +256,7 @@ function encode_signal(out, sampleRate, signal, repeat, signalFreq, carrierFreq,
         var t;
         for (var j = 0; j < dd && oi < out.length; j += 1) {
             t = j/sampleRate;
+            document.write(wf(t) + '<br>\n');
             var v = ssb(wf, hwf, carrierFreq, elapsedTime+t);
             //v = 0.5*wf(elapsedTime+t);
             out[oi++] += v;
@@ -263,24 +264,28 @@ function encode_signal(out, sampleRate, signal, repeat, signalFreq, carrierFreq,
         elapsedTime += dd/sampleRate;
     }
 
+    document.write('<br><br><br>');
+
     return oi;
 }
 
 audioCtx = new AudioContext();
-var buffer = audioCtx.createBuffer(1, audioCtx.sampleRate*3, audioCtx.sampleRate);
+var buffer = audioCtx.createBuffer(1, audioCtx.sampleRate*6, audioCtx.sampleRate);
 
 function test_message() {
     var samples = buffer.getChannelData(0);
     var myMessage;
     myMessage = new Array(1000);
     for (var i = 0; i < myMessage.length; ++i) {
-        myMessage[i] = (i%10 < 8 ? 1 : 0);//i%3%2;
+        //myMessage[i] = (i%10 < 8 ? 1 : 0);//i%3%2;
+        myMessage[i] = !!!(i % 4)+0;
     }
     //myMessage = [0,0,1];//[1,0,1,1,0,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0];//1,1,0,0,0];//[1,0,1,0,1,1,1,0,0,0,1,1,0,0];//1,0,1,0,1];
     console.log(JSON.stringify(myMessage));
     var MAG = 0.35/2;
-    var siglen  = encode_signal(samples, audioCtx.sampleRate, myMessage, 1,                  SIGNAL_FREQ, MASTER_DATA_HZ,  MAG);
-    var siglen2 = encode_signal(samples, audioCtx.sampleRate, [1, 0],    myMessage.length/2, SIGNAL_FREQ, MASTER_CLOCK_HZ, MAG);
+    var siglen  = encode_signal(samples, audioCtx.sampleRate, myMessage, 1,                  SIGNAL_FREQ/2, MASTER_DATA_HZ,  MAG);
+    var siglen2 = siglen;//encode_signal(samples, audioCtx.sampleRate, [1, 0],    myMessage.length/2, SIGNAL_FREQ, MASTER_CLOCK_HZ, MAG);
+    siglen = siglen2;
     if (siglen != siglen2)
         throw new Error("LENGTH MISMATCH!!");
     var samples2 = new Float32Array(samples.length);
@@ -293,7 +298,7 @@ function test_message() {
         var v = samples[i];
         //v -= MAG*Math.cos(2*Math.PI*I_MODE_F1*t);
         //v *= MAG*Math.cos(2*Math.PI*I_MODE_F1*t);
-        document.write(v + '<br>\n');
+        //document.write(v + '<br>\n');
     }
 }
 

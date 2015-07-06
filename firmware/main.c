@@ -28,7 +28,8 @@ void HardFault_Handler()
 static __attribute__ ((unused)) void test_mic()
 {
     piezo_mic_init();
-    for (;;) {
+    unsigned i;
+    for (i = 0;; ++i) {
         //piezo_mic_read_buffer();
         //debugging_write_int32(piezo_get_magnitude());
         //debugging_writec("\n");
@@ -40,7 +41,9 @@ static __attribute__ ((unused)) void test_mic()
         bool decoded_successfully = piezo_read_data(buf, sizeof(buf)/sizeof(buf[0]));
 
         if (! decoded_successfully) {
-            debugging_writec("DECODE FAIL\n");
+            debugging_writec("DECODE FAIL ");
+            debugging_write_uint32(i);
+            debugging_writec("\n");
             continue;
         }
 
