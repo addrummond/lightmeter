@@ -296,17 +296,17 @@ void piezo_out_deinit()
 
 bool piezo_read_data(uint8_t *buffer, unsigned nbits)
 {
-    uint32_t tn = SysTick->VAL;
-    uint32_t te;
-    if (tn >= SAMPLE_CYCLES)
-        te = tn - SAMPLE_CYCLES;
-    else
-        te = SYS_TICK_MAX - (SAMPLE_CYCLES - tn);
-
     int prev_clock_direction = 0; // -1 -> unknown, 0 -> rising, 1 -> falling.
     int32_t prev_pclock = -1, prev_pdata = -1;
     unsigned nreceived = 0;
     for (;;) {
+        uint32_t tn = SysTick->VAL;
+        uint32_t te;
+        if (tn >= SAMPLE_CYCLES)
+            te = tn - SAMPLE_CYCLES;
+        else
+            te = SYS_TICK_MAX - (SAMPLE_CYCLES - tn);
+
         piezo_mic_read_buffer();
         int32_t pclock, pdata;
         goetzel2((const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES,
@@ -349,6 +349,11 @@ bool piezo_read_data(uint8_t *buffer, unsigned nbits)
             while (SysTick->VAL > te);
         else
             while (SysTick->VAL <= te);
+
+        // int32_t elapsed = tn - SysTick->VAL;
+        // debugging_writec("EE: ");
+        // debugging_write_uint32(elapsed);
+        // debugging_writec("\n");
     }
 }
 
