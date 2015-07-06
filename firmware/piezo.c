@@ -336,23 +336,29 @@ bool piezo_read_data(uint8_t *buffer, unsigned nbits)
         // Has the clock changed direction, indicating that we should read a
         // data bit?
         if (clock_direction != -1 && clock_direction != prev_clock_direction) {
-            // At this point, we'd better have a significant difference between
-            // prev_pdata and pdata. If not, we return false to indicate that
-            // the signal could not be decoded.
-            int32_t pdatadiff = pdata - prev_pdata;
-            if (pdatadiff > -DATA_THRESHOLD && pdatadiff < DATA_THRESHOLD)
-                return false;
+            prev_clock_direction = clock_direction;
 
-            buffer[nreceived++] = (prev_pdata <= pdata);
+            if (prev_pdata == -1) {
+                prev_pdata = pdata;
+            }
+            else {
+                // At this point, we'd better have a significant difference between
+                // prev_pdata and pdata. If not, we return false to indicate that
+                // the signal could not be decoded.
+                int32_t pdatadiff = pdata - prev_pdata;
+                if (pdatadiff > -DATA_THRESHOLD && pdatadiff < DATA_THRESHOLD)
+                    return false;
 
-            prev_pdata = pdata;
+                buffer[nreceived++] = (prev_pdata <= pdata);
 
-            if (nreceived == nbits)
-                return true;
+                prev_pdata = pdata;
+
+                if (nreceived == nbits)
+                    return true;
+            }
         }
 
         prev_pclock = pclock;
-        prev_clock_direction = clock_direction;
 
         // Wait until it's time to take the next sample.
         if (te < tn)
