@@ -335,12 +335,13 @@ bool piezo_read_data(uint8_t *buffer, unsigned nbits)
 
             buffer[nreceived++] = (prev_pdata <= pdata);
 
+            prev_pdata = pdata;
+
             if (nreceived == nbits)
                 return true;
         }
 
         prev_pclock = pclock;
-        prev_pdata = pdata;
         prev_clock_direction = clock_direction;
 
         // Wait until it's time to take the next sample.
