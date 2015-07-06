@@ -280,7 +280,7 @@ function test_message() {
     console.log(JSON.stringify(myMessage));
     var MAG = 0.35/2;
     var siglen  = encode_signal(samples, audioCtx.sampleRate, myMessage, 1,                  SIGNAL_FREQ/2, MASTER_DATA_HZ,  MAG);
-    var siglen2 = siglen;//encode_signal(samples, audioCtx.sampleRate, [1, 0],    myMessage.length/2, SIGNAL_FREQ, MASTER_CLOCK_HZ, MAG);
+    var siglen2 = encode_signal(samples, audioCtx.sampleRate, [1, 0],    myMessage.length/2, SIGNAL_FREQ,   MASTER_CLOCK_HZ, MAG);
     siglen = siglen2;
     if (siglen != siglen2)
         throw new Error("LENGTH MISMATCH!!");
