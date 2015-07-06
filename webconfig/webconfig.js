@@ -255,15 +255,13 @@ function encode_signal(out, sampleRate, signal, repeat, signalFreq, carrierFreq,
         var t;
         for (var j = 0; j < dd && oi < out.length; j += 1) {
             t = j/sampleRate;
-            document.write(wf(t) + '<br>\n');
+            //document.write(wf(t) + '<br>\n');
             var v = ssb(wf, hwf, carrierFreq, elapsedTime+t);
             //v = 0.5*wf(elapsedTime+t);
             out[oi++] += v;
         }
         elapsedTime += dd/sampleRate;
     }
-
-    document.write('<br><br><br>');
 
     return oi;
 }
@@ -276,8 +274,7 @@ function test_message() {
     var myMessage;
     myMessage = new Array(1000);
     for (var i = 0; i < myMessage.length; ++i) {
-        //myMessage[i] = (i%10 < 8 ? 1 : 0);//i%3%2;
-        myMessage[i] = !!!(i % 4)+0;
+        myMessage[i] = !!(i % 7)+0;
     }
     //myMessage = [0,0,1];//[1,0,1,1,0,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0];//1,1,0,0,0];//[1,0,1,0,1,1,1,0,0,0,1,1,0,0];//1,0,1,0,1];
     console.log(JSON.stringify(myMessage));
