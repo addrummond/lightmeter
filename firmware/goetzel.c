@@ -58,7 +58,6 @@ static inline int32_t DIV(int32_t x, int32_t y)
             INLINE(N, LOOP_BODY)                                                     \
         }                                                                            \
                                                                                      \
-                                                                                     \
         N(GET_R)                                                                     \
         N(ABS_R)                                                                     \
         N(SETDEST)                                                                   \
