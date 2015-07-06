@@ -44,7 +44,7 @@ static inline int32_t DIV(int32_t x, int32_t y)
     ++i;
 
 #define MAKE_GOETZEL_N(n, N)                                                         \
-    void goetzel ## n (const int16_t *samples, int length N(PARAMS) N(DESTS) )       \
+    void goetzel ## n (const int16_t *samples, unsigned length N(PARAMS) N(DESTS) )  \
     {                                                                                \
         assert((length % INLINE_COUNT) == 0);                                        \
                                                                                      \
