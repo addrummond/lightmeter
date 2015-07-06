@@ -206,7 +206,6 @@ function hilbert_of_approximate_triangle_wave(freq, mag, dutyCycle, phaseShift) 
     return approximate_triangle_wave(freq, mag, dutyCycle, phaseShift, true);
 }
 
-// TODO: Bug. Messages beginning with a [0, 1] transition give rise to NaN.
 function encode_signal(out, sampleRate, signal, repeat, signalFreq, carrierFreq, mag) {
     if (signal.length == 0)
         return;
@@ -219,7 +218,7 @@ function encode_signal(out, sampleRate, signal, repeat, signalFreq, carrierFreq,
     var elapsedTime = 0;
     for (var i = 0; i < signal.length*repeat; m = (!m+0)) {
         var seq1Count = 1;
-        var seq2Count = 0;
+        var seq2Count = 1;
         var seq1V = signal[i % signal.length];
         var lastOne = false;
         for (++i; signal[i % signal.length] == seq1V && i < signal.length*repeat; ++i)
@@ -227,7 +226,7 @@ function encode_signal(out, sampleRate, signal, repeat, signalFreq, carrierFreq,
 
         if (i < signal.length*repeat) {
             var seq2V = signal[i % signal.length];
-            for (++i; signal[i % signal.length] == seq2V && i < signal.length*repeat; ++i);
+            for (++i; signal[i % signal.length] == seq2V && i < signal.length*repeat; ++i)
                 ++seq2Count;
         }
         else {
@@ -240,7 +239,7 @@ function encode_signal(out, sampleRate, signal, repeat, signalFreq, carrierFreq,
         if (seq1V == 0) {
             var countRatio = seq1Count/seq2Count;
             phaseShift = 2*seq2Count / countRatio;
-            dutyCycle = seq2Count / countRatio;
+            dutyCycle = seq2Count / countSum;
         }
         else {
             phaseShift = 0;
