@@ -145,10 +145,7 @@ void piezo_mic_read_buffer()
     }
 #endif
 
-    //
     // Convert each value to signed 16-bit value using appropriate offset.
-    //
-
     for (i = JUNK_SPACE; i < PIEZO_MIC_BUFFER_N_SAMPLES+JUNK_SPACE; ++i) {
         if (ubuf[i] < MIC_OFFSET_ADC_V)
             sbuf[i] = -(int16_t)(MIC_OFFSET_ADC_V - ubuf[i]);
