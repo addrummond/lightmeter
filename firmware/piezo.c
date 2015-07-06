@@ -290,7 +290,7 @@ void piezo_out_deinit()
 //
 
 #define SIGNAL_FREQ    126
-#define SAMPLE_FREQ    (SIGNAL_FREQ*4)
+#define SAMPLE_FREQ    (SIGNAL_FREQ*8)
 #define SAMPLE_CYCLES  (48000000/SAMPLE_FREQ)
 #define THRESHOLD      200
 
@@ -325,7 +325,7 @@ bool piezo_read_data(uint8_t *buffer, unsigned nbits)
 
         // Has the clock changed direction, indicating that we should read a
         // data bit?
-        if (clock_direction != 0 && clock_direction != prev_clock_direction) {
+        if (clock_direction != -1 && clock_direction != prev_clock_direction) {
             // At this point, we'd better have a significant difference between
             // prev_pdata and pdata. If not, we return false to indicate that
             // the signal could not be decoded.
