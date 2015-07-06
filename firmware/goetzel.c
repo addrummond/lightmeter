@@ -18,6 +18,45 @@ static inline int32_t DIV(int32_t x, int32_t y)
    return (x << (GOETZEL_ADC_VAL_BITS-1)) / y;
 }
 
+//
+// The following macros generate a goetzelN function which calculates the power
+// of N specified frequencies in the given sample buffer.
+//
+
+#define PARAMS(n)    , int32_t coeff ## n
+#define DESTS(n)     , int32_t *dest ## n
+#define PREVS(n)     int32_t prev1_ ## n = 0, prev2_ ## n = 0;
+#define GET_S(n)     int32_t s ## n = samplesi + MUL(coeff ## n, prev1_ ## n) - prev2_ ##n;
+#define SET_PREVS(n) prev2_ ## n = prev1_ ## n ; prev1_ ## n = s ## n;
+#define GET_R(n)     int32_t r ## n = DIV(MUL(prev2_ ## n,prev2_ ## n) + MUL(prev1_ ## n,prev1_ ## n) - MUL(MUL(coeff ## n,prev1_ ## n),prev2_ ## n), total_power);
+#define ABS_R(n)     if (r ## n < 0) r ## n = -r ## n;
+#define SETDEST(n)   *dest ## n = r ## n;
+#define MAKE_GOETZEL_N(n, N)                                                         \
+    void goetzel ## n (const int16_t *samples, unsigned length N(PARAMS) N(DESTS) )  \
+    {                                                                                \
+        int32_t total_power = 0;                                                     \
+                                                                                     \
+        N(PREVS)                                                                     \
+                                                                                     \
+        unsigned i;                                                                  \
+        for (i = 0; i < length; ++i) {                                               \
+            int32_t samplesi = samples[i];                                           \
+            total_power += MUL(samplesi, samplesi)/4;                                \
+            N(GET_S)                                                                 \
+            N(SET_PREVS)                                                             \
+        }                                                                            \
+                                                                                     \
+        N(GET_R)                                                                     \
+        N(ABS_R)                                                                     \
+        N(SETDEST)                                                                   \
+    }
+
+#define ONE(N) N(1)
+#define TWO(N) N(1) N(2)
+MAKE_GOETZEL_N(1, ONE)
+MAKE_GOETZEL_N(2, TWO)
+
+/*
 int32_t goetzel(const int16_t *samples, unsigned length, int32_t coeff)
 {
     int32_t total_power = 0;
@@ -45,6 +84,7 @@ int32_t goetzel(const int16_t *samples, unsigned length, int32_t coeff)
         r = -r;
     return r;
 }
+*/
 
 #ifdef TEST
 
@@ -64,7 +104,7 @@ static void test1()
     const float SIG1_FREQ = 1000;
     const float SIG2_FREQ = 9000;
 
-    uint16_t samples[N_SAMPLES];
+    int16_t samples[N_SAMPLES];
     unsigned i;
     for (i = 0; i < N_SAMPLES; ++i) {
         float t = (float)i/(float)SAMPLE_FREQ;
@@ -81,7 +121,8 @@ static void test1()
         float NFREQ = BIN_FREQ/SAMPLE_FREQ;
         int32_t COEFF = GOETZEL_FLOAT_TO_FIX(2*cos(2*M_PI*NFREQ*1));
 
-        int32_t p = goetzel(samples, N_SAMPLES, COEFF);
+        int32_t p;
+        goetzel1(samples, N_SAMPLES, COEFF, &p);
         printf("%i,%f,%f\n", j, BIN_FREQ, (float)p);
     }
 }

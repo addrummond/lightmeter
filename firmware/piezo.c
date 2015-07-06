@@ -149,20 +149,11 @@ void piezo_mic_read_buffer()
     // Convert each value to signed 16-bit value using appropriate offset.
     //
 
-    //
-    // HACK: We subtract a certain value more every N samples to make up for the fact
-    // that impedance of preamp is a little too high.
-    //
-#define SUBTRACT_EVERY 7
-#define TO_SUBTRACT    4
-
-    int16_t sub = 0;
-    for (i = JUNK_SPACE; i < PIEZO_MIC_BUFFER_N_SAMPLES+JUNK_SPACE; ++i, sub += (i % SUBTRACT_EVERY == 0)*TO_SUBTRACT) {
+    for (i = JUNK_SPACE; i < PIEZO_MIC_BUFFER_N_SAMPLES+JUNK_SPACE; ++i) {
         if (ubuf[i] < MIC_OFFSET_ADC_V)
             sbuf[i] = -(int16_t)(MIC_OFFSET_ADC_V - ubuf[i]);
         else
             sbuf[i] = (int16_t)(ubuf[i]-MIC_OFFSET_ADC_V);
-        sbuf[i] -= sub;
     }
 
 #undef SUBTRACT_EVERY
@@ -319,7 +310,19 @@ bool piezo_hfsdp_listen_for_masters_init()
         // debugging_write_uint32(piezo_get_magnitude());
         // debugging_writec("\n");
 
-        int p = goetzel((const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF);
+        //unsigned t = SysTick->VAL;
+
+        int32_t p1, p2;
+        goetzel2((const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES,
+                 PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF,
+                 PIEZO_HFSDP_A_MODE_MASTER_DATA_COEFF,
+                 &p1, &p2);
+
+        // unsigned t2 = SysTick->VAL;
+        // t -= t2;
+        // debugging_writec("CYCLES: ");
+        // debugging_write_uint32(t);
+        // debugging_writec("\n");
 
         // unsigned i;
         // for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {
@@ -328,8 +331,10 @@ bool piezo_hfsdp_listen_for_masters_init()
         //     debugging_writec("\n");
         // }
 
-        debugging_writec("val ");
-        debugging_write_uint32(p);
+        debugging_writec("vals ");
+        debugging_write_int32(p1);
+        debugging_writec(" ");
+        debugging_write_int32(p2);
         debugging_writec("\n");
 
         //uint32_t after = SysTick->VAL;
@@ -337,7 +342,7 @@ bool piezo_hfsdp_listen_for_masters_init()
         //debugging_write_uint32(before-after);
         //debugging_writec("\n");
 
-        if (p > 30000)
+        if (p1 > 30000)
             return true;
     }
 }
