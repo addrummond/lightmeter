@@ -289,10 +289,11 @@ void piezo_out_deinit()
 // HFSDP stuff.
 //
 
-#define SIGNAL_FREQ    126
-#define SAMPLE_FREQ    (SIGNAL_FREQ*8)
-#define SAMPLE_CYCLES  (48000000/SAMPLE_FREQ)
-#define THRESHOLD      200
+#define SIGNAL_FREQ      126
+#define SAMPLE_FREQ      (SIGNAL_FREQ*8)
+#define SAMPLE_CYCLES    (48000000/SAMPLE_FREQ)
+#define CLOCK_THRESHOLD  200
+#define DATA_THRESHOLD   100
 
 bool piezo_read_data(uint8_t *buffer, unsigned nbits)
 {
@@ -315,13 +316,22 @@ bool piezo_read_data(uint8_t *buffer, unsigned nbits)
                  &pclock, &pdata);
 
         unsigned clock_direction;
-        int32_t pclockdiff = pclock - prev_pclock;
-        if (pclockdiff >= THRESHOLD)
-            clock_direction = 0;
-        else if (pclockdiff <= THRESHOLD)
-            clock_direction = 1;
-        else
+        if (prev_pclock != -1) {
+            int32_t pclockdiff = pclock - prev_pclock;
+            if (pclockdiff >= CLOCK_THRESHOLD)
+                clock_direction = 0;
+            else if (pclockdiff <= -CLOCK_THRESHOLD)
+                clock_direction = 1;
+            else
+                clock_direction = -1;
+        }
+        else {
             clock_direction = -1;
+        }
+
+        // debugging_writec("C: ");
+        // debugging_write_int32(clock_direction);
+        // debugging_writec("\n");
 
         // Has the clock changed direction, indicating that we should read a
         // data bit?
@@ -330,7 +340,7 @@ bool piezo_read_data(uint8_t *buffer, unsigned nbits)
             // prev_pdata and pdata. If not, we return false to indicate that
             // the signal could not be decoded.
             int32_t pdatadiff = pdata - prev_pdata;
-            if (pdatadiff > -THRESHOLD && pdatadiff < THRESHOLD)
+            if (pdatadiff > -DATA_THRESHOLD && pdatadiff < DATA_THRESHOLD)
                 return false;
 
             buffer[nreceived++] = (prev_pdata <= pdata);
