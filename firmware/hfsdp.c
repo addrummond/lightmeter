@@ -91,6 +91,8 @@ int main(int argc, char **argv)
         }
     }
 
+    fclose(fp);
+
     printf("%i samples read\n", vals_i);
 
     int16_t *fake_adc_vals = malloc(sizeof(int16_t) * vals_i);
@@ -98,6 +100,7 @@ int main(int argc, char **argv)
     for (i = 0; i < vals_i; ++i) {
         fake_adc_vals[i] = (int16_t)((4096.0/2)*vals[i]);
     }
+    free(vals);
 
     hfsdp_read_bit_state_t s;
     init_hfsdp_read_bit_state(&s);
