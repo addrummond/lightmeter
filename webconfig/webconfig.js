@@ -294,7 +294,7 @@ function test_message() {
         var v = samples[i];
         //v -= MAG*Math.cos(2*Math.PI*I_MODE_F1*t);
         //v *= MAG*Math.cos(2*Math.PI*I_MODE_F1*t);
-        //document.write(v + '<br>\n');
+        document.write(v + '<br>\n');
     }
 }
 
