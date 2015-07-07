@@ -70,6 +70,8 @@ $CC $CFLAGS -c accel.c -o accel.o
 OBJS="$OBJS accel.o"
 $CC $CFLAGS -c display.c -o display.o
 OBJS="$OBJS display.o"
+$CC $CFLAGS -O2 -c hfsdp.c -o hfsdp.o
+OBJS="$OBJS hfsdp.o"
 $CC $CFLAGS -c piezo.c -o piezo.o
 OBJS="$OBJS piezo.o"
 $CC $CFLAGS -c sysinit.c -o sysinit.o

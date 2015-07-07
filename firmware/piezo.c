@@ -4,6 +4,7 @@
 #include <stm32f0xx_rcc.h>
 #include <goetzel.h>
 #include <piezo.h>
+#include <hfsdp.h>
 #include <deviceconfig.h>
 #include <debugging.h>
 
@@ -289,87 +290,38 @@ void piezo_out_deinit()
 // HFSDP stuff.
 //
 
-#define SIGNAL_FREQ      126
-#define SAMPLE_FREQ      (SIGNAL_FREQ*8)
-#define SAMPLE_CYCLES    (48000000/SAMPLE_FREQ)
-#define CLOCK_THRESHOLD  200
-#define DATA_THRESHOLD   100
-
-bool piezo_read_data(uint8_t *buffer, unsigned nbits)
+bool piezo_read_data(uint8_t *buffer, unsigned bits)
 {
-    int prev_clock_direction = 0; // -1 -> unknown, 0 -> rising, 1 -> falling.
-    int32_t prev_pclock = -1, prev_pdata = -1;
+    hfsdp_read_bit_state_t s;
+    init_hfsdp_read_bit_state(&s);
+
     unsigned nreceived = 0;
     for (;;) {
         uint32_t tn = SysTick->VAL;
         uint32_t te;
-        if (tn >= SAMPLE_CYCLES)
-            te = tn - SAMPLE_CYCLES;
+        if (tn >= HFSDP_SAMPLE_CYCLES)
+            te = tn - HFSDP_SAMPLE_CYCLES;
         else
-            te = SYS_TICK_MAX - (SAMPLE_CYCLES - tn);
+            te = SYS_TICK_MAX - (HFSDP_SAMPLE_CYCLES - tn);
 
         piezo_mic_read_buffer();
-        int32_t pclock, pdata;
-        goetzel2((const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES,
-                 PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF,
-                 PIEZO_HFSDP_A_MODE_MASTER_DATA_COEFF,
-                 &pclock, &pdata);
+        int r = hfsdp_read_bit(&s, (const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES);
 
-        unsigned clock_direction;
-        if (prev_pclock != -1) {
-            int32_t pclockdiff = pclock - prev_pclock;
-            if (pclockdiff >= CLOCK_THRESHOLD)
-                clock_direction = 0;
-            else if (pclockdiff <= -CLOCK_THRESHOLD)
-                clock_direction = 1;
-            else
-                clock_direction = -1;
-        }
+        if (r == HFSDP_READ_BIT_DECODE_ERROR)
+            return false;
+        else if (r == HFSDP_READ_BIT_NOTHING_READ)
+            ;
         else {
-            clock_direction = -1;
+            buffer[nreceived++] = r;
+            if (nreceived == bits)
+                return true;
         }
-
-        // debugging_writec("C: ");
-        // debugging_write_int32(clock_direction);
-        // debugging_writec("\n");
-
-        // Has the clock changed direction, indicating that we should read a
-        // data bit?
-        if (clock_direction != -1 && clock_direction != prev_clock_direction) {
-            prev_clock_direction = clock_direction;
-
-            if (prev_pdata == -1) {
-                prev_pdata = pdata;
-            }
-            else {
-                // At this point, we'd better have a significant difference between
-                // prev_pdata and pdata. If not, we return false to indicate that
-                // the signal could not be decoded.
-                int32_t pdatadiff = pdata - prev_pdata;
-                if (pdatadiff > -DATA_THRESHOLD && pdatadiff < DATA_THRESHOLD)
-                    return false;
-
-                buffer[nreceived++] = (prev_pdata <= pdata);
-
-                prev_pdata = pdata;
-
-                if (nreceived == nbits)
-                    return true;
-            }
-        }
-
-        prev_pclock = pclock;
 
         // Wait until it's time to take the next sample.
         if (te < tn)
             while (SysTick->VAL > te);
         else
             while (SysTick->VAL <= te);
-
-        // int32_t elapsed = tn - SysTick->VAL;
-        // debugging_writec("EE: ");
-        // debugging_write_uint32(elapsed);
-        // debugging_writec("\n");
     }
 }
 
@@ -395,8 +347,8 @@ bool piezo_hfsdp_listen_for_masters_init()
 
         int32_t p1, p2;
         goetzel2((const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES,
-                 PIEZO_HFSDP_A_MODE_MASTER_CLOCK_COEFF,
-                 PIEZO_HFSDP_A_MODE_MASTER_DATA_COEFF,
+                 HFSDP_MASTER_CLOCK_COEFF,
+                 HFSDP_MASTER_DATA_COEFF,
                  &p1, &p2);
 
         // unsigned t2 = SysTick->VAL;
