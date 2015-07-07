@@ -57,3 +57,59 @@ int hfsdp_read_bit(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned bufle
 
     return HFSDP_READ_BIT_NOTHING_READ;
 }
+
+#ifdef TEST
+#include <stdlib.h>
+#include <stdio.h>
+
+// Should be equal to PIEZO_MIC_BUFFER_N_SAMPLES in piezo.h (can't include
+// because of STM32 stuff).
+#define NSAMPLES 64
+
+int main(int argc, char **argv)
+{
+    if (argc != 2) {
+        fprintf(stderr, "Bad arguments\n");
+        exit(1);
+    }
+
+    FILE *fp = fopen(argv[1], "r");
+
+    float *vals = malloc(sizeof(float) * 100);
+    unsigned vals_len = 100;
+    unsigned vals_i = 0;
+
+    for (;;) {
+        int r = fscanf(fp, "%f\n", vals + vals_i);
+        if (r <= 0)
+            break;
+
+        ++vals_i;
+        if (vals_i == vals_len) {
+            vals_len *= 2;
+            vals = realloc(vals, vals_len * sizeof(float));
+        }
+    }
+
+    printf("%i samples read\n", vals_i);
+
+    int16_t *fake_adc_vals = malloc(sizeof(int16_t) * vals_i);
+    unsigned i;
+    for (i = 0; i < vals_i; ++i) {
+        fake_adc_vals[i] = (int16_t)((4096.0/2)*vals[i]);
+    }
+
+    hfsdp_read_bit_state_t s;
+    init_hfsdp_read_bit_state(&s);
+    for (i = 0; i < 300; ++i) {
+        int r = hfsdp_read_bit(&s, fake_adc_vals + (i*NSAMPLES), NSAMPLES);
+        if (r == HFSDP_READ_BIT_DECODE_ERROR)
+            printf("DECODE ERROR\n");
+        else if (r == HFSDP_READ_BIT_NOTHING_READ)
+            ;//printf("NUTTIN\n");
+        else
+            printf("B: %i\n", r);
+    }
+}
+
+#endif
