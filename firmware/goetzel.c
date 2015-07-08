@@ -117,13 +117,15 @@ static void test1()
     const float SIG1_FREQ = 1000;
     const float SIG2_FREQ = 9000;
 
+    const float LOWEST_DETECTABLE = SAMPLE_FREQ/N_SAMPLES;
+
     int16_t samples[N_SAMPLES];
     unsigned i;
     for (i = 0; i < N_SAMPLES; ++i) {
         float t = (float)i/(float)SAMPLE_FREQ;
         float v = 0.24*(sin(2.0*M_PI*SIG1_FREQ*t)) +
                   0.24*(cos(2.0*M_PI*SIG2_FREQ*t));
-        samples[i] = (int16_t)(v*(4096/2.0)) + (4096/2.0);
+        samples[i] = (int16_t)(v*(4096/2.0));
     }
 
     printf("bin,bin_freq,value\n");
@@ -131,12 +133,16 @@ static void test1()
     unsigned j;
     for (j = 1; j <= N_BINS; ++j) {
         float BIN_FREQ = ((float)j/(float)N_BINS)*(SAMPLE_FREQ/2);
+        if (BIN_FREQ < LOWEST_DETECTABLE)
+            continue;
+
         float NFREQ = BIN_FREQ/SAMPLE_FREQ;
         int32_t COEFF = GOETZEL_FLOAT_TO_FIX(2*cos(2*M_PI*NFREQ*1));
 
         int32_t p;
         goetzel1(samples, N_SAMPLES, COEFF, &p);
-        unsigned nstars = (unsigned)(round((float)p/(4096.0/2) * 4));
+
+        unsigned nstars = (unsigned)(round((float)p/(4096.0/2) * 0.5));
         printf("%i,%.2fHz: ", j, BIN_FREQ);
         unsigned k;
         for (k = 0; k < nstars; ++k)
