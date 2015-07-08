@@ -136,7 +136,12 @@ static void test1()
 
         int32_t p;
         goetzel1(samples, N_SAMPLES, COEFF, &p);
-        printf("%i,%f,%f\n", j, BIN_FREQ, (float)p);
+        unsigned nstars = (unsigned)(round((float)p/(4096.0/2) * 4));
+        printf("%i,%.2fHz: ", j, BIN_FREQ);
+        unsigned k;
+        for (k = 0; k < nstars; ++k)
+            printf("*");
+        printf("\n");
     }
 }
 

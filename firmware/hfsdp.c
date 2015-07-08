@@ -8,13 +8,19 @@ void init_hfsdp_read_bit_state(hfsdp_read_bit_state_t *s)
     s->prev_pdata = -1;
 }
 
-int hfsdp_read_bit(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned buflen)
+int hfsdp_read_bit(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned buflen,
+                   int16_t *debug_clock_amp, int16_t *debug_data_amp)
 {
     int32_t pclock, pdata;
     goetzel2(buf, buflen,
              HFSDP_MASTER_CLOCK_COEFF,
              HFSDP_MASTER_DATA_COEFF,
              &pclock, &pdata);
+
+    if (debug_clock_amp)
+        *debug_clock_amp = pclock;
+    if (debug_data_amp)
+        *debug_data_amp = pdata;
 
     unsigned clock_direction;
     if (s->prev_pclock != -1) {
@@ -105,7 +111,12 @@ int main(int argc, char **argv)
     hfsdp_read_bit_state_t s;
     init_hfsdp_read_bit_state(&s);
     for (i = 0; i < 300; ++i) {
-        int r = hfsdp_read_bit(&s, fake_adc_vals + (i*NSAMPLES), NSAMPLES);
+        int16_t clock_amp, data_amp;
+
+        int r = hfsdp_read_bit(&s, fake_adc_vals + (i*NSAMPLES), NSAMPLES, &clock_amp, &data_amp);
+        printf("%i\n", clock_amp);
+        continue;
+
         if (r == HFSDP_READ_BIT_DECODE_ERROR)
             printf("DECODE ERROR\n");
         else if (r == HFSDP_READ_BIT_NOTHING_READ)

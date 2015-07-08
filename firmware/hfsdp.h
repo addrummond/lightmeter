@@ -21,7 +21,8 @@ typedef struct {
 } hfsdp_read_bit_state_t;
 
 void init_hfsdp_read_bit_state(hfsdp_read_bit_state_t *s);
-int hfsdp_read_bit(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned buflen);
+int hfsdp_read_bit(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned buflen,
+                   int16_t *debug_clock_amp, int16_t *debug_data_amp);
 
 #define HFSDP_READ_BIT_DECODE_ERROR  -2
 #define HFSDP_READ_BIT_NOTHING_READ  -1

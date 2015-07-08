@@ -305,7 +305,7 @@ bool piezo_read_data(uint8_t *buffer, unsigned bits)
             te = SYS_TICK_MAX - (HFSDP_SAMPLE_CYCLES - tn);
 
         piezo_mic_read_buffer();
-        int r = hfsdp_read_bit(&s, (const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES);
+        int r = hfsdp_read_bit(&s, (const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, NULL, NULL);
 
         if (r == HFSDP_READ_BIT_DECODE_ERROR)
             return false;
