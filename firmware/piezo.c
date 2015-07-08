@@ -293,7 +293,8 @@ void piezo_out_deinit()
 bool piezo_read_data(uint8_t *buffer, unsigned bits)
 {
     hfsdp_read_bit_state_t s;
-    init_hfsdp_read_bit_state(&s);
+    init_hfsdp_read_bit_state(&s, HFSDP_MASTER_CLOCK_COSCOEFF, HFSDP_MASTER_CLOCK_SINCOEFF,
+                                  HFSDP_MASTER_DATA_COSCOEFF,  HFSDP_MASTER_DATA_SINCOEFF);
 
     unsigned nreceived = 0;
     for (;;) {
@@ -305,7 +306,7 @@ bool piezo_read_data(uint8_t *buffer, unsigned bits)
             te = SYS_TICK_MAX - (HFSDP_SAMPLE_CYCLES - tn);
 
         piezo_mic_read_buffer();
-        int r = hfsdp_read_bit(&s, (const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, NULL, NULL);
+        int r = hfsdp_read_bit(&s, (const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, 0, 0, 0);
 
         if (r == HFSDP_READ_BIT_DECODE_ERROR)
             return false;
@@ -347,9 +348,9 @@ bool piezo_hfsdp_listen_for_masters_init()
 
         int32_t p1, p2;
         goetzel2((const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES,
-                 HFSDP_MASTER_CLOCK_COEFF,
-                 HFSDP_MASTER_DATA_COEFF,
-                 &p1, &p2);
+                 HFSDP_MASTER_CLOCK_COSCOEFF, HFSDP_MASTER_CLOCK_SINCOEFF,
+                 HFSDP_MASTER_DATA_COSCOEFF, HFSDP_MASTER_DATA_SINCOEFF,
+                 &p1, &p2, 0);
 
         // unsigned t2 = SysTick->VAL;
         // t -= t2;

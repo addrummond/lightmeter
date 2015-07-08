@@ -11,17 +11,7 @@
 #define USE_DMA
 //#undef USE_DMA
 
-#define PIEZO_MIC_BUFFER_N_SAMPLES       64
-
-//
-// We're sampling at 239.5 + 12.5 clock cycles. ADC is running on asynch 14MHz clock.
-// Thus, our sample rate is 55555.6Hz.
-//
-// The coefficient for the Goetzel algorithm is calculated using the following
-// formula (JS code):
-//
-//     coeff = 2*Math.cos(2*Math.PI*(f/55555.6))
-//
+#define PIEZO_MIC_BUFFER_N_SAMPLES 64
 
 void piezo_mic_init(void);
 void piezo_mic_deinit(void);

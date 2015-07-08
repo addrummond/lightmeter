@@ -27,40 +27,45 @@ static inline int32_t DIV(int32_t x, int32_t y)
 #define INLINE_COUNT 8
 #define INLINE(N, M) M(N) M(N) M(N) M(N) M(N) M(N) M(N) M(N)
 
-#define PARAMS(n)    , int32_t coeff ## n
+#define PARAMS(n)    , int32_t coscoeff ## n , int32_t sincoeff ## n
 #define DESTS(n)     , int32_t *dest ## n
 #define PREVS(n)     int32_t prev1_ ## n = 0, prev2_ ## n = 0, s ##n;
-#define GET_S(n)     s ## n = samplesi + MUL(coeff ## n, prev1_ ## n) - prev2_ ## n;
+#define GET_S(n)     s ## n = samplesi + MUL(coscoeff ## n * 2, prev1_ ## n) - prev2_ ## n;
 #define SET_PREVS(n) prev2_ ## n = prev1_ ## n ; prev1_ ## n = s ## n;
-#define GET_R(n)     int32_t r ## n = DIV(MUL(prev2_ ## n,prev2_ ## n) + MUL(prev1_ ## n,prev1_ ## n) - MUL(MUL(coeff ## n,prev1_ ## n),prev2_ ## n), total_power);
-#define ABS_R(n)     if (r ## n < 0) r ## n = -r ## n;
+#define GET_R(n)     int32_t rr ## n = 0; \
+                     rr ## n = MUL(prev1_ ## n, coscoeff ## n) - prev2_ ## n; \
+                     int32_t ri ## n = MUL(prev1_ ## n, sincoeff ## n); \
+                     int32_t r ## n = MUL(rr ## n, rr ## n) + MUL(ri ## n, ri ## n); \
+                     if (r ## n < 0) \
+                         r ## n = -r ## n;
 #define SETDEST(n)   *dest ## n = r ## n;
 
 #define LOOP_BODY(N)                          \
     samplesi = samples[i];                    \
-    total_power += MUL(samplesi, samplesi)/4; \
+    total_power += MUL(samplesi, samplesi);   \
     N(GET_S)                                  \
     N(SET_PREVS)                              \
     ++i;
 
-#define MAKE_GOETZEL_N(n, N)                                                         \
-    void goetzel ## n (const int16_t *samples, unsigned length N(PARAMS) N(DESTS) )  \
-    {                                                                                \
-        assert((length % INLINE_COUNT) == 0);                                        \
-                                                                                     \
-        int32_t total_power = 0;                                                     \
-                                                                                     \
-        N(PREVS)                                                                     \
-                                                                                     \
-        int i;                                                                       \
-        int32_t samplesi;                                                            \
-        for (i = 0; i < length;) {                                                   \
-            INLINE(N, LOOP_BODY)                                                     \
-        }                                                                            \
-                                                                                     \
-        N(GET_R)                                                                     \
-        N(ABS_R)                                                                     \
-        N(SETDEST)                                                                   \
+#define MAKE_GOETZEL_N(n, N)                                                                       \
+    void goetzel ## n (const int16_t *samples, unsigned length N(PARAMS) N(DESTS), int32_t *pow)   \
+    {                                                                                              \
+        int32_t total_power = 0;                                                                   \
+                                                                                                   \
+        N(PREVS)                                                                                   \
+                                                                                                   \
+        int i;                                                                                                                                                     \
+        int32_t samplesi;                                                                          \
+        for (i = 0; i < length;) {                                                                 \
+            INLINE(N, LOOP_BODY)                                                                   \
+        }                                                                                          \
+        for (; i < length;) {                                                                      \
+            LOOP_BODY(N);                                                                          \
+        }                                                                                          \
+        N(GET_R)                                                                                   \
+        N(SETDEST)                                                                                 \
+        if (pow)                                                                                   \
+            *pow = total_power/length;                                                             \
     }
 
 #define ONE(N) N(1)
@@ -69,35 +74,6 @@ static inline int32_t DIV(int32_t x, int32_t y)
 MAKE_GOETZEL_N(1, ONE)
 MAKE_GOETZEL_N(2, TWO)
 
-/*
-int32_t goetzel(const int16_t *samples, unsigned length, int32_t coeff)
-{
-    int32_t total_power = 0;
-
-    int32_t prev1 = 0, prev2 = 0;
-    unsigned i;
-    for (i = 0; i < length; ++i) {
-        int32_t samplesi = samples[i];
-        total_power += MUL(samplesi,samplesi)/4;
-        int32_t s = samplesi + MUL(coeff, prev1) - prev2;
-        prev2 = prev1;
-        prev1 = s;
-    }
-
-    int32_t r = MUL(prev2,prev2) + MUL(prev1,prev1) - MUL(MUL(coeff,prev1),prev2);
-
-    r = DIV(r, total_power);
-
-    // No point normalizing for length because we'll always be comparing buffers
-    // of the same length.
-    //
-    // r = DIV(r, length);
-
-    if (r < 0)
-        r = -r;
-    return r;
-}
-*/
 
 #ifdef TEST
 

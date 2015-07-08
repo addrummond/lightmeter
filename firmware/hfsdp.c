@@ -1,85 +1,87 @@
 #include <hfsdp.h>
 #include <goetzel.h>
 
-void init_hfsdp_read_bit_state(hfsdp_read_bit_state_t *s)
+void init_hfsdp_read_bit_state(hfsdp_read_bit_state_t *s, int32_t clock_coscoeff, int32_t clock_sincoeff, int32_t data_coscoeff, int32_t data_sincoeff)
 {
-    s->prev_clock_direction = 0; // -1 -> unknown, 0 -> rising, 1 -> falling.
+    s->calib_count = 0;
+    s->min_pclock = 2147483647;
+    s->max_pclock = -1;
     s->prev_pclock = -1;
-    s->prev_pdata = -1;
+    s->clock_coscoeff = clock_coscoeff;
+    s->clock_sincoeff = clock_sincoeff;
+    s->data_coscoeff = data_coscoeff;
+    s->data_sincoeff = data_sincoeff;
 }
 
+#define HFSDP_CLOCK_THRESHOLD 200
+#define HFSDP_DATA_THRESHOLD  200
 int hfsdp_read_bit(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned buflen,
-                   int16_t *debug_clock_amp, int16_t *debug_data_amp)
+                   int32_t *debug_clock_amp, int32_t *debug_data_amp, int32_t *debug_power)
 {
-    int32_t pclock, pdata;
+    int32_t pclock, pdata, power;
     goetzel2(buf, buflen,
-             HFSDP_MASTER_CLOCK_COEFF,
-             HFSDP_MASTER_DATA_COEFF,
-             &pclock, &pdata);
+             s->clock_coscoeff, s->clock_sincoeff,
+             s->data_coscoeff, s->data_sincoeff,
+             &pclock, &pdata,
+             &power);
 
     if (debug_clock_amp)
         *debug_clock_amp = pclock;
     if (debug_data_amp)
         *debug_data_amp = pdata;
+    if (debug_power)
+        *debug_power = power;
 
-    unsigned clock_direction;
-    if (s->prev_pclock != -1) {
-        int32_t pclockdiff = pclock - s->prev_pclock;
-        if (pclockdiff >= HFSDP_CLOCK_THRESHOLD)
-            clock_direction = 0;
-        else if (pclockdiff <= -HFSDP_CLOCK_THRESHOLD)
-            clock_direction = 1;
-        else
-            clock_direction = -1;
-    }
-    else {
-        clock_direction = -1;
-    }
+    // For the first eight iterations, we just keep track of the minimum and
+    // maximum clock levels. The max clock level is typically only just above
+    // the lowest level of the data line in its high state. We therefore can
+    // set highest_low to around 1/4 of this level.
+    if (s->calib_count < 8) {
+        if (pclock < s->min_pclock)
+            s->min_pclock = pclock;
+        else if (pclock > s->max_pclock)
+            s->max_pclock = pclock;
 
-    // Has the clock changed direction, indicating that we should read a
-    // data bit?
-    if (clock_direction != -1 && clock_direction != s->prev_clock_direction) {
-        s->prev_clock_direction = clock_direction;
+        s->prev_pclock = pclock;
 
-        if (s->prev_pdata == -1) {
-            s->prev_pdata = pdata;
+        ++(s->calib_count);
+        if (s->calib_count == 8) {
+            s->highest_low = s->max_pclock / 2;
         }
-        else {
-            // At this point, we'd better have a significant difference between
-            // prev_pdata and pdata. If not, we return an error code to indicate that
-            // the signal could not be decoded.
-            int32_t pdatadiff = pdata - s->prev_pdata;
-            if (pdatadiff > -HFSDP_DATA_THRESHOLD && pdatadiff < HFSDP_DATA_THRESHOLD)
-                return HFSDP_READ_BIT_DECODE_ERROR;
 
-            int bit = (s->prev_pdata <= pdata);
-            s->prev_pdata = pdata;
-
-            return bit;
-        }
+        return HFSDP_READ_BIT_NOTHING_READ;
     }
 
+    // No change in the clock level, so we don't read a bit.
+    if (! ((pclock <= s->highest_low && s->prev_pclock > s->highest_low) ||
+           (pclock > s->highest_low && s->prev_pclock <= s->highest_low))) {
+        return HFSDP_READ_BIT_NOTHING_READ;
+    }
+
+    // Clock level has changed, so we read a bit.
     s->prev_pclock = pclock;
-
-    return HFSDP_READ_BIT_NOTHING_READ;
+    return (pdata > s->highest_low);
 }
 
 #ifdef TEST
 #include <stdlib.h>
 #include <stdio.h>
 
-// Should be equal to PIEZO_MIC_BUFFER_N_SAMPLES in piezo.h (can't include
-// because of STM32 stuff).
-#define NSAMPLES 64
+#define SAMPLES_TO_SKIP_F_BITS 8
+#define SAMPLES_TO_SKIP ((int)(((float)(44100 << SAMPLES_TO_SKIP_F_BITS)/(HFSDP_SAMPLE_FREQ*1.0))))
 
-int main(int argc, char **argv)
+#define CLOCK_COSCOEFF_  -0.9585389579
+#define CLOCK_SINCOEFF_  0.2849615170
+#define DATA_COSCOEFF_   -0.9083636196
+#define DATA_SINCOEFF_   0.4181812222
+#define CLOCK_COSCOEFF   GOETZEL_FLOAT_TO_FIX(CLOCK_COSCOEFF_)
+#define CLOCK_SINCOEFF   GOETZEL_FLOAT_TO_FIX(CLOCK_SINCOEFF_)
+#define DATA_COSCOEFF    GOETZEL_FLOAT_TO_FIX(DATA_COSCOEFF_)
+#define DATA_SINCOEFF    GOETZEL_FLOAT_TO_FIX(DATA_SINCOEFF_)
+
+static void get_fake_adc_vals(const char *filename, int16_t **out, unsigned *length)
 {
-    if (argc != 2) {
-        fprintf(stderr, "Bad arguments\n");
-        exit(1);
-    }
-
-    FILE *fp = fopen(argv[1], "r");
+    FILE *fp = fopen(filename, "r");
 
     float *vals = malloc(sizeof(float) * 100);
     unsigned vals_len = 100;
@@ -99,8 +101,6 @@ int main(int argc, char **argv)
 
     fclose(fp);
 
-    printf("%i samples read\n", vals_i);
-
     int16_t *fake_adc_vals = malloc(sizeof(int16_t) * vals_i);
     unsigned i;
     for (i = 0; i < vals_i; ++i) {
@@ -108,14 +108,32 @@ int main(int argc, char **argv)
     }
     free(vals);
 
-    hfsdp_read_bit_state_t s;
-    init_hfsdp_read_bit_state(&s);
-    for (i = 0; i < 300; ++i) {
-        int16_t clock_amp, data_amp;
+    *length = vals_i;
+    *out = fake_adc_vals;
+}
 
-        int r = hfsdp_read_bit(&s, fake_adc_vals + (i*NSAMPLES), NSAMPLES, &clock_amp, &data_amp);
-        printf("%i\n", clock_amp);
-        continue;
+static int test1(const char *filename)
+{
+    unsigned vals_i;
+    int16_t *fake_adc_vals;
+    get_fake_adc_vals(filename, &fake_adc_vals, &vals_i);
+
+    hfsdp_read_bit_state_t s;
+    init_hfsdp_read_bit_state(&s, CLOCK_COSCOEFF, CLOCK_SINCOEFF, DATA_COSCOEFF, DATA_SINCOEFF);
+    unsigned i;
+    for (i = 0; i < (vals_i << SAMPLES_TO_SKIP_F_BITS)/SAMPLES_TO_SKIP; ++i) {
+        int32_t clock_amp, data_amp, powr;
+
+        int32_t ii = (i * SAMPLES_TO_SKIP) >> SAMPLES_TO_SKIP_F_BITS;
+        int32_t rm = ii % (1 << SAMPLES_TO_SKIP_F_BITS);
+        if (rm <= -(1 << (SAMPLES_TO_SKIP_F_BITS-1)))
+            ii -= 1;
+        else if (rm >= (1 << (SAMPLES_TO_SKIP_F_BITS-1)))
+            ii += 1;
+
+        int r = hfsdp_read_bit(&s, fake_adc_vals + ii, SAMPLES_TO_SKIP>>SAMPLES_TO_SKIP_F_BITS, &clock_amp, &data_amp, &powr);
+        //printf("%i, %i, %i\n", clock_amp, data_amp, powr);
+        //continue;
 
         if (r == HFSDP_READ_BIT_DECODE_ERROR)
             printf("DECODE ERROR\n");
@@ -124,6 +142,41 @@ int main(int argc, char **argv)
         else
             printf("B: %i\n", r);
     }
+
+    return 0;
+}
+
+static void test2(const char *filename)
+{
+    unsigned vals_i;
+    int16_t *fake_adc_vals;
+    get_fake_adc_vals(filename, &fake_adc_vals, &vals_i);
+
+    int16_t c1, c2, best_c1, best_c2;
+    int32_t max_amp = -1;
+    int32_t amp, power;
+    for (c1 = -65536/2+1; c1 < 65536/2-1; c1 += 10) {
+        for (c2 = -65536/2+1; c2 < 65536/2-1; c2 += 10) {
+            goetzel1(fake_adc_vals, 64, c1, c2, &amp, &power);
+            if (amp > max_amp) {
+                max_amp = amp;
+                best_c1 = c1;
+                best_c2 = c2;
+            }
+        }
+    }
+
+    printf("Best c1 = %i, c2 = %i\n", best_c1, best_c2);
+}
+
+int main(int argc, char **argv)
+{
+    if (argc != 2) {
+        fprintf(stderr, "Bad arguments\n");
+        exit(1);
+    }
+
+    test1(argv[1]);
 }
 
 #endif
