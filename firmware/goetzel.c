@@ -139,8 +139,8 @@ static void test1()
         float NFREQ = BIN_FREQ/SAMPLE_FREQ;
         int32_t COEFF = GOETZEL_FLOAT_TO_FIX(2*cos(2*M_PI*NFREQ*1));
 
-        int32_t p;
-        goetzel1(samples, N_SAMPLES, COEFF, &p);
+        int32_t p, pdummy;
+        goetzel2(samples, N_SAMPLES, COEFF, 100/*dummy*/, &p, &pdummy);
 
         unsigned nstars = (unsigned)(round((float)p/(4096.0/2) * 0.5));
         printf("%i,%.2fHz: ", j, BIN_FREQ);
