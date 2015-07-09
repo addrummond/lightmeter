@@ -35,7 +35,7 @@ int hfsdp_read_bit(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned bufle
     // For the first eight iterations, we just keep track of the minimum and
     // maximum clock levels. The max clock level is typically only just above
     // the lowest level of the data line in its high state. We therefore can
-    // set highest_low to around 1/4 of this level.
+    // set highest_low to around 1/2 of this level.
     if (s->calib_count < 8) {
         if (pclock < s->min_pclock)
             s->min_pclock = pclock;
