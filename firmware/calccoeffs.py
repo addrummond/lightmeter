@@ -38,16 +38,19 @@ def calc(baseband, carrier, sample, nseries, maxflush):
        For the following calculation, we assume that on average the same number
        of zeroes and ones are transmitted in any given signal."""
 
-    rad = 0.0
+    avgfreq = 0.0
     baseperiod = 1/baseband
     n = int(maxflush)*2-1
+    print("N", n)
     for fl in range(n):
-       newperiod = baseperiod + (baseperiod * 0.5 * fl)
-       basefreq = 1/newperiod
-       rad += 2 * math.pi * ((carrier + (basefreq/2))/sample)
-    rad /= n
+        newbaseperiod = baseperiod + (baseperiod * 0.5 * fl)
+        newbasefreq = 1/newbaseperiod
+        for s in range(1, int(nseries)+1, 1):
+            avgfreq += carrier + ((s*newbasefreq)/2)
+    avgfreq /= n*nseries
+    rad = 2 * math.pi * (avgfreq/sample)
 
-    return dict(coscoeff=math.cos(rad), sincoeff = math.sin(rad))
+    return dict(avgfreq=avgfreq, coscoeff=math.cos(rad), sincoeff = math.sin(rad))
 
 if __name__ == '__main__':
     assert len(sys.argv) == 6
@@ -56,4 +59,4 @@ if __name__ == '__main__':
         name, val = arg.split('=')
         args[name] = float(val)
     r = calc(**args)
-    print("cos = %.10f, sin = %.10f" % (r['coscoeff'], r['sincoeff']))
+    print("freq = %.2f, cos = %.10f, sin = %.10f" % (r['avgfreq'], r['coscoeff'], r['sincoeff']))

@@ -29,18 +29,18 @@ bool hfsdp_check_start(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned b
             stddev += x*x;
         }
 
-        //debugging_writec("STD: ");
-        //debugging_write_int32(stddev);
-        //debugging_writec("\n");
+        debugging_writec("STD: ");
+        debugging_write_int32(stddev);
+        debugging_writec("\n");
 
         if (stddev > 30000) {
             // The max clock level is typically only just above
             // the lowest level of the data line in its high state. We therefore can
             // set highest_low to around 1/2 of this level.
             s->highest_low = s->max_pclock/2;
-            //debugging_writec("HL: ");
-            //debugging_write_int32(s->highest_low);
-            //debugging_writec("\n");
+            debugging_writec("HL: ");
+            debugging_write_int32(s->highest_low);
+            debugging_writec("\n");
             return true;
         }
         else {

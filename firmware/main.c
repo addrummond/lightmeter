@@ -37,7 +37,7 @@ static __attribute__ ((unused)) void test_mic()
         //piezo_hfsdp_listen_for_masters_init();
         //continue;
 
-        uint8_t buf[64];
+        uint8_t buf[16];
         memset8_zero(buf, sizeof(buf));
         bool decoded_successfully = piezo_read_data(buf, sizeof(buf)/sizeof(buf[0]));
 
