@@ -296,6 +296,7 @@ bool piezo_read_data(uint8_t *buffer, unsigned bits)
     init_hfsdp_read_bit_state(&s, HFSDP_MASTER_CLOCK_COSCOEFF, HFSDP_MASTER_CLOCK_SINCOEFF,
                                   HFSDP_MASTER_DATA_COSCOEFF,  HFSDP_MASTER_DATA_SINCOEFF);
 
+    bool started = false;
     unsigned nreceived = 0;
     for (;;) {
         uint32_t tn = SysTick->VAL;
@@ -306,23 +307,29 @@ bool piezo_read_data(uint8_t *buffer, unsigned bits)
             te = SYS_TICK_MAX - (HFSDP_SAMPLE_CYCLES - tn);
 
         piezo_mic_read_buffer();
-        int r = hfsdp_read_bit(&s, (const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, 0, 0, 0);
 
-        if (r == HFSDP_READ_BIT_DECODE_ERROR)
-            return false;
-        else if (r == HFSDP_READ_BIT_NOTHING_READ)
-            ;
-        else {
-            buffer[nreceived++] = r;
-            if (nreceived == bits)
-                return true;
+        if (! started) {
+            started = hfsdp_check_start(&s, (const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES);
         }
+        else {
+            int r = hfsdp_read_bit(&s, (const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, 0, 0, 0);
 
-        // Wait until it's time to take the next sample.
-        if (te < tn)
-            while (SysTick->VAL > te);
-        else
-            while (SysTick->VAL <= te);
+            if (r == HFSDP_READ_BIT_DECODE_ERROR)
+                return false;
+            else if (r == HFSDP_READ_BIT_NOTHING_READ)
+                ;
+            else {
+                buffer[nreceived++] = r;
+                if (nreceived == bits)
+                    return true;
+            }
+
+            // Wait until it's time to take the next sample.
+            if (te < tn)
+                while (SysTick->VAL > te);
+            else
+                while (SysTick->VAL <= te);
+        }
     }
 }
 

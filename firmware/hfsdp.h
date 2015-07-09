@@ -2,6 +2,7 @@
 #define HFSDP_H
 
 #include <stdint.h>
+#include <stdbool.h>
 #include <goetzel.h>
 
 //
@@ -30,6 +31,8 @@
 typedef struct {
     int32_t calib_count;
     int32_t min_pclock, max_pclock;
+    int32_t avg;
+    int32_t vs[8];
     int32_t highest_low;
     int32_t prev_pclock;
     int32_t clock_coscoeff, data_coscoeff;
@@ -37,6 +40,7 @@ typedef struct {
 } hfsdp_read_bit_state_t;
 
 void init_hfsdp_read_bit_state(hfsdp_read_bit_state_t *s, int32_t clock_coscoeff, int32_t clock_sincoeff, int32_t data_coscoeff, int32_t data_sincoeff);
+bool hfsdp_check_start(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned buflen);
 int hfsdp_read_bit(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned buflen,
                    int32_t *debug_clock_amp, int32_t *debug_data_amp, int32_t *debug_power);
 

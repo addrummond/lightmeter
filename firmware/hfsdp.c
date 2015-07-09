@@ -1,16 +1,75 @@
 #include <hfsdp.h>
 #include <goetzel.h>
+#include <debugging.h>
 
 void init_hfsdp_read_bit_state(hfsdp_read_bit_state_t *s, int32_t clock_coscoeff, int32_t clock_sincoeff, int32_t data_coscoeff, int32_t data_sincoeff)
 {
     s->calib_count = 0;
+    s->prev_pclock = -1;
     s->min_pclock = 2147483647;
     s->max_pclock = -1;
-    s->prev_pclock = -1;
+    s->avg = 0;
     s->clock_coscoeff = clock_coscoeff;
     s->clock_sincoeff = clock_sincoeff;
     s->data_coscoeff = data_coscoeff;
     s->data_sincoeff = data_sincoeff;
+}
+
+bool hfsdp_check_start(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned buflen)
+{
+    if (s->calib_count == sizeof(s->vs)/sizeof(int32_t)) {
+        s->avg /= sizeof(s->vs)/sizeof(int32_t);
+
+        // We want to see a high standard deviation -- that indicates that
+        // this is an actual square wave signal and not just noise.
+        int32_t stddev = 0;
+        unsigned i;
+        for (i = 0; i < sizeof(s->vs)/sizeof(int32_t); ++i) {
+            int32_t x = (s->vs[i] - s->avg);
+            stddev += x*x;
+        }
+
+        //debugging_writec("STD: ");
+        //debugging_write_int32(stddev);
+        //debugging_writec("\n");
+
+        if (stddev > 30000) {
+            // The max clock level is typically only just above
+            // the lowest level of the data line in its high state. We therefore can
+            // set highest_low to around 1/2 of this level.
+            s->highest_low = s->max_pclock/2;
+            //debugging_writec("HL: ");
+            //debugging_write_int32(s->highest_low);
+            //debugging_writec("\n");
+            return true;
+        }
+        else {
+            s->calib_count = 0;
+            s->min_pclock = 2147483647;
+            s->max_pclock = -1;
+            s->avg = 0;
+            return false;
+        }
+    }
+
+    int32_t pclock;
+    goetzel1(buf, buflen,
+             s->clock_coscoeff, s->clock_sincoeff,
+             &pclock,
+             0);
+
+    s->prev_pclock = pclock;
+
+    s->vs[s->calib_count] = pclock;
+    s->avg += pclock;
+    ++(s->calib_count);
+
+    if (pclock > s->max_pclock)
+        s->max_pclock = pclock;
+    else if (pclock < s->min_pclock)
+        s->min_pclock = pclock;
+
+    return false;
 }
 
 #define HFSDP_CLOCK_THRESHOLD 200
@@ -31,26 +90,6 @@ int hfsdp_read_bit(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned bufle
         *debug_data_amp = pdata;
     if (debug_power)
         *debug_power = power;
-
-    // For the first eight iterations, we just keep track of the minimum and
-    // maximum clock levels. The max clock level is typically only just above
-    // the lowest level of the data line in its high state. We therefore can
-    // set highest_low to around 1/2 of this level.
-    if (s->calib_count < 8) {
-        if (pclock < s->min_pclock)
-            s->min_pclock = pclock;
-        else if (pclock > s->max_pclock)
-            s->max_pclock = pclock;
-
-        s->prev_pclock = pclock;
-
-        ++(s->calib_count);
-        if (s->calib_count == 8) {
-            s->highest_low = s->max_pclock / 2;
-        }
-
-        return HFSDP_READ_BIT_NOTHING_READ;
-    }
 
     // No change in the clock level, so we don't read a bit.
     if (! ((pclock <= s->highest_low && s->prev_pclock > s->highest_low) ||
@@ -120,6 +159,7 @@ static int test1(const char *filename)
 
     hfsdp_read_bit_state_t s;
     init_hfsdp_read_bit_state(&s, CLOCK_COSCOEFF, CLOCK_SINCOEFF, DATA_COSCOEFF, DATA_SINCOEFF);
+    bool started = false;
     unsigned i;
     for (i = 0; i < (vals_i << SAMPLES_TO_SKIP_F_BITS)/SAMPLES_TO_SKIP; ++i) {
         int32_t clock_amp, data_amp, powr;
@@ -131,16 +171,21 @@ static int test1(const char *filename)
         else if (rm >= (1 << (SAMPLES_TO_SKIP_F_BITS-1)))
             ii += 1;
 
-        int r = hfsdp_read_bit(&s, fake_adc_vals + ii, SAMPLES_TO_SKIP>>SAMPLES_TO_SKIP_F_BITS, &clock_amp, &data_amp, &powr);
-        //printf("%i, %i, %i\n", clock_amp, data_amp, powr);
-        //continue;
+        if (! started) {
+            started = hfsdp_check_start(&s, fake_adc_vals + ii, SAMPLES_TO_SKIP>>SAMPLES_TO_SKIP_F_BITS);
+        }
+        else {
+            int r = hfsdp_read_bit(&s, fake_adc_vals + ii, SAMPLES_TO_SKIP>>SAMPLES_TO_SKIP_F_BITS, &clock_amp, &data_amp, &powr);
+            //printf("%i, %i, %i\n", clock_amp, data_amp, powr);
+            //continue;
 
-        if (r == HFSDP_READ_BIT_DECODE_ERROR)
-            printf("DECODE ERROR\n");
-        else if (r == HFSDP_READ_BIT_NOTHING_READ)
-            ;//printf("NUTTIN\n");
-        else
-            printf("B: %i\n", r);
+            if (r == HFSDP_READ_BIT_DECODE_ERROR)
+                printf("DECODE ERROR\n");
+            else if (r == HFSDP_READ_BIT_NOTHING_READ)
+                ;//printf("NUTTIN\n");
+            else
+                printf("B: %i\n", r);
+        }
     }
 
     return 0;

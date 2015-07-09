@@ -11,7 +11,7 @@
 #define USE_DMA
 //#undef USE_DMA
 
-#define PIEZO_MIC_BUFFER_N_SAMPLES 64
+#define PIEZO_MIC_BUFFER_N_SAMPLES 80
 
 void piezo_mic_init(void);
 void piezo_mic_deinit(void);
