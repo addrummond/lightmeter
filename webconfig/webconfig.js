@@ -1,6 +1,6 @@
 var SIGNAL_FREQ = 126;
 var MASTER_CLOCK_HZ = 20000;
-var MASTER_DATA_HZ = 19000;
+var MASTER_DATA_HZ = 18000;
 
 function goetzel(freq, input, output) {
     var inter = new Float32Array(input.length);
@@ -118,7 +118,8 @@ function filter_below_17500_at_44100(buffer_in, buffer_out)
 }
 
 function ssb(s, sh, f, t) {
-    return s(t)*Math.cos(2*Math.PI*f*t) - sh(t)*Math.sin(2*Math.PI*f*t);
+    return s(t)*Math.cos(2*Math.PI*f*t);
+    //return s(t)*Math.cos(2*Math.PI*f*t) - sh(t)*Math.sin(2*Math.PI*f*t);
 }
 
 function approximate_square_wave(series_length, freq, mag, dutyCycle, phaseShift, hilbert) {
@@ -156,7 +157,7 @@ function hilbert_of_approximate_square_wave(series_length, freq, mag, dutyCycle,
     return approximate_square_wave(series_length, freq, mag, dutyCycle, phaseShift, true);
 }
 
-var SIGNAL_SERIES_LENGTH = 3;
+var SIGNAL_SERIES_LENGTH = 11;
 function encode_signal(out, sampleRate, signal, repeat, signalFreq, carrierFreq, mag) {
     if (signal.length == 0)
         return;
@@ -225,7 +226,7 @@ function test_message() {
     var myMessage;
     myMessage = new Array(1000);
     for (var i = 0; i < myMessage.length; ++i) {
-        myMessage[i] = !!(i % 7)+0;
+        myMessage[i] = !!(i % 4)+0;
     }
     //myMessage = [0,0,1];//[1,0,1,1,0,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0];//1,1,0,0,0];//[1,0,1,0,1,1,1,0,0,0,1,1,0,0];//1,0,1,0,1];
     console.log(audioCtx.sampleRate, JSON.stringify(myMessage));
@@ -234,11 +235,7 @@ function test_message() {
     var siglen2 = encode_signal(samples, audioCtx.sampleRate, [1, 0],    myMessage.length/2,   SIGNAL_FREQ, MASTER_CLOCK_HZ, MAG);
     if (siglen != siglen2)
         throw new Error("LENGTH MISMATCH!!");
-    var samples2 = new Float32Array(samples.length);
-    for (j = 0; j < samples.length; ++j)
-        samples2[j] = samples[j];
-    //filter_below_17500_at_44100(samples, samples2);
-    samples = samples2;
+
     for (var i = 0; i < siglen; ++i) {
         var t = i/audioCtx.sampleRate;
         var v = samples[i];
@@ -251,7 +248,10 @@ function test_message() {
 function test_f() {
     var samples = buffer.getChannelData(0);
     function myf(t) {
-        return approximate_square_wave(5, SIGNAL_FREQ, 1, 0.8)(t)*Math.cos(2*Math.PI*(MASTER_DATA_HZ)*t)*0.5;
+        return ((0.5*Math.cos(2*Math.PI*t*1000)*Math.cos(2*Math.PI*10000*t) - 0.5*Math.cos(2*Math.PI*t*1000)*Math.sin(2*Math.PI*10000*t)) -
+                (0.5*Math.cos(2*Math.PI*t*1000)*Math.cos(2*Math.PI*t*10000)));
+
+        //return approximate_square_wave(5, SIGNAL_FREQ, 1, 0.8)(t)*Math.cos(2*Math.PI*(MASTER_DATA_HZ)*t)*0.5;
         //return approximate_square_wave(20, 30/*10hz test*/, 1.0, 0.5)(t)*Math.cos(2*Math.PI*MASTER_CLOCK_HZ*t)*0.5;
 
 

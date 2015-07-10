@@ -29,18 +29,22 @@ bool hfsdp_check_start(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned b
             stddev += x*x;
         }
 
+#ifndef TEST
         debugging_writec("STD: ");
         debugging_write_int32(stddev);
         debugging_writec("\n");
+#endif
 
-        if (stddev > 30000) {
+        if (stddev > 100000) {
             // The max clock level is typically only just above
             // the lowest level of the data line in its high state. We therefore can
             // set highest_low to around 1/2 of this level.
             s->highest_low = s->max_pclock/2;
+#ifndef TEST
             debugging_writec("HL: ");
             debugging_write_int32(s->highest_low);
             debugging_writec("\n");
+#endif
             return true;
         }
         else {
@@ -109,14 +113,16 @@ int hfsdp_read_bit(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned bufle
 #define SAMPLES_TO_SKIP_F_BITS 8
 #define SAMPLES_TO_SKIP ((int)(((float)(44100 << SAMPLES_TO_SKIP_F_BITS)/(HFSDP_SAMPLE_FREQ*1.0))))
 
-#define CLOCK_COSCOEFF_  -0.9585389579
-#define CLOCK_SINCOEFF_  0.2849615170
-#define DATA_COSCOEFF_   -0.9083636196
-#define DATA_SINCOEFF_   0.4181812222
+#define CLOCK_COSCOEFF_  -0.9576483160
+#define CLOCK_SINCOEFF_  0.2879404501
+#define DATA_COSCOEFF_   -0.8380881049
+#define DATA_SINCOEFF_   0.5455349012
 #define CLOCK_COSCOEFF   GOETZEL_FLOAT_TO_FIX(CLOCK_COSCOEFF_)
 #define CLOCK_SINCOEFF   GOETZEL_FLOAT_TO_FIX(CLOCK_SINCOEFF_)
 #define DATA_COSCOEFF    GOETZEL_FLOAT_TO_FIX(DATA_COSCOEFF_)
 #define DATA_SINCOEFF    GOETZEL_FLOAT_TO_FIX(DATA_SINCOEFF_)
+
+#define MAKE_QUIETER_BY 5.0
 
 static void get_fake_adc_vals(const char *filename, int16_t **out, unsigned *length)
 {
@@ -143,7 +149,7 @@ static void get_fake_adc_vals(const char *filename, int16_t **out, unsigned *len
     int16_t *fake_adc_vals = malloc(sizeof(int16_t) * vals_i);
     unsigned i;
     for (i = 0; i < vals_i; ++i) {
-        fake_adc_vals[i] = (int16_t)((4096.0/2)*vals[i]);
+        fake_adc_vals[i] = (int16_t)(((4096.0/2)*vals[i])/MAKE_QUIETER_BY);
     }
     free(vals);
 
@@ -172,12 +178,12 @@ static int test1(const char *filename)
             ii += 1;
 
         if (! started) {
-            started = hfsdp_check_start(&s, fake_adc_vals + ii, SAMPLES_TO_SKIP>>SAMPLES_TO_SKIP_F_BITS);
+            started = hfsdp_check_start(&s, fake_adc_vals + ii, (SAMPLES_TO_SKIP>>SAMPLES_TO_SKIP_F_BITS)-5);
         }
         else {
             int r = hfsdp_read_bit(&s, fake_adc_vals + ii, SAMPLES_TO_SKIP>>SAMPLES_TO_SKIP_F_BITS, &clock_amp, &data_amp, &powr);
-            //printf("%i, %i, %i\n", clock_amp, data_amp, powr);
-            //continue;
+            printf("%i, %i, %i\n", clock_amp, data_amp, powr);
+            continue;
 
             if (r == HFSDP_READ_BIT_DECODE_ERROR)
                 printf("DECODE ERROR\n");

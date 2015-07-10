@@ -2,6 +2,7 @@
 #include <string.h>
 #include <goetzel.h>
 #include <myassert.h>
+#include <debugging.h>
 
 #ifdef TEST
 #include <math.h>
@@ -28,16 +29,23 @@ static inline int32_t DIV(int32_t x, int32_t y)
 #define INLINE(N, M) M(N) M(N) M(N) M(N) M(N) M(N) M(N) M(N)
 
 #define PARAMS(n)    , int32_t coscoeff ## n , int32_t sincoeff ## n
+
 #define DESTS(n)     , int32_t *dest ## n
+
 #define PREVS(n)     int32_t prev1_ ## n = 0, prev2_ ## n = 0, s ##n;
-#define GET_S(n)     s ## n = samplesi + MUL(coscoeff ## n * 2, prev1_ ## n) - prev2_ ## n;
+
+#define COS2(n)      int32_t coscoeff ## n ## _mul2 = 2 * coscoeff ## n;
+
+#define GET_S(n)     s ## n = samplesi + MUL(coscoeff ## n ## _mul2, prev1_ ## n) - prev2_ ## n;
+
 #define SET_PREVS(n) prev2_ ## n = prev1_ ## n ; prev1_ ## n = s ## n;
-#define GET_R(n)     int32_t rr ## n = 0; \
-                     rr ## n = MUL(prev1_ ## n, coscoeff ## n) - prev2_ ## n; \
+
+#define GET_R(n)     int32_t rr ## n = MUL(prev1_ ## n, coscoeff ## n) - prev2_ ## n; \
                      int32_t ri ## n = MUL(prev1_ ## n, sincoeff ## n); \
                      int32_t r ## n = MUL(rr ## n, rr ## n) + MUL(ri ## n, ri ## n); \
                      if (r ## n < 0) \
                          r ## n = -r ## n;
+
 #define SETDEST(n)   *dest ## n = r ## n;
 
 #define LOOP_BODY(N)                          \
@@ -53,8 +61,9 @@ static inline int32_t DIV(int32_t x, int32_t y)
         int32_t total_power = 0;                                                                   \
                                                                                                    \
         N(PREVS)                                                                                   \
+        N(COS2)                                                                                    \
                                                                                                    \
-        int i;                                                                                                                                                     \
+        int i;                                                                                     \
         int32_t samplesi;                                                                          \
         for (i = 0; i < length;) {                                                                 \
             INLINE(N, LOOP_BODY)                                                                   \

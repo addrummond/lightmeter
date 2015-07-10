@@ -19,6 +19,7 @@
 #include <sysinit.h>
 #include <meter.h>
 #include <tables.h>
+#include <hfsdp.h>
 
 void HardFault_Handler()
 {
@@ -29,15 +30,45 @@ static __attribute__ ((unused)) void test_mic()
 {
     piezo_mic_init();
     unsigned i;
+
+    for (i = 0; i < 10; ++i)
+       piezo_mic_read_buffer();
+
     for (i = 0;; ++i) {
-        //piezo_mic_read_buffer();
-        //debugging_write_int32(piezo_get_magnitude());
-        //debugging_writec("\n");
+        // int32_t now = SysTick->VAL;
+        // piezo_mic_read_buffer();
+        // int32_t clk, dat, tpow;
+        // goetzel2((const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, HFSDP_MASTER_CLOCK_COSCOEFF, HFSDP_MASTER_CLOCK_SINCOEFF, HFSDP_MASTER_DATA_COSCOEFF, HFSDP_MASTER_DATA_SINCOEFF, &clk, &dat, &tpow);
+        // int32_t then = SysTick->VAL;
+        // /*debugging_writec("G: ");
+        // debugging_write_uint32(now-then);
+        // debugging_writec("\n");*/
+        // debugging_write_uint32(clk);
+        // debugging_writec(", ");
+        // debugging_write_uint32(dat);
+        // debugging_writec(", ");
+        // debugging_write_uint32(tpow);
+        // debugging_writec("\n");
+        // continue;
+        //
+        // piezo_mic_read_buffer();
+        // unsigned j;
+        // for (j = 0; j < PIEZO_MIC_BUFFER_N_SAMPLES; ++j) {
+        //     debugging_write_int32(piezo_mic_buffer[j]);
+        //     debugging_writec("\n");
+        // }
+        // debugging_writec("****\n");
+        // continue;
+        //
+        // piezo_mic_read_buffer();
+        // debugging_write_int32(piezo_get_magnitude());
+        // debugging_writec("\n");
+        // continue;
 
         //piezo_hfsdp_listen_for_masters_init();
         //continue;
 
-        uint8_t buf[16];
+        uint8_t buf[64];
         memset8_zero(buf, sizeof(buf));
         bool decoded_successfully = piezo_read_data(buf, sizeof(buf)/sizeof(buf[0]));
 

@@ -15,14 +15,10 @@
 
 //#define MIC_OFFSET_ADC_V ((int32_t)((1.3/3.3)*4096.0))
 // Empirically determined.
-#define MIC_OFFSET_ADC_V 1113
+#define MIC_OFFSET_ADC_V 1720
 
-// Some extra space at beginning to absorb junk values from first conversions.
-#define JUNK_SPACE 1
-__IO int16_t piezo_mic_buffer_[PIEZO_MIC_BUFFER_N_SAMPLES+JUNK_SPACE];
-__IO int16_t *piezo_mic_buffer = piezo_mic_buffer_ + JUNK_SPACE;
+__IO int16_t piezo_mic_buffer[PIEZO_MIC_BUFFER_N_SAMPLES];
 
-#ifdef USE_DMA
 static void dma_config()
 {
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
@@ -33,7 +29,7 @@ static void dma_config()
     dmai.DMA_PeripheralBaseAddr = (uint32_t)(&(ADC1->DR));
     dmai.DMA_MemoryBaseAddr = (uint32_t)piezo_mic_buffer;
     dmai.DMA_DIR = DMA_DIR_PeripheralSRC;
-    dmai.DMA_BufferSize = PIEZO_MIC_BUFFER_N_SAMPLES+JUNK_SPACE;
+    dmai.DMA_BufferSize = PIEZO_MIC_BUFFER_N_SAMPLES;
     dmai.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
     dmai.DMA_MemoryInc = DMA_MemoryInc_Enable;
     dmai.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
@@ -42,17 +38,7 @@ static void dma_config()
     dmai.DMA_Priority = DMA_Priority_High;
     dmai.DMA_M2M = DMA_M2M_Disable;
     DMA_Init(DMA1_Channel1, &dmai);
-    // DMA1 Channel1 enable.
-    DMA_Cmd(DMA1_Channel1, ENABLE);
 }
-
-// TODO: See if we can trim this down a bit.
-static void dma_restart()
-{
-    dma_config();
-}
-
-#endif
 
 void piezo_mic_init()
 {
@@ -71,6 +57,31 @@ void piezo_mic_init()
     GPIO_WriteBit(DISPLAY_POWER_GPIO_PORT, DISPLAY_POWER_PIN, 0);
 
     //
+    // Configure timer that will be used to trigger ADC at 44.1KHz.
+    //
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
+    TIM_DeInit(TIM1);
+    TIM_TimeBaseInitTypeDef tbi;
+    TIM_TimeBaseStructInit(&tbi);
+    tbi.TIM_Prescaler = 0;
+    tbi.TIM_Period = 181-1;//45-1;//91-1;//1088/40-1;
+    tbi.TIM_ClockDivision = TIM_CKD_DIV1;
+    tbi.TIM_CounterMode = TIM_CounterMode_Up;
+    TIM_TimeBaseInit(TIM1, &tbi);
+
+    //TIM_SelectOutputTrigger(TIM1, TIM_C);
+
+    TIM_OCInitTypeDef toci;
+    TIM_OCStructInit(&toci);
+    toci.TIM_OCMode = TIM_OCMode_PWM1;
+    toci.TIM_OutputState = TIM_OutputState_Enable;
+    toci.TIM_Pulse = 0x01;
+    TIM_OC4Init(TIM1, &toci);
+
+    TIM_Cmd(TIM1, ENABLE);
+    TIM_CtrlPWMOutputs(TIM1, ENABLE);
+
+    //
     // ADC configuration.
     //
     ADC_InitTypeDef adci;
@@ -87,31 +98,24 @@ void piezo_mic_init()
 
     ADC_StructInit(&adci);
     adci.ADC_Resolution = ADC_Resolution_12b;
-    adci.ADC_ContinuousConvMode = ENABLE;
-    adci.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
+    adci.ADC_ContinuousConvMode = DISABLE;
+    //adci.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
+    adci.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_Rising;
+    adci.ADC_ExternalTrigConv = ADC_ExternalTrigConv_T1_CC4;
     adci.ADC_DataAlign = ADC_DataAlign_Right;
     adci.ADC_ScanDirection = ADC_ScanDirection_Upward;
     ADC_Init(ADC1, &adci);
 
     ADC_ClockModeConfig(ADC1, ADC_ClockMode_AsynClk);
 
-    ADC_ChannelConfig(ADC1, ADC_Channel_9, ADC_SampleTime_239_5Cycles);
+    ADC_ChannelConfig(ADC1, ADC_Channel_9, ADC_SampleTime_13_5Cycles);
     ADC_GetCalibrationFactor(ADC1);
 
-#ifdef USE_DMA
     ADC_DMARequestModeConfig(ADC1, ADC_DMAMode_OneShot);
     ADC_DMACmd(ADC1, ENABLE);
-#endif
-
     ADC_Cmd(ADC1, ENABLE);
 
-    while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
-    ADC_StartOfConversion(ADC1);
-
-#ifdef USE_DMA
-    // DMA1 clock enable.
-    dma_config();
-#endif
+    while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
 }
 
 void piezo_mic_deinit()
@@ -119,39 +123,51 @@ void piezo_mic_deinit()
 
 }
 
-#ifndef USE_DMA
-static void piezo_mic_wait_on_ready()
-{
-    while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
-}
-#endif
+//
+// HACK
+//
+// The values from the ADC increase slightly with each conversion.
+// This is probably a sign that the impedance of the mic preamp is too high.
+// For now, we just fix this in software using the following fudge factor
+// (= amount to add to each sample per sample).
+//
+#define FUDGE ((int32_t)(-3.8*256))
 
 void piezo_mic_read_buffer()
 {
-#define sbuf ((int16_t *)piezo_mic_buffer_)
-#define ubuf ((uint16_t *)piezo_mic_buffer_)
+#define sbuf ((int16_t *)piezo_mic_buffer)
+#define ubuf ((uint16_t *)piezo_mic_buffer)
 
     unsigned i;
 
-#ifdef USE_DMA
-    while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
     ADC_StartOfConversion(ADC1);
-    dma_restart();
-    while((DMA_GetFlagStatus(DMA1_FLAG_TC1)) == RESET);
+    dma_config();
+    DMA_Cmd(DMA1_Channel1, ENABLE);
+    while (DMA_GetFlagStatus(DMA1_FLAG_TC1) == RESET);
     DMA_ClearFlag(DMA1_FLAG_TC1);
-#else
-    for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES+JUNK_SPACE; ++i, piezo_mic_wait_on_ready()) {
-        uint16_t v = ADC_GetConversionValue(ADC1);
-        piezo_mic_buffer_[i] = v;
-    }
-#endif
+
+    int32_t mean = 0;
+    for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i)
+        mean += piezo_mic_buffer[i];
+    mean /= PIEZO_MIC_BUFFER_N_SAMPLES;
 
     // Convert each value to signed 16-bit value using appropriate offset.
-    for (i = JUNK_SPACE; i < PIEZO_MIC_BUFFER_N_SAMPLES+JUNK_SPACE; ++i) {
+    for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {
+        sbuf[i] -= mean;
+
+    /*    // Calculate the fudge factor.
+        int32_t ff = (i * FUDGE);
+        if (ff % 256 >= 128)
+            ff += 128;
+        else if (ff % 256 <= -128)
+            ff -= 128;
+        ff >>= 8;
+
         if (ubuf[i] < MIC_OFFSET_ADC_V)
             sbuf[i] = -(int16_t)(MIC_OFFSET_ADC_V - ubuf[i]);
         else
             sbuf[i] = (int16_t)(ubuf[i]-MIC_OFFSET_ADC_V);
+        sbuf[i] += ff;*/
     }
 
 #undef SUBTRACT_EVERY
@@ -290,7 +306,7 @@ void piezo_out_deinit()
 // HFSDP stuff.
 //
 
-static int32_t debugbuf[64];
+static int32_t debugbuf[PIEZO_MIC_BUFFER_N_SAMPLES*2];
 static int32_t debugbufi;
 bool piezo_read_data(uint8_t *buffer, unsigned bits)
 {
@@ -317,10 +333,17 @@ bool piezo_read_data(uint8_t *buffer, unsigned bits)
         else {
             int32_t clk, dt;
             int r = hfsdp_read_bit(&s, (const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, &clk, &dt, 0);
+
+            debugbuf[debugbufi++] = clk;
             debugbuf[debugbufi++] = dt;
             if (debugbufi == sizeof(debugbuf)/sizeof(debugbuf[0])) {
                 unsigned x;
-                for (x = 0; x < sizeof(debugbuf)/sizeof(debugbuf[0]); ++x) {
+                for (x = 0; x < sizeof(debugbuf)/sizeof(debugbuf[0]); x += 2) {
+                    debugging_write_int32(debugbuf[x]);
+                    debugging_writec("\n");
+                }
+                debugging_writec("---\n");
+                for (x = 1; x < sizeof(debugbuf)/sizeof(debugbuf[0]) + 1; x += 2) {
                     debugging_write_int32(debugbuf[x]);
                     debugging_writec("\n");
                 }
@@ -331,7 +354,7 @@ bool piezo_read_data(uint8_t *buffer, unsigned bits)
             if (r == HFSDP_READ_BIT_DECODE_ERROR)
                 return false;
             else if (r == HFSDP_READ_BIT_NOTHING_READ)
-                ;
+                ;//debugging_writec("N\n");
             else {
                 buffer[nreceived++] = r;
                 if (nreceived == bits)
@@ -344,60 +367,5 @@ bool piezo_read_data(uint8_t *buffer, unsigned bits)
             else
                 while (SysTick->VAL <= te);
         }
-    }
-}
-
-bool piezo_hfsdp_listen_for_masters_init()
-{
-    for (;;) {
-        // uint32_t t = SysTick->VAL;
-
-        piezo_mic_read_buffer();
-
-        // unsigned i;
-        // for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {
-        //    debugging_write_int32(piezo_mic_buffer[i]);
-        //    debugging_writec("\n");
-        // }
-        // debugging_writec("\n---\n");
-
-        // debugging_writec("M: ");
-        // debugging_write_uint32(piezo_get_magnitude());
-        // debugging_writec("\n");
-
-        // unsigned t = SysTick->VAL;
-
-        int32_t p1, p2;
-        goetzel2((const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES,
-                 HFSDP_MASTER_CLOCK_COSCOEFF, HFSDP_MASTER_CLOCK_SINCOEFF,
-                 HFSDP_MASTER_DATA_COSCOEFF, HFSDP_MASTER_DATA_SINCOEFF,
-                 &p1, &p2, 0);
-
-        // unsigned t2 = SysTick->VAL;
-        // t -= t2;
-        // debugging_writec("CYCLES: ");
-        // debugging_write_uint32(t);
-        // debugging_writec("\n");
-
-        // unsigned i;
-        // for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {
-        //     debugging_writec("V: ");
-        //     debugging_write_uint32(piezo_mic_buffer[i]);
-        //     debugging_writec("\n");
-        // }
-
-        debugging_writec("vals ");
-        debugging_write_int32(p1);
-        debugging_writec(" ");
-        debugging_write_int32(p2);
-        debugging_writec("\n");
-
-        //uint32_t after = SysTick->VAL;
-        //debugging_writec("time ");
-        //debugging_write_uint32(before-after);
-        //debugging_writec("\n");
-
-        if (p1 > 30000)
-            return true;
     }
 }
