@@ -123,16 +123,6 @@ void piezo_mic_deinit()
 
 }
 
-//
-// HACK
-//
-// The values from the ADC increase slightly with each conversion.
-// This is probably a sign that the impedance of the mic preamp is too high.
-// For now, we just fix this in software using the following fudge factor
-// (= amount to add to each sample per sample).
-//
-#define FUDGE ((int32_t)(-3.8*256))
-
 void piezo_mic_read_buffer()
 {
 #define sbuf ((int16_t *)piezo_mic_buffer)
@@ -154,20 +144,6 @@ void piezo_mic_read_buffer()
     // Convert each value to signed 16-bit value using appropriate offset.
     for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {
         sbuf[i] -= mean;
-
-    /*    // Calculate the fudge factor.
-        int32_t ff = (i * FUDGE);
-        if (ff % 256 >= 128)
-            ff += 128;
-        else if (ff % 256 <= -128)
-            ff -= 128;
-        ff >>= 8;
-
-        if (ubuf[i] < MIC_OFFSET_ADC_V)
-            sbuf[i] = -(int16_t)(MIC_OFFSET_ADC_V - ubuf[i]);
-        else
-            sbuf[i] = (int16_t)(ubuf[i]-MIC_OFFSET_ADC_V);
-        sbuf[i] += ff;*/
     }
 
 #undef SUBTRACT_EVERY
