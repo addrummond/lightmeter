@@ -231,8 +231,9 @@ function test_message() {
     //myMessage = [0,0,1];//[1,0,1,1,0,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0];//1,1,0,0,0];//[1,0,1,0,1,1,1,0,0,0,1,1,0,0];//1,0,1,0,1];
     console.log(audioCtx.sampleRate, JSON.stringify(myMessage));
     var MAG = 0.3;
-    var siglen  = encode_signal(samples, audioCtx.sampleRate, myMessage, 1,                    SIGNAL_FREQ, MASTER_DATA_HZ,  MAG);
+    var siglen  = 0;//encode_signal(samples, audioCtx.sampleRate, myMessage, 1,                    SIGNAL_FREQ, MASTER_DATA_HZ,  MAG);
     var siglen2 = encode_signal(samples, audioCtx.sampleRate, [1, 0],    myMessage.length/2,   SIGNAL_FREQ, MASTER_CLOCK_HZ, MAG);
+    siglen = siglen2;
     if (siglen != siglen2)
         throw new Error("LENGTH MISMATCH!!");
 

@@ -7,6 +7,7 @@
 #include <hfsdp.h>
 #include <deviceconfig.h>
 #include <debugging.h>
+#include <systime.h>
 
 
 //
@@ -66,8 +67,8 @@ void piezo_mic_init()
     TIM_TimeBaseInitTypeDef tbi;
     TIM_TimeBaseStructInit(&tbi);
     tbi.TIM_Prescaler = 0;
-    tbi.TIM_Period =    181-1; // 44.1KHz
-                        //91-1;  // 88.2KHz
+    tbi.TIM_Period =    //181-1; // 44.1KHz
+                        91-1;  // 88.2KHz
     tbi.TIM_ClockDivision = TIM_CKD_DIV1;
     tbi.TIM_CounterMode = TIM_CounterMode_Up;
     TIM_TimeBaseInit(TIM1, &tbi);
@@ -111,7 +112,7 @@ void piezo_mic_init()
 
     ADC_ClockModeConfig(ADC1, ADC_ClockMode_AsynClk);
 
-    ADC_ChannelConfig(ADC1, ADC_Channel_9, ADC_SampleTime_13_5Cycles);
+    ADC_ChannelConfig(ADC1, ADC_Channel_9, ADC_SampleTime_71_5Cycles);
     ADC_GetCalibrationFactor(ADC1);
 
     ADC_DMARequestModeConfig(ADC1, ADC_DMAMode_OneShot);
@@ -131,26 +132,27 @@ void piezo_mic_read_buffer()
 #define sbuf ((int16_t *)piezo_mic_buffer)
 #define ubuf ((uint16_t *)piezo_mic_buffer)
 
-    unsigned i;
-
+    while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
+    ADC_WaitModeCmd(ADC1, ENABLE);
     ADC_StartOfConversion(ADC1);
     dma_config();
     DMA_Cmd(DMA1_Channel1, ENABLE);
-    while (DMA_GetFlagStatus(DMA1_FLAG_TC1) == RESET);
-    DMA_ClearFlag(DMA1_FLAG_TC1);
 
+    while (DMA_GetFlagStatus(DMA1_FLAG_TC1) == RESET);
+
+    DMA_ClearFlag(DMA1_FLAG_TC1);
+    DMA_Cmd(DMA1_Channel1, DISABLE);
+
+    unsigned i;
     int32_t mean = 0;
     for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i)
-        mean += piezo_mic_buffer[i];
+        mean += ubuf[i];
     mean /= PIEZO_MIC_BUFFER_N_SAMPLES;
 
     // Convert each value to signed 16-bit value using appropriate offset.
     for (i = 0; i < PIEZO_MIC_BUFFER_N_SAMPLES; ++i) {
         sbuf[i] -= mean;
     }
-
-#undef SUBTRACT_EVERY
-#undef TO_SUBTRACT
 
 #undef sbuf
 #undef ubuf
@@ -297,12 +299,7 @@ bool piezo_read_data(uint8_t *buffer, unsigned bits)
     bool started = false;
     unsigned nreceived = 0;
     for (;;) {
-        uint32_t tn = SysTick->VAL;
-        uint32_t te;
-        if (tn >= HFSDP_SAMPLE_CYCLES)
-            te = tn - HFSDP_SAMPLE_CYCLES;
-        else
-            te = SYS_TICK_MAX - (HFSDP_SAMPLE_CYCLES - tn);
+        SYSTIME_START(t);
 
         piezo_mic_read_buffer();
 
@@ -341,10 +338,8 @@ bool piezo_read_data(uint8_t *buffer, unsigned bits)
             }
 
             // Wait until it's time to take the next sample.
-            if (te < tn)
-                while (SysTick->VAL > te);
-            else
-                while (SysTick->VAL <= te);
         }
+
+        SYSTIME_WAIT_UNTIL_CYCLES(t, HFSDP_SAMPLE_CYCLES);
     }
 }
