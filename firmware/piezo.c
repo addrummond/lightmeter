@@ -58,13 +58,16 @@ void piezo_mic_init()
 
     //
     // Configure timer that will be used to trigger ADC at 44.1KHz.
+    // Timer appears to run on 8HMz clock (this is not abundantly clear from
+    // the clock tree in the STM32F0 reference docs).
     //
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
     TIM_DeInit(TIM1);
     TIM_TimeBaseInitTypeDef tbi;
     TIM_TimeBaseStructInit(&tbi);
     tbi.TIM_Prescaler = 0;
-    tbi.TIM_Period = 181-1;//45-1;//91-1;//1088/40-1;
+    tbi.TIM_Period =    181-1; // 44.1KHz
+                        //91-1;  // 88.2KHz
     tbi.TIM_ClockDivision = TIM_CKD_DIV1;
     tbi.TIM_CounterMode = TIM_CounterMode_Up;
     TIM_TimeBaseInit(TIM1, &tbi);
