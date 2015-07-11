@@ -20,7 +20,7 @@
 
 __IO int16_t piezo_mic_buffer[PIEZO_MIC_BUFFER_N_SAMPLES];
 
-static void dma_config()
+static inline void dma_config()
 {
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
     DMA_InitTypeDef dmai;
@@ -112,7 +112,7 @@ void piezo_mic_init()
 
     ADC_ClockModeConfig(ADC1, ADC_ClockMode_AsynClk);
 
-    ADC_ChannelConfig(ADC1, ADC_Channel_9, ADC_SampleTime_71_5Cycles);
+    ADC_ChannelConfig(ADC1, ADC_Channel_9, ADC_SampleTime_13_5Cycles);
     ADC_GetCalibrationFactor(ADC1);
 
     ADC_DMARequestModeConfig(ADC1, ADC_DMAMode_OneShot);
@@ -132,13 +132,25 @@ void piezo_mic_read_buffer()
 #define sbuf ((int16_t *)piezo_mic_buffer)
 #define ubuf ((uint16_t *)piezo_mic_buffer)
 
-    while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
+    //uint32_t jt = SysTick->VAL;
+
+    while (! (ADC1->ISR & ADC_FLAG_ADRDY));
+    ADC1->CFGR1 |= ADC_CFGR1_WAIT;
+    ADC1->CR |= ADC_FLAG_ADSTART;
+    dma_config();
+    DMA1_Channel1->CCR |= DMA_CCR_EN;
+    while ((DMA1->ISR & DMA1_FLAG_TC1) == RESET);
+
+    /*while (! ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY));
     ADC_WaitModeCmd(ADC1, ENABLE);
     ADC_StartOfConversion(ADC1);
     dma_config();
     DMA_Cmd(DMA1_Channel1, ENABLE);
+    while (DMA_GetFlagStatus(DMA1_FLAG_TC1) == RESET);*/
 
-    while (DMA_GetFlagStatus(DMA1_FLAG_TC1) == RESET);
+    //debugging_writec("JITTER: ");
+    //debugging_write_uint32(jt-jt2);
+    //debugging_writec("\n");
 
     DMA_ClearFlag(DMA1_FLAG_TC1);
     DMA_Cmd(DMA1_Channel1, DISABLE);
@@ -298,9 +310,8 @@ bool piezo_read_data(uint8_t *buffer, unsigned bits)
     debugbufi = 0;
     bool started = false;
     unsigned nreceived = 0;
+    SYSTIME_START(t);
     for (;;) {
-        SYSTIME_START(t);
-
         piezo_mic_read_buffer();
 
         if (! started) {
@@ -308,7 +319,7 @@ bool piezo_read_data(uint8_t *buffer, unsigned bits)
         }
         else {
             int32_t clk, dt;
-            int r = hfsdp_read_bit(&s, (const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, &clk, &dt, 0);
+            int r = hfsdp_read_bit(&s, (const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, &clk, 0, &dt, 0, 0);
 
             debugbuf[debugbufi++] = clk;
             debugbuf[debugbufi++] = dt;
@@ -336,10 +347,16 @@ bool piezo_read_data(uint8_t *buffer, unsigned bits)
                 if (nreceived == bits)
                     return true;
             }
-
-            // Wait until it's time to take the next sample.
         }
 
+        // Wait until it's time to take the next sample.
         SYSTIME_WAIT_UNTIL_CYCLES(t, HFSDP_SAMPLE_CYCLES);
+
+        //uint32_t v = SysTick->VAL;
+        //debugging_writec("TE: ");
+        //debugging_write_uint32(t.st - v);
+        //debugging_writec("\n");
+
+        SYSTIME_UPDATE(t);
     }
 }

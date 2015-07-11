@@ -15,7 +15,7 @@
 //
 
 #define HFSDP_SIGNAL_FREQ             126
-#define HFSDP_SAMPLE_FREQ             (HFSDP_SIGNAL_FREQ*8)
+#define HFSDP_SAMPLE_FREQ             (HFSDP_SIGNAL_FREQ*1)
 #define HFSDP_SAMPLE_CYCLES           (48000000/HFSDP_SAMPLE_FREQ)
 
 #define HFSDP_MASTER_CLOCK_COSCOEFF_  0.1564330687//-0.9564504300//0.1460830286//-0.9573194986//-0.6374225955//-0.6443143297//-0.7196861131//-0.5895992008//-0.5471463462//-0.6374225955
@@ -26,6 +26,8 @@
 #define HFSDP_MASTER_CLOCK_SINCOEFF   GOETZEL_FLOAT_TO_FIX(HFSDP_MASTER_CLOCK_SINCOEFF_)
 #define HFSDP_MASTER_DATA_COSCOEFF    GOETZEL_FLOAT_TO_FIX(HFSDP_MASTER_DATA_COSCOEFF_)
 #define HFSDP_MASTER_DATA_SINCOEFF    GOETZEL_FLOAT_TO_FIX(HFSDP_MASTER_DATA_SINCOEFF_)
+
+#define HFSDP_HIGH_PASS_N 12
 
 typedef struct {
     int32_t calib_count;
@@ -41,7 +43,7 @@ typedef struct {
 void init_hfsdp_read_bit_state(hfsdp_read_bit_state_t *s, int32_t clock_coscoeff, int32_t clock_sincoeff, int32_t data_coscoeff, int32_t data_sincoeff);
 bool hfsdp_check_start(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned buflen);
 int hfsdp_read_bit(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned buflen,
-                   int32_t *debug_clock_amp, int32_t *debug_data_amp, int32_t *debug_power);
+                   int32_t *debug_clock_amp, int32_t *debug_clock_phase, int32_t *debug_data_amp, int32_t *debug_data_phase, int32_t *debug_power);
 
 #define HFSDP_READ_BIT_DECODE_ERROR  -2
 #define HFSDP_READ_BIT_NOTHING_READ  -1

@@ -18,7 +18,7 @@ function goetzel(freq, input, output) {
 
 function fir(coefficients, input, output) {
     for (var i = 0; i < input.length; ++i) {
-        var o = 0;
+    var o = 0, co;
         for (var j = i, ci = 0; ci < coefficients.length; --j, ++ci) {
             var c = coefficients[ci];
             var v;
@@ -26,7 +26,7 @@ function fir(coefficients, input, output) {
                 v = input[j];
             else
                 v = input[input.length+j];
-            o += c*v;
+            o += MUL(c, v);
         }
         output[i] = o;
     }
@@ -231,9 +231,8 @@ function test_message() {
     //myMessage = [0,0,1];//[1,0,1,1,0,0,1,1,1,0,0,0,1,1,1,1,0,0,0,0];//1,1,0,0,0];//[1,0,1,0,1,1,1,0,0,0,1,1,0,0];//1,0,1,0,1];
     console.log(audioCtx.sampleRate, JSON.stringify(myMessage));
     var MAG = 0.3;
-    var siglen  = 0;//encode_signal(samples, audioCtx.sampleRate, myMessage, 1,                    SIGNAL_FREQ, MASTER_DATA_HZ,  MAG);
-    var siglen2 = encode_signal(samples, audioCtx.sampleRate, [1, 0],    myMessage.length/2,   SIGNAL_FREQ, MASTER_CLOCK_HZ, MAG);
-    siglen = siglen2;
+    var siglen  = encode_signal(samples, audioCtx.sampleRate, myMessage, 1,                  SIGNAL_FREQ, MASTER_DATA_HZ,  MAG);
+    var siglen2 = encode_signal(samples, audioCtx.sampleRate, [1,0],     myMessage.length/2, SIGNAL_FREQ, MASTER_CLOCK_HZ, MAG);
     if (siglen != siglen2)
         throw new Error("LENGTH MISMATCH!!");
 
@@ -249,8 +248,12 @@ function test_message() {
 function test_f() {
     var samples = buffer.getChannelData(0);
     function myf(t) {
-        return ((0.5*Math.cos(2*Math.PI*t*1000)*Math.cos(2*Math.PI*10000*t) - 0.5*Math.cos(2*Math.PI*t*1000)*Math.sin(2*Math.PI*10000*t)) -
-                (0.5*Math.cos(2*Math.PI*t*1000)*Math.cos(2*Math.PI*t*10000)));
+        return 0.5*Math.cos(2*Math.PI*t*18000 /*+ 10*Math.cos(2*Math.PI*t*126)*/);// + 0.5*Math.cos(2*Math.PI*t*18000);
+        //return 0.5*Math.cos(2*Math.PI*t*(126/8))*Math.cos(2*Math.PI*t*18000) +
+        //       0.5*Math.cos(2*Math.PI*t*(126/8))*Math.cos(2*Math.PI*t*20000);
+
+        //return ((0.5*Math.cos(2*Math.PI*t*1000)*Math.cos(2*Math.PI*10000*t) - 0.5*Math.cos(2*Math.PI*t*1000)*Math.sin(2*Math.PI*10000*t)) -
+        //        (0.5*Math.cos(2*Math.PI*t*1000)*Math.cos(2*Math.PI*t*10000)));
 
         //return approximate_square_wave(5, SIGNAL_FREQ, 1, 0.8)(t)*Math.cos(2*Math.PI*(MASTER_DATA_HZ)*t)*0.5;
         //return approximate_square_wave(20, 30/*10hz test*/, 1.0, 0.5)(t)*Math.cos(2*Math.PI*MASTER_CLOCK_HZ*t)*0.5;
@@ -265,7 +268,7 @@ function test_f() {
         //           t)*1;
     }
 
-    for (var i = 0; i < 44100; ++i) {
+    for (var i = 0; i < samples.length; ++i) {
         var t = i / audioCtx.sampleRate;
         samples[i] = myf(t);
         document.write(samples[i] + '<br>\n');

@@ -7,7 +7,8 @@ typedef struct {
     uint32_t st, en;
 } systime_var_pair_t;
 
-#define SYSTIME_START(name) systime_var_pair_t name = { SysTick->VAL, 0 }
+#define SYSTIME_START(name)  systime_var_pair_t name = { SysTick->VAL, 0 }
+#define SYSTIME_UPDATE(name) do { name.st = SysTick->VAL; } while (0)
 #define SYSTIME_WAIT_UNTIL_CYCLES_(name, cycles, op, expr)        \
     do {                                                          \
         name.en = name.st - (cycles);                             \
