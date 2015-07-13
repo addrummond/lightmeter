@@ -319,25 +319,7 @@ bool piezo_read_data(uint8_t *buffer, unsigned bits)
             started = hfsdp_check_start(&s, (const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES);
         }
         else {
-            int32_t clk, dt;
-            int r = hfsdp_read_bit(&s, (const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, &clk, 0, &dt, 0, 0);
-
-            /*debugbuf[debugbufi++] = clk;
-            debugbuf[debugbufi++] = dt;
-            if (debugbufi == sizeof(debugbuf)/sizeof(debugbuf[0])) {
-                unsigned x;
-                for (x = 0; x < sizeof(debugbuf)/sizeof(debugbuf[0]); x += 2) {
-                    debugging_write_int32(debugbuf[x]);
-                    debugging_writec("\n");
-                }
-                debugging_writec("---\n");
-                for (x = 1; x < sizeof(debugbuf)/sizeof(debugbuf[0]) + 1; x += 2) {
-                    debugging_write_int32(debugbuf[x]);
-                    debugging_writec("\n");
-                }
-                debugging_writec("***\n");
-                debugbufi = 0;
-            }*/
+            int r = hfsdp_read_bit(&s, (const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES);
 
             if (r == HFSDP_READ_BIT_DECODE_ERROR)
                 return false;
