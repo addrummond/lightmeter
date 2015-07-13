@@ -28,6 +28,12 @@ void HardFault_Handler()
 
 static __attribute__ ((unused)) void test_mic()
 {
+    int64_t x = 55;
+    int32_t y = x;
+    debugging_writec("X: ");
+    debugging_write_int32(y);
+    debugging_writec("\n");
+
     piezo_mic_init();
     unsigned i;
 

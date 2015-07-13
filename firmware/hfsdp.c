@@ -101,10 +101,6 @@ int hfsdp_read_bit(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned bufle
     pclock = goetzel_get_freq_power(&grclock);
     pdata = goetzel_get_freq_power(&grdata);
 
-    int32_t diff = grclock.total_power - s->ref_power;
-    pclock -= diff;
-    pdata -= diff;
-
     if (debug_clock_amp)
         *debug_clock_amp = pclock;
     if (debug_clock_phase)

@@ -92,14 +92,9 @@ int32_t goetzel_get_freq_power(const goetzel_result_t *gr)
     int64_t i = gr->i;
     int64_t r2 = MUL64((int64_t)r, (int64_t)r);
     int64_t i2 = MUL64((int64_t)i, (int64_t)i);
-    int64_t pow64 = (r2 + i2);
-    return (int32_t)(pow64/gr->length);
-    //int32_t pow = pow64 >> (GOETZEL_ADC_VAL_BITS-1);
+    int64_t pow64 = (r2 + i2)/gr->length;
 
-    //if (! (r2 >= 0 && i2 >= 0 && r2 + i2 >= 0))
-    //    printf("===> (%i, %i) %i %i %i OVERFLOW!\n", r, i, r2, i2, r2 + i2);
-
-    //return pow;
+    return (int32_t)(pow64);
 }
 
 #ifdef TEST
