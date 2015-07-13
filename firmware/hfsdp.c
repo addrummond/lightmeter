@@ -101,16 +101,7 @@ int hfsdp_read_bit(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned bufle
     pclock = goetzel_get_freq_power(&grclock);
     pdata = goetzel_get_freq_power(&grdata);
 
-    if (debug_clock_amp)
-        *debug_clock_amp = pclock;
-    if (debug_clock_phase)
-        *debug_clock_phase = grclock.i;
-    if (debug_data_amp)
-        *debug_data_amp = pdata;
-    if (debug_data_phase)
-        *debug_data_phase = grdata.i;
-    if (debug_power)
-        *debug_power = grclock.total_power;
+    s->highest_low = 300;
 
     // No change in the clock level, so we don't read a bit.
     if (! ((pclock <= s->highest_low && s->prev_pclock > s->highest_low) ||
