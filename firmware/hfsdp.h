@@ -30,7 +30,6 @@
 #define HFSDP_HIGH_PASS_N 12
 
 typedef struct {
-    int32_t ref_power;
     int32_t calib_count;
     int32_t min_pclock, max_pclock;
     int32_t avg;

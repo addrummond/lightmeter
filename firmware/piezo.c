@@ -342,7 +342,7 @@ bool piezo_read_data(uint8_t *buffer, unsigned bits)
             if (r == HFSDP_READ_BIT_DECODE_ERROR)
                 return false;
             else if (r == HFSDP_READ_BIT_NOTHING_READ)
-                debugging_writec("N\n");
+                ;//debugging_writec("N\n");
             else {
                 buffer[nreceived++] = r;
                 if (nreceived == bits)

@@ -224,7 +224,7 @@ var buffer = audioCtx.createBuffer(1, audioCtx.sampleRate*6, audioCtx.sampleRate
 function test_message() {
     var samples = buffer.getChannelData(0);
     var myMessage;
-    myMessage = new Array(1000);
+    myMessage = new Array(3000);
     for (var i = 0; i < myMessage.length; ++i) {
         myMessage[i] = !!(i % 4)+0;
     }

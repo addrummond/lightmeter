@@ -4,7 +4,6 @@
 
 void init_hfsdp_read_bit_state(hfsdp_read_bit_state_t *s, int32_t clock_coscoeff, int32_t clock_sincoeff, int32_t data_coscoeff, int32_t data_sincoeff)
 {
-    s->ref_power = -1;
     s->calib_count = 0;
     s->prev_pclock = -1;
     s->min_pclock = 2147483647;
@@ -44,6 +43,8 @@ bool hfsdp_check_start(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned b
 #ifndef TEST
             debugging_writec("HL: ");
             debugging_write_int32(s->highest_low);
+            debugging_writec(" ");
+            debugging_write_int32(s->prev_pclock);
             debugging_writec("\n");
 #endif
             return true;
@@ -63,14 +64,6 @@ bool hfsdp_check_start(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned b
              s->clock_coscoeff, s->clock_sincoeff,
              &gr);
     pclock = goetzel_get_freq_power(&gr);
-
-    if (s->ref_power == -1) {
-        s->ref_power = gr.total_power;
-    }
-    else {
-        int32_t diff = gr.total_power - s->ref_power;
-        pclock -= diff;
-    }
 
     s->prev_pclock = pclock;
 
@@ -103,12 +96,18 @@ int hfsdp_read_bit(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned bufle
 
     s->highest_low = 300;
 
+    // debugging_writec("PCL: ");
+    // debugging_write_int32(pclock);
+    // debugging_writec(" ");
+    // debugging_write_int32(s->prev_pclock);
+    // debugging_writec("\n");
     // No change in the clock level, so we don't read a bit.
     if (! ((pclock <= s->highest_low && s->prev_pclock > s->highest_low) ||
            (pclock > s->highest_low && s->prev_pclock <= s->highest_low))) {
         return HFSDP_READ_BIT_NOTHING_READ;
     }
 
+    //debugging_writec("READ!\n");
     // Clock level has changed, so we read a bit.
     s->prev_pclock = pclock;
     return (pdata > s->highest_low);
@@ -205,15 +204,6 @@ static int test0(const char *filename)
                  &gr1, &gr2);
         clock_pow = goetzel_get_freq_power(&gr1);
         data_pow = goetzel_get_freq_power(&gr2);
-
-        if (ref_power == -1) {
-            ref_power = gr1.total_power;
-        }
-        else {
-            int32_t diff = gr1.total_power - ref_power;
-            //clock_pow -= diff;
-            //data_pow -= diff;
-        }
 
         printf("%i,%i,%i,%i,%i,%i,%i,%i\n", SAMPLES_TO_SKIP, gr1.total_power, gr1.r, gr1.i, clock_pow, gr2.r, gr2.i, data_pow);
     }
