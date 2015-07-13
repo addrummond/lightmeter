@@ -39,20 +39,17 @@ static __attribute__ ((unused)) void test_mic()
         // piezo_mic_read_buffer();
         // goetzel_result_t grclk, grdat;
         // int32_t clk, dat, tpow;
-        // goetzel2((const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, HFSDP_MASTER_CLOCK_COSCOEFF, HFSDP_MASTER_CLOCK_SINCOEFF, HFSDP_MASTER_DATA_COSCOEFF, HFSDP_MASTER_DATA_SINCOEFF, &grclk, &grdat, &tpow);
-        // clk = goetzel_get_freq_power(&grclk, pow);
-        // dat = goetzel_get_freq_power(&grdat, pow);
+        // goetzel2((const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES, 0, HFSDP_MASTER_CLOCK_COSCOEFF, HFSDP_MASTER_CLOCK_SINCOEFF, HFSDP_MASTER_DATA_COSCOEFF, HFSDP_MASTER_DATA_SINCOEFF, &grclk, &grdat);
+        // clk = goetzel_get_freq_power(&grclk);
+        // dat = goetzel_get_freq_power(&grdat);
+        // tpow = grclk.total_power;
         // int32_t then = SysTick->VAL;
         // /*debugging_writec("G: ");
         // debugging_write_uint32(now-then);
         // debugging_writec("\n");*/
         // debugging_write_uint32(clk);
         // debugging_writec(", ");
-        // debugging_write_uint32(grclk.i);
-        // debugging_writec(", ");
         // debugging_write_uint32(dat);
-        // debugging_writec(", ");
-        // debugging_write_uint32(grdat.i);
         // debugging_writec(", ");
         // debugging_write_uint32(tpow);
         // debugging_writec("\n");

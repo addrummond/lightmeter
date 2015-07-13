@@ -2,42 +2,6 @@
 #include <goetzel.h>
 #include <debugging.h>
 
-static unsigned cycle_buffer_to(int16_t *buf, unsigned length, int16_t to)
-{
-    // Find the closest value to 'to' in the buffer.
-    unsigned i;
-    int32_t bestdiff = 1000000;
-    unsigned x;
-    for (i = 0; i < length; ++i) {
-        int32_t diff = buf[i] - to;
-        if (diff < 0)
-           diff = -diff;
-        if (diff < bestdiff) {
-            x = i;
-            bestdiff = diff;
-        }
-    }
-
-    return x;
-}
-
-static void find_zero(int16_t *buf, unsigned length, unsigned *start, unsigned *lenout)
-{
-    unsigned i;
-    int32_t prev = 0;
-    int32_t first_crossing = -1, last_crossing;
-    for (i = 0; i < length; ++i) {
-        if ((buf[i] > 0 && prev < 0)) {//} || (buf[i] < 0 && prev > 0)) {
-            last_crossing = i;
-            if (first_crossing == -1)
-                first_crossing = i;
-        }
-        prev = buf[i];
-    }
-    *start = (unsigned)first_crossing;
-    *lenout = (unsigned)last_crossing - (unsigned)first_crossing;
-}
-
 void init_hfsdp_read_bit_state(hfsdp_read_bit_state_t *s, int32_t clock_coscoeff, int32_t clock_sincoeff, int32_t data_coscoeff, int32_t data_sincoeff)
 {
     s->ref_power = -1;
