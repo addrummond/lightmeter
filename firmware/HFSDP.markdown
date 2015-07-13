@@ -8,9 +8,6 @@ Overview
 HFSDP is a master/slave protocol. Communication is initiated, and ended, by the
 master. Data can be transmitted in both directions.
 
-HFSDP can be used either within the audible spectrum ('A mode') or above it
-('I mode').
-
 
 Identifiers
 -----------
@@ -19,18 +16,53 @@ Each master and slave has two identifiers. The first is a unique 8-byte
 identifier. The second is an 8-byte 'type'.
 
 
-Frequency pairs
+Frequency bands
 ---------------
 
-An FP500 is a pair of frequencies separated by 500Hz. It is identified by the
-lower of its two frequencies. The FP500 with lower frequency x is denoted
-FP500(x). The lower frequency of an FP500 F is denoted L(F) and the higher
-frequency by H(F).
+HFSDP makes us of the following frequencies.
 
-The protocol is frequency modulated. A an FP500 F is 'off' if L(F) has a higher
-amplitude than H(F) and 'on' otherwise. It is 'flat' if L(F) and H(F) are
-approximately equal.
+    * 18KHz data channel
+    * 20KHz clock
 
+A sine wave on each of these frequencies is used to encode a rectangular-wave
+signal using amplitude modulation. The rectangular wave should be approximated
+using the first 11 terms of the fourier series:
+
+    (sum from n = 1 to 11 [ (2*sin(PI*n*d)*cos(2*PI*n*(t-(d/2))*f))/(n*PI) ]) + d
+
+        where 0 <= d <= 1 controls the duty cycle, and
+              f is frequency, t is time
+
+The above equation derives a wave that starts high and remains high for the
+period specified by the duty cycle.
+
+The clock and data channels encode a 126 baud binary signal. Thus, in the case
+where the signal transmitted is 1010..., d = 0.5 and f = 126. If the signal is
+11001100..., d = 1/2 and f = 126/2. If the signal is 11101110..., d = 3/4 and
+f = 126/4.
+
+Binary signals should be broken up into blocks of i zeroes followed by k ones
+(in the case where the signal begins with a zero), or i ones followed by k zeroes
+(in the case where the signal begins with a one). The appropriate rectangular wave
+can then be generated for each block. The protocol is such that no more than
+eight zeroes or ones will ever be transmitted in sequence. The maximum required
+duty cycle is therefore 8/9. The 11-term fourier series generates a good square
+wave approximation up to this duty cycle.
+
+Wolfram alpha expression for approximate square wave equation with f=10, d=0.5:
+
+    plot sum (((2*sin(pi*n*0.5)*cos(2*pi*n*0.5*(x-(0.5/10))*10)))/(n*pi)) + 0.5/11, n = 1 to 11 from x = 0 to x = 1
+
+
+Transmission of bytes
+---------------------
+
+The data channel is read on both the rising and falling edges of the clock
+signal. Each byte is transmitted in little-endian form as a sequence of 9 bits.
+The final bit is set to 1 if the number of 1s in the preceding 8 bits is even
+(0 is considered even), and to 0 otherwise.
+
+After each sequence of eight bytes, a parity byte is transmitted.
 
 Initiation
 ----------
