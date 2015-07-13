@@ -15,7 +15,7 @@
 //
 
 #define HFSDP_SIGNAL_FREQ             126
-#define HFSDP_SAMPLE_FREQ             (HFSDP_SIGNAL_FREQ*1)
+#define HFSDP_SAMPLE_FREQ             (HFSDP_SIGNAL_FREQ*8)
 #define HFSDP_SAMPLE_CYCLES           (48000000/HFSDP_SAMPLE_FREQ)
 
 #define HFSDP_MASTER_CLOCK_COSCOEFF_  0.1564330687//-0.9564504300//0.1460830286//-0.9573194986//-0.6374225955//-0.6443143297//-0.7196861131//-0.5895992008//-0.5471463462//-0.6374225955
@@ -30,6 +30,7 @@
 #define HFSDP_HIGH_PASS_N 12
 
 typedef struct {
+    int32_t ref_power;
     int32_t calib_count;
     int32_t min_pclock, max_pclock;
     int32_t avg;

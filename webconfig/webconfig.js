@@ -18,7 +18,7 @@ function goetzel(freq, input, output) {
 
 function fir(coefficients, input, output) {
     for (var i = 0; i < input.length; ++i) {
-    var o = 0, co;
+        var o = 0, ci;
         for (var j = i, ci = 0; ci < coefficients.length; --j, ++ci) {
             var c = coefficients[ci];
             var v;
@@ -26,7 +26,7 @@ function fir(coefficients, input, output) {
                 v = input[j];
             else
                 v = input[input.length+j];
-            o += MUL(c, v);
+            o += c * v;
         }
         output[i] = o;
     }
@@ -248,7 +248,7 @@ function test_message() {
 function test_f() {
     var samples = buffer.getChannelData(0);
     function myf(t) {
-        return 0.5*Math.cos(2*Math.PI*t*18000 /*+ 10*Math.cos(2*Math.PI*t*126)*/);// + 0.5*Math.cos(2*Math.PI*t*18000);
+        return 0.5*Math.cos(2*Math.PI*t*(126/8))*Math.cos(2*Math.PI*t*18000 /*+ 10*Math.cos(2*Math.PI*t*126)*/);// + 0.5*Math.cos(2*Math.PI*t*18000);
         //return 0.5*Math.cos(2*Math.PI*t*(126/8))*Math.cos(2*Math.PI*t*18000) +
         //       0.5*Math.cos(2*Math.PI*t*(126/8))*Math.cos(2*Math.PI*t*20000);
 

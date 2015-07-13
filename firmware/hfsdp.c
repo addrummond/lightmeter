@@ -2,8 +2,45 @@
 #include <goetzel.h>
 #include <debugging.h>
 
+static unsigned cycle_buffer_to(int16_t *buf, unsigned length, int16_t to)
+{
+    // Find the closest value to 'to' in the buffer.
+    unsigned i;
+    int32_t bestdiff = 1000000;
+    unsigned x;
+    for (i = 0; i < length; ++i) {
+        int32_t diff = buf[i] - to;
+        if (diff < 0)
+           diff = -diff;
+        if (diff < bestdiff) {
+            x = i;
+            bestdiff = diff;
+        }
+    }
+
+    return x;
+}
+
+static void find_zero(int16_t *buf, unsigned length, unsigned *start, unsigned *lenout)
+{
+    unsigned i;
+    int32_t prev = 0;
+    int32_t first_crossing = -1, last_crossing;
+    for (i = 0; i < length; ++i) {
+        if ((buf[i] > 0 && prev < 0)) {//} || (buf[i] < 0 && prev > 0)) {
+            last_crossing = i;
+            if (first_crossing == -1)
+                first_crossing = i;
+        }
+        prev = buf[i];
+    }
+    *start = (unsigned)first_crossing;
+    *lenout = (unsigned)last_crossing - (unsigned)first_crossing;
+}
+
 void init_hfsdp_read_bit_state(hfsdp_read_bit_state_t *s, int32_t clock_coscoeff, int32_t clock_sincoeff, int32_t data_coscoeff, int32_t data_sincoeff)
 {
+    s->ref_power = -1;
     s->calib_count = 0;
     s->prev_pclock = -1;
     s->min_pclock = 2147483647;
@@ -58,10 +95,18 @@ bool hfsdp_check_start(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned b
 
     goetzel_result_t gr;
     int32_t pclock;
-    goetzel1(buf, buflen,
+    goetzel1(buf, buflen, 0,
              s->clock_coscoeff, s->clock_sincoeff,
              &gr);
     pclock = goetzel_get_freq_power(&gr);
+
+    if (s->ref_power == -1) {
+        s->ref_power = gr.total_power;
+    }
+    else {
+        int32_t diff = gr.total_power - s->ref_power;
+        pclock -= diff;
+    }
 
     s->prev_pclock = pclock;
 
@@ -84,12 +129,17 @@ int hfsdp_read_bit(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned bufle
 {
     goetzel_result_t grclock, grdata;
     int32_t pclock, pdata;
-    goetzel2(buf, buflen,
+    goetzel2(buf, buflen, 0,
              s->clock_coscoeff, s->clock_sincoeff,
              s->data_coscoeff, s->data_sincoeff,
              &grclock, &grdata);
+
     pclock = goetzel_get_freq_power(&grclock);
     pdata = goetzel_get_freq_power(&grdata);
+
+    int32_t diff = grclock.total_power - s->ref_power;
+    pclock -= diff;
+    pdata -= diff;
 
     if (debug_clock_amp)
         *debug_clock_amp = pclock;
@@ -177,7 +227,7 @@ static void get_fake_adc_vals(const char *filename, int16_t **out, unsigned *len
     *out = fake_adc_vals;
 }
 
-#define OFFSET 20
+#define OFFSET 0
 
 static int test0(const char *filename)
 {
@@ -186,9 +236,10 @@ static int test0(const char *filename)
     get_fake_adc_vals(filename, &fake_adc_vals, &vals_i);
 
     unsigned i;
+    int32_t ref_power = -1;
     printf("sts, pow, clock r,clock i,clock pow,data r,data i,data pow\n");
     for (i = 0; i < (vals_i << SAMPLES_TO_SKIP_F_BITS)/SAMPLES_TO_SKIP - 1; ++i) {
-        int32_t ii = OFFSET + ((i * SAMPLES_TO_SKIP) >> SAMPLES_TO_SKIP_F_BITS);
+        int32_t ii = (i * SAMPLES_TO_SKIP) >> SAMPLES_TO_SKIP_F_BITS;
         int32_t rm = ii % (1 << SAMPLES_TO_SKIP_F_BITS);
         if (rm <= -(1 << (SAMPLES_TO_SKIP_F_BITS-1)))
             ii -= 1;
@@ -197,12 +248,21 @@ static int test0(const char *filename)
 
         goetzel_result_t gr1, gr2;
         int32_t clock_pow, data_pow;
-        goetzel2(fake_adc_vals + ii, NSAMPLES,
+        goetzel2(fake_adc_vals + ii, NSAMPLES, 0,
                  CLOCK_COSCOEFF, CLOCK_SINCOEFF,
                  DATA_COSCOEFF, DATA_SINCOEFF,
                  &gr1, &gr2);
         clock_pow = goetzel_get_freq_power(&gr1);
         data_pow = goetzel_get_freq_power(&gr2);
+
+        if (ref_power == -1) {
+            ref_power = gr1.total_power;
+        }
+        else {
+            int32_t diff = gr1.total_power - ref_power;
+            //clock_pow -= diff;
+            //data_pow -= diff;
+        }
 
         printf("%i,%i,%i,%i,%i,%i,%i,%i\n", SAMPLES_TO_SKIP, gr1.total_power, gr1.r, gr1.i, clock_pow, gr2.r, gr2.i, data_pow);
     }
@@ -234,8 +294,9 @@ static int test1(const char *filename)
             started = hfsdp_check_start(&s, fake_adc_vals + ii, NSAMPLES);
         }
         else {
-            int r = hfsdp_read_bit(&s, fake_adc_vals + ii, SAMPLES_TO_SKIP>>SAMPLES_TO_SKIP_F_BITS, &clock_amp, &clock_phase, &data_amp, &data_phase, &powr);
-            printf("[%i], %i, %i, %i, %i\n", clock_amp, clock_phase, data_amp, data_phase, powr);
+            int r = hfsdp_read_bit(&s, fake_adc_vals + ii, NSAMPLES, &clock_amp, &clock_phase, &data_amp, &data_phase, &powr);
+            //printf("%i, %i, %i, %i, %i\n", clock_amp, clock_phase, data_amp, data_phase, powr);
+            printf("%i, %i\n", clock_amp, data_amp);
             continue;
 
             if (r == HFSDP_READ_BIT_DECODE_ERROR)
@@ -262,7 +323,7 @@ static void test2(const char *filename)
     for (c1 = -65536/2+1; c1 < 65536/2-1; c1 += 10) {
         for (c2 = -65536/2+1; c2 < 65536/2-1; c2 += 10) {
             goetzel_result_t gr;
-            goetzel1(fake_adc_vals, 64, c1, c2, &gr);
+            goetzel1(fake_adc_vals, 64, 0, c1, c2, &gr);
             int32_t amp = goetzel_get_freq_power(&gr);
             if (amp > max_amp) {
                 max_amp = amp;
