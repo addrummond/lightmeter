@@ -348,7 +348,6 @@ bool piezo_read_data(uint8_t *buffer, unsigned bits)
                     return true;
             }
         }
-/*
 
         // Wait until it's time to take the next sample.
         SYSTIME_WAIT_UNTIL_CYCLES(t, HFSDP_SAMPLE_CYCLES);
@@ -358,6 +357,6 @@ bool piezo_read_data(uint8_t *buffer, unsigned bits)
         //debugging_write_uint32(t.st - v);
         //debugging_writec("\n");
 
-        SYSTIME_UPDATE(t);*/
+        SYSTIME_UPDATE(t);
     }
 }
