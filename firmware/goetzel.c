@@ -62,26 +62,27 @@ static inline int64_t MUL64(int64_t x, int64_t y)
                          dest ## n ->total_power = total_power;
 
 #define LOOP_BODY(N)                                          \
+    i = i_ % length;                                          \
     samplesi = samples[i];                                    \
     total_power = ADD(total_power, MUL(samplesi, samplesi));  \
     N(GET_S)                                                  \
     N(SET_PREVS)                                              \
-    ++i;
+    ++i_;
 
 #define MAKE_GOETZEL_N(n, N)                                                                       \
-    void goetzel ## n (const int16_t *samples, unsigned length N(PARAMS) N(DESTS))                 \
+    void goetzel ## n (const int16_t *samples, unsigned length, unsigned offset N(PARAMS) N(DESTS))\
     {                                                                                              \
         int32_t total_power = 0;                                                                   \
                                                                                                    \
         N(PREVS)                                                                                   \
         N(COS2)                                                                                    \
                                                                                                    \
-        int i;                                                                                     \
+        int i_, i;                                                                                 \
         int32_t samplesi;                                                                          \
-        for (i = 0; i < length;) {                                                                 \
+        for (i_ = offset; i_ < offset + length;) {                                                 \
             INLINE(N, LOOP_BODY)                                                                   \
         }                                                                                          \
-        for (; i < length;) {                                                                      \
+        for (; i_ < offset + length;) {                                                            \
             LOOP_BODY(N);                                                                          \
         }                                                                                          \
         N(GET_R)                                                                                   \
