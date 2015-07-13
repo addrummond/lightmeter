@@ -7,6 +7,7 @@
 
 //
 // We're sampling at 88888.89Hz.
+// (This is our approximation to 88400Hz (= 2*44100Hz) using the 8MHz clock.)
 //
 // Clock carrier frequency: 20000Hz
 // Data carrier frequency:  18000Hz
