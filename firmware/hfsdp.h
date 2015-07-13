@@ -6,7 +6,7 @@
 #include <goetzel.h>
 
 //
-// We're sampling at 44164.038Hz.
+// We're sampling at 88888.89Hz.
 //
 // Clock carrier frequency: 20000Hz
 // Data carrier frequency:  18000Hz
