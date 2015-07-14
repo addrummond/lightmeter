@@ -140,9 +140,15 @@ FUNC(int32_t) dehammingify_uint32(uint32_t n)
            ((n & BIN(0b1111111111111110000000000000000)) >> 5);
 }
 
-#ifdef TEST
+#if defined TEST || defined JAVASCRIPT
 
-int main(int argc, char **argv)
+FUNC(int)
+#ifdef TEST
+main(int argc, char **argv)
+#endif
+#ifdef JAVASCRIPT
+test()
+#endif
 {
     // Test hammingify_uint32 and dehammingify_uint32 for all possible values.
 
@@ -158,7 +164,12 @@ int main(int argc, char **argv)
                 uint32_t r = dehammingify_uint32(h2);
                 if (! (((r == -1 && (i == 1 || i == 2 || i == 4 || i == 8 || i == 16 || i == 32)) ||
                        (r == n)))) {
+#ifdef TEST
                     printf("FAILED for i = %i, n = %i, r = %i\n", i, n, r);
+#endif
+#ifdef JAVASCRIPT
+                    console.log("FAILED FOR i = ", i, "n = ", n, "r = ", r);
+#endif
                 }
             }
         }
