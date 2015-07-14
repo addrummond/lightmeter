@@ -53,15 +53,19 @@ static const uint32_t PMASK4  = BIN(0b01111000011110000111100001111000);
 static const uint32_t PMASK8  = BIN(0b01111111100000000111111110000000);
 static const uint32_t PMASK16 = BIN(0b01111111111111111000000000000000);
 
+static const uint32_t M1 = BIN(0b1);
+static const uint32_t M2 = BIN(0b1110);
+static const uint32_t M3 = BIN(0b11111110000);
+static const uint32_t M4 = BIN(0b11111111111111100000000000);
 FUNC(uint32_t) hammingify_uint32(ARG(uint32_t) n)
 {
     assert(n < (1 << (31-5)));
 
     // Make space for parity bits.
-    n = ((n & BIN(0b1)) << 2)                            |
-        ((n & BIN(0b1110)) << 3)                         |
-        ((n & BIN(0b11111110000)) << 4)                  |
-        ((n & BIN(0b11111111111111100000000000)) << 5);
+    n = ((n & M1) << 2)    |
+        ((n & M2) << 3)    |
+        ((n & M3) << 4)    |
+        ((n & M4) << 5);
 
     uint32_t pb1  = n & PMASK1;
     uint32_t pb2  = n & PMASK2;
@@ -93,6 +97,10 @@ FUNC(uint32_t) hammingify_uint32(ARG(uint32_t) n)
     return n;
 }
 
+static const uint32_t IM1 = BIN(0b100);
+static const uint32_t IM2 = BIN(0b1110000);
+static const uint32_t IM3 = BIN(0b111111100000000);
+static const uint32_t IM4 = BIN(0b1111111111111110000000000000000);
 // Returns -1 if could not be decoded.
 FUNC(int32_t) dehammingify_uint32(ARG(uint32_t) n)
 {
@@ -136,10 +144,10 @@ FUNC(int32_t) dehammingify_uint32(ARG(uint32_t) n)
 
     // If we get here, we have the correct data in n together with the parity
     // bits. Now we just need to remove the parity bits.
-    return ((n & BIN(0b100)) >> 2)                              |
-           ((n & BIN(0b1110000)) >> 3)                          |
-           ((n & BIN(0b111111100000000)) >> 4)                  |
-           ((n & BIN(0b1111111111111110000000000000000)) >> 5);
+    return ((n & IM1) >> 2)   |
+           ((n & IM2) >> 3)   |
+           ((n & IM3) >> 4)   |
+           ((n & IM4) >> 5);
 }
 
 #if defined TEST || defined JAVASCRIPT
