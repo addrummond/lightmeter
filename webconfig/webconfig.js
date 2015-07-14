@@ -1,3 +1,7 @@
+function encodeMessage(bytearray) {
+    // Each byte is sent as
+}
+
 var SIGNAL_FREQ = 126;
 var MASTER_CLOCK_HZ = 20000;
 var MASTER_DATA_HZ = 18000;
