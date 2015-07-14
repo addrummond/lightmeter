@@ -29,15 +29,17 @@
 #define unsigned var
 #define int32_t var
 #define const
-#define assert(x) do { if (! x) { throw new Error("ASSERTION ERROR"); } } while (0)
+#define assert(x) do { if (! (x)) { throw new Error("ASSERTION ERROR"); } } while (0)
 #define BIN(v) parseInt(#v.substr(2), 2)
 #define FUNC(rettype) function
+#define ARG(type)
 #else
 #define BIN(x) x
+#define ARG(type) type
 #define FUNC(rettype) rettype
 #endif
 
-static FUNC(unsigned) bits_set_in_uint32(uint32_t n)
+static FUNC(unsigned) bits_set_in_uint32(ARG(uint32_t) n)
 {
     // See http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetKernighan
     unsigned count;
@@ -51,7 +53,7 @@ static const uint32_t PMASK4  = BIN(0b01111000011110000111100001111000);
 static const uint32_t PMASK8  = BIN(0b01111111100000000111111110000000);
 static const uint32_t PMASK16 = BIN(0b01111111111111111000000000000000);
 
-FUNC(uint32_t) hammingify_uint32(uint32_t n)
+FUNC(uint32_t) hammingify_uint32(ARG(uint32_t) n)
 {
     assert(n < (1 << (31-5)));
 
@@ -92,7 +94,7 @@ FUNC(uint32_t) hammingify_uint32(uint32_t n)
 }
 
 // Returns -1 if could not be decoded.
-FUNC(int32_t) dehammingify_uint32(uint32_t n)
+FUNC(int32_t) dehammingify_uint32(ARG(uint32_t) n)
 {
     unsigned pb1 = n & PMASK1;
     unsigned pb2 = n & PMASK2;
