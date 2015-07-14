@@ -51,7 +51,7 @@ FOR_EACH_AMP_STAGE(CASE)
     uint_fast8_t bits1 = ev_diffs[absi*2];
     uint_fast8_t bits2 = ev_diffs[absi*2+1];
 
-    // See http://stackoverflow.com/questions/109023/how-to-count-the-number-of-set-bits-in-a-32-bit-integer
+    // See http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetKernighan
     int32_t total_tenths = ((int32_t)(ev_abs[absi])) - (5*10);
     if (bits_to_add <= 8) {
          bits1 &= (0xFF >> (8 - bits_to_add));
