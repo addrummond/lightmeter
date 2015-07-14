@@ -149,7 +149,7 @@ FUNC(int)
 main(int argc, char **argv)
 #endif
 #ifdef JAVASCRIPT
-test()
+hmming_test()
 #endif
 {
     // Test hammingify_uint32 and dehammingify_uint32 for all possible values.
