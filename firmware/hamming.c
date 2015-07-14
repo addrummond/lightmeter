@@ -1,3 +1,20 @@
+//
+// This module implements hamming coding for sequences of 32-bits. The first 21
+// bits are encoded according to Hamming(31,26) with odd parity. The 32nd bit
+// is an additional odd parity bit.
+//
+// This file can also be used to generate equivalent Javascript code by running
+// it through the C preprocessor with -DJAVASCRIPT and then stripping lines
+// beginning with '#' from the output.
+//
+// It is best to use 'gcc -E' or 'clang -E' rather than 'cpp', since 'cpp' on
+// OS X runs in "traditional" mode, and hence does not recognize the '#'
+// stringification operator. E.g.:
+//
+//     clang -E hamming.c | grep -v '^#' > hamming.js
+//
+
+#ifndef JAVASCRIPT
 #include <stdint.h>
 #include <stdbool.h>
 #include <myassert.h>
@@ -5,8 +22,23 @@
 static void print_bin_backwards(uint32_t n, bool with_parity);
 #include <stdio.h>
 #endif
+#endif
 
-static unsigned bits_set_in_uint32(uint32_t n)
+#ifdef JAVASCRIPT
+#define static
+#define uint32_t var
+#define unsigned var
+#define int32_t var
+#define const
+#define assert(x) do { if (! x) { throw new Error("ASSERTION ERROR"); } } while (0)
+#define BIN(v) parseInt(#v.substr(2), 2)
+#define FUNC(rettype) function
+#else
+#define BIN(x) x
+#define FUNC(rettype) rettype
+#endif
+
+static FUNC(unsigned) bits_set_in_uint32(uint32_t n)
 {
     // See http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetKernighan
     unsigned count;
@@ -14,22 +46,21 @@ static unsigned bits_set_in_uint32(uint32_t n)
     return count;
 }
 
-#define PMASK1  0b01010101010101010101010101010101
-#define PMASK2  0b01100110011001100110011001100110
-#define PMASK4  0b01111000011110000111100001111000
-#define PMASK8  0b01111111100000000111111110000000
-#define PMASK16 0b01111111111111111000000000000000
+static const uint32_t PMASK1  = BIN(0b01010101010101010101010101010101);
+static const uint32_t PMASK2  = BIN(0b01100110011001100110011001100110);
+static const uint32_t PMASK4  = BIN(0b01111000011110000111100001111000);
+static const uint32_t PMASK8  = BIN(0b01111111100000000111111110000000);
+static const uint32_t PMASK16 = BIN(0b01111111111111111000000000000000);
 
-// SECDED. Odd parity.
-uint32_t hammingify_uint32(uint32_t n)
+FUNC(uint32_t) hammingify_uint32(uint32_t n)
 {
     assert(n < (1 << (31-5)));
 
     // Make space for parity bits.
-    n = ((n & 0b1) << 2)                            |
-        ((n & 0b1110) << 3)                         |
-        ((n & 0b11111110000) << 4)                  |
-        ((n & 0b11111111111111100000000000) << 5);
+    n = ((n & BIN(0b1)) << 2)                            |
+        ((n & BIN(0b1110)) << 3)                         |
+        ((n & BIN(0b11111110000)) << 4)                  |
+        ((n & BIN(0b11111111111111100000000000)) << 5);
 
     uint32_t pb1  = n & PMASK1;
     uint32_t pb2  = n & PMASK2;
@@ -62,7 +93,7 @@ uint32_t hammingify_uint32(uint32_t n)
 }
 
 // Returns -1 if could not be decoded.
-int32_t dehammingify_uint32(uint32_t n)
+FUNC(int32_t) dehammingify_uint32(uint32_t n)
 {
     unsigned pb1 = n & PMASK1;
     unsigned pb2 = n & PMASK2;
@@ -105,10 +136,10 @@ int32_t dehammingify_uint32(uint32_t n)
 
     // If we get here, we have the correct data in n together with the parity
     // bits. Now we just need to remove the parity bits.
-    return ((n & 0b100) >> 2)                              |
-           ((n & 0b1110000) >> 3)                          |
-           ((n & 0b111111100000000) >> 4)                  |
-           ((n & 0b1111111111111110000000000000000) >> 5);
+    return ((n & BIN(0b100)) >> 2)                              |
+           ((n & BIN(0b1110000)) >> 3)                          |
+           ((n & BIN(0b111111100000000)) >> 4)                  |
+           ((n & BIN(0b1111111111111110000000000000000)) >> 5);
 }
 
 #ifdef TEST
@@ -135,28 +166,7 @@ static void print_bin_backwards(uint32_t n, bool with_parity)
 
 int main(int argc, char **argv)
 {
-    /*const uint32_t n = 8801;
-
-    unsigned i;
-    for (i = 0; i <= 32; ++i) {
-        printf("Bad bit (0 means no bad bit): %i\n", i);
-        printf("N = %i, ", n);
-        print_bin_backwards(n, false);
-        uint32_t h = hammingify_uint32(n);
-
-        if (i != 0) {
-            h ^= (1 << (i-1));
-        }
-
-        printf("H(N) = %i, ", h);
-        print_bin_backwards(h, true);
-        uint32_t r = dehammingify_uint32(h);
-        printf("H-1(H(N)) = %i, ", r);
-        print_bin_backwards(r, false);
-
-        printf("\n");
-    }
-    return 0;*/
+    // Test hammingify_uint32 and dehammingify_uint32 for all possible values.
 
     uint32_t n;
     for (n = 0; n < (1 << (31-5)); ++n) {
