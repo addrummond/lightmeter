@@ -19,7 +19,6 @@
 #include <stdbool.h>
 #include <myassert.h>
 #ifdef TEST
-static void print_bin_backwards(uint32_t n, bool with_parity);
 #include <stdio.h>
 #endif
 #endif
@@ -100,7 +99,6 @@ FUNC(int32_t) dehammingify_uint32(uint32_t n)
     unsigned pb4 = n & PMASK4;
     unsigned pb8 = n & PMASK8;
     unsigned pb16 = n & PMASK16;
-    unsigned final = n & (1 << (31-1));
 
     unsigned pc1  = bits_set_in_uint32(pb1);
     unsigned pc2  = bits_set_in_uint32(pb2);
@@ -143,26 +141,6 @@ FUNC(int32_t) dehammingify_uint32(uint32_t n)
 }
 
 #ifdef TEST
-
-static void print_bin_backwards(uint32_t n, bool with_parity)
-{
-    unsigned i;
-    for (i = 1; n; ++i) {
-        if (with_parity && (i == 1 || i == 2 || i == 4 || i == 8 || i == 16 || i == 32))
-            printf("[");
-
-        if (n & 1)
-            printf("1");
-        else
-            printf("0");
-
-        if (with_parity && (i == 1 || i == 2 || i == 4 || i == 8 || i == 16 || i == 32))
-            printf("]");
-
-        n >>= 1;
-    }
-    printf("\n");
-}
 
 int main(int argc, char **argv)
 {
