@@ -8,7 +8,7 @@ static void print_bin_backwards(uint32_t n, bool with_parity);
 
 static unsigned bits_set_in_uint32(uint32_t n)
 {
-    // See http://stackoverflow.com/questions/109023/how-to-count-the-number-of-set-bits-in-a-32-bit-integer
+    // See http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetKernighan
     unsigned count;
     for (count = 0; n; ++count, n &= n-1);
     return count;
@@ -56,7 +56,7 @@ uint32_t hammingify_uint32(uint32_t n)
 
     // Set additional parity bit.
     if (bits_set_in_uint32(n) % 2 == 0)
-        n |= (1 << 31);
+        n ^= (1 << (32-1));
 
     return n;
 }
@@ -64,13 +64,12 @@ uint32_t hammingify_uint32(uint32_t n)
 // Returns -1 if could not be decoded.
 int32_t dehammingify_uint32(uint32_t n)
 {
-    // TODO: This currently ignores the final parity bit.
-
     unsigned pb1 = n & PMASK1;
     unsigned pb2 = n & PMASK2;
     unsigned pb4 = n & PMASK4;
     unsigned pb8 = n & PMASK8;
     unsigned pb16 = n & PMASK16;
+    unsigned final = n & (1 << (31-1));
 
     unsigned pc1  = bits_set_in_uint32(pb1);
     unsigned pc2  = bits_set_in_uint32(pb2);
@@ -100,11 +99,15 @@ int32_t dehammingify_uint32(uint32_t n)
         n ^= (1 << (error_bit_index-1));
     }
 
+    // Is the corrected number consistent with the final parity bit?
+    if (bits_set_in_uint32(n) % 2 == 0)
+        return -1;
+
     // If we get here, we have the correct data in n together with the parity
-    // bits. Now we just need to remove them and return the value.
-    return ((n & 0b100) >> 2)                             |
-           ((n & 0b1110000) >> 3)                         |
-           ((n & 0b111111100000000) >> 4)                 |
+    // bits. Now we just need to remove the parity bits.
+    return ((n & 0b100) >> 2)                              |
+           ((n & 0b1110000) >> 3)                          |
+           ((n & 0b111111100000000) >> 4)                  |
            ((n & 0b1111111111111110000000000000000) >> 5);
 }
 
@@ -132,7 +135,7 @@ static void print_bin_backwards(uint32_t n, bool with_parity)
 
 int main(int argc, char **argv)
 {
-    /*const uint32_t n = 500;
+    /*const uint32_t n = 8801;
 
     unsigned i;
     for (i = 0; i <= 32; ++i) {
@@ -152,7 +155,8 @@ int main(int argc, char **argv)
         print_bin_backwards(r, false);
 
         printf("\n");
-    }*/
+    }
+    return 0;*/
 
     uint32_t n;
     for (n = 0; n < (1 << (31-5)); ++n) {
@@ -161,12 +165,12 @@ int main(int argc, char **argv)
         unsigned i;
         for (i = 0; i <= 32; ++i) {
             if (i != 0) {
-                h ^= (1 << (i-1));
+                uint32_t h2 = h ^ (1 << (i-1));
 
-                uint32_t r = dehammingify_uint32(h);
-                if (! (((r == -1 && (i == 1 || i == 2 || i == 4 || i == 8 || i == 16)) ||
+                uint32_t r = dehammingify_uint32(h2);
+                if (! (((r == -1 && (i == 1 || i == 2 || i == 4 || i == 8 || i == 16 || i == 32)) ||
                        (r == n)))) {
-                    printf("FAILED for n = %i\n", i);
+                    printf("FAILED for i = %i, n = %i, r = %i\n", i, n, r);
                 }
             }
         }
