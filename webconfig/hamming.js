@@ -12,15 +12,19 @@
              var PMASK8 = parseInt("0b01111111100000000111111110000000".substr(2), 2);
              var PMASK16 = parseInt("0b01111111111111111000000000000000".substr(2), 2);
 
+             var M1 = parseInt("0b1".substr(2), 2);
+             var M2 = parseInt("0b1110".substr(2), 2);
+             var M3 = parseInt("0b11111110000".substr(2), 2);
+             var M4 = parseInt("0b11111111111111100000000000".substr(2), 2);
 function hammingify_uint32( n)
 {
     do { if (! (n < (1 << (31-5)))) { throw new Error("ASSERTION ERROR"); } } while (0);
 
 
-    n = ((n & parseInt("0b1".substr(2), 2)) << 2) |
-        ((n & parseInt("0b1110".substr(2), 2)) << 3) |
-        ((n & parseInt("0b11111110000".substr(2), 2)) << 4) |
-        ((n & parseInt("0b11111111111111100000000000".substr(2), 2)) << 5);
+    n = ((n & M1) << 2) |
+        ((n & M2) << 3) |
+        ((n & M3) << 4) |
+        ((n & M4) << 5);
 
     var pb1 = n & PMASK1;
     var pb2 = n & PMASK2;
@@ -52,6 +56,10 @@ function hammingify_uint32( n)
     return n;
 }
 
+             var IM1 = parseInt("0b100".substr(2), 2);
+             var IM2 = parseInt("0b1110000".substr(2), 2);
+             var IM3 = parseInt("0b111111100000000".substr(2), 2);
+             var IM4 = parseInt("0b1111111111111110000000000000000".substr(2), 2);
 
 function dehammingify_uint32( n)
 {
@@ -95,10 +103,63 @@ function dehammingify_uint32( n)
 
 
 
-    return ((n & parseInt("0b100".substr(2), 2)) >> 2) |
-           ((n & parseInt("0b1110000".substr(2), 2)) >> 3) |
-           ((n & parseInt("0b111111100000000".substr(2), 2)) >> 4) |
-           ((n & parseInt("0b1111111111111110000000000000000".substr(2), 2)) >> 5);
+    return ((n & IM1) >> 2) |
+           ((n & IM2) >> 3) |
+           ((n & IM3) >> 4) |
+           ((n & IM4) >> 5);
+}
+
+function hamming_get_init_sequence_byte_length()
+{
+    return 5*4;
+}
+
+function hamming_get_encoded_message_byte_length( len) {
+    var x = len*4;
+    x += x % 3;
+    return x / 3;
+}
+
+function hamming_get_encoded_message_byte_length_with_init_sequence( len) {
+    return hamming_get_init_sequence_byte_length() + hamming_get_encoded_message_byte_length(len);
+}
+
+
+       var MAGIC_NUMBER_HAMMING = 0;
+
+function hamming_encode_message( input,
+
+
+
+               out)
+{
+
+
+
+
+
+
+    if (MAGIC_NUMBER_HAMMING == 0)
+        MAGIC_NUMBER_HAMMING = hammingify_uint32(24826601);
+
+    var i;
+    var ilen = hamming_get_init_sequence_byte_length();
+    for (i = 0; i < ilen; i += 4) {
+        out[i+0] = (MAGIC_NUMBER_HAMMING & 0xFF);
+        out[i+1] = (MAGIC_NUMBER_HAMMING & 0xFF00) >> 8;
+        out[i+2] = (MAGIC_NUMBER_HAMMING & 0xFF0000) >> 16;
+        out[i+3] = (MAGIC_NUMBER_HAMMING & 0xFF000000) >> 24;
+    }
+
+    var j;
+    for (j = 0; j < input.length; j += 3, i += 4) {
+        var v = input[j] | (input[j+1] << 8) | (input[j+2] << 16);
+        var h = hammingify_uint32(v);
+        out[i+0] = (h & 0xFF);
+        out[i+1] = (h & 0xFF00) >> 8;
+        out[i+2] = (h & 0xFF0000) >> 16;
+        out[i+3] = (h & 0xFF000000) >> 24;
+    }
 }
 
 
@@ -108,7 +169,7 @@ function
 
 
 
-test()
+hmming_test()
 
 {
 
@@ -119,7 +180,6 @@ test()
 
         var i;
         for (i = 0; i <= 32; ++i) {
-console.log("HERE");
             if (i != 0) {
                 var h2 = h ^ (1 << (i-1));
 

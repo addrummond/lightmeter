@@ -1,5 +1,5 @@
 //
-// This module implements hamming coding for sequences of 32-bits. The first 21
+// This module implements hamming coding for sequences of 32-bits. The first 31
 // bits are encoded according to Hamming(31,26) with odd parity. The 32nd bit
 // is an additional odd parity bit.
 //
@@ -28,6 +28,7 @@
 #define uint32_t var
 #define unsigned var
 #define int32_t var
+#define uint8_t var
 #define const
 #define assert(x) do { if (! (x)) { throw new Error("ASSERTION ERROR"); } } while (0)
 #define BIN(v) parseInt(#v.substr(2), 2)
@@ -90,7 +91,7 @@ FUNC(uint32_t) hammingify_uint32(ARG(uint32_t) n)
     if (pc16 % 2 == 0)
         n ^= (1 << (16-1));
 
-    // Set additional parity bit.
+    // Set additional parity bit at bit 32.
     if (bits_set_in_uint32(n) % 2 == 0)
         n ^= (1 << (32-1));
 
@@ -148,6 +149,59 @@ FUNC(int32_t) dehammingify_uint32(ARG(uint32_t) n)
            ((n & IM2) >> 3)   |
            ((n & IM3) >> 4)   |
            ((n & IM4) >> 5);
+}
+
+FUNC(uint32_t) hamming_get_init_sequence_byte_length()
+{
+    return 5*4;
+}
+
+FUNC(uint32_t) hamming_get_encoded_message_byte_length(ARG(uint32_t) len) {
+    uint32_t x = len*4;
+    x += x % 3;
+    return x / 3;
+}
+
+FUNC(uint32_t) hamming_get_encoded_message_byte_length_with_init_sequence(ARG(uint32_t) len) {
+    return hamming_get_init_sequence_byte_length() +  hamming_get_encoded_message_byte_length(len);
+}
+
+#define MAGIC_NUMBER 24826601
+static uint32_t MAGIC_NUMBER_HAMMING = 0;
+
+FUNC(void) hamming_encode_message(ARG(const uint8_t *) input,
+#ifndef JAVASCRIPT
+unsigned length_,
+#endif
+ARG(uint8_t *) out)
+{
+#ifdef JAVASCRIPT
+#define length input.length
+#else
+#define length length_
+#endif
+
+    if (MAGIC_NUMBER_HAMMING == 0)
+        MAGIC_NUMBER_HAMMING = hammingify_uint32(MAGIC_NUMBER);
+
+    uint32_t i;
+    uint32_t ilen = hamming_get_init_sequence_byte_length();
+    for (i = 0; i < ilen; i += 4) {
+        out[i+0] = (MAGIC_NUMBER_HAMMING & 0xFF);
+        out[i+1] = (MAGIC_NUMBER_HAMMING & 0xFF00) >> 8;
+        out[i+2] = (MAGIC_NUMBER_HAMMING & 0xFF0000) >> 16;
+        out[i+3] = (MAGIC_NUMBER_HAMMING & 0xFF000000) >> 24;
+    }
+
+    uint32_t j;
+    for (j = 0; j < length; j += 3, i += 4) {
+        uint32_t v = input[j] | (input[j+1] << 8) | (input[j+2] << 16);
+        uint32_t h = hammingify_uint32(v);
+        out[i+0] = (h & 0xFF);
+        out[i+1] = (h & 0xFF00) >> 8;
+        out[i+2] = (h & 0xFF0000) >> 16;
+        out[i+3] = (h & 0xFF000000) >> 24;
+    }
 }
 
 #if defined TEST || defined JAVASCRIPT
