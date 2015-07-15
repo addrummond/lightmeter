@@ -196,7 +196,6 @@ function encode_signal(out, sampleRate, signal, repeat, signalFreq, carrierFreq,
             seq2Count = seq1Count;
         }
 
-        console.log(seq1Count, seq2Count);
         var phaseShift, dutyCycle;
         var countSum = seq1Count+seq2Count;
         if (seq1V == 0) {
@@ -214,19 +213,17 @@ function encode_signal(out, sampleRate, signal, repeat, signalFreq, carrierFreq,
         var hwf = hilbert_of_approximate_square_wave(SIGNAL_SERIES_LENGTH, freq2, mag, dutyCycle, phaseShift);
 
         var dd = (sampleRate/signalFreq)*dv;
-        console.log("DD: ", dd);
         var t;
         var rem = 0;
         for (var j = 0; j < dd && oi < out.length; j += 1) {
             t = j/sampleRate;
-            var v = wf(t + (elapsedTime % (1/signalFreq)));
-            //var v = ssb(wf, hwf, carrierFreq, t + (elapsedTime % (1/signalFreq)));
+            //var v = wf(t + (elapsedTime % (1/signalFreq)));
+            var v = ssb(wf, hwf, carrierFreq, t + (elapsedTime % (1/signalFreq)));
             out[oi++] += v;
         }
         elapsedTime = loopCountPlusOne * (dd/sampleRate);
     }
 
-    console.log("I:", i, oi, out.length);
     return oi;
 }
 
@@ -244,19 +241,20 @@ var TEST_MESSAGE_ = [ 'H'.charCodeAt(0),
                       '!'.charCodeAt(0)
                     ];
 var TEST_MESSAGE = new Uint8Array(hamming_get_encoded_message_byte_length_with_init_sequence(9));
-hamming_encode_message(TEST_MESSAGE_, TEST_MESSAGE);
+hamming_encode_message(TEST_MESSAGE_, TEST_MESSAGE, true);
 
-/*var o = "["
-for (var i = 0; i < TEST_MESSAGE.length; ++i) {
-    var s = TEST_MESSAGE[i].toString(2);
-    for (var j = s.length-1; j >= 0; --j)
-        o += s.charAt(j);
-}
-o += "]";
-console.log(o);*/
+// Some test logging.
+(function () {
+var olen = hamming_get_max_output_length_given_input_length(TEST_MESSAGE.length);
+var to = new Uint8Array(olen);
+hamming_decode_message(TEST_MESSAGE, to);
+console.log("ORIGINAL", TEST_MESSAGE_);
+console.log("ENCODED", TEST_MESSAGE);
+console.log("DECODED", to);
+})();
 
 function test_message() {
-    console.log(TEST_MESSAGE);
+    //console.log(TEST_MESSAGE);
     var samples = buffer.getChannelData(0);
 
     var clock = new Uint8Array(1);
@@ -265,6 +263,7 @@ function test_message() {
     var MAG = 0.3;
     var siglen  = encode_signal(samples, audioCtx.sampleRate, TEST_MESSAGE, 1,                   SIGNAL_FREQ, MASTER_DATA_HZ,  MAG);
     var siglen2 = encode_signal(samples, audioCtx.sampleRate, clock,        TEST_MESSAGE.length, SIGNAL_FREQ, MASTER_CLOCK_HZ, MAG);
+    console.log("LENS", siglen, siglen2);
     if (siglen != siglen2)
         throw new Error("LENGTH MISMATCH!!");
 

@@ -29,11 +29,13 @@
 #define unsigned var
 #define int32_t var
 #define uint8_t var
+#define bool var
 #define const
 #define assert(x) do { if (! (x)) { throw new Error("ASSERTION ERROR"); } } while (0)
 #define BIN(v) parseInt(#v.substr(2), 2)
 #define FUNC(rettype) function
 #define ARG(type)
+#define INT(x) parseInt(x)
 #else
 #define BIN(x) x
 #define ARG(type) type
@@ -131,15 +133,17 @@ FUNC(int32_t) dehammingify_uint32(ARG(uint32_t) n)
 
     if (error_bit_index == 1 || error_bit_index == 2 || error_bit_index == 4 ||
         error_bit_index == 8 || error_bit_index == 16) {
-        // Error in parity bits, cannot decode.
-        return -1;
+        // Error in one of the parity bits. We flip an abritrarily chosen
+        // parity bit because we need to correct the parity of the entire 32-bit word.
+        n ^= 1;
     }
     else if (error_bit_index) {
         // The bit at error_bit_index is flipped, so correct it.
         n ^= (1 << (error_bit_index-1));
     }
 
-    // Is the corrected number consistent with the final parity bit?
+    // Is the corrected number consistent with the final parity bit? If not, we
+    // have an uncorrectable error.
     if (bits_set_in_uint32(n) % 2 == 0)
         return -1;
 
@@ -166,10 +170,59 @@ FUNC(uint32_t) hamming_get_encoded_message_byte_length_with_init_sequence(ARG(ui
     return hamming_get_init_sequence_byte_length() +  hamming_get_encoded_message_byte_length(len);
 }
 
+FUNC(uint32_t) hamming_get_max_output_length_given_input_length(ARG(uint32_t) len)
+{
+    uint32_t x = len*3;
+    x += x % 4;
+    return x / 4;
+}
+
 #define MAGIC_NUMBER 24826601
 static uint32_t MAGIC_NUMBER_HAMMING = 0;
 
 FUNC(void) hamming_encode_message(ARG(const uint8_t *) input,
+#ifndef JAVASCRIPT
+unsigned length_,
+#endif
+ARG(uint8_t *) out,
+ARG(bool) withInit)
+{
+#ifdef JAVASCRIPT
+#define length input.length
+#else
+#define length length_
+#endif
+
+    if (MAGIC_NUMBER_HAMMING == 0)
+        MAGIC_NUMBER_HAMMING = hammingify_uint32(MAGIC_NUMBER);
+
+    uint32_t i = 0;
+    if (withInit) {
+        uint32_t ilen = hamming_get_init_sequence_byte_length();
+        for (; i < ilen; i += 4) {
+            out[i+0] = (MAGIC_NUMBER_HAMMING & 0xFF);
+            out[i+1] = (MAGIC_NUMBER_HAMMING & 0xFF00) >> 8;
+            out[i+2] = (MAGIC_NUMBER_HAMMING & 0xFF0000) >> 16;
+            out[i+3] = (MAGIC_NUMBER_HAMMING & 0xFF000000) >> 24;
+        }
+    }
+
+    uint32_t j;
+    for (j = 0; j < length; j += 3, i += 4) {
+        uint32_t v = input[j]                                    |
+                     (j + 1 >= length ? 0 : (input[j+1] << 8))   |
+                     (j + 2 >= length ? 0 : (input[j+2] << 16));
+        uint32_t h = hammingify_uint32(v);
+        out[i+0] = (h & 0xFF);
+        out[i+1] = (h & 0xFF00) >> 8;
+        out[i+2] = (h & 0xFF0000) >> 16;
+        out[i+3] = (h & 0xFF000000) >> 24;
+    }
+}
+
+// Returns byte length of decoded message if no error or negated index of first
+// error in input buffer.
+FUNC(int32_t) hamming_decode_message(ARG(const uint8_t *) input,
 #ifndef JAVASCRIPT
 unsigned length_,
 #endif
@@ -181,27 +234,32 @@ ARG(uint8_t *) out)
 #define length length_
 #endif
 
-    if (MAGIC_NUMBER_HAMMING == 0)
-        MAGIC_NUMBER_HAMMING = hammingify_uint32(MAGIC_NUMBER);
+    uint32_t i, oi = 0, v;
 
-    uint32_t i;
-    uint32_t ilen = hamming_get_init_sequence_byte_length();
-    for (i = 0; i < ilen; i += 4) {
-        out[i+0] = (MAGIC_NUMBER_HAMMING & 0xFF);
-        out[i+1] = (MAGIC_NUMBER_HAMMING & 0xFF00) >> 8;
-        out[i+2] = (MAGIC_NUMBER_HAMMING & 0xFF0000) >> 16;
-        out[i+3] = (MAGIC_NUMBER_HAMMING & 0xFF000000) >> 24;
+    // Skip through init sequences if any.
+    for (i = 0; i < length; i += 4) {
+        v = dehammingify_uint32(input[i] | (input[i+1] << 8) | (input[i+2] << 16) | (input[i+3] << 24));
+        if (v == -1)
+            return i;
+        if (v != MAGIC_NUMBER)
+            break;
     }
 
-    uint32_t j;
-    for (j = 0; j < length; j += 3, i += 4) {
-        uint32_t v = input[j] | (input[j+1] << 8) | (input[j+2] << 16);
-        uint32_t h = hammingify_uint32(v);
-        out[i+0] = (h & 0xFF);
-        out[i+1] = (h & 0xFF00) >> 8;
-        out[i+2] = (h & 0xFF0000) >> 16;
-        out[i+3] = (h & 0xFF000000) >> 24;
+    for (;;) {
+        out[oi++] = v & 0xFF;
+        out[oi++] = (v & 0xFF00) >> 8;
+        out[oi++] = (v & 0xFF0000) >> 16;
+
+        i += 4;
+        if (i >= length)
+            break;
+
+        v = dehammingify_uint32(input[i] | (input[i+1] << 8) | (input[i+2] << 16) | (input[i+3] << 24));
+        if (v == -1)
+            return -i;
     }
+
+    return oi;
 }
 
 #if defined TEST || defined JAVASCRIPT
