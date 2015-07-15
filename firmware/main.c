@@ -90,9 +90,9 @@ static __attribute__ ((unused)) void test_mic()
         }
 
         unsigned i;
-        for (i = 0; i < sizeof(buf)/sizeof(buf[0]); ++i) {
+        for (i = 0; i < (sizeof(buf)/sizeof(buf[0]))*8; ++i) {
             debugging_writec("B: ");
-            debugging_write_uint32(buf[i]);
+            debugging_write_uint32((buf[i / 8] >> (i % 8)) & 1);
             debugging_writec("\n");
         }
         debugging_writec("*****\n\n");

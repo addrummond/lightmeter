@@ -301,8 +301,10 @@ void piezo_out_deinit()
 
 //static int32_t debugbuf[PIEZO_MIC_BUFFER_N_SAMPLES*2];
 //static int32_t debugbufi;
-bool piezo_read_data(uint8_t *buffer, unsigned bits)
+bool piezo_read_data(uint8_t *buffer, unsigned bytes)
 {
+    unsigned bits = bytes*8;
+
     hfsdp_read_bit_state_t s;
     init_hfsdp_read_bit_state(&s, HFSDP_MASTER_CLOCK_COSCOEFF, HFSDP_MASTER_CLOCK_SINCOEFF,
                                   HFSDP_MASTER_DATA_COSCOEFF,  HFSDP_MASTER_DATA_SINCOEFF);
@@ -326,7 +328,13 @@ bool piezo_read_data(uint8_t *buffer, unsigned bits)
             else if (r == HFSDP_READ_BIT_NOTHING_READ)
                 ;//debugging_writec("N\n");
             else {
-                buffer[nreceived++] = r;
+                unsigned shiftup = nreceived % 8;
+                if (shiftup == 0)
+                    buffer[nreceived] = r;
+                else
+                    buffer[nreceived] |= (r << shiftup);
+                ++nreceived;
+
                 if (nreceived == bits)
                     return true;
             }
