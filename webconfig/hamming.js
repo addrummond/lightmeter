@@ -130,7 +130,7 @@ function hamming_get_max_output_length_given_input_length( len)
 {
     var x = len*3;
     x += x % 4;
-    return x / 4;
+    return (x / 4) + 4;
 }
 
 
@@ -166,8 +166,8 @@ function hamming_encode_message( input,
     var j;
     for (j = 0; j < input.length; j += 3, i += 4) {
         var v = input[j] |
-                     (j + 1 >= ilen ? 0 : (input[j+1] << 8)) |
-                     (j + 2 >= ilen ? 0 : (input[j+2] << 16));
+                     (j + 1 >= input.length ? 0 : (input[j+1] << 8)) |
+                     (j + 2 >= input.length ? 0 : (input[j+2] << 16));
         var h = hammingify_uint32(v);
         out[i+0] = (h & 0xFF);
         out[i+1] = (h & 0xFF00) >> 8;
@@ -178,11 +178,13 @@ function hamming_encode_message( input,
 
 
 
+
+
 function hamming_decode_message( input,
 
 
 
-                     out)
+               out)
 {
 
 
@@ -194,11 +196,16 @@ function hamming_decode_message( input,
 
 
     for (i = 0; i < input.length; i += 4) {
-        var v = dehammingify_uint32(input[i] | (input[i+1] << 8) | (input[i+2] << 16) | (input[i+3] << 24));
+        v = dehammingify_uint32(input[i] | (input[i+1] << 8) | (input[i+2] << 16) | (input[i+3] << 24));
         if (v == -1)
             return i;
         if (v != 24826601)
             break;
+    }
+    if (i != 0) {
+        out[oi++] = 24826601 & 0xFF;
+        out[oi++] = (24826601 & 0xFF00) >> 8;
+        out[oi++] = (24826601 & 0xFF0000) >> 16;
     }
 
     for (;;) {
