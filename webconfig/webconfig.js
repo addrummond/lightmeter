@@ -65,7 +65,7 @@ function bi(arr, i) {
 }
 
 var SIGNAL_SERIES_LENGTH = 11;
-function encode_signal(out, sampleRate, signal, repeat, signalFreq, carrierFreq, mag) {
+function encode_signal(out, sampleRate, offset, signal, repeat, signalFreq, carrierFreq, mag) {
     if (signal.length == 0)
         return;
 
@@ -74,7 +74,7 @@ function encode_signal(out, sampleRate, signal, repeat, signalFreq, carrierFreq,
     if (out.length < (slen*repeat)/2 * parseInt(carrierFreq/signalFreq))
         throw new Error("Assertion error in encode_signal: output buffer too short");
 
-    var oi = 0;
+    var oi = offset;
     var elapsedTime = 0;
     var idealElapsedTime = 0;
     var loopCountPlusOne = 1;
@@ -125,7 +125,7 @@ function encode_signal(out, sampleRate, signal, repeat, signalFreq, carrierFreq,
         idealElapsedTime += dv/signalFreq;
     }
 
-    return oi;
+    return oi - offset;
 }
 
 audioCtx = new AudioContext();
@@ -162,8 +162,8 @@ function test_message() {
     clock[0] = parseInt("01010101", 2);
 
     var MAG = 0.6;
-    var siglen  = encode_signal(samples, audioCtx.sampleRate, TEST_MESSAGE, 1,                   SIGNAL_FREQ, MASTER_DATA_HZ,  MAG);
-    var siglen2 = siglen;//encode_signal(samples, audioCtx.sampleRate, clock,        TEST_MESSAGE.length, SIGNAL_FREQ, MASTER_CLOCK_HZ, MAG);
+    var siglen  = encode_signal(samples, audioCtx.sampleRate, SIGNAL_FREQ/2, TEST_MESSAGE, 1,                   SIGNAL_FREQ, MASTER_DATA_HZ,  MAG);
+    var siglen2 = encode_signal(samples, audioCtx.sampleRate, 0,             clock,        TEST_MESSAGE.length, SIGNAL_FREQ, MASTER_CLOCK_HZ, MAG);
     if (siglen != siglen2)
         throw new Error("LENGTH MISMATCH!!");
 
