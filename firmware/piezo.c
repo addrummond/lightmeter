@@ -330,9 +330,9 @@ bool piezo_read_data(uint8_t *buffer, unsigned bytes)
             else {
                 unsigned shiftup = nreceived % 8;
                 if (shiftup == 0)
-                    buffer[nreceived] = r;
+                    buffer[nreceived/8] = r;
                 else
-                    buffer[nreceived] |= (r << shiftup);
+                    buffer[nreceived/8] |= (r << shiftup);
                 ++nreceived;
 
                 if (nreceived == bits)
