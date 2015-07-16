@@ -16,107 +16,6 @@ function goetzel(freq, input, output) {
     }
 }
 
-function fir(coefficients, input, output) {
-    for (var i = 0; i < input.length; ++i) {
-        var o = 0, ci;
-        for (var j = i, ci = 0; ci < coefficients.length; --j, ++ci) {
-            var c = coefficients[ci];
-            var v;
-            if (j >= 0)
-                v = input[j];
-            else
-                v = input[input.length+j];
-            o += c * v;
-        }
-        output[i] = o;
-    }
-}
-
-function filter_below_17500_at_44100(buffer_in, buffer_out)
-{
-    var CS = [
-          -0.008773638033184997,
-          0.009357892710825723,
-          -0.010554635817558757,
-          0.008340088013772331,
-          -0.002152007417465064,
-          -0.007187478912713112,
-          0.017467430185060372,
-          -0.025680440692784242,
-          0.029070873432189042,
-          -0.026260306102679768,
-          0.017961316619322994,
-          -0.006929583363486038,
-          -0.002936373680287187,
-          0.008074565276900758,
-          -0.006735257115986192,
-          -0.00017436576561198606,
-          0.009319367779764108,
-          -0.016231131157432868,
-          0.017221409674721674,
-          -0.011071265324582759,
-          -0.00014492320392081414,
-          0.01176763381993594,
-          -0.01836630323638912,
-          0.01622320048911814,
-          -0.005266516590764755,
-          -0.01042156610025096,
-          0.023881690174243228,
-          -0.028057738144694568,
-          0.01903684970409776,
-          0.0016283074277931738,
-          -0.026566669446709053,
-          0.044596203179861287,
-          -0.04457503889471697,
-          0.019745719379580782,
-          0.029078063988884347,
-          -0.0928195179499722,
-          0.15637928156717756,
-          -0.20315976523480075,
-          0.22035083004992345,
-          -0.20315976523480075,
-          0.15637928156717756,
-          -0.0928195179499722,
-          0.029078063988884347,
-          0.019745719379580782,
-          -0.04457503889471697,
-          0.044596203179861287,
-          -0.026566669446709053,
-          0.0016283074277931738,
-          0.01903684970409776,
-          -0.028057738144694568,
-          0.023881690174243228,
-          -0.01042156610025096,
-          -0.005266516590764755,
-          0.016223200489118142,
-          -0.01836630323638912,
-          0.01176763381993594,
-          -0.00014492320392081414,
-          -0.011071265324582753,
-          0.017221409674721674,
-          -0.016231131157432868,
-          0.009319367779764108,
-          -0.00017436576561198606,
-          -0.006735257115986192,
-          0.008074565276900758,
-          -0.0029363736802871846,
-          -0.006929583363486038,
-          0.017961316619322994,
-          -0.026260306102679775,
-          0.029070873432189042,
-          -0.025680440692784242,
-          0.017467430185060372,
-          -0.007187478912713112,
-          -0.002152007417465064,
-          0.008340088013772331,
-          -0.010554635817558757,
-          0.009357892710825726,
-          -0.008773638033184997
-    ];
-
-    return fir(CS, buffer_in, buffer_out);
-}
-
 function ssb(s, sh, f, t) {
     return s(t)*Math.cos(2*Math.PI*f*t);
     //return s(t)*Math.cos(2*Math.PI*f*t) - sh(t)*Math.sin(2*Math.PI*f*t);
@@ -217,8 +116,8 @@ function encode_signal(out, sampleRate, signal, repeat, signalFreq, carrierFreq,
         var rem = 0;
         for (var j = 0; j < dd && oi < out.length; j += 1) {
             t = j/sampleRate;
-            //var v = wf(t + (elapsedTime % (1/signalFreq)));
-            var v = ssb(wf, hwf, carrierFreq, t + (elapsedTime % (1/signalFreq)));
+            var v = wf(t + (elapsedTime % (1/signalFreq)));
+            //var v = ssb(wf, hwf, carrierFreq, t + (elapsedTime % (1/signalFreq)));
             out[oi++] += v;
         }
         elapsedTime = loopCountPlusOne * (dd/sampleRate);
@@ -260,10 +159,9 @@ function test_message() {
     var clock = new Uint8Array(1);
     clock[0] = parseInt("01010101", 2);
 
-    var MAG = 0.3;
+    var MAG = 0.6;
     var siglen  = encode_signal(samples, audioCtx.sampleRate, TEST_MESSAGE, 1,                   SIGNAL_FREQ, MASTER_DATA_HZ,  MAG);
-    var siglen2 = encode_signal(samples, audioCtx.sampleRate, clock,        TEST_MESSAGE.length, SIGNAL_FREQ, MASTER_CLOCK_HZ, MAG);
-    console.log("LENS", siglen, siglen2);
+    var siglen2 = siglen;//encode_signal(samples, audioCtx.sampleRate, clock,        TEST_MESSAGE.length, SIGNAL_FREQ, MASTER_CLOCK_HZ, MAG);
     if (siglen != siglen2)
         throw new Error("LENGTH MISMATCH!!");
 
