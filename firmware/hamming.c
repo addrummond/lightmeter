@@ -252,8 +252,8 @@ FUNC(void) hamming_bitshift_buffer_forward(ARG(uint8_t *) buffer, ARG(unsigned) 
 }
 
 // Scans a buffer from all bit offsets for a sequence of magic numbers. Returns
-// the bit index of the first sequence and the count (at most NUM_INIT_SEQUENCES).
-FUNC(uint32_t) hamming_scan_for_init_sequence(ARG(const uint8_t *) input
+// the bit index of the first sequence and the count up to a maximum of NUM_INIT_SEQUENCES.
+FUNC(hamming_scan_for_init_sequence_result_t) hamming_scan_for_init_sequence(ARG(const uint8_t *) input
 #ifndef JAVASCRIPT
 , unsigned length_,
 #endif
@@ -261,34 +261,48 @@ FUNC(uint32_t) hamming_scan_for_init_sequence(ARG(const uint8_t *) input
 {
 #ifdef JAVASCRIPT
 #define length input.length
+    var result = { };
 #else
 #define length length_
+    hamming_scan_for_init_sequence_result_t result;
 #endif
 
     int magic_start_bit_index = -1;
     unsigned magic_count = 0;
     unsigned bit_index;
-    for (bit_index = 0; bit_index < length*8 - 32; ++bit_index) {
+    for (bit_index = 0; bit_index < length*8 - 32;) {
         unsigned byte = bit_index/8;
         unsigned bit = bit_index % 8;
-        uint8_t b1 = (input[byte] >> bit) | (input[byte+1] << (8-bit));
-        uint8_t b2 = (input[byte+1] >> bit) | (input[byte+2] << (8-bit));
-        uint8_t b3 = (input[byte+2] >> bit) | (input[byte+3] << (8-bit));
-        uint8_t b4 = (input[byte+3] >> bit) | (input[byte+4] << (8-bit));
+        uint8_t b1 = ((input[byte+0] >> bit) | (input[byte+1] << (8-bit))) & 0xFF;
+        uint8_t b2 = ((input[byte+1] >> bit) | (input[byte+2] << (8-bit))) & 0xFF;
+        uint8_t b3 = ((input[byte+2] >> bit) | (input[byte+3] << (8-bit))) & 0xFF;
+        uint8_t b4 = ((input[byte+3] >> bit) | (input[byte+4] << (8-bit))) & 0xFF;
 
         uint32_t v = dehammingify_uint32(b1 | (b2 << 8) | (b3 << 16) | (b4 << 24));
         if (v == MAGIC_NUMBER) {
             if (magic_start_bit_index == -1)
                 magic_start_bit_index = bit_index;
             ++magic_count;
-            if (magic_count >= NUM_INIT_SEQUENCES)
-                return (magic_start_bit_index & 0xFFFF) | ((magic_count & 0xFFFF) << 16);
+            if (magic_count >= NUM_INIT_SEQUENCES) {
+                result.bit_index = magic_start_bit_index;
+                result.count = magic_count;
+                return result;
+            }
+            bit_index += 32;
         }
         else {
-            if (magic_start_bit_index != -1)
-                return (magic_start_bit_index & 0xFFFF) | ((magic_count & 0xFFFF) << 16);
+            if (magic_start_bit_index != -1) {
+                result.bit_index = magic_start_bit_index;
+                result.count = magic_count;
+                return result;
+            }
+            ++bit_index;
         }
     }
+
+    result.bit_index = magic_start_bit_index;
+    result.count = magic_count;
+    return result;
 
 #undef length
 }
