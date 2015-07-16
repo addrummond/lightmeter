@@ -174,6 +174,76 @@ function hamming_encode_message( input,
         out[i+2] = (h & 0xFF0000) >> 16;
         out[i+3] = (h & 0xFF000000) >> 24;
     }
+
+
+}
+
+
+function hamming_bitshift_buffer_forward( buffer, length, nbits)
+{
+    if (length == 0)
+        return;
+
+    var backup = 0;
+    var i;
+    for (i = 0; i < length; ++i) {
+        var r = buffer[i] << nbits;
+        if (i != 0)
+            r |= (backup >> (8 - nbits));
+
+        r &= 0xFF;
+
+        backup = buffer[i];
+        buffer[i] = r;
+    }
+    if (nbits > 0) {
+        buffer[i] = (backup >> (8 - nbits));
+
+        buffer[i] &= 0xFF;
+
+    }
+}
+
+
+
+function hamming_scan_for_init_sequence( input
+
+
+
+)
+{
+
+
+
+
+
+
+    var magic_start_bit_index = -1;
+    var magic_count = 0;
+    var bit_index;
+    for (bit_index = 0; bit_index < input.length*8 - 32; ++bit_index) {
+        var byte = bit_index/8;
+        var bit = bit_index % 8;
+        var b1 = (input[byte] >> bit) | (input[byte+1] << (8-bit));
+        var b2 = (input[byte+1] >> bit) | (input[byte+2] << (8-bit));
+        var b3 = (input[byte+2] >> bit) | (input[byte+3] << (8-bit));
+        var b4 = (input[byte+3] >> bit) | (input[byte+4] << (8-bit));
+
+        var v = dehammingify_uint32(b1 | (b2 << 8) | (b3 << 16) | (b4 << 24));
+        if (v == 24826601) {
+            if (magic_start_bit_index == -1)
+                magic_start_bit_index = bit_index;
+            ++magic_count;
+            if (magic_count >= 5)
+                return (magic_start_bit_index & 0xFFFF) | ((magic_count & 0xFFFF) << 16);
+        }
+        else {
+            if (magic_start_bit_index != -1)
+                return (magic_start_bit_index & 0xFFFF) | ((magic_count & 0xFFFF) << 16);
+        }
+    }
+
+
 }
 
 
@@ -223,6 +293,8 @@ function hamming_decode_message( input,
     }
 
     return oi;
+
+
 }
 
 

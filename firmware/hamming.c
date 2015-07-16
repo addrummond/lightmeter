@@ -29,6 +29,7 @@
 #define static
 #define uint32_t var
 #define unsigned var
+#define int var
 #define int32_t var
 #define uint8_t var
 #define bool var
@@ -220,6 +221,76 @@ ARG(bool) withInit)
         out[i+2] = (h & 0xFF0000) >> 16;
         out[i+3] = (h & 0xFF000000) >> 24;
     }
+
+#undef length
+}
+
+// nbits < 8. If nbits > 0, assumes that there is an available byte at buffer[length].
+FUNC(void) hamming_bitshift_buffer_forward(ARG(uint8_t *) buffer, ARG(unsigned) length, ARG(unsigned) nbits)
+{
+    if (length == 0)
+        return;
+
+    uint8_t backup = 0;
+    unsigned i;
+    for (i = 0; i < length; ++i) {
+        uint8_t r = buffer[i] << nbits;
+        if (i != 0)
+            r |= (backup >> (8 - nbits));
+#ifdef JAVASCRIPT
+        r &= 0xFF; // Necessary in JS if buffer isn't a Uint8Array.
+#endif
+        backup = buffer[i];
+        buffer[i] = r;
+    }
+    if (nbits > 0) {
+        buffer[i] = (backup >> (8 - nbits));
+#ifdef JAVASCRIPT
+        buffer[i] &= 0xFF; // Necessary in JS if buffer isn't a Uint8Array.
+#endif
+    }
+}
+
+// Scans a buffer from all bit offsets for a sequence of magic numbers. Returns
+// the bit index of the first sequence and the count (at most NUM_INIT_SEQUENCES).
+FUNC(uint32_t) hamming_scan_for_init_sequence(ARG(const uint8_t *) input
+#ifndef JAVASCRIPT
+, unsigned length_,
+#endif
+)
+{
+#ifdef JAVASCRIPT
+#define length input.length
+#else
+#define length length_
+#endif
+
+    int magic_start_bit_index = -1;
+    unsigned magic_count = 0;
+    unsigned bit_index;
+    for (bit_index = 0; bit_index < length*8 - 32; ++bit_index) {
+        unsigned byte = bit_index/8;
+        unsigned bit = bit_index % 8;
+        uint8_t b1 = (input[byte] >> bit) | (input[byte+1] << (8-bit));
+        uint8_t b2 = (input[byte+1] >> bit) | (input[byte+2] << (8-bit));
+        uint8_t b3 = (input[byte+2] >> bit) | (input[byte+3] << (8-bit));
+        uint8_t b4 = (input[byte+3] >> bit) | (input[byte+4] << (8-bit));
+
+        uint32_t v = dehammingify_uint32(b1 | (b2 << 8) | (b3 << 16) | (b4 << 24));
+        if (v == MAGIC_NUMBER) {
+            if (magic_start_bit_index == -1)
+                magic_start_bit_index = bit_index;
+            ++magic_count;
+            if (magic_count >= NUM_INIT_SEQUENCES)
+                return (magic_start_bit_index & 0xFFFF) | ((magic_count & 0xFFFF) << 16);
+        }
+        else {
+            if (magic_start_bit_index != -1)
+                return (magic_start_bit_index & 0xFFFF) | ((magic_count & 0xFFFF) << 16);
+        }
+    }
+
+#undef length
 }
 
 // Returns byte length of decoded message if no error or negated index of first
@@ -269,6 +340,8 @@ ARG(uint8_t *) out)
     }
 
     return oi;
+
+#undef length
 }
 
 #if defined TEST || defined JAVASCRIPT
