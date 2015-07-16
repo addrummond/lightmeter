@@ -161,9 +161,10 @@ function test_message() {
     var clock = new Uint8Array(1);
     clock[0] = parseInt("01010101", 2);
 
-    var MAG = 0.6;
-    var siglen  = encode_signal(samples, audioCtx.sampleRate, SIGNAL_FREQ/2, TEST_MESSAGE, 1,                   SIGNAL_FREQ, MASTER_DATA_HZ,  MAG);
-    var siglen2 = encode_signal(samples, audioCtx.sampleRate, 0,             clock,        TEST_MESSAGE.length, SIGNAL_FREQ, MASTER_CLOCK_HZ, MAG);
+    var MAG = 0.35;
+    var siglen  = encode_signal(samples, audioCtx.sampleRate, SIGNAL_FREQ/2, TEST_MESSAGE, 1*5,                   SIGNAL_FREQ, MASTER_DATA_HZ,  MAG);
+    var siglen2 = encode_signal(samples, audioCtx.sampleRate, 0,             clock,        TEST_MESSAGE.length*5, SIGNAL_FREQ, MASTER_CLOCK_HZ, MAG);
+    console.log(siglen, siglen2);
     if (siglen != siglen2)
         throw new Error("LENGTH MISMATCH!!");
 
