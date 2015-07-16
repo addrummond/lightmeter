@@ -76,6 +76,7 @@ function encode_signal(out, sampleRate, signal, repeat, signalFreq, carrierFreq,
 
     var oi = 0;
     var elapsedTime = 0;
+    var idealElapsedTime = 0;
     var loopCountPlusOne = 1;
     for (var i = 0; i < slen*repeat; ++loopCountPlusOne) {
         var seq1Count = 1;
@@ -113,14 +114,15 @@ function encode_signal(out, sampleRate, signal, repeat, signalFreq, carrierFreq,
 
         var dd = (sampleRate/signalFreq)*dv;
         var t;
-        var rem = 0;
+        var diff = idealElapsedTime - elapsedTime;
         for (var j = 0; j < dd && oi < out.length; j += 1) {
             t = j/sampleRate;
-            var v = wf(t + (elapsedTime % (1/signalFreq)));
-            //var v = ssb(wf, hwf, carrierFreq, t + (elapsedTime % (1/signalFreq)));
+            //var v = wf(t + (elapsedTime % (1/signalFreq)));
+            var v = ssb(wf, hwf, carrierFreq, t + diff);
             out[oi++] += v;
         }
-        elapsedTime = loopCountPlusOne * (dd/sampleRate);
+        elapsedTime += (dd/sampleRate);
+        idealElapsedTime += dv/signalFreq;
     }
 
     return oi;
