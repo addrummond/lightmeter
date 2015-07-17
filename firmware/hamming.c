@@ -15,8 +15,7 @@
 //
 
 #ifndef JAVASCRIPT
-#include <stdint.h>
-#include <stdbool.h>
+#include <hamming.h>
 #include <myassert.h>
 #ifdef TEST
 #include <stdio.h>
@@ -43,6 +42,7 @@
 #define BIN(x) x
 #define ARG(type) type
 #define FUNC(rettype) rettype
+#define INT(x) x
 #endif
 
 static FUNC(unsigned) bits_set_in_uint32(ARG(uint32_t) n)
@@ -228,17 +228,18 @@ ARG(bool) withInit)
 // nbits < 8. If nbits > 0, assumes that there is an available byte at buffer[length].
 FUNC(void) hamming_bitshift_buffer_forward(ARG(uint8_t *) buffer, ARG(unsigned) length, ARG(unsigned) nbits)
 {
+    assert(nbits < 8);
+
     if (length == 0)
         return;
 
     uint8_t backup = 0;
     unsigned i;
     for (i = 0; i < length; ++i) {
-        uint8_t r = buffer[i] << nbits;
-        if (i != 0)
-            r |= (backup >> (8 - nbits));
+        uint8_t r = (buffer[i] << nbits);
+        r |= (backup >> (8 - nbits));
 #ifdef JAVASCRIPT
-        r &= 0xFF; // Necessary in JS if buffer isn't a Uint8Array.
+        r &= 0xFF;
 #endif
         backup = buffer[i];
         buffer[i] = r;
@@ -246,7 +247,7 @@ FUNC(void) hamming_bitshift_buffer_forward(ARG(uint8_t *) buffer, ARG(unsigned) 
     if (nbits > 0) {
         buffer[i] = (backup >> (8 - nbits));
 #ifdef JAVASCRIPT
-        buffer[i] &= 0xFF; // Necessary in JS if buffer isn't a Uint8Array.
+        buffer[i] &= 0xFF;
 #endif
     }
 }
@@ -255,7 +256,7 @@ FUNC(void) hamming_bitshift_buffer_forward(ARG(uint8_t *) buffer, ARG(unsigned) 
 // the bit index of the first sequence and the count up to a maximum of NUM_INIT_SEQUENCES.
 FUNC(hamming_scan_for_init_sequence_result_t) hamming_scan_for_init_sequence(ARG(const uint8_t *) input
 #ifndef JAVASCRIPT
-, unsigned length_,
+, unsigned length_
 #endif
 )
 {
@@ -270,13 +271,19 @@ FUNC(hamming_scan_for_init_sequence_result_t) hamming_scan_for_init_sequence(ARG
     int magic_start_bit_index = -1;
     unsigned magic_count = 0;
     unsigned bit_index;
-    for (bit_index = 0; bit_index < length*8 - 32;) {
-        unsigned byte = bit_index/8;
+    for (bit_index = 0; bit_index < (length*8) - 32;) {
+        unsigned byte = INT(bit_index / 8);
         unsigned bit = bit_index % 8;
-        uint8_t b1 = ((input[byte+0] >> bit) | (input[byte+1] << (8-bit))) & 0xFF;
-        uint8_t b2 = ((input[byte+1] >> bit) | (input[byte+2] << (8-bit))) & 0xFF;
-        uint8_t b3 = ((input[byte+2] >> bit) | (input[byte+3] << (8-bit))) & 0xFF;
-        uint8_t b4 = ((input[byte+3] >> bit) | (input[byte+4] << (8-bit))) & 0xFF;
+        uint8_t b1 = ((input[byte+0] >> bit) | (input[byte+1] << (8-bit)));
+        uint8_t b2 = ((input[byte+1] >> bit) | (input[byte+2] << (8-bit)));
+        uint8_t b3 = ((input[byte+2] >> bit) | (input[byte+3] << (8-bit)));
+        uint8_t b4 = ((input[byte+3] >> bit) | (input[byte+4] << (8-bit)));
+#ifdef JAVASCRIPT
+        b1 &= 0xFF;
+        b2 &= 0xFF;
+        b3 &= 0xFF;
+        b4 &= 0xFF;
+#endif
 
         uint32_t v = dehammingify_uint32(b1 | (b2 << 8) | (b3 << 16) | (b4 << 24));
         if (v == MAGIC_NUMBER) {

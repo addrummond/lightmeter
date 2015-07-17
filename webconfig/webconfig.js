@@ -144,15 +144,36 @@ var TEST_MESSAGE_ = [ 'H'.charCodeAt(0),
 var TEST_MESSAGE = new Uint8Array(hamming_get_encoded_message_byte_length_with_init_sequence(9));
 hamming_encode_message(TEST_MESSAGE_, TEST_MESSAGE, true);
 
+function debug_print_bitarray(arr) {
+    var o = "";
+    for (var i = 0; i < arr.length; ++i) {
+        var v = arr[i];
+        var s = v.toString(2);
+        var j;
+        for (j = s.length-1; j >= 0; --j)
+            o += s[j];
+        for (j = 0; j < 8-s.length; ++j)
+            o += "0";
+    }
+    return o;
+}
+
 // Some test logging.
-(function () {
+/*(function () {
 var olen = hamming_get_max_output_length_given_input_length(TEST_MESSAGE.length);
 var to = new Uint8Array(olen);
 hamming_decode_message(TEST_MESSAGE, to);
 console.log("ORIGINAL", TEST_MESSAGE_);
 console.log("ENCODED", TEST_MESSAGE);
-console.log("DECODED", to);
-})();
+console.log("DECODED", debug_print_bitarray(to));
+
+console.log("TD", debug_print_bitarray([0xF0, 0xF0, 0xF0]));
+console.log("PRESHIFT", debug_print_bitarray(TEST_MESSAGE));
+hamming_bitshift_buffer_forward(TEST_MESSAGE, TEST_MESSAGE.length-4, 7);
+console.log("SHIFTED", debug_print_bitarray(TEST_MESSAGE));
+var r = hamming_scan_for_init_sequence(TEST_MESSAGE);
+console.log(r);
+})();*/
 
 function test_message() {
     //console.log(TEST_MESSAGE);

@@ -181,15 +181,16 @@ function hamming_encode_message( input,
 
 function hamming_bitshift_buffer_forward( buffer, length, nbits)
 {
+    do { if (! (nbits < 8)) { throw new Error("ASSERTION ERROR"); } } while (0);
+
     if (length == 0)
         return;
 
     var backup = 0;
     var i;
     for (i = 0; i < length; ++i) {
-        var r = buffer[i] << nbits;
-        if (i != 0)
-            r |= (backup >> (8 - nbits));
+        var r = (buffer[i] << nbits);
+        r |= (backup >> (8 - nbits));
 
         r &= 0xFF;
 
@@ -214,6 +215,8 @@ function hamming_scan_for_init_sequence( input
 {
 
 
+    var result = { };
+
 
 
 
@@ -221,27 +224,45 @@ function hamming_scan_for_init_sequence( input
     var magic_start_bit_index = -1;
     var magic_count = 0;
     var bit_index;
-    for (bit_index = 0; bit_index < input.length*8 - 32; ++bit_index) {
-        var byte = bit_index/8;
+    for (bit_index = 0; bit_index < (input.length*8) - 32;) {
+        var byte = parseInt(bit_index / 8);
         var bit = bit_index % 8;
-        var b1 = (input[byte] >> bit) | (input[byte+1] << (8-bit));
-        var b2 = (input[byte+1] >> bit) | (input[byte+2] << (8-bit));
-        var b3 = (input[byte+2] >> bit) | (input[byte+3] << (8-bit));
-        var b4 = (input[byte+3] >> bit) | (input[byte+4] << (8-bit));
+        var b1 = ((input[byte+0] >> bit) | (input[byte+1] << (8-bit)));
+        var b2 = ((input[byte+1] >> bit) | (input[byte+2] << (8-bit)));
+        var b3 = ((input[byte+2] >> bit) | (input[byte+3] << (8-bit)));
+        var b4 = ((input[byte+3] >> bit) | (input[byte+4] << (8-bit)));
+
+        b1 &= 0xFF;
+        b2 &= 0xFF;
+        b3 &= 0xFF;
+        b4 &= 0xFF;
+
 
         var v = dehammingify_uint32(b1 | (b2 << 8) | (b3 << 16) | (b4 << 24));
         if (v == 24826601) {
             if (magic_start_bit_index == -1)
                 magic_start_bit_index = bit_index;
             ++magic_count;
-            if (magic_count >= 5)
-                return (magic_start_bit_index & 0xFFFF) | ((magic_count & 0xFFFF) << 16);
+            if (magic_count >= 5) {
+                result.bit_index = magic_start_bit_index;
+                result.count = magic_count;
+                return result;
+            }
+            bit_index += 32;
         }
         else {
-            if (magic_start_bit_index != -1)
-                return (magic_start_bit_index & 0xFFFF) | ((magic_count & 0xFFFF) << 16);
+            if (magic_start_bit_index != -1) {
+                result.bit_index = magic_start_bit_index;
+                result.count = magic_count;
+                return result;
+            }
+            ++bit_index;
         }
     }
+
+    result.bit_index = magic_start_bit_index;
+    result.count = magic_count;
+    return result;
 
 
 }
