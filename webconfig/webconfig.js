@@ -141,8 +141,8 @@ var TEST_MESSAGE_ = [ 'H'.charCodeAt(0),
                       '!'.charCodeAt(0),
                       '!'.charCodeAt(0)
                     ];
-var TEST_MESSAGE = new Uint8Array(hamming_get_encoded_message_byte_length_with_init_sequences(9, 1));
-hamming_encode_message(TEST_MESSAGE_, TEST_MESSAGE, 1);
+var TEST_MESSAGE = new Uint8Array(hamming_get_encoded_message_byte_length_with_init_sequences(9, 10));
+hamming_encode_message(TEST_MESSAGE_, TEST_MESSAGE, 10);
 
 function debug_print_bitarray(arr) {
     var o = "";

@@ -299,7 +299,7 @@ void piezo_out_deinit()
 // HFSDP stuff.
 //
 
-#define DEBUG_OUTPUT
+//#define DEBUG_OUTPUT
 
 #ifdef DEBUG_OUTPUT
 static int32_t debugbuf[PIEZO_MIC_BUFFER_N_SAMPLES*2];

@@ -20,6 +20,7 @@
 #include <meter.h>
 #include <tables.h>
 #include <hfsdp.h>
+#include <hamming.h>
 
 void HardFault_Handler()
 {
@@ -28,12 +29,6 @@ void HardFault_Handler()
 
 static __attribute__ ((unused)) void test_mic()
 {
-    int64_t x = 55;
-    int32_t y = x;
-    debugging_writec("X: ");
-    debugging_write_int32(y);
-    debugging_writec("\n");
-
     piezo_mic_init();
     unsigned i;
 
@@ -78,7 +73,7 @@ static __attribute__ ((unused)) void test_mic()
         //piezo_hfsdp_listen_for_masters_init();
         //continue;
 
-        uint8_t buf[64];
+        uint8_t buf[16];
         memset8_zero(buf, sizeof(buf));
         bool decoded_successfully = piezo_read_data(buf, sizeof(buf)/sizeof(buf[0]));
 
@@ -89,13 +84,21 @@ static __attribute__ ((unused)) void test_mic()
             continue;
         }
 
-        unsigned i;
+        hamming_scan_for_init_sequence_result_t sr;
+        sr = hamming_scan_for_init_sequence(buf, sizeof(buf));
+        debugging_writec("RES: ");
+        debugging_write_int32(sr.bit_index);
+        debugging_writec(", ");
+        debugging_write_uint32(sr.count);
+        debugging_writec("\n");
+
+        /*unsigned i;
         for (i = 0; i < (sizeof(buf)/sizeof(buf[0]))*8; ++i) {
             debugging_writec("B: ");
             debugging_write_uint32((buf[i / 8] >> (i % 8)) & 1);
             debugging_writec("\n");
         }
-        debugging_writec("*****\n\n");
+        debugging_writec("*****\n\n");*/
     }
 }
 
