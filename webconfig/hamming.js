@@ -113,7 +113,7 @@ function dehammingify_uint32( n)
 
 function hamming_get_init_sequence_byte_length()
 {
-    return 5*4;
+    return 4;
 }
 
 function hamming_get_encoded_message_byte_length( len) {
@@ -122,8 +122,8 @@ function hamming_get_encoded_message_byte_length( len) {
     return x / 3;
 }
 
-function hamming_get_encoded_message_byte_length_with_init_sequence( len) {
-    return hamming_get_init_sequence_byte_length() + hamming_get_encoded_message_byte_length(len);
+function hamming_get_encoded_message_byte_length_with_init_sequences( len, num_init_sequences) {
+    return (num_init_sequences*hamming_get_init_sequence_byte_length()) + hamming_get_encoded_message_byte_length(len);
 }
 
 function hamming_get_max_output_length_given_input_length( len)
@@ -141,7 +141,7 @@ function hamming_encode_message( input,
 
 
                out,
-          withInit)
+              num_init_sequences)
 {
 
 
@@ -153,26 +153,24 @@ function hamming_encode_message( input,
         MAGIC_NUMBER_HAMMING = hammingify_uint32(24826601);
 
     var i = 0;
-    if (withInit) {
-        var ilen = hamming_get_init_sequence_byte_length();
-        for (; i < ilen; i += 4) {
-            out[i+0] = (MAGIC_NUMBER_HAMMING & 0xFF);
-            out[i+1] = (MAGIC_NUMBER_HAMMING & 0xFF00) >> 8;
-            out[i+2] = (MAGIC_NUMBER_HAMMING & 0xFF0000) >> 16;
-            out[i+3] = (MAGIC_NUMBER_HAMMING & 0xFF000000) >> 24;
-        }
+    var ilen = hamming_get_init_sequence_byte_length()*num_init_sequences;
+    for (; i < ilen;) {
+        out[i++] = (MAGIC_NUMBER_HAMMING & 0xFF);
+        out[i++] = (MAGIC_NUMBER_HAMMING & 0xFF00) >> 8;
+        out[i++] = (MAGIC_NUMBER_HAMMING & 0xFF0000) >> 16;
+        out[i++] = (MAGIC_NUMBER_HAMMING & 0xFF000000) >> 24;
     }
 
     var j;
-    for (j = 0; j < input.length; j += 3, i += 4) {
+    for (j = 0; j < input.length; j += 3) {
         var v = input[j] |
                      (j + 1 >= input.length ? 0 : (input[j+1] << 8)) |
                      (j + 2 >= input.length ? 0 : (input[j+2] << 16));
         var h = hammingify_uint32(v);
-        out[i+0] = (h & 0xFF);
-        out[i+1] = (h & 0xFF00) >> 8;
-        out[i+2] = (h & 0xFF0000) >> 16;
-        out[i+3] = (h & 0xFF000000) >> 24;
+        out[i++] = (h & 0xFF);
+        out[i++] = (h & 0xFF00) >> 8;
+        out[i++] = (h & 0xFF0000) >> 16;
+        out[i++] = (h & 0xFF000000) >> 24;
     }
 
 
@@ -243,11 +241,6 @@ function hamming_scan_for_init_sequence( input
             if (magic_start_bit_index == -1)
                 magic_start_bit_index = bit_index;
             ++magic_count;
-            if (magic_count >= 5) {
-                result.bit_index = magic_start_bit_index;
-                result.count = magic_count;
-                return result;
-            }
             bit_index += 32;
         }
         else {

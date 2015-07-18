@@ -22,8 +22,6 @@
 #endif
 #endif
 
-#define NUM_INIT_SEQUENCES 5
-
 #ifdef JAVASCRIPT
 #define static
 #define uint32_t var
@@ -160,7 +158,7 @@ FUNC(int32_t) dehammingify_uint32(ARG(uint32_t) n)
 
 FUNC(uint32_t) hamming_get_init_sequence_byte_length()
 {
-    return NUM_INIT_SEQUENCES*4;
+    return 4;
 }
 
 FUNC(uint32_t) hamming_get_encoded_message_byte_length(ARG(uint32_t) len) {
@@ -169,8 +167,8 @@ FUNC(uint32_t) hamming_get_encoded_message_byte_length(ARG(uint32_t) len) {
     return x / 3;
 }
 
-FUNC(uint32_t) hamming_get_encoded_message_byte_length_with_init_sequence(ARG(uint32_t) len) {
-    return hamming_get_init_sequence_byte_length() +  hamming_get_encoded_message_byte_length(len);
+FUNC(uint32_t) hamming_get_encoded_message_byte_length_with_init_sequences(ARG(uint32_t) len, ARG(unsigned) num_init_sequences) {
+    return (num_init_sequences*hamming_get_init_sequence_byte_length()) +  hamming_get_encoded_message_byte_length(len);
 }
 
 FUNC(uint32_t) hamming_get_max_output_length_given_input_length(ARG(uint32_t) len)
@@ -188,7 +186,7 @@ FUNC(void) hamming_encode_message(ARG(const uint8_t *) input,
 unsigned length_,
 #endif
 ARG(uint8_t *) out,
-ARG(bool) withInit)
+ARG(unsigned) num_init_sequences)
 {
 #ifdef JAVASCRIPT
 #define length input.length
@@ -200,26 +198,24 @@ ARG(bool) withInit)
         MAGIC_NUMBER_HAMMING = hammingify_uint32(MAGIC_NUMBER);
 
     uint32_t i = 0;
-    if (withInit) {
-        uint32_t ilen = hamming_get_init_sequence_byte_length();
-        for (; i < ilen; i += 4) {
-            out[i+0] = (MAGIC_NUMBER_HAMMING & 0xFF);
-            out[i+1] = (MAGIC_NUMBER_HAMMING & 0xFF00) >> 8;
-            out[i+2] = (MAGIC_NUMBER_HAMMING & 0xFF0000) >> 16;
-            out[i+3] = (MAGIC_NUMBER_HAMMING & 0xFF000000) >> 24;
-        }
+    uint32_t ilen = hamming_get_init_sequence_byte_length()*num_init_sequences;
+    for (; i < ilen;) {
+        out[i++] = (MAGIC_NUMBER_HAMMING & 0xFF);
+        out[i++] = (MAGIC_NUMBER_HAMMING & 0xFF00) >> 8;
+        out[i++] = (MAGIC_NUMBER_HAMMING & 0xFF0000) >> 16;
+        out[i++] = (MAGIC_NUMBER_HAMMING & 0xFF000000) >> 24;
     }
 
     uint32_t j;
-    for (j = 0; j < length; j += 3, i += 4) {
+    for (j = 0; j < length; j += 3) {
         uint32_t v = input[j]                                    |
                      (j + 1 >= length ? 0 : (input[j+1] << 8))   |
                      (j + 2 >= length ? 0 : (input[j+2] << 16));
         uint32_t h = hammingify_uint32(v);
-        out[i+0] = (h & 0xFF);
-        out[i+1] = (h & 0xFF00) >> 8;
-        out[i+2] = (h & 0xFF0000) >> 16;
-        out[i+3] = (h & 0xFF000000) >> 24;
+        out[i++] = (h & 0xFF);
+        out[i++] = (h & 0xFF00) >> 8;
+        out[i++] = (h & 0xFF0000) >> 16;
+        out[i++] = (h & 0xFF000000) >> 24;
     }
 
 #undef length
@@ -253,7 +249,7 @@ FUNC(void) hamming_bitshift_buffer_forward(ARG(uint8_t *) buffer, ARG(unsigned) 
 }
 
 // Scans a buffer from all bit offsets for a sequence of magic numbers. Returns
-// the bit index of the first sequence and the count up to a maximum of NUM_INIT_SEQUENCES.
+// the bit index of the first sequence and the count.
 FUNC(hamming_scan_for_init_sequence_result_t) hamming_scan_for_init_sequence(ARG(const uint8_t *) input
 #ifndef JAVASCRIPT
 , unsigned length_
@@ -290,11 +286,6 @@ FUNC(hamming_scan_for_init_sequence_result_t) hamming_scan_for_init_sequence(ARG
             if (magic_start_bit_index == -1)
                 magic_start_bit_index = bit_index;
             ++magic_count;
-            if (magic_count >= NUM_INIT_SEQUENCES) {
-                result.bit_index = magic_start_bit_index;
-                result.count = magic_count;
-                return result;
-            }
             bit_index += 32;
         }
         else {

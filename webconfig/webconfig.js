@@ -141,8 +141,8 @@ var TEST_MESSAGE_ = [ 'H'.charCodeAt(0),
                       '!'.charCodeAt(0),
                       '!'.charCodeAt(0)
                     ];
-var TEST_MESSAGE = new Uint8Array(hamming_get_encoded_message_byte_length_with_init_sequence(9));
-hamming_encode_message(TEST_MESSAGE_, TEST_MESSAGE, true);
+var TEST_MESSAGE = new Uint8Array(hamming_get_encoded_message_byte_length_with_init_sequences(9, 1));
+hamming_encode_message(TEST_MESSAGE_, TEST_MESSAGE, 1);
 
 function debug_print_bitarray(arr) {
     var o = "";
@@ -163,7 +163,7 @@ function debug_print_bitarray(arr) {
 var olen = hamming_get_max_output_length_given_input_length(TEST_MESSAGE.length);
 var to = new Uint8Array(olen);
 var r = hamming_scan_for_init_sequence(TEST_MESSAGE);
-hamming_decode_message(TEST_MESSAGE.slice(5*4), to);
+hamming_decode_message(TEST_MESSAGE.slice(1*4), to);
 console.log("ORIGINAL", TEST_MESSAGE_);
 console.log("ENCODED", TEST_MESSAGE);
 console.log("DECODED", to);
