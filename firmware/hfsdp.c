@@ -91,6 +91,10 @@ bool hfsdp_check_start(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned b
 
 #define HFSDP_CLOCK_THRESHOLD 200
 #define HFSDP_DATA_THRESHOLD  200
+
+int32_t hfsdp_read_bit_debug_last_pclock;
+int32_t hfsdp_read_bit_debug_last_pdata;
+
 int hfsdp_read_bit(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned buflen)
 {
     goetzel_result_t grclock, grdata;
@@ -102,6 +106,9 @@ int hfsdp_read_bit(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned bufle
 
     pclock = goetzel_get_freq_power(&grclock);
     pdata = goetzel_get_freq_power(&grdata);
+
+    hfsdp_read_bit_debug_last_pclock = pclock;
+    hfsdp_read_bit_debug_last_pdata = pdata;
 
     // debugging_writec("PCL: ");
     // debugging_write_int32(pclock);

@@ -299,8 +299,13 @@ void piezo_out_deinit()
 // HFSDP stuff.
 //
 
-//static int32_t debugbuf[PIEZO_MIC_BUFFER_N_SAMPLES*2];
-//static int32_t debugbufi;
+#define DEBUG_OUTPUT
+
+#ifdef DEBUG_OUTPUT
+static int32_t debugbuf[PIEZO_MIC_BUFFER_N_SAMPLES*2];
+static int32_t debugbufi;
+#endif
+
 bool piezo_read_data(uint8_t *buffer, unsigned bytes)
 {
     unsigned bits = bytes*8;
@@ -322,6 +327,26 @@ bool piezo_read_data(uint8_t *buffer, unsigned bytes)
         }
         else {
             int r = hfsdp_read_bit(&s, (const int16_t *)piezo_mic_buffer, PIEZO_MIC_BUFFER_N_SAMPLES);
+
+#ifdef DEBUG_OUTPUT
+            debugbuf[debugbufi++] = hfsdp_read_bit_debug_last_pclock;
+            debugbuf[debugbufi++] = hfsdp_read_bit_debug_last_pdata;
+
+            if (debugbufi == sizeof(debugbuf)/sizeof(debugbuf[0])) {
+                debugbufi = 0;
+                unsigned j;
+                for (j = 0; j < sizeof(debugbuf)/sizeof(debugbuf[0]); j += 2) {
+                    debugging_write_int32(debugbuf[j]);
+                    debugging_writec("\n");
+                }
+                debugging_writec("-----\n");
+                for (j = 1; j < sizeof(debugbuf)/sizeof(debugbuf[0]); j += 2) {
+                    debugging_write_int32(debugbuf[j]);
+                    debugging_writec("\n");
+                }
+                debugging_writec("*****\n");
+            }
+#endif
 
             if (r == HFSDP_READ_BIT_DECODE_ERROR)
                 return false;

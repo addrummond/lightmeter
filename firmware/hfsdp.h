@@ -51,4 +51,7 @@ int hfsdp_read_bit(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned bufle
 #define HFSDP_READ_BIT_DECODE_ERROR  -2
 #define HFSDP_READ_BIT_NOTHING_READ  -1
 
+extern int32_t hfsdp_read_bit_debug_last_pclock;
+extern int32_t hfsdp_read_bit_debug_last_pdata;
+
 #endif
