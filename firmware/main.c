@@ -73,7 +73,7 @@ static __attribute__ ((unused)) void test_mic()
         //piezo_hfsdp_listen_for_masters_init();
         //continue;
 
-        uint8_t buf[16];
+        uint8_t buf[28];
         memset8_zero(buf, sizeof(buf));
         bool decoded_successfully = piezo_read_data(buf, sizeof(buf)/sizeof(buf[0]));
 
@@ -91,6 +91,35 @@ static __attribute__ ((unused)) void test_mic()
         debugging_writec(", ");
         debugging_write_uint32(sr.count);
         debugging_writec("\n");
+
+        if (sr.bit_index != -1) {
+            unsigned byte_index = (sr.bit_index / 8) + 1 + (sr.count*4);
+            unsigned rbit_index = (8 - (sr.bit_index % 8));
+            hamming_bitshift_buffer_forward(buf, sizeof(buf)-1, rbit_index);
+            unsigned j;
+            for (j = byte_index; j < sizeof(buf); j += 4) {
+                int32_t v = dehammingify_uint32(buf[j] | (buf[j+1] << 8) | (buf[j+2] << 16) | (buf[j+3] << 24));
+                if (v == -1) {
+                    debugging_writec("V: ERR\n");
+                }
+                else if (v < 0) {
+                    debugging_writec("WHAT THE FUCK?!\n");
+                }
+                else {
+                    char s[1];
+                    debugging_writec("V: ");
+                    s[0] = v & 0xFF;
+                    debugging_write(s, 1);
+                    debugging_writec(" ");
+                    s[0] = (v >> 8) & 0xFF;
+                    debugging_write(s, 1);
+                    debugging_writec("  ");
+                    s[0] = (v >> 16) & 0xFF;
+                    debugging_write(s, 1);
+                    debugging_writec("\n");
+                }
+            }
+        }
 
         /*unsigned i;
         for (i = 0; i < (sizeof(buf)/sizeof(buf[0]))*8; ++i) {
