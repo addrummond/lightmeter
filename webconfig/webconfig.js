@@ -184,7 +184,7 @@ function test_message() {
     clock[0] = parseInt("01010101", 2);
 
     var MAG = 0.35;
-    var siglen  = encode_signal(samples, audioCtx.sampleRate, SIGNAL_FREQ/2, TEST_MESSAGE, 1*5,                   SIGNAL_FREQ, MASTER_DATA_HZ,  MAG);
+    var siglen  = encode_signal(samples, audioCtx.sampleRate, 0, TEST_MESSAGE, 1*5,                   SIGNAL_FREQ, MASTER_DATA_HZ,  MAG);
     var siglen2 = encode_signal(samples, audioCtx.sampleRate, 0,             clock,        TEST_MESSAGE.length*5, SIGNAL_FREQ, MASTER_CLOCK_HZ, MAG);
     console.log(siglen, siglen2);
     if (siglen != siglen2)
