@@ -177,7 +177,7 @@ FUNC(uint32_t) hamming_get_max_output_length_given_input_length(ARG(uint32_t) le
 {
     uint32_t x = len*3;
     x += x % 4;
-    return (x / 4) + 4; // + 4 to leave space for initial init marker in result.
+    return (x / 4);
 }
 
 #define MAGIC_NUMBER 24826601
@@ -315,9 +315,7 @@ FUNC(hamming_scan_for_init_sequence_result_t) hamming_scan_for_init_sequence(ARG
 }
 
 // Returns byte length of decoded message if no error or negated index of first
-// error in input buffer. If the message begins with an init sequence, ONE instance
-// of the magic value is placed at the beginning of the buffer (and included in
-// the returned length).
+// error in input buffer.
 FUNC(int32_t) hamming_decode_message(ARG(const uint8_t *) input,
 #ifndef JAVASCRIPT
 unsigned length_,
@@ -330,34 +328,16 @@ ARG(uint8_t *) out)
 #define length length_
 #endif
 
-    uint32_t i, oi = 0, v;
-
-    // Skip through init sequences if any (but transfer one instance to output buffer).
+    uint32_t i, oi = 0;
     for (i = 0; i < length; i += 4) {
-        v = dehammingify_uint32(input[i] | (input[i+1] << 8) | (input[i+2] << 16) | (input[i+3] << 24));
-        if (v == -1)
-            return i;
-        if (v != MAGIC_NUMBER)
-            break;
-    }
-    if (i != 0) {
-        out[oi++] = MAGIC_NUMBER & 0xFF;
-        out[oi++] = (MAGIC_NUMBER & 0xFF00) >> 8;
-        out[oi++] = (MAGIC_NUMBER & 0xFF0000) >> 16;
-    }
+        uint32_t v = dehammingify_uint32(input[i] | (input[i+1] << 8) | (input[i+2] << 16) | (input[i+3] << 24));
 
-    for (;;) {
+        if (v == -1)
+            return -i;
+
         out[oi++] = v & 0xFF;
         out[oi++] = (v & 0xFF00) >> 8;
         out[oi++] = (v & 0xFF0000) >> 16;
-
-        i += 4;
-        if (i >= length)
-            break;
-
-        v = dehammingify_uint32(input[i] | (input[i+1] << 8) | (input[i+2] << 16) | (input[i+3] << 24));
-        if (v == -1)
-            return -i;
     }
 
     return oi;

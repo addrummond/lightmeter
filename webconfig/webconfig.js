@@ -162,10 +162,11 @@ function debug_print_bitarray(arr) {
 /*(function () {
 var olen = hamming_get_max_output_length_given_input_length(TEST_MESSAGE.length);
 var to = new Uint8Array(olen);
-hamming_decode_message(TEST_MESSAGE, to);
+var r = hamming_scan_for_init_sequence(TEST_MESSAGE);
+hamming_decode_message(TEST_MESSAGE.slice(5*4), to);
 console.log("ORIGINAL", TEST_MESSAGE_);
 console.log("ENCODED", TEST_MESSAGE);
-console.log("DECODED", debug_print_bitarray(to));
+console.log("DECODED", to);
 
 console.log("TD", debug_print_bitarray([0xF0, 0xF0, 0xF0]));
 console.log("PRESHIFT", debug_print_bitarray(TEST_MESSAGE));
