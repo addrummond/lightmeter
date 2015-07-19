@@ -128,6 +128,51 @@ function encode_signal(out, sampleRate, offset, signal, repeat, signalFreq, carr
     return oi - offset;
 }
 
+// http://www.electronics.dit.ie/staff/amoloney/lecture-24-25.pdf
+var FREQ_DIFF = 200;
+function fsk_encode_signal(out, sampleRate, offset, signal, repeat, signalFreq, carrierFreq, mag) {
+    var modulationIndex = FREQ_DIFF / signalFreq;
+
+    function s(k) {
+        var bytei = parseInt(k / 8);
+        var biti = k % 8;
+        var b = (signal[bytei % signal.length] >> biti) & 1;
+        return b ? 1 : -1;
+    }
+
+    var thetaMemo = { };
+    function theta(k) {
+        var total = 0;
+        var i = 0;
+        if (thetaMemo[k-1] != null) {
+            i = k;
+            total = thetaMemo[k-1];
+        }
+        for (; i <= k; ++i) {
+            var diff = 0;
+            if (i > 0)
+                diff = s(i-1) - s(i);
+            total += 2*Math.PI*diff*FREQ_DIFF*k*(1/signalFreq);
+        }
+        var r = total % (2*Math.PI);
+        thetaMemo[k] = r;
+        console.log("T", r);
+        return r;
+    }
+
+    var i;
+    var oi = offset;
+    for (i = 0; i < parseInt((sampleRate/signalFreq) * signal.length * repeat) && oi < out.length; ++i) {
+        var t = (i/sampleRate);
+        var si = parseInt(t*signalFreq);
+        var thetasi = theta(si);
+        var r = mag*Math.cos((2*Math.PI*(carrierFreq+(s(si)*FREQ_DIFF))*t) + thetasi);
+        out[oi++] += r;
+    }
+
+    return i;
+}
+
 audioCtx = new AudioContext();
 var buffer = audioCtx.createBuffer(1, audioCtx.sampleRate*6, audioCtx.sampleRate);
 
@@ -180,15 +225,8 @@ function test_message() {
     //console.log(TEST_MESSAGE);
     var samples = buffer.getChannelData(0);
 
-    var clock = new Uint8Array(1);
-    clock[0] = parseInt("01010101", 2);
-
     var MAG = 0.35;
-    var siglen  = encode_signal(samples, audioCtx.sampleRate, 0, TEST_MESSAGE, 1*5,                   SIGNAL_FREQ, MASTER_DATA_HZ,  MAG);
-    var siglen2 = encode_signal(samples, audioCtx.sampleRate, 0,             clock,        TEST_MESSAGE.length*5, SIGNAL_FREQ, MASTER_CLOCK_HZ, MAG);
-    console.log(siglen, siglen2);
-    if (siglen != siglen2)
-        throw new Error("LENGTH MISMATCH!!");
+    var siglen  = fsk_encode_signal(samples, audioCtx.sampleRate, 0, TEST_MESSAGE, 1*5, SIGNAL_FREQ, MASTER_DATA_HZ,  MAG);
 
     for (var i = 0; i < siglen; ++i) {
         var t = i/audioCtx.sampleRate;
@@ -202,7 +240,12 @@ function test_message() {
 function test_f() {
     var samples = buffer.getChannelData(0);
     function myf(t) {
-        return 0.5*Math.cos(2*Math.PI*t*(126/8))*Math.cos(2*Math.PI*t*18000 /*+ 10*Math.cos(2*Math.PI*t*126)*/);// + 0.5*Math.cos(2*Math.PI*t*18000);
+        var bit = (t % (1/126) > (1/(126*2)) ? 1 : 0);
+        return 0.5*bit*Math.cos(2*Math.PI*t*18000) +
+               0.5*(!bit + 0)*Math.cos(2*Math.PI*t*18100);
+
+        //return 0.5*Math.cos(2*Math.PI*t*(126/8))*Math.cos(2*Math.PI*t*18000 /*+ 10*Math.cos(2*Math.PI*t*126)*/);// + 0.5*Math.cos(2*Math.PI*t*18000);
+
         //return 0.5*Math.cos(2*Math.PI*t*(126/8))*Math.cos(2*Math.PI*t*18000) +
         //       0.5*Math.cos(2*Math.PI*t*(126/8))*Math.cos(2*Math.PI*t*20000);
 
