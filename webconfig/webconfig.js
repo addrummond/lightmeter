@@ -1,6 +1,5 @@
 var SIGNAL_FREQ = 126;
-var MASTER_CLOCK_HZ = 20000;
-var MASTER_DATA_HZ = 18000;
+var CARRIER_FREQ = 19500;
 
 function goetzel(freq, input, output) {
     var inter = new Float32Array(input.length);
@@ -131,42 +130,73 @@ function encode_signal(out, sampleRate, offset, signal, repeat, signalFreq, carr
 // http://www.electronics.dit.ie/staff/amoloney/lecture-24-25.pdf
 var FREQ_DIFF = 200;
 function fsk_encode_signal(out, sampleRate, offset, signal, repeat, signalFreq, carrierFreq, mag) {
-    var modulationIndex = FREQ_DIFF / signalFreq;
+    var fb = signalFreq/1;
+    var modulationIndex = FREQ_DIFF / fb;
+    var tb = 1/signalFreq;
 
+    var prev = { };
     function s(k) {
         var bytei = parseInt(k / 8);
         var biti = k % 8;
         var b = (signal[bytei % signal.length] >> biti) & 1;
-        return b ? 1 : -1;
+
+        var p;
+        if (prev[k-1] != null) {
+            p = prev[k-1];
+        }
+
+        var r;
+        if (b == 0) {
+            if (p == -1)
+                r = -3;
+            else
+                r = -1;
+        }
+        else {
+            if (p == 1)
+                r = 3;
+            else
+                r = 1;
+        }
+
+        prev[k] = r;
+
+        if (k >= 2 && prev[k-2] != null)
+            delete prev[k-2];
+
+        return r;
     }
 
     var thetaMemo = { };
     function theta(k) {
         var total = 0;
         var i = 0;
-        if (thetaMemo[k-1] != null) {
-            i = k;
+        if (k > 1 && thetaMemo[k-1] != null) {
+            i = k-1;
             total = thetaMemo[k-1];
         }
-        for (; i <= k; ++i) {
-            var diff = 0;
-            if (i > 0)
-                diff = s(i-1) - s(i);
-            total += 2*Math.PI*diff*FREQ_DIFF*k*(1/signalFreq);
+        for (; i < k; ++i) {
+            total += s(i);
         }
-        var r = total % (2*Math.PI);
-        thetaMemo[k] = r;
-        console.log("T", r);
-        return r;
+        thetaMemo[k] = total;
+        total *= Math.PI * modulationIndex;
+        return total;
     }
 
     var i;
     var oi = offset;
-    for (i = 0; i < parseInt((sampleRate/signalFreq) * signal.length * repeat) && oi < out.length; ++i) {
+    var prevSi = -1;
+    var si;
+    var thetasi;
+    var upto = parseInt((sampleRate/signalFreq) * signal.length * repeat);
+    for (i = 0; i < upto && oi < out.length; ++i) {
         var t = (i/sampleRate);
-        var si = parseInt(t*signalFreq);
-        var thetasi = theta(si);
-        var r = mag*Math.cos((2*Math.PI*(carrierFreq+(s(si)*FREQ_DIFF))*t) + thetasi);
+        si = parseInt(t*signalFreq);
+        if (si != prevSi) {
+            thetasi = theta(si);
+            prevSi = si;
+        }
+        var r = mag*Math.cos((2*Math.PI*carrierFreq*t) + thetasi + (Math.PI*modulationIndex)*s(si)*((t-(si*tb))/tb));
         out[oi++] += r;
     }
 
@@ -226,7 +256,7 @@ function test_message() {
     var samples = buffer.getChannelData(0);
 
     var MAG = 0.35;
-    var siglen  = fsk_encode_signal(samples, audioCtx.sampleRate, 0, TEST_MESSAGE, 1*5, SIGNAL_FREQ, MASTER_DATA_HZ,  MAG);
+    var siglen  = fsk_encode_signal(samples, audioCtx.sampleRate, 0, TEST_MESSAGE, 1*5, SIGNAL_FREQ, CARRIER_FREQ, MAG);
 
     for (var i = 0; i < siglen; ++i) {
         var t = i/audioCtx.sampleRate;
@@ -241,6 +271,7 @@ function test_f() {
     var samples = buffer.getChannelData(0);
     function myf(t) {
         var bit = (t % (1/126) > (1/(126*2)) ? 1 : 0);
+
         return 0.5*bit*Math.cos(2*Math.PI*t*18000) +
                0.5*(!bit + 0)*Math.cos(2*Math.PI*t*18100);
 
