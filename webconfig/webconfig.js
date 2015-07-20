@@ -69,6 +69,10 @@ function fsk_encode_signal(out, sampleRate, offset, signal, repeat, signalFreq, 
         }
         thetaMemo[k] = total;
         total *= Math.PI * modulationIndex;
+
+        if (k > 2 && thetaMemo[k-2] != null)
+            delete thetaMemo[k-2];
+
         return total;
     }
 
