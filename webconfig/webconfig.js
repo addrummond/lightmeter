@@ -15,119 +15,8 @@ function goetzel(freq, input, output) {
     }
 }
 
-function ssb(s, sh, f, t) {
-    return s(t)*Math.cos(2*Math.PI*f*t);
-    //return s(t)*Math.cos(2*Math.PI*f*t) - sh(t)*Math.sin(2*Math.PI*f*t);
-}
-
-function approximate_square_wave(series_length, freq, mag, dutyCycle, phaseShift, hilbert) {
-    if (dutyCycle == null)
-        dutyCycle = 0.5;
-    if (phaseShift == null)
-        phaseShift = 0;
-
-    // See http://lpsa.swarthmore.edu/Fourier/Series/ExFS.html#CosSeriesDC=0.5
-    return function (t) {
-        t += (1/freq)*(phaseShift/2);
-        t *= freq;
-        // Convenient to have it start at beginning of positive.
-        t -= dutyCycle/2;
-
-        function fnh(n) {
-            return (2 * Math.sin(Math.PI*n*dutyCycle)*Math.cos(2*Math.PI*n*t))/(n*Math.PI);
-        }
-        function fh(n) {
-            return (2 * Math.sin(Math.PI*n*dutyCycle)*Math.sin(2*Math.PI*n*t))/(n*Math.PI);
-        }
-
-        var v = dutyCycle;
-        var f = (hilbert ? fh : fnh);
-        for (var i = 1; i <= series_length; ++i) {
-            v += f(i);
-        }
-        v *= mag;
-
-        return v;
-    };
-}
-
-function hilbert_of_approximate_square_wave(series_length, freq, mag, dutyCycle, phaseShift) {
-    return approximate_square_wave(series_length, freq, mag, dutyCycle, phaseShift, true);
-}
-
-// Bit index into byte array.
-function bi(arr, i) {
-    var bit = i % 8;
-    var byte = parseInt(i/8);
-    var thebyte = arr[byte];
-    return (thebyte & (1 << bit)) >> bit;
-}
-
-var SIGNAL_SERIES_LENGTH = 11;
-function encode_signal(out, sampleRate, offset, signal, repeat, signalFreq, carrierFreq, mag) {
-    if (signal.length == 0)
-        return;
-
-    var slen = signal.length * 8;
-
-    if (out.length < (slen*repeat)/2 * parseInt(carrierFreq/signalFreq))
-        throw new Error("Assertion error in encode_signal: output buffer too short");
-
-    var oi = offset;
-    var elapsedTime = 0;
-    var idealElapsedTime = 0;
-    var loopCountPlusOne = 1;
-    for (var i = 0; i < slen*repeat; ++loopCountPlusOne) {
-        var seq1Count = 1;
-        var seq2Count = 1;
-        var seq1V = bi(signal, i % slen);
-        var lastOne = false;
-        for (++i; bi(signal, i % slen) == seq1V && i < slen*repeat; ++i)
-            ++seq1Count;
-
-        if (i < slen*repeat) {
-            var seq2V = bi(signal, i % slen);
-            for (++i; bi(signal, i % slen) == seq2V && i < slen*repeat; ++i)
-                ++seq2Count;
-        }
-        else {
-            lastOne = true;
-            seq2Count = seq1Count;
-        }
-
-        var phaseShift, dutyCycle;
-        var countSum = seq1Count+seq2Count;
-        if (seq1V == 0) {
-            phaseShift = 2*seq2Count / countSum;
-            dutyCycle = seq2Count / countSum;
-        }
-        else {
-            phaseShift = 0;
-            dutyCycle = seq1Count / countSum;
-        }
-
-        var dv = countSum*0.5;
-        var freq2 = signalFreq/dv;
-        var wf = approximate_square_wave(SIGNAL_SERIES_LENGTH, freq2, mag, dutyCycle, phaseShift);
-        var hwf = hilbert_of_approximate_square_wave(SIGNAL_SERIES_LENGTH, freq2, mag, dutyCycle, phaseShift);
-
-        var dd = (sampleRate/signalFreq)*dv;
-        var t;
-        var diff = idealElapsedTime - elapsedTime;
-        for (var j = 0; j < dd && oi < out.length; j += 1) {
-            t = j/sampleRate;
-            //var v = wf(t + (elapsedTime % (1/signalFreq)));
-            var v = ssb(wf, hwf, carrierFreq, t + diff);
-            out[oi++] += v;
-        }
-        elapsedTime += (dd/sampleRate);
-        idealElapsedTime += dv/signalFreq;
-    }
-
-    return oi - offset;
-}
-
-// http://www.electronics.dit.ie/staff/amoloney/lecture-24-25.pdf
+// http://www.electronics.dit.ie/staff/amoloney/lecture-24-25.pdf     (binary CMFSK)
+// http://www.ece.umd.edu/~tretter/commlab/c6713slides/FSKSlides.pdf  (n-ary CMFSK)
 var FREQ_DIFF = 200;
 function fsk_encode_signal(out, sampleRate, offset, signal, repeat, signalFreq, carrierFreq, mag) {
     var fb = signalFreq/1;
@@ -303,34 +192,12 @@ function test_f() {
     }
 }
 
-var FILTER = false;
-
 //test_f();
 test_message();
 
 var bufS = audioCtx.createBufferSource();
 bufS.buffer = buffer;
-if (FILTER) {
-    var filter1;
-    filter1 = audioCtx.createBiquadFilter();
-    filter1.type = 'bandpass';
-    filter1.frequency.value = (MASTER_DATA_HZ+(SIGNAL_FREQ/2) + MASTER_CLOCK_HZ+(SIGNAL_FREQ/2))/2;
-    filter1.Q.value = filter1.frequency.value / (MASTER_CLOCK_HZ-MASTER_DATA_HZ+50);
-    filter1.gain.value = 1;
-
-    var filter2 = audioCtx.createBiquadFilter();
-    filter2.type = 'highpass';
-    filter2.frequency.value = MASTER_DATA_HZ-50;
-    filter2.gain.value = 100;
-
-    bufS.connect(filter2);
-    //filter1.connect(filter2);
-
-    filter2.connect(audioCtx.destination);
-}
-else {
-    bufS.connect(audioCtx.destination);
-}
+bufS.connect(audioCtx.destination);
 
 function ended () {
     console.log("ONENDED");
