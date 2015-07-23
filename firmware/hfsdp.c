@@ -32,22 +32,9 @@ bool hfsdp_check_start(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned b
             stddev += x*x;
         }
 
-#ifndef TEST
-        debugging_writec("STD: ");
-        debugging_write_int32(stddev);
-        debugging_writec("\n");
-#endif
-
         if (stddev > 8000) { // Magic empirically-determined number.
             s->highest_f1_low = s->max_f1/8;
             s->highest_f2_low = s->max_f2/8;
-#ifndef TEST
-            debugging_writec("HL (c,d): ");
-            debugging_write_int32(s->highest_f1_low);
-            debugging_writec(" ");
-            debugging_write_int32(s->highest_f2_low);
-            debugging_writec("\n");
-#endif
             return true;
         }
         else {

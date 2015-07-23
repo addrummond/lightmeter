@@ -75,6 +75,7 @@ static __attribute__ ((unused)) void test_mic()
         //piezo_hfsdp_listen_for_masters_init();
         //continue;
 
+        debugging_writec("Waiting...\n");
         uint8_t buf[40];
         memset8_zero(buf, sizeof(buf));
         bool decoded_successfully = piezo_read_data(buf, sizeof(buf)/sizeof(buf[0]));
@@ -99,8 +100,13 @@ static __attribute__ ((unused)) void test_mic()
         if (sr.bit_index != -1) {
             unsigned byte_index = (sr.bit_index / 8) + 1 + (sr.count*4);
             unsigned rbit_index = (8 - (sr.bit_index % 8));
+            debugging_writec("SHIFTING...\n");
             hamming_bitshift_buffer_forward(buf, sizeof(buf)-1, rbit_index);
+            debugging_writec("DONE SHIFTING...\n");
             unsigned j;
+            debugging_writec("BYTE I: ");
+            debugging_write_uint32(byte_index);
+            debugging_writec("\n");
             for (j = byte_index; j < sizeof(buf); j += 4) {
                 int32_t v = dehammingify_uint32(buf[j] | (buf[j+1] << 8) | (buf[j+2] << 16) | (buf[j+3] << 24));
                 if (v == -1) {
