@@ -35,7 +35,6 @@ bool hfsdp_check_start(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned b
         if (stddev > 8000) { // Magic empirically-determined number.
             s->highest_f1_low = s->max_f1/8;
             s->highest_f2_low = s->max_f2/8;
-            debugging_writec("YES!\n");
             return true;
         }
         else {
