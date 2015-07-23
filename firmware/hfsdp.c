@@ -2,24 +2,25 @@
 #include <goetzel.h>
 #include <debugging.h>
 
-void init_hfsdp_read_bit_state(hfsdp_read_bit_state_t *s, int32_t clock_coscoeff, int32_t clock_sincoeff, int32_t data_coscoeff, int32_t data_sincoeff)
+void init_hfsdp_read_bit_state(hfsdp_read_bit_state_t *s, int32_t f1_coscoeff, int32_t f1_sincoeff, int32_t f2_coscoeff, int32_t f2_sincoeff)
 {
     s->calib_count = 0;
-    s->prev_pclock = -1;
-    s->min_pclock = 2147483647;
-    s->max_pclock = -1;
-    s->min_pdata = 2147483647;
-    s->max_pdata = -1;
+    s->min_f1 = 2147483647;
+    s->max_f1 = -1;
+    s->min_f2 = 2147483647;
+    s->max_f2 = -1;
     s->avg = 0;
-    s->clock_coscoeff = clock_coscoeff;
-    s->clock_sincoeff = clock_sincoeff;
-    s->data_coscoeff = data_coscoeff;
-    s->data_sincoeff = data_sincoeff;
+    s->f1_coscoeff = f1_coscoeff;
+    s->f1_sincoeff = f1_sincoeff;
+    s->f2_coscoeff = f2_coscoeff;
+    s->f2_sincoeff = f2_sincoeff;
+    s->count = 0;
+    s->f1_less_than_f2 = -1;
 }
 
 bool hfsdp_check_start(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned buflen)
 {
-    if (s->calib_count == 8*HFSDP_SAMPLE_MULTPLIER) { // Long enough to see both high and low values on data line
+    if (s->calib_count == 8*HFSDP_SAMPLE_MULTPLIER) { // Long enough to see both high and low values.
         s->avg /= sizeof(s->vs)/sizeof(int32_t);
 
         // We want to see a high standard deviation -- that indicates that
@@ -38,53 +39,67 @@ bool hfsdp_check_start(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned b
 #endif
 
         if (stddev > 8000) { // Magic empirically-determined number.
-            s->highest_clock_low = s->max_pclock/8;
-            s->highest_data_low = s->max_pdata/8;
+            s->highest_f1_low = s->max_f1/8;
+            s->highest_f2_low = s->max_f2/8;
 #ifndef TEST
             debugging_writec("HL (c,d): ");
-            debugging_write_int32(s->highest_clock_low);
+            debugging_write_int32(s->highest_f1_low);
             debugging_writec(" ");
-            debugging_write_int32(s->highest_data_low);
+            debugging_write_int32(s->highest_f2_low);
             debugging_writec("\n");
 #endif
             return true;
         }
         else {
             s->calib_count = 0;
-            s->min_pclock = 2147483647;
-            s->max_pclock = -1;
+            s->min_f1 = 2147483647;
+            s->max_f1 = -1;
             s->avg = 0;
             return false;
         }
     }
 
-    goetzel_result_t grclk, grdat;
-    int32_t pclock, pdata;
+    goetzel_result_t r1, r2;
+    int32_t p1, p2;
     goetzel2(buf, buflen, 0,
-             s->clock_coscoeff, s->clock_sincoeff,
-             s->data_coscoeff, s->data_sincoeff,
-             &grclk, &grdat);
-    pclock = goetzel_get_freq_power(&grclk);
-    pdata = goetzel_get_freq_power(&grdat);
-
-    s->prev_pclock = pclock;
+             s->f1_coscoeff, s->f2_sincoeff,
+             s->f1_coscoeff, s->f2_sincoeff,
+             &r1, &r2);
+    p1 = goetzel_get_freq_power(&r1);
+    p2 = goetzel_get_freq_power(&r2);
 
     if (s->calib_count < sizeof(s->vs)/sizeof(s->vs[0])) {
-        s->vs[s->calib_count] = pclock;
-        s->avg += pclock;
+        s->vs[s->calib_count] = p1;
+        s->avg += p1;
     }
 
     ++(s->calib_count);
 
-    if (pclock > s->max_pclock)
-        s->max_pclock = pclock;
-    else if (pclock < s->min_pclock)
-        s->min_pclock = pclock;
+    if (p1 > s->max_f1)
+        s->max_f1 = p1;
+    else if (p2 < s->min_f1)
+        s->min_f1 = p1;
 
-    if (pdata > s->max_pdata)
-        s->max_pdata = pdata;
-    else if (pclock < s->min_pclock)
-        s->min_pclock = pclock;
+    if (p2 > s->max_f2)
+        s->max_f2 = p2;
+    else if (p2 < s->min_f2)
+        s->min_f2 = p2;
+
+    // We want to try and sample somewhere around the middle of each bit.
+    if (s->f1_less_than_f2 == -2) {
+        ;
+    }
+    else if (s->f1_less_than_f2 == -1) {
+        s->f1_less_than_f2 = (p1 < p2);
+    }
+    else if ((s->f1_less_than_f2 && p2 >= p1) ||
+             ((!s->f1_less_than_f2) && p1 < p2)) {
+        s->count = 0;
+        s->f1_less_than_f2 = -2;
+    }
+    ++(s->count);
+    if (s->count == HFSDP_SAMPLE_MULTPLIER)
+        s->count = 0;
 
     return false;
 }
@@ -92,39 +107,32 @@ bool hfsdp_check_start(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned b
 #define HFSDP_CLOCK_THRESHOLD 200
 #define HFSDP_DATA_THRESHOLD  200
 
-int32_t hfsdp_read_bit_debug_last_pclock;
-int32_t hfsdp_read_bit_debug_last_pdata;
+int32_t hfsdp_read_bit_debug_last_f1;
+int32_t hfsdp_read_bit_debug_last_f2;
 
 int hfsdp_read_bit(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned buflen)
 {
-    goetzel_result_t grclock, grdata;
-    int32_t pclock, pdata;
+    goetzel_result_t r1, r2;
+    int32_t p1, p2;
     goetzel2(buf, buflen, 0,
-             s->clock_coscoeff, s->clock_sincoeff,
-             s->data_coscoeff, s->data_sincoeff,
-             &grclock, &grdata);
+             s->f1_coscoeff, s->f1_sincoeff,
+             s->f2_coscoeff, s->f2_sincoeff,
+             &r1, &r2);
 
-    pclock = goetzel_get_freq_power(&grclock);
-    pdata = goetzel_get_freq_power(&grdata);
+    p1 = goetzel_get_freq_power(&r1);
+    p2 = goetzel_get_freq_power(&r1);
 
-    hfsdp_read_bit_debug_last_pclock = pclock;
-    hfsdp_read_bit_debug_last_pdata = pdata;
+    hfsdp_read_bit_debug_last_f1 = p1;
+    hfsdp_read_bit_debug_last_f2 = p2;
 
-    // debugging_writec("PCL: ");
-    // debugging_write_int32(pclock);
-    // debugging_writec(" ");
-    // debugging_write_int32(s->prev_pclock);
-    // debugging_writec("\n");
-    // No change in the clock level, so we don't read a bit.
-    if (! ((pclock <= s->highest_clock_low && s->prev_pclock > s->highest_clock_low) ||
-           (pclock > s->highest_clock_low && s->prev_pclock <= s->highest_clock_low))) {
-        return HFSDP_READ_BIT_NOTHING_READ;
-    }
+    ++(s->count);
+    if (s->count == HFSDP_SAMPLE_MULTPLIER/2)
+        return (p1 < p2);
 
-    //debugging_writec("READ!\n");
-    // Clock level has changed, so we read a bit.
-    s->prev_pclock = pclock;
-    return (pdata > s->highest_data_low);
+    if (s->count == HFSDP_SAMPLE_MULTPLIER)
+        s->count = 0;
+
+    return HFSDP_READ_BIT_NOTHING_READ;
 }
 
 #ifdef TEST

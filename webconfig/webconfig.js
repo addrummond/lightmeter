@@ -17,19 +17,21 @@ function goetzel(freq, input, output) {
 
 // http://www.electronics.dit.ie/staff/amoloney/lecture-24-25.pdf     (binary CMFSK)
 // http://www.ece.umd.edu/~tretter/commlab/c6713slides/FSKSlides.pdf  (n-ary CMFSK)
-var FREQ_DIFF = 200;
+var FREQ_DIFF = 1000;
 function fsk_encode_signal(out, sampleRate, offset, signal, repeat, signalFreq, carrierFreq, mag) {
     var fb = signalFreq/1;
     var modulationIndex = FREQ_DIFF / fb;
     var tb = 1/signalFreq;
 
-    var prev = { };
+    //var prev = { };
     function s(k) {
         var bytei = parseInt(k / 8);
         var biti = k % 8;
         var b = (signal[bytei % signal.length] >> biti) & 1;
 
-        var p;
+        return b ? 1 : -1;
+
+        /*var p;
         if (prev[k-1] != null) {
             p = prev[k-1];
         }
@@ -53,7 +55,7 @@ function fsk_encode_signal(out, sampleRate, offset, signal, repeat, signalFreq, 
         if (k >= 2 && prev[k-2] != null)
             delete prev[k-2];
 
-        return r;
+        return r;*/
     }
 
     var thetaMemo = { };

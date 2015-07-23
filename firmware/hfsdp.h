@@ -20,14 +20,10 @@
 #define HFSDP_SAMPLE_FREQ             (HFSDP_SIGNAL_FREQ*HFSDP_SAMPLE_MULTPLIER)
 #define HFSDP_SAMPLE_CYCLES           (8000000/HFSDP_SAMPLE_FREQ)
 
-#define HFSDP_COSCOEFF1_ 0.2674099894
-#define HFSDP_SINCOEFF1_ 0.9635828442
-#define HFSDP_COSCOEFF2_ 0.2329258084
-#define HFSDP_SINCOEFF2_ 0.9724945078
-#define HFSDP_COSCOEFF3_ 0.1981461432
-#define HFSDP_SINCOEFF3_ 0.9801724878
-#define HFSDP_COSCOEFF4_ 0.1631151144
-#define HFSDP_SINCOEFF4_ 0.9866070441
+#define HFSDP_COSCOEFF1_ 0.2155701619
+#define HFSDP_SINCOEFF1_ 0.9764883539
+#define HFSDP_COSCOEFF2_ 0.1455192152
+#define HFSDP_SINCOEFF2_ 0.9893554255
 
 #define HFSDP_COSCOEFF1 GOETZEL_FLOAT_TO_FIX(HFSDP_COSCOEFF1_)
 #define HFSDP_SINCOEFF1 GOETZEL_FLOAT_TO_FIX(HFSDP_SINCOEFF1_)
@@ -40,25 +36,26 @@
 
 typedef struct {
     int32_t calib_count;
-    int32_t min_pclock, max_pclock;
-    int32_t min_pdata, max_pdata;
+    int32_t min_f1, max_f1;
+    int32_t min_f2, max_f2;
     int32_t avg;
     int32_t vs[8];
-    int32_t highest_clock_low;
-    int32_t highest_data_low;
-    int32_t prev_pclock;
-    int32_t clock_coscoeff, data_coscoeff;
-    int32_t clock_sincoeff, data_sincoeff;
+    int32_t highest_f1_low;
+    int32_t highest_f2_low;
+    int32_t f1_coscoeff, f1_sincoeff;
+    int32_t f2_coscoeff, f2_sincoeff;
+    int f1_less_than_f2; // -1 when first initialized, -2 when we've syncd, otherwise 0 or 1
+    unsigned count;
 } hfsdp_read_bit_state_t;
 
-void init_hfsdp_read_bit_state(hfsdp_read_bit_state_t *s, int32_t clock_coscoeff, int32_t clock_sincoeff, int32_t data_coscoeff, int32_t data_sincoeff);
+void init_hfsdp_read_bit_state(hfsdp_read_bit_state_t *s, int32_t f1_coscoeff, int32_t f1_sincoeff, int32_t f2_coscoeff, int32_t f2_sincoeff);
 bool hfsdp_check_start(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned buflen);
 int hfsdp_read_bit(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned buflen);
 
 #define HFSDP_READ_BIT_DECODE_ERROR  -2
 #define HFSDP_READ_BIT_NOTHING_READ  -1
 
-extern int32_t hfsdp_read_bit_debug_last_pclock;
-extern int32_t hfsdp_read_bit_debug_last_pdata;
+extern int32_t hfsdp_read_bit_debug_last_f1;
+extern int32_t hfsdp_read_bit_debug_last_f2;
 
 #endif
