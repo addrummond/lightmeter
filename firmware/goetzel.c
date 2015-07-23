@@ -82,9 +82,11 @@ static inline int64_t MUL64(int64_t x, int64_t y)
 
 #define ONE(N) N(1)
 #define TWO(N) N(1) N(2)
+#define FOUR(N) N(1) N(2) N(3) N(4)
 
 MAKE_GOETZEL_N(1, ONE)
 MAKE_GOETZEL_N(2, TWO)
+MAKE_GOETZEL_N(4, FOUR)
 
 int32_t goetzel_get_freq_power(const goetzel_result_t *gr)
 {

@@ -19,6 +19,19 @@ typedef struct {
 int32_t goetzel_get_freq_power(const goetzel_result_t *gr);
 
 void goetzel1(const int16_t *samples, unsigned length, unsigned offset, int32_t coscoeff, int32_t sincoeff, goetzel_result_t *dest);
-void goetzel2(const int16_t *samples, unsigned length, unsigned offset, int32_t coscoeff1, int32_t sincoeff1, int32_t coscoeff2, int32_t sincoeff2, goetzel_result_t *dest1, goetzel_result_t *dest2);
+void goetzel2(const int16_t *samples, unsigned length, unsigned offset,
+              int32_t coscoeff1, int32_t sincoeff1,
+              int32_t coscoeff2, int32_t sincoeff2,
+              goetzel_result_t *dest1,
+              goetzel_result_t *dest2);
+void goetzel4(const int16_t *samples, unsigned length, unsigned offset,
+              int32_t coscoeff1, int32_t sincoeff1,
+              int32_t coscoeff2, int32_t sincoeff2,
+              int32_t coscoeff3, int32_t sincoeff3,
+              int32_t coscoeff4, int32_t sincoeff4,
+              goetzel_result_t *dest1,
+              goetzel_result_t *dest2,
+              goetzel_result_t *dest3,
+              goetzel_result_t *dest4);
 
 #endif

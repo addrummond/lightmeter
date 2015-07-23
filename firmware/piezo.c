@@ -308,6 +308,8 @@ static int32_t debugbufi;
 
 bool piezo_read_data(uint8_t *buffer, unsigned bytes)
 {
+    return false;
+/*
     unsigned bits = bytes*8;
 
     hfsdp_read_bit_state_t s;
@@ -375,4 +377,5 @@ bool piezo_read_data(uint8_t *buffer, unsigned bytes)
 
         SYSTIME_UPDATE(t);
     }
+*/
 }
