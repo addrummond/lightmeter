@@ -59,9 +59,9 @@ static __attribute__ ((unused)) void test_mic()
         debugging_write_uint32(pow3);
         debugging_writec(", ");
         debugging_write_uint32(pow4);
-        debugging_writec(", ");
+        debugging_writec("   [");
         debugging_write_uint32(tpow);
-        debugging_writec("\n");
+        debugging_writec("]\n");
         continue;
         //
         // piezo_mic_read_buffer();
