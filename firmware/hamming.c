@@ -226,7 +226,7 @@ FUNC(void) hamming_bitshift_buffer_forward(ARG(uint8_t *) buffer, ARG(unsigned) 
 {
     assert(nbits < 8);
 
-    if (length == 0)
+    if (length == 0 || nbits == 0)
         return;
 
     uint8_t backup = 0;
@@ -240,12 +240,10 @@ FUNC(void) hamming_bitshift_buffer_forward(ARG(uint8_t *) buffer, ARG(unsigned) 
         backup = buffer[i];
         buffer[i] = r;
     }
-    if (nbits > 0) {
-        buffer[i] = (backup >> (8 - nbits));
+    buffer[i] = (backup >> (8 - nbits));
 #ifdef JAVASCRIPT
-        buffer[i] &= 0xFF;
+    buffer[i] &= 0xFF;
 #endif
-    }
 }
 
 // Scans a buffer from all bit offsets for a sequence of magic numbers. Returns

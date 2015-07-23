@@ -1,3 +1,11 @@
+# 1 "hamming.c"
+# 1 "<built-in>" 1
+# 1 "<built-in>" 3
+# 170 "<built-in>" 3
+# 1 "<command line>" 1
+# 1 "<built-in>" 2
+# 1 "hamming.c" 2
+# 46 "hamming.c"
        function bits_set_in_uint32( n)
 {
 
@@ -181,7 +189,7 @@ function hamming_bitshift_buffer_forward( buffer, length, nbits)
 {
     do { if (! (nbits < 8)) { throw new Error("ASSERTION ERROR"); } } while (0);
 
-    if (length == 0)
+    if (length == 0 || nbits == 0)
         return;
 
     var backup = 0;
@@ -195,12 +203,10 @@ function hamming_bitshift_buffer_forward( buffer, length, nbits)
         backup = buffer[i];
         buffer[i] = r;
     }
-    if (nbits > 0) {
-        buffer[i] = (backup >> (8 - nbits));
+    buffer[i] = (backup >> (8 - nbits));
 
-        buffer[i] &= 0xFF;
+    buffer[i] &= 0xFF;
 
-    }
 }
 
 
