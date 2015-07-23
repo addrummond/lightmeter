@@ -114,28 +114,6 @@ static __attribute__ ((unused)) void test_mic()
                 debugging_write((char *)buf + j, 1);
             }
             debugging_writec("}\n");
-            /*for (j = byte_index; j < sizeof(buf); j += 4) {
-                int32_t v = dehammingify_uint32(buf[j] | (buf[j+1] << 8) | (buf[j+2] << 16) | (buf[j+3] << 24));
-                if (v == -1) {
-                    debugging_writec("V: ERR\n");
-                }
-                else if (v < 0) {
-                    debugging_writec("WHAT THE FUCK?!\n");
-                }
-                else {
-                    char s[1];
-                    debugging_writec("V: ");
-                    s[0] = v & 0xFF;
-                    debugging_write(s, 1);
-                    debugging_writec(" ");
-                    s[0] = (v >> 8) & 0xFF;
-                    debugging_write(s, 1);
-                    debugging_writec("  ");
-                    s[0] = (v >> 16) & 0xFF;
-                    debugging_write(s, 1);
-                    debugging_writec("\n");
-                }
-            }*/
         }
 
         debugging_writec("B: [");
