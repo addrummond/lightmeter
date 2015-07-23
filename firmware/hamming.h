@@ -18,5 +18,6 @@ typedef struct {
     unsigned count;
 } hamming_scan_for_init_sequence_result_t;
 hamming_scan_for_init_sequence_result_t hamming_scan_for_init_sequence(const uint8_t *input, unsigned length);
+unsigned hamming_decode_message(uint8_t *msg, unsigned length, uint8_t errval);
 
 #endif

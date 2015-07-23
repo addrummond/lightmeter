@@ -36,6 +36,11 @@ void debugging_putc(char c)
 
 static char *debugging_write_uint32_to_string(char *ds, uint32_t i)
 {
+    if (i == 0) {
+        ds[8] = '0';
+        return ds+8;
+    }
+
     unsigned j = 9;
     uint32_t d = 1;
     do {
@@ -50,6 +55,11 @@ static char *debugging_write_uint32_to_string(char *ds, uint32_t i)
 
 static char *debugging_write_int32_to_string(char *ds, int32_t i)
 {
+    if (i == 0) {
+        ds[8] = '0';
+        return ds+8;
+    }
+
     if (i >= 0) {
         return debugging_write_uint32_to_string(ds, (uint32_t)i);
     }

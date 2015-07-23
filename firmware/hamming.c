@@ -305,28 +305,32 @@ FUNC(hamming_scan_for_init_sequence_result_t) hamming_scan_for_init_sequence(ARG
 
 // Returns byte length of decoded message if no error or negated index of first
 // error in input buffer.
-FUNC(int32_t) hamming_decode_message(ARG(const uint8_t *) input,
+FUNC(unsigned) hamming_decode_message(ARG(uint8_t *) msg,
 #ifndef JAVASCRIPT
 unsigned length_,
 #endif
-ARG(uint8_t *) out)
+ARG(uint8_t) errval)
 {
 #ifdef JAVASCRIPT
-#define length input.length
+#define length msg.length
 #else
 #define length length_
 #endif
 
     uint32_t i, oi = 0;
     for (i = 0; i < length; i += 4) {
-        uint32_t v = dehammingify_uint32(input[i] | (input[i+1] << 8) | (input[i+2] << 16) | (input[i+3] << 24));
+        uint32_t v = dehammingify_uint32(msg[i] | (msg[i+1] << 8) | (msg[i+2] << 16) | (msg[i+3] << 24));
 
-        if (v == -1)
-            return -i;
-
-        out[oi++] = v & 0xFF;
-        out[oi++] = (v & 0xFF00) >> 8;
-        out[oi++] = (v & 0xFF0000) >> 16;
+        if (v == -1) {
+            msg[oi++] = errval;
+            msg[oi++] = errval;
+            msg[oi++] = errval;
+        }
+        else {
+            msg[oi++] = v & 0xFF;
+            msg[oi++] = (v & 0xFF00) >> 8;
+            msg[oi++] = (v & 0xFF0000) >> 16;
+        }
     }
 
     return oi;

@@ -101,15 +101,20 @@ static __attribute__ ((unused)) void test_mic()
         if (sr.bit_index != -1) {
             byte_index = (sr.bit_index / 8) + (sr.count*4);
             if (sr.bit_index % 8 != 0) {
-                ++byte_index;
                 unsigned rbit_index = (8 - (sr.bit_index % 8));
-                hamming_bitshift_buffer_forward(buf, sizeof(buf)-1, rbit_index);
+                hamming_bitshift_buffer_forward(buf+byte_index, sizeof(buf)-1-byte_index, rbit_index);
+                ++byte_index;
             }
             unsigned j;
             debugging_writec("BYTE I: ");
             debugging_write_uint32(byte_index);
-            debugging_writec("\n");
-            for (j = byte_index; j < sizeof(buf); j += 4) {
+            debugging_writec("\nMSG: {");
+            unsigned len = hamming_decode_message(buf, sizeof(buf)/sizeof(buf[0]), 'X');
+            for (j = 0; j < len; ++j) {
+                debugging_write((char *)buf + j, 1);
+            }
+            debugging_writec("}\n");
+            /*for (j = byte_index; j < sizeof(buf); j += 4) {
                 int32_t v = dehammingify_uint32(buf[j] | (buf[j+1] << 8) | (buf[j+2] << 16) | (buf[j+3] << 24));
                 if (v == -1) {
                     debugging_writec("V: ERR\n");
@@ -130,7 +135,7 @@ static __attribute__ ((unused)) void test_mic()
                     debugging_write(s, 1);
                     debugging_writec("\n");
                 }
-            }
+            }*/
         }
 
         debugging_writec("B: [");
