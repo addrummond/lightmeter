@@ -120,7 +120,7 @@ int hfsdp_read_bit(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned bufle
              &r1, &r2);
 
     p1 = goetzel_get_freq_power(&r1);
-    p2 = goetzel_get_freq_power(&r1);
+    p2 = goetzel_get_freq_power(&r2);
 
     hfsdp_read_bit_debug_last_f1 = p1;
     hfsdp_read_bit_debug_last_f2 = p2;
