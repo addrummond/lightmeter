@@ -113,6 +113,7 @@ var TEST_MESSAGE_ = [ 'H'.charCodeAt(0),
                     ];
 var TEST_MESSAGE = new Uint8Array(hamming_get_encoded_message_byte_length_with_init_sequences(9, 10));
 hamming_encode_message(TEST_MESSAGE_, TEST_MESSAGE, 10);
+console.log("ENCODED", TEST_MESSAGE);
 
 function debug_print_bitarray(arr) {
     var o = "";
@@ -154,8 +155,8 @@ function test_message() {
 
     var siglen  = fsk_encode_signal(samples, audioCtx.sampleRate, 0, TEST_MESSAGE, 1*10, SIGNAL_FREQ, CARRIER_FREQ, MAG);
 
-    //var m = [0b01010101];
-    //siglen = fsk_encode_signal(samples, audioCtx.sampleRate, 0, m, 1000, SIGNAL_FREQ, CARRIER_FREQ, MAG);
+    //var m = [0b11110101, 0b11111111];
+    //var siglen = fsk_encode_signal(samples, audioCtx.sampleRate, 0, m, 1000, SIGNAL_FREQ, CARRIER_FREQ, MAG);
 
     for (var i = 0; i < siglen; ++i) {
         var t = i/audioCtx.sampleRate;

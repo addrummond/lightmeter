@@ -97,12 +97,14 @@ static __attribute__ ((unused)) void test_mic()
         debugging_write_uint32(sr.count);
         debugging_writec("\n");
 
+        unsigned byte_index = 0;
         if (sr.bit_index != -1) {
-            unsigned byte_index = (sr.bit_index / 8) + 1 + (sr.count*4);
-            unsigned rbit_index = (8 - (sr.bit_index % 8));
-            debugging_writec("SHIFTING...\n");
-            hamming_bitshift_buffer_forward(buf, sizeof(buf)-1, rbit_index);
-            debugging_writec("DONE SHIFTING...\n");
+            byte_index = sr.bit_index / 8;
+            if (sr.bit_index % 8 != 0) {
+                ++byte_index;
+                unsigned rbit_index = (8 - (sr.bit_index % 8));
+                hamming_bitshift_buffer_forward(buf, sizeof(buf)-1, rbit_index);
+            }
             unsigned j;
             debugging_writec("BYTE I: ");
             debugging_write_uint32(byte_index);
@@ -131,13 +133,19 @@ static __attribute__ ((unused)) void test_mic()
             }
         }
 
-        // unsigned i;
-        // for (i = 0; i < (sizeof(buf)/sizeof(buf[0]))*8; ++i) {
-        //     debugging_writec("B: ");
-        //     debugging_write_uint32((buf[i / 8] >> (i % 8)) & 1);
-        //     debugging_writec("\n");
-        // }
-        // debugging_writec("*****\n\n");
+        debugging_writec("B: [");
+        unsigned i;
+        // bit by bit
+        /*for (i = 0; i < (sizeof(buf)/sizeof(buf[0]))*8; ++i) {
+            if (i != 0)
+                debugging_writec(", ");
+            debugging_write_uint32((buf[i / 8] >> (i % 8)) & 1);
+        }*/
+        for (i = byte_index; i < sizeof(buf)/sizeof(buf[0]); ++i) {
+            debugging_write_uint32(buf[i]);
+            debugging_writec(", ");
+        }
+        debugging_writec("]\n*****\n\n");
     }
 }
 
