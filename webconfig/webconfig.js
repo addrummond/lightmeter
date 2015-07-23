@@ -151,7 +151,7 @@ function test_message() {
     var samples = buffer.getChannelData(0);
 
     var MAG = 0.35;
-    var siglen  = fsk_encode_signal(samples, audioCtx.sampleRate, 0, TEST_MESSAGE, 1*5, SIGNAL_FREQ, CARRIER_FREQ, MAG);
+    var siglen  = fsk_encode_signal(samples, audioCtx.sampleRate, 0, TEST_MESSAGE, 1*10, SIGNAL_FREQ, CARRIER_FREQ, MAG);
 
     for (var i = 0; i < siglen; ++i) {
         var t = i/audioCtx.sampleRate;

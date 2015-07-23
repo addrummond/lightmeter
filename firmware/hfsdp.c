@@ -104,9 +104,6 @@ bool hfsdp_check_start(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned b
     return false;
 }
 
-#define HFSDP_CLOCK_THRESHOLD 200
-#define HFSDP_DATA_THRESHOLD  200
-
 int32_t hfsdp_read_bit_debug_last_f1;
 int32_t hfsdp_read_bit_debug_last_f2;
 
@@ -143,14 +140,14 @@ int hfsdp_read_bit(hfsdp_read_bit_state_t *s, const int16_t *buf, unsigned bufle
 #define SAMPLES_TO_SKIP ((int)(((float)(44100 << SAMPLES_TO_SKIP_F_BITS)/(HFSDP_SAMPLE_FREQ*1.0))))
 #define NSAMPLES 40
 
-#define CLOCK_COSCOEFF_  -0.9576483160
-#define CLOCK_SINCOEFF_  0.2879404501
-#define DATA_COSCOEFF_   -0.8380881049
-#define DATA_SINCOEFF_   0.5455349012
-#define CLOCK_COSCOEFF   GOETZEL_FLOAT_TO_FIX(CLOCK_COSCOEFF_)
-#define CLOCK_SINCOEFF   GOETZEL_FLOAT_TO_FIX(CLOCK_SINCOEFF_)
-#define DATA_COSCOEFF    GOETZEL_FLOAT_TO_FIX(DATA_COSCOEFF_)
-#define DATA_SINCOEFF    GOETZEL_FLOAT_TO_FIX(DATA_SINCOEFF_)
+#define COSCOEFF1_  -0.9070590106
+#define SINCOEFF1_  0.4210035051
+#define COSCOEFF2_  -0.9576483160
+#define SINCOEFF2_  0.2879404501
+#define COSCOEFF1   GOETZEL_FLOAT_TO_FIX(COSCOEFF1_)
+#define SINCOEFF1   GOETZEL_FLOAT_TO_FIX(SINCOEFF1_)
+#define COSCOEFF2   GOETZEL_FLOAT_TO_FIX(COSCOEFF2_)
+#define SINCOEFF2   GOETZEL_FLOAT_TO_FIX(SINCOEFF2_)
 
 #define MAKE_QUIETER_BY 1
 
@@ -209,7 +206,7 @@ static int test0(const char *filename)
 
     unsigned i;
     int32_t ref_power = -1;
-    printf("sts, pow, clock r,clock i,clock pow,data r,data i,data pow\n");
+    printf("sts, pow, clock r,clock i,data r,data i,pow f1,pow f2\n");
     for (i = 0; i < (vals_i << SAMPLES_TO_SKIP_F_BITS)/SAMPLES_TO_SKIP - 1; ++i) {
         int32_t ii = (i * SAMPLES_TO_SKIP) >> SAMPLES_TO_SKIP_F_BITS;
         int32_t rm = ii % (1 << SAMPLES_TO_SKIP_F_BITS);
@@ -219,21 +216,22 @@ static int test0(const char *filename)
             ii += 1;
 
         goetzel_result_t gr1, gr2;
-        int32_t clock_pow, data_pow;
+        int32_t pow1, pow2;
         goetzel2(fake_adc_vals + ii, NSAMPLES, 0,
-                 CLOCK_COSCOEFF, CLOCK_SINCOEFF,
-                 DATA_COSCOEFF, DATA_SINCOEFF,
+                 COSCOEFF1, SINCOEFF1,
+                 COSCOEFF2, SINCOEFF2,
                  &gr1, &gr2);
-        clock_pow = goetzel_get_freq_power(&gr1);
-        data_pow = goetzel_get_freq_power(&gr2);
+        pow1 = goetzel_get_freq_power(&gr1);
+        pow2 = goetzel_get_freq_power(&gr2);
 
-        printf("%i,%i,%i,%i,%i,%i,%i,%i\n", SAMPLES_TO_SKIP, gr1.total_power, gr1.r, gr1.i, clock_pow, gr2.r, gr2.i, data_pow);
+        printf("%i,%i,%i,%i,%i,%i,%i,%i\n", SAMPLES_TO_SKIP, gr1.total_power, gr1.r, gr1.i, gr2.r, gr2.i, pow1, pow2);
     }
 
     return 0;
 }
 
-static int test1(const char *filename)
+// TODO: Update with new names for coeffs.
+/*static int test1(const char *filename)
 {
     unsigned vals_i;
     int16_t *fake_adc_vals;
@@ -267,7 +265,7 @@ static int test1(const char *filename)
     }
 
     return 0;
-}
+}*/
 
 static void test2(const char *filename)
 {
