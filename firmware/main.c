@@ -99,7 +99,7 @@ static __attribute__ ((unused)) void test_mic()
 
         unsigned byte_index = 0;
         if (sr.bit_index != -1) {
-            byte_index = sr.bit_index / 8;
+            byte_index = (sr.bit_index / 8) + (sr.count*4);
             if (sr.bit_index % 8 != 0) {
                 ++byte_index;
                 unsigned rbit_index = (8 - (sr.bit_index % 8));
