@@ -142,8 +142,9 @@ static __attribute__ ((unused)) void test_mic()
             debugging_write_uint32((buf[i / 8] >> (i % 8)) & 1);
         }*/
         for (i = byte_index; i < sizeof(buf)/sizeof(buf[0]); ++i) {
+            if (i != 0)
+                debugging_writec(", ");
             debugging_write_uint32(buf[i]);
-            debugging_writec(", ");
         }
         debugging_writec("]\n*****\n\n");
     }
