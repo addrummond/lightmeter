@@ -75,7 +75,7 @@ static __attribute__ ((unused)) void test_mic()
         //piezo_hfsdp_listen_for_masters_init();
         //continue;
 
-        uint8_t buf[28];
+        uint8_t buf[4];
         memset8_zero(buf, sizeof(buf));
         bool decoded_successfully = piezo_read_data(buf, sizeof(buf)/sizeof(buf[0]));
 
@@ -125,13 +125,13 @@ static __attribute__ ((unused)) void test_mic()
             }
         }
 
-        /*unsigned i;
+        unsigned i;
         for (i = 0; i < (sizeof(buf)/sizeof(buf[0]))*8; ++i) {
             debugging_writec("B: ");
             debugging_write_uint32((buf[i / 8] >> (i % 8)) & 1);
             debugging_writec("\n");
         }
-        debugging_writec("*****\n\n");*/
+        debugging_writec("*****\n\n");
     }
 }
 
