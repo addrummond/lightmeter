@@ -79,6 +79,8 @@ static __attribute__ ((unused)) void test_mic()
         memset8_zero(buf, sizeof(buf));
         bool decoded_successfully = piezo_read_data(buf, sizeof(buf)/sizeof(buf[0]));
 
+        debugging_writec("DATA READ\n");
+
         if (! decoded_successfully) {
             debugging_writec("DECODE FAIL ");
             debugging_write_uint32(i);

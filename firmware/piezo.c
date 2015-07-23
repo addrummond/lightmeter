@@ -355,9 +355,9 @@ bool piezo_read_data(uint8_t *buffer, unsigned bytes)
             else if (r == HFSDP_READ_BIT_NOTHING_READ)
                 ;//debugging_writec("N\n");
             else {
-                debugging_writec("B: ");
-                debugging_write_uint32(r);
-                debugging_writec("\n");
+                // debugging_writec("B: ");
+                // debugging_write_uint32(r);
+                // debugging_writec("\n");
 
                 unsigned shiftup = nreceived % 8;
                 if (shiftup == 0)
