@@ -152,10 +152,10 @@ function test_message() {
 
     var MAG = 0.35;
 
-    //var siglen  = fsk_encode_signal(samples, audioCtx.sampleRate, 0, TEST_MESSAGE, 1*10, SIGNAL_FREQ, CARRIER_FREQ, MAG);
+    var siglen  = fsk_encode_signal(samples, audioCtx.sampleRate, 0, TEST_MESSAGE, 1*10, SIGNAL_FREQ, CARRIER_FREQ, MAG);
 
-    var m = [0b01010101];
-    siglen = fsk_encode_signal(samples, audioCtx.sampleRate, 0, m, 1000, SIGNAL_FREQ, CARRIER_FREQ, MAG);
+    //var m = [0b01010101];
+    //siglen = fsk_encode_signal(samples, audioCtx.sampleRate, 0, m, 1000, SIGNAL_FREQ, CARRIER_FREQ, MAG);
 
     for (var i = 0; i < siglen; ++i) {
         var t = i/audioCtx.sampleRate;
