@@ -1,11 +1,3 @@
-# 1 "hamming.c"
-# 1 "<built-in>" 1
-# 1 "<built-in>" 3
-# 170 "<built-in>" 3
-# 1 "<command line>" 1
-# 1 "<built-in>" 2
-# 1 "hamming.c" 2
-# 46 "hamming.c"
        function bits_set_in_uint32( n)
 {
 
