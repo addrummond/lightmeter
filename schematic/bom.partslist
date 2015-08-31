@@ -3,24 +3,24 @@
 #
 # TODO TODO Add two caps for ADC input pins (values to be determined).
 # TODO TODO Add two USB series resistors (values to be determiend).
-3  R0402       10k
+1  R0402       10k
 1  R0402~1%    12k
 2  R0402~0.1%  500
 1  R0402       130
 1  R0402       15k
 6  C0603       1u
-3  R0402       390k
-7  C0402       4u7
-3  R0402       6k49
-6  R0402       0
+2  R0402       390k
+6  C0402       4u7
+2  R0402       6k49
+5  R0402       0
 1  C0402       0u01
-11 C0402       0u1
+10 C0402       0u1
 1  R0402~1%    750
 
 #
 # High tolerance capacitors to be ordered from Mouser/Digikey
 #
-3  $VJ0603A332FXJCW1BC      # 3300pF 1% tolerance 0603 capacitors (for integrator and mic preamp)
+2  $VJ0603A332FXJCW1BC      # 3300pF 1% tolerance 0603 capacitors (for integrator)
 2  $GRM1555C1H270FA01D      # 27pF 1% tolerance capacitors (for oscillator)
 
 #
@@ -36,11 +36,9 @@
 1  $LM3671MF-3.3/NOPB       # 3.3V buck regulator                           http://www.mouser.com/ProductDetail/Texas-Instruments/LM3671MF-33-NOPB/?qs=sGAEpiMZZMvu8NZDyZ4K0doCUJ5Ska9S
 1  $LP5907MFX-3.3/NOPB      # 3.3V LDO regulator                            http://www2.mouser.com/ProductDetail/Texas-Instruments/LP5907MFX-33-NOPB/?qs=%2fha2pyFaduh2Ph%2frSDS5WOkv6S6E%2fOKKyECTt0nlT46IWoCFItD0LFz%2fERmCSvsE
 1  $47491-0001              # Midmount USB connector                        http://www2.mouser.com/ProductDetail/Molex/47491-0001/?qs=%2fha2pyFadujzs%2fkc0f%2fEefbNlYhnHrR1tZMOZGo1i%2fQ%3d
-1  $MAX4466EXK+T            # Mic preamp op amp                             http://www2.mouser.com/ProductDetail/Maxim-Integrated/MAX4466EXK+T/?qs=sGAEpiMZZMv9yaQC4TiGCeSjdmYBFiXjFdkzW1NXCo4%3d
 1  $MCP73832T-2DCI/OT       # LIPO battery charger IC                       http://www.mouser.com/ProductDetail/Microchip-Technology/MCP73832T-2DCI-OT/?qs=sGAEpiMZZMsfD%252bbMpEGFJbfJoD52oiVFLnpg9T8%252bTTA%3d
 1  $DMG1013T-7              # P-channel MOSFET for SCRPWR                   http://www2.mouser.com/ProductDetail/Diodes-Incorporated/DMG1013T-7/?qs=%2fha2pyFaduiS2Q1vGDX3gHRMAFPmP%252b1PMtjGPA4WtRr8gEtAPVkLtQ%3d%3d
 2  $SN74LVC1G66DRLR         # SPST analogue switch                          http://www2.mouser.com/ProductDetail/Texas-Instruments/SN74LVC1G66DRLR/?qs=%2fha2pyFaduhBQxXURUOFp70xRLAt%252bjUe9cNb2BxFvGDSoUzHebzR2Q%3d%3d
-1  $SPU0410LR5H-QB          # Microphone                                    http://www2.mouser.com/ProductDetail/Knowles/SPU0410LR5H-QB/?qs=%2fha2pyFadujsOyq9m86PskfJJTo%2f6w8gLVlLZDQM1tgnAEafFx2amg%3d%3d
 1  $STM32F030K6T6           # uc                                            http://www2.mouser.com/ProductDetail/STMicroelectronics/STM32F030K6T6/?qs=%2fha2pyFadujR%2fWSfahMbfqNxy8AOR702lobnZPPAgDjioxyhIVrlUw%3d%3d
 3  ${PTS540 JM035 SMTR LFS} # Pushbuttons                                   http://www2.mouser.com/ProductDetail/CK-Components/PTS540-JM035-SMTR-LFS/?qs=sGAEpiMZZMsgNhPy3wz0s0%2f8S9pyhweGEgSOBwJOlaQ%3d
 4  $PNJ4K01F                # Light sensors                                 http://www2.mouser.com/ProductDetail/Panasonic/PNJ4K01F/?qs=bEWkMhb0NhNUUA6y9BF4fQ%3D%3D
