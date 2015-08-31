@@ -10463,7 +10463,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="R1" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
 <part name="R4" library="resistor" deviceset="R-EU_" device="R0402" value="10k"/>
 <part name="R2" library="resistor" deviceset="R-EU_" device="R0402" value="390k"/>
-<part name="C1" library="rcl" deviceset="C-EU" device="C0402" value="51p"/>
 <part name="C5" library="rcl" deviceset="C-EU" device="C0402" value="4u7"/>
 <part name="U$1" library="lightmeter" deviceset="MAX4466EXK+T" device=""/>
 <part name="J1" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
@@ -10626,7 +10625,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="R1" gate="G$1" x="137.16" y="119.38" rot="R270"/>
 <instance part="R4" gate="G$1" x="137.16" y="78.74" rot="R270"/>
 <instance part="R2" gate="G$1" x="160.02" y="114.3"/>
-<instance part="C1" gate="G$1" x="157.48" y="121.92" rot="R90"/>
 <instance part="C5" gate="G$1" x="129.54" y="76.2" rot="R180"/>
 <instance part="U$1" gate="G$1" x="147.32" y="104.14"/>
 <instance part="J1" gate="G$1" x="137.16" y="93.98" rot="R90"/>
@@ -11856,10 +11854,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="165.1" y1="114.3" x2="167.64" y2="114.3" width="0.1524" layer="91"/>
 <wire x1="167.64" y1="114.3" x2="167.64" y2="104.14" width="0.1524" layer="91"/>
 <wire x1="167.64" y1="104.14" x2="154.94" y2="104.14" width="0.1524" layer="91"/>
-<pinref part="C1" gate="G$1" pin="2"/>
-<wire x1="162.56" y1="121.92" x2="167.64" y2="121.92" width="0.1524" layer="91"/>
-<wire x1="167.64" y1="121.92" x2="167.64" y2="114.3" width="0.1524" layer="91"/>
-<junction x="167.64" y="114.3"/>
 <wire x1="167.64" y1="104.14" x2="172.72" y2="104.14" width="0.1524" layer="91"/>
 <junction x="167.64" y="104.14"/>
 <label x="172.72" y="104.14" size="1.778" layer="95" xref="yes"/>
@@ -11932,13 +11926,8 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="139.7" y1="106.68" x2="142.24" y2="106.68" width="0.1524" layer="91"/>
 <wire x1="139.7" y1="106.68" x2="139.7" y2="114.3" width="0.1524" layer="91"/>
 <junction x="139.7" y="106.68"/>
-<wire x1="139.7" y1="114.3" x2="152.4" y2="114.3" width="0.1524" layer="91"/>
+<wire x1="139.7" y1="114.3" x2="154.94" y2="114.3" width="0.1524" layer="91"/>
 <pinref part="R2" gate="G$1" pin="1"/>
-<wire x1="152.4" y1="114.3" x2="154.94" y2="114.3" width="0.1524" layer="91"/>
-<wire x1="152.4" y1="114.3" x2="152.4" y2="121.92" width="0.1524" layer="91"/>
-<junction x="152.4" y="114.3"/>
-<pinref part="C1" gate="G$1" pin="1"/>
-<wire x1="152.4" y1="121.92" x2="154.94" y2="121.92" width="0.1524" layer="91"/>
 <pinref part="U$1" gate="G$1" pin="IN-"/>
 </segment>
 </net>
