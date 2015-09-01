@@ -3473,7 +3473,7 @@ design rules under a new name.</description>
 <element name="C38" library="rcl" package="C0402" value="100n" x="1.8034" y="9.4996"/>
 <element name="X10" library="lightmeter" package="CRYSTAL-2X1.6" value="CRYSTALCRYSTAL-2X1.6" x="23.0378" y="3.0734" rot="R180"/>
 <element name="C39" library="rcl" package="C0402" value="12p" x="25.4508" y="2.794" rot="R270"/>
-<element name="C40" library="rcl" package="C0402" value="12p" x="-24.13" y="-45.72"/>
+<element name="C40" library="rcl" package="C0402" value="12p" x="19.9898" y="2.921" rot="R270"/>
 </elements>
 <signals>
 <signal name="GND">
@@ -3835,7 +3835,6 @@ design rules under a new name.</description>
 <contactref element="U$3" pad="P$30"/>
 <contactref element="U$3" pad="P$31"/>
 <wire x1="16.9418" y1="9.9314" x2="16.9418" y2="10.541" width="0.254" layer="16"/>
-<wire x1="25.922" y1="8.43019375" x2="20.3962" y2="4.2418" width="0" layer="19" extent="1-16"/>
 <via x="3.1242" y="18.1356" extent="1-16" drill="0.3302" shape="square"/>
 <wire x1="3.1242" y1="18.1356" x2="5.7658" y2="19.0754" width="0.6096" layer="1"/>
 <contactref element="C39" pad="2"/>
@@ -3844,7 +3843,7 @@ design rules under a new name.</description>
 <wire x1="24.9428" y1="1.9304" x2="23.4696" y2="1.7526" width="0.254" layer="1"/>
 <wire x1="23.4696" y1="1.7526" x2="21.34" y2="2.0794" width="0.254" layer="1"/>
 <wire x1="21.34" y1="2.0794" x2="21.3868" y2="2.4765" width="0.254" layer="1"/>
-<wire x1="-24.78" y1="-35.56" x2="-23.48" y2="-45.72" width="0" layer="19" extent="1-1"/>
+<wire x1="19.9898" y1="2.271" x2="21.3868" y2="2.4765" width="0.254" layer="1"/>
 <wire x1="4.8" y1="2.0794" x2="-24.78" y2="-35.56" width="0" layer="19" extent="1-16"/>
 <wire x1="17.018" y1="2.4742" x2="17.145" y2="2.7432" width="0" layer="19" extent="1-16"/>
 <wire x1="24.872" y1="4.3802" x2="25.1968" y2="4.9276" width="0" layer="19" extent="1-16"/>
@@ -5023,11 +5022,12 @@ design rules under a new name.</description>
 <contactref element="X10" pad="P$3"/>
 <contactref element="U$3" pad="P$27"/>
 <contactref element="C40" pad="1"/>
-<wire x1="22.3774" y1="2.5654" x2="-24.78" y2="-45.72" width="0" layer="19" extent="1-1"/>
 <wire x1="22.3774" y1="2.5654" x2="23.0378" y2="2.794" width="0.2032" layer="1"/>
 <wire x1="23.0378" y1="2.794" x2="23.0378" y2="3.9878" width="0.2032" layer="1"/>
 <wire x1="23.0378" y1="3.9878" x2="23.0124" y2="4.0894" width="0.2032" layer="1"/>
 <wire x1="23.0124" y1="4.0894" x2="22.872003125" y2="4.3802" width="0.2032" layer="1"/>
+<wire x1="19.9898" y1="3.571" x2="21.463" y2="3.175" width="0.254" layer="1"/>
+<wire x1="21.463" y1="3.175" x2="22.3774" y2="2.5654" width="0.254" layer="1"/>
 </signal>
 </signals>
 </board>
