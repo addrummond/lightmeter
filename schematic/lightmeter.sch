@@ -8967,12 +8967,12 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <text x="-1.905" y="1.27" size="0.762" layer="25">&gt;NAME</text>
 </package>
 <package name="PNJ4K01F">
-<smd name="P$1" x="-0.8425" y="0.56" dx="0.925" dy="0.40131875" layer="1"/>
-<smd name="P$2" x="-0.8425" y="0" dx="0.925" dy="0.3" layer="1"/>
-<smd name="P$3" x="-0.8425" y="-0.56" dx="0.925" dy="0.40131875" layer="1"/>
-<smd name="P$4" x="0.8425" y="-0.56" dx="0.925" dy="0.40131875" layer="1"/>
-<smd name="P$5" x="0.8425" y="0" dx="0.925" dy="0.3" layer="1"/>
-<smd name="P$6" x="0.8425" y="0.56" dx="0.925" dy="0.40131875" layer="1"/>
+<smd name="P$1" x="-0.8425" y="0.56" dx="0.8128" dy="0.40131875" layer="1"/>
+<smd name="P$2" x="-0.8425" y="0" dx="0.8128" dy="0.3" layer="1"/>
+<smd name="P$3" x="-0.8425" y="-0.56" dx="0.8128" dy="0.40131875" layer="1"/>
+<smd name="P$4" x="0.8425" y="-0.56" dx="0.8128" dy="0.40131875" layer="1"/>
+<smd name="P$5" x="0.8425" y="0" dx="0.8128" dy="0.3" layer="1"/>
+<smd name="P$6" x="0.8425" y="0.56" dx="0.8128" dy="0.40131875" layer="1"/>
 <wire x1="-0.55" y1="0.775" x2="0.55" y2="0.775" width="0.127" layer="21"/>
 <wire x1="-0.55" y1="-0.775" x2="0.55" y2="-0.775" width="0.127" layer="21"/>
 <wire x1="-0.55" y1="0.775" x2="-0.55" y2="-0.775" width="0.127" layer="21"/>
@@ -9035,10 +9035,6 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <wire x1="0.7874" y1="0.381" x2="-0.7874" y2="0.381" width="0.127" layer="22"/>
 <text x="-1.3208" y="0.5842" size="0.762" layer="26">&gt;NAME</text>
 <wire x1="1.016" y1="-0.4826" x2="1.016" y2="0.4826" width="0.127" layer="22"/>
-</package>
-<package name="SMALLSQUAREWIREHOLE">
-<pad name="P$1" x="0" y="0" drill="0.75" diameter="1.125" shape="square"/>
-<text x="-2.54" y="1.27" size="1.27" layer="25">&gt;NAME</text>
 </package>
 <package name="CDRH2D14">
 <smd name="P$1" x="-1.060659375" y="1.060659375" dx="1.3" dy="1.3" layer="1" rot="R45"/>
@@ -9114,6 +9110,17 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <smd name="P$32" x="-1.75" y="2.3" dx="0.4" dy="0.25" layer="1" rot="R90"/>
 <smd name="P$33" x="0" y="0" dx="3.3" dy="3.3" layer="1"/>
 <circle x="-1.905" y="-1.27" radius="0.0508" width="0.127" layer="1"/>
+</package>
+<package name="CRYSTAL-2X1.6">
+<smd name="P$4" x="-0.6604" y="0.508" dx="0.762" dy="0.6604" layer="1"/>
+<smd name="P$1" x="-0.6604" y="-0.508" dx="0.762" dy="0.6604" layer="1"/>
+<smd name="P$2" x="0.6604" y="-0.508" dx="0.762" dy="0.6604" layer="1"/>
+<smd name="P$3" x="0.6604" y="0.508" dx="0.762" dy="0.6604" layer="1"/>
+<wire x1="1.2573" y1="1.0541" x2="1.2573" y2="-1.0541" width="0.127" layer="21"/>
+<wire x1="-1.2573" y1="1.0541" x2="-1.2573" y2="-1.0541" width="0.127" layer="21"/>
+<wire x1="-1.2573" y1="1.0541" x2="1.2573" y2="1.0541" width="0.127" layer="21"/>
+<wire x1="-1.2573" y1="-1.0541" x2="1.2573" y2="-1.0541" width="0.127" layer="21"/>
+<circle x="-1.27" y="-1.27" radius="0.254" width="0.127" layer="21"/>
 </package>
 </packages>
 <symbols>
@@ -9375,10 +9382,6 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <pin name="1" x="-2.54" y="0" visible="off" length="point" direction="pas" swaplevel="1"/>
 <pin name="2" x="2.54" y="0" visible="off" length="point" direction="pas" swaplevel="1" rot="R180"/>
 <text x="-2.54" y="-3.302" size="1.27" layer="96">&gt;VALUE</text>
-</symbol>
-<symbol name="WIREATTACHMENT">
-<wire x1="-5.08" y1="0" x2="5.08" y2="0" width="0.254" layer="94"/>
-<pin name="P$1" x="7.62" y="0" visible="pin" length="middle" rot="R180"/>
 </symbol>
 <symbol name="INDUCTOR">
 <text x="-2.54" y="2.54" size="1.27" layer="95">&gt;NAME</text>
@@ -10326,16 +10329,10 @@ naming: grid - package width</description>
 <technology name=""/>
 </technologies>
 </device>
-</devices>
-</deviceset>
-<deviceset name="WIREATTACHMENT">
-<gates>
-<gate name="G$1" symbol="WIREATTACHMENT" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="SMALLSQUAREWIREHOLE">
+<device name="CRYSTAL-2X1.6" package="CRYSTAL-2X1.6">
 <connects>
-<connect gate="G$1" pin="P$1" pad="P$1"/>
+<connect gate="G$1" pin="1" pad="P$1"/>
+<connect gate="G$1" pin="2" pad="P$3"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -10852,7 +10849,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND18" library="supply1" deviceset="GND" device=""/>
 <part name="GND19" library="supply1" deviceset="GND" device=""/>
 <part name="GND20" library="supply1" deviceset="GND" device=""/>
-<part name="R8" library="resistor" deviceset="R-EU_" device="R0402" value="130"/>
 <part name="S$3" library="lightmeter" deviceset="PTS540" device=""/>
 <part name="S$1" library="lightmeter" deviceset="PTS540" device=""/>
 <part name="S$2" library="lightmeter" deviceset="PTS540" device=""/>
@@ -10870,7 +10866,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="R11" library="resistor" deviceset="R-EU_" device="R0402" value="500 (0.1%)"/>
 <part name="R12" library="resistor" deviceset="R-EU_" device="R0402" value="500 (0.1%)"/>
 <part name="D6" library="adafruit" deviceset="DIODE" device="SOD-323F"/>
-<part name="D1" library="lightmeter" deviceset="SCHOTTKY-DIODE" device="SOD-923-BTTM"/>
 <part name="Q1" library="lightmeter" deviceset="PCHANNELMOSFET" device="SOT-523-3-BTTM" value="PCHANNELMOSFETSOT-523-3-BTTM"/>
 <part name="D7" library="adafruit" deviceset="DIODE" device="SOD-323F"/>
 <part name="IC$8" library="lightmeter" deviceset="PNJ4K01F" device=""/>
@@ -10900,8 +10895,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND45" library="supply1" deviceset="GND" device=""/>
 <part name="GND46" library="supply1" deviceset="GND" device=""/>
 <part name="C9" library="lightmeter" deviceset="C" device="GAP0402" value="27p"/>
-<part name="ZP" library="lightmeter" deviceset="WIREATTACHMENT" device=""/>
-<part name="ZN" library="lightmeter" deviceset="WIREATTACHMENT" device=""/>
 <part name="I1" library="lightmeter" deviceset="CDRH2D14" device=""/>
 <part name="C22" library="lightmeter" deviceset="C" device="GAP0402" value="???"/>
 <part name="C23" library="lightmeter" deviceset="C" device="GAP0402" value="???"/>
@@ -10935,6 +10928,10 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="C38" library="rcl" deviceset="C-EU" device="C0402" value="100n"/>
 <part name="GND52" library="supply1" deviceset="GND" device=""/>
 <part name="GND53" library="supply1" deviceset="GND" device=""/>
+<part name="X10" library="lightmeter" deviceset="CRYSTAL" device="CRYSTAL-2X1.6"/>
+<part name="C39" library="rcl" deviceset="C-EU" device="C0402" value="12p"/>
+<part name="C40" library="rcl" deviceset="C-EU" device="C0402" value="12p"/>
+<part name="GND54" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -11020,7 +11017,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="GND18" gate="1" x="177.8" y="-73.66" rot="R270"/>
 <instance part="GND19" gate="1" x="177.8" y="-99.06" rot="R270"/>
 <instance part="GND20" gate="1" x="170.18" y="-124.46" rot="R270"/>
-<instance part="R8" gate="G$1" x="111.76" y="40.64" rot="R180"/>
 <instance part="S$3" gate="G$1" x="-24.638" y="-97.282" rot="R270"/>
 <instance part="S$1" gate="G$1" x="-6.858" y="-95.504" rot="R270"/>
 <instance part="S$2" gate="G$1" x="8.382" y="-95.504" rot="R270"/>
@@ -11038,7 +11034,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="R11" gate="G$1" x="71.12" y="-7.62" rot="R90"/>
 <instance part="R12" gate="G$1" x="109.22" y="-7.62" rot="R90"/>
 <instance part="D6" gate="G$1" x="-15.24" y="-86.36"/>
-<instance part="D1" gate="G$1" x="101.6" y="33.02" rot="R90"/>
 <instance part="Q1" gate="G$1" x="157.48" y="15.24" rot="R90"/>
 <instance part="D7" gate="G$1" x="0" y="-86.36" rot="R180"/>
 <instance part="IC$8" gate="G$1" x="198.12" y="-50.8"/>
@@ -11068,8 +11063,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="GND45" gate="1" x="-147.32" y="22.86" rot="R270"/>
 <instance part="GND46" gate="1" x="-147.32" y="40.64" rot="R270"/>
 <instance part="C9" gate="G$1" x="-139.7" y="40.64" rot="R90"/>
-<instance part="ZP" gate="G$1" x="108.712" y="59.182"/>
-<instance part="ZN" gate="G$1" x="108.712" y="49.022"/>
 <instance part="I1" gate="G$1" x="-10.16" y="93.98"/>
 <instance part="C22" gate="G$1" x="-76.2" y="-35.56"/>
 <instance part="C23" gate="G$1" x="-68.58" y="-35.56"/>
@@ -11103,6 +11096,10 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="C38" gate="G$1" x="66.04" y="113.284" rot="R270"/>
 <instance part="GND52" gate="1" x="54.61" y="123.444" rot="R270"/>
 <instance part="GND53" gate="1" x="93.726" y="143.51" rot="R180"/>
+<instance part="X10" gate="G$1" x="109.22" y="142.24"/>
+<instance part="C39" gate="G$1" x="106.68" y="152.4" rot="R180"/>
+<instance part="C40" gate="G$1" x="111.76" y="152.4" rot="R180"/>
+<instance part="GND54" gate="1" x="106.68" y="162.306" rot="R180"/>
 </instances>
 <busses>
 </busses>
@@ -11355,7 +11352,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 </segment>
 <segment>
 <pinref part="GND32" gate="1" pin="GND"/>
-<pinref part="D1" gate="G$1" pin="A"/>
 <wire x1="101.6" y1="17.78" x2="101.6" y2="30.48" width="0.1524" layer="91"/>
 </segment>
 <segment>
@@ -11517,6 +11513,13 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="GND53" gate="1" pin="GND"/>
 <wire x1="93.726" y1="138.176" x2="93.726" y2="140.97" width="0.1524" layer="91"/>
 <junction x="93.726" y="138.176"/>
+</segment>
+<segment>
+<pinref part="C39" gate="G$1" pin="2"/>
+<wire x1="106.68" y1="157.48" x2="106.68" y2="159.766" width="0.1524" layer="91"/>
+<pinref part="GND54" gate="1" pin="GND"/>
+<pinref part="C40" gate="G$1" pin="2"/>
+<wire x1="111.76" y1="157.48" x2="106.68" y2="157.48" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="VCC" class="0">
@@ -11961,9 +11964,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 </net>
 <net name="PIEZONEG" class="0">
 <segment>
-<pinref part="R8" gate="G$1" pin="2"/>
 <wire x1="93.98" y1="48.514" x2="93.98" y2="40.64" width="0.1524" layer="91"/>
-<pinref part="D1" gate="G$1" pin="C"/>
 <wire x1="106.68" y1="40.64" x2="101.6" y2="40.64" width="0.1524" layer="91"/>
 <wire x1="101.6" y1="40.64" x2="93.98" y2="40.64" width="0.1524" layer="91"/>
 <wire x1="101.6" y1="35.56" x2="101.6" y2="40.64" width="0.1524" layer="91"/>
@@ -11974,11 +11975,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="IC$5" gate="G$1" pin="PA7"/>
 <wire x1="-30.48" y1="-43.18" x2="-30.48" y2="-45.72" width="0.1524" layer="91"/>
 <label x="-30.48" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
-</segment>
-<segment>
-<wire x1="116.332" y1="49.022" x2="126.492" y2="49.022" width="0.1524" layer="91"/>
-<label x="126.492" y="49.022" size="1.778" layer="95" xref="yes"/>
-<pinref part="ZN" gate="G$1" pin="P$1"/>
 </segment>
 <segment>
 <pinref part="IC$5" gate="G$1" pin="PB0"/>
@@ -12227,7 +12223,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <net name="PIEZOPOS" class="0">
 <segment>
 <label x="121.92" y="40.64" size="1.778" layer="95" xref="yes"/>
-<pinref part="R8" gate="G$1" pin="1"/>
 <wire x1="116.84" y1="40.64" x2="121.92" y2="40.64" width="0.1524" layer="91"/>
 </segment>
 <segment>
@@ -12239,11 +12234,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="IC$5" gate="G$1" pin="PA6"/>
 <wire x1="-35.56" y1="-43.18" x2="-35.56" y2="-45.72" width="0.1524" layer="91"/>
 <label x="-35.56" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
-</segment>
-<segment>
-<wire x1="116.332" y1="59.182" x2="126.492" y2="59.182" width="0.1524" layer="91"/>
-<label x="126.492" y="59.182" size="1.778" layer="95" xref="yes"/>
-<pinref part="ZP" gate="G$1" pin="P$1"/>
 </segment>
 </net>
 <net name="SWDIO/USBD-" class="0">
@@ -12527,6 +12517,26 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="U$3" gate="G$1" pin="DEC2"/>
 <wire x1="73.66" y1="113.284" x2="68.58" y2="113.284" width="0.1524" layer="91"/>
 <pinref part="C38" gate="G$1" pin="1"/>
+</segment>
+</net>
+<net name="N$26" class="0">
+<segment>
+<pinref part="U$3" gate="G$1" pin="XC1"/>
+<pinref part="X10" gate="G$1" pin="1"/>
+<wire x1="106.68" y1="136.144" x2="106.68" y2="142.24" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="142.24" x2="106.68" y2="149.86" width="0.1524" layer="91"/>
+<junction x="106.68" y="142.24"/>
+<pinref part="C39" gate="G$1" pin="1"/>
+</segment>
+</net>
+<net name="N$28" class="0">
+<segment>
+<pinref part="X10" gate="G$1" pin="2"/>
+<wire x1="111.76" y1="142.24" x2="111.76" y2="136.144" width="0.1524" layer="91"/>
+<pinref part="U$3" gate="G$1" pin="XC2"/>
+<wire x1="111.76" y1="142.24" x2="111.76" y2="149.86" width="0.1524" layer="91"/>
+<junction x="111.76" y="142.24"/>
+<pinref part="C40" gate="G$1" pin="1"/>
 </segment>
 </net>
 </nets>
