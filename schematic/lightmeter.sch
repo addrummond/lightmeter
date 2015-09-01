@@ -9122,6 +9122,19 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <wire x1="-1.2573" y1="-1.0541" x2="1.2573" y2="-1.0541" width="0.127" layer="21"/>
 <circle x="-1.27" y="-1.27" radius="0.254" width="0.127" layer="21"/>
 </package>
+<package name="SOT666">
+<smd name="P$1" x="-0.5" y="-0.805" dx="1.2" dy="0.3" layer="1" rot="R90"/>
+<smd name="P$2" x="0" y="-0.805" dx="1.2" dy="0.3" layer="1" rot="R90"/>
+<smd name="P$3" x="0.5" y="-0.805" dx="1.2" dy="0.3" layer="1" rot="R90"/>
+<smd name="P$4" x="0.5" y="0.805" dx="1.2" dy="0.3" layer="1" rot="R90"/>
+<smd name="P$5" x="0" y="0.805" dx="1.2" dy="0.3" layer="1" rot="R90"/>
+<smd name="P$6" x="-0.5" y="0.805" dx="1.2" dy="0.3" layer="1" rot="R90"/>
+<wire x1="-0.8" y1="0.6" x2="0.8" y2="0.6" width="0.127" layer="21"/>
+<wire x1="-0.8" y1="0.6" x2="-0.8" y2="-0.6" width="0.127" layer="21"/>
+<wire x1="0.8" y1="0.6" x2="0.8" y2="-0.6" width="0.127" layer="21"/>
+<wire x1="-0.8" y1="-0.6" x2="0.8" y2="-0.6" width="0.127" layer="21"/>
+<circle x="-1.016" y="-0.635" radius="0.127" width="0.1016" layer="21"/>
+</package>
 </packages>
 <symbols>
 <symbol name="P-MOS">
@@ -9448,6 +9461,19 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <pin name="VSS6" x="-12.7" y="30.48" visible="pin" length="middle" rot="R270"/>
 <pin name="DCC" x="-17.78" y="30.48" visible="pin" length="middle" rot="R270"/>
 <text x="-10.16" y="2.54" size="2.286" layer="94">NRF8001</text>
+</symbol>
+<symbol name="USBLC6-2">
+<pin name="I/O1_1" x="-15.24" y="5.08" visible="pin" length="middle"/>
+<pin name="GND" x="-15.24" y="0" visible="pin" length="middle"/>
+<pin name="I/O2_1" x="-15.24" y="-5.08" visible="pin" length="middle"/>
+<pin name="I/O2_2" x="15.24" y="-5.08" visible="pin" length="middle" rot="R180"/>
+<pin name="VBUS" x="15.24" y="0" visible="pin" length="middle" rot="R180"/>
+<pin name="I/O1_2" x="15.24" y="5.08" visible="pin" length="middle" rot="R180"/>
+<wire x1="-10.16" y1="10.16" x2="-10.16" y2="-10.16" width="0.254" layer="94"/>
+<wire x1="-10.16" y1="-10.16" x2="10.16" y2="-10.16" width="0.254" layer="94"/>
+<wire x1="10.16" y1="-10.16" x2="10.16" y2="10.16" width="0.254" layer="94"/>
+<wire x1="10.16" y1="10.16" x2="-10.16" y2="10.16" width="0.254" layer="94"/>
+<text x="-2.54" y="7.62" size="1.27" layer="94">USBLC6-2</text>
 </symbol>
 </symbols>
 <devicesets>
@@ -10424,6 +10450,26 @@ naming: grid - package width</description>
 </device>
 </devices>
 </deviceset>
+<deviceset name="USBLC6-2">
+<gates>
+<gate name="G$1" symbol="USBLC6-2" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="SOT666">
+<connects>
+<connect gate="G$1" pin="GND" pad="P$2"/>
+<connect gate="G$1" pin="I/O1_1" pad="P$1"/>
+<connect gate="G$1" pin="I/O1_2" pad="P$6"/>
+<connect gate="G$1" pin="I/O2_1" pad="P$3"/>
+<connect gate="G$1" pin="I/O2_2" pad="P$4"/>
+<connect gate="G$1" pin="VBUS" pad="P$5"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
 </devicesets>
 </library>
 <library name="adafruit">
@@ -10932,6 +10978,8 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="C39" library="rcl" deviceset="C-EU" device="C0402" value="12p"/>
 <part name="C40" library="rcl" deviceset="C-EU" device="C0402" value="12p"/>
 <part name="GND54" library="supply1" deviceset="GND" device=""/>
+<part name="U$1" library="lightmeter" deviceset="USBLC6-2" device=""/>
+<part name="GND55" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -11100,6 +11148,8 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="C39" gate="G$1" x="106.68" y="152.4" rot="R180"/>
 <instance part="C40" gate="G$1" x="111.76" y="152.4" rot="R180"/>
 <instance part="GND54" gate="1" x="106.68" y="162.306" rot="R180"/>
+<instance part="U$1" gate="G$1" x="-91.44" y="101.6"/>
+<instance part="GND55" gate="1" x="-111.76" y="101.6" rot="R270"/>
 </instances>
 <busses>
 </busses>
@@ -11521,6 +11571,11 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="C40" gate="G$1" pin="2"/>
 <wire x1="111.76" y1="157.48" x2="106.68" y2="157.48" width="0.1524" layer="91"/>
 </segment>
+<segment>
+<pinref part="U$1" gate="G$1" pin="GND"/>
+<wire x1="-106.68" y1="101.6" x2="-109.22" y2="101.6" width="0.1524" layer="91"/>
+<pinref part="GND55" gate="1" pin="GND"/>
+</segment>
 </net>
 <net name="VCC" class="0">
 <segment>
@@ -11808,6 +11863,11 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="-132.08" y1="-38.1" x2="-137.16" y2="-38.1" width="0.1524" layer="91"/>
 <label x="-139.7" y="-48.26" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
+<segment>
+<pinref part="U$1" gate="G$1" pin="VBUS"/>
+<wire x1="-76.2" y1="101.6" x2="-73.66" y2="101.6" width="0.1524" layer="91"/>
+<label x="-73.66" y="101.6" size="1.778" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="N$5" class="0">
 <segment>
@@ -11900,10 +11960,20 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <label x="2.54" y="7.62" size="1.778" layer="95" xref="yes"/>
 </segment>
 <segment>
-<wire x1="-108.458" y1="63.5" x2="-114.3" y2="63.5" width="0.1524" layer="91"/>
-<wire x1="-114.3" y1="63.5" x2="-114.3" y2="68.58" width="0.1524" layer="91"/>
-<label x="-114.3" y="68.58" size="1.778" layer="95" rot="R90" xref="yes"/>
+<wire x1="-108.458" y1="63.5" x2="-111.76" y2="63.5" width="0.1524" layer="91"/>
+<wire x1="-111.76" y1="63.5" x2="-111.76" y2="71.12" width="0.1524" layer="91"/>
+<label x="-111.76" y="71.12" size="1.778" layer="95" rot="R180" xref="yes"/>
 <pinref part="R15" gate="G$1" pin="1"/>
+</segment>
+<segment>
+<pinref part="U$1" gate="G$1" pin="I/O1_1"/>
+<wire x1="-106.68" y1="106.68" x2="-106.68" y2="114.3" width="0.1524" layer="91"/>
+<wire x1="-106.68" y1="114.3" x2="-76.2" y2="114.3" width="0.1524" layer="91"/>
+<pinref part="U$1" gate="G$1" pin="I/O1_2"/>
+<wire x1="-76.2" y1="114.3" x2="-76.2" y2="106.68" width="0.1524" layer="91"/>
+<wire x1="-106.68" y1="114.3" x2="-114.3" y2="114.3" width="0.1524" layer="91"/>
+<junction x="-106.68" y="114.3"/>
+<label x="-114.3" y="114.3" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="I2CSDA" class="0">
@@ -12226,6 +12296,16 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="-101.6" y1="49.022" x2="-94.742" y2="49.022" width="0.1524" layer="91"/>
 <label x="-94.742" y="49.022" size="1.778" layer="95" xref="yes"/>
 <pinref part="R16" gate="G$1" pin="1"/>
+</segment>
+<segment>
+<pinref part="U$1" gate="G$1" pin="I/O2_1"/>
+<wire x1="-106.68" y1="96.52" x2="-106.68" y2="88.9" width="0.1524" layer="91"/>
+<pinref part="U$1" gate="G$1" pin="I/O2_2"/>
+<wire x1="-106.68" y1="88.9" x2="-76.2" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="-76.2" y1="88.9" x2="-76.2" y2="96.52" width="0.1524" layer="91"/>
+<wire x1="-106.68" y1="88.9" x2="-114.3" y2="88.9" width="0.1524" layer="91"/>
+<junction x="-106.68" y="88.9"/>
+<label x="-114.3" y="88.9" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="N$1" class="0">
