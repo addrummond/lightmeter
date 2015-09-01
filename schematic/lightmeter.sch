@@ -11971,16 +11971,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <junction x="101.6" y="40.64"/>
 <label x="93.98" y="48.26" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
-<segment>
-<pinref part="IC$5" gate="G$1" pin="PA7"/>
-<wire x1="-30.48" y1="-43.18" x2="-30.48" y2="-45.72" width="0.1524" layer="91"/>
-<label x="-30.48" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
-</segment>
-<segment>
-<pinref part="IC$5" gate="G$1" pin="PB0"/>
-<wire x1="-25.4" y1="-43.18" x2="-25.4" y2="-45.72" width="0.1524" layer="91"/>
-<label x="-25.4" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
-</segment>
 </net>
 <net name="NRST" class="0">
 <segment>
@@ -12006,9 +11996,9 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <label x="76.2" y="-38.1" size="1.778" layer="95" rot="R90" xref="yes"/>
 </segment>
 <segment>
-<pinref part="IC$5" gate="G$1" pin="PA5"/>
-<wire x1="-40.64" y1="-43.18" x2="-40.64" y2="-45.72" width="0.1524" layer="91"/>
-<label x="-40.64" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
+<pinref part="IC$5" gate="G$1" pin="PB0"/>
+<wire x1="-25.4" y1="-43.18" x2="-25.4" y2="-45.72" width="0.1524" layer="91"/>
+<label x="-25.4" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 <net name="MEASURE2" class="0">
@@ -12225,16 +12215,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <label x="121.92" y="40.64" size="1.778" layer="95" xref="yes"/>
 <wire x1="116.84" y1="40.64" x2="121.92" y2="40.64" width="0.1524" layer="91"/>
 </segment>
-<segment>
-<pinref part="IC$5" gate="G$1" pin="PA11"/>
-<wire x1="0" y1="-7.62" x2="2.54" y2="-7.62" width="0.1524" layer="91"/>
-<label x="2.54" y="-7.62" size="1.778" layer="95" xref="yes"/>
-</segment>
-<segment>
-<pinref part="IC$5" gate="G$1" pin="PA6"/>
-<wire x1="-35.56" y1="-43.18" x2="-35.56" y2="-45.72" width="0.1524" layer="91"/>
-<label x="-35.56" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
-</segment>
 </net>
 <net name="SWDIO/USBD-" class="0">
 <segment>
@@ -12308,11 +12288,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="IC$3" gate="G$1" pin="INT2"/>
 <wire x1="15.24" y1="33.02" x2="10.16" y2="33.02" width="0.1524" layer="91"/>
 <label x="10.16" y="33.02" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
-<segment>
-<pinref part="IC$5" gate="G$1" pin="PA4"/>
-<wire x1="-45.72" y1="-43.18" x2="-45.72" y2="-45.72" width="0.1524" layer="91"/>
-<label x="-45.72" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 <net name="WKUP" class="0">
@@ -12436,7 +12411,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="167.64" y1="119.38" x2="172.72" y2="119.38" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$14" class="0">
+<net name="ANTENNA" class="0">
 <segment>
 <pinref part="C1" gate="G$1" pin="2"/>
 <wire x1="180.34" y1="119.38" x2="185.42" y2="119.38" width="0.1524" layer="91"/>
@@ -12537,6 +12512,34 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="111.76" y1="142.24" x2="111.76" y2="149.86" width="0.1524" layer="91"/>
 <junction x="111.76" y="142.24"/>
 <pinref part="C40" gate="G$1" pin="1"/>
+</segment>
+</net>
+<net name="SPIMOSI" class="0">
+<segment>
+<pinref part="IC$5" gate="G$1" pin="PA7"/>
+<wire x1="-30.48" y1="-43.18" x2="-30.48" y2="-45.72" width="0.1524" layer="91"/>
+<label x="-30.48" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
+</segment>
+</net>
+<net name="SPIMISO" class="0">
+<segment>
+<pinref part="IC$5" gate="G$1" pin="PA6"/>
+<wire x1="-35.56" y1="-43.18" x2="-35.56" y2="-45.72" width="0.1524" layer="91"/>
+<label x="-35.56" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
+</segment>
+</net>
+<net name="SPICLK" class="0">
+<segment>
+<pinref part="IC$5" gate="G$1" pin="PA5"/>
+<wire x1="-40.64" y1="-43.18" x2="-40.64" y2="-45.72" width="0.1524" layer="91"/>
+<label x="-40.64" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
+</segment>
+</net>
+<net name="ACCELINT2/SPINSS" class="0">
+<segment>
+<pinref part="IC$5" gate="G$1" pin="PA4"/>
+<wire x1="-45.72" y1="-43.18" x2="-45.72" y2="-45.72" width="0.1524" layer="91"/>
+<label x="-45.72" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 </nets>
