@@ -10403,7 +10403,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="C31" library="rcl" deviceset="C-EU" device="C0402" value="4u7"/>
 <part name="GND28" library="supply1" deviceset="GND" device=""/>
 <part name="GND31" library="supply1" deviceset="GND" device=""/>
-<part name="R5" library="resistor" deviceset="R-EU_" device="R0402" value="15k"/>
 <part name="C32" library="rcl" deviceset="C-EU" device="C0402" value="4u7"/>
 <part name="GND34" library="supply1" deviceset="GND" device=""/>
 <part name="C17" library="rcl" deviceset="C-EU" device="C0402" value="4u7"/>
@@ -10504,7 +10503,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
 <part name="P+4" library="supply1" deviceset="VCC" device=""/>
 <part name="D9" library="lightmeter" deviceset="SCHOTTKY-DIODE" device="SOD-929"/>
-<part name="R15" library="resistor" deviceset="R-EU_" device="R0402" value="???"/>
+<part name="R15" library="resistor" deviceset="R-EU_" device="R0402" value="15k"/>
 <part name="R16" library="resistor" deviceset="R-EU_" device="R0402" value="???"/>
 <part name="U$3" library="lightmeter" deviceset="NRF8001" device=""/>
 </parts>
@@ -10552,7 +10551,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="C31" gate="G$1" x="-1.778" y="-118.618" rot="R90"/>
 <instance part="GND28" gate="1" x="11.684" y="-118.618" rot="R90"/>
 <instance part="GND31" gate="1" x="-101.6" y="68.58" rot="R270"/>
-<instance part="R5" gate="G$1" x="-114.3" y="60.96"/>
 <instance part="C32" gate="G$1" x="-39.37" y="-132.588" rot="R180"/>
 <instance part="GND34" gate="1" x="-52.07" y="-135.128" rot="R270"/>
 <instance part="C17" gate="G$1" x="170.434" y="-15.24" rot="R90"/>
@@ -11130,11 +11128,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="R14" gate="G$1" pin="2"/>
 <wire x1="-68.58" y1="-99.06" x2="-68.58" y2="-104.14" width="0.1524" layer="91"/>
 <label x="-68.58" y="-104.14" size="1.778" layer="95" rot="R270" xref="yes"/>
-</segment>
-<segment>
-<pinref part="R5" gate="G$1" pin="1"/>
-<wire x1="-119.38" y1="60.96" x2="-121.92" y2="60.96" width="0.1524" layer="91"/>
-<label x="-121.92" y="60.96" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
 <pinref part="IC$100" gate="G$1" pin="VCC"/>
