@@ -9123,12 +9123,12 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <circle x="-1.27" y="-1.27" radius="0.254" width="0.127" layer="21"/>
 </package>
 <package name="SOT666">
-<smd name="P$1" x="-0.5" y="-0.805" dx="1.2" dy="0.3" layer="1" rot="R90"/>
-<smd name="P$2" x="0" y="-0.805" dx="1.2" dy="0.3" layer="1" rot="R90"/>
-<smd name="P$3" x="0.5" y="-0.805" dx="1.2" dy="0.3" layer="1" rot="R90"/>
-<smd name="P$4" x="0.5" y="0.805" dx="1.2" dy="0.3" layer="1" rot="R90"/>
-<smd name="P$5" x="0" y="0.805" dx="1.2" dy="0.3" layer="1" rot="R90"/>
-<smd name="P$6" x="-0.5" y="0.805" dx="1.2" dy="0.3" layer="1" rot="R90"/>
+<smd name="P$1" x="-0.5" y="-0.805" dx="0.508" dy="0.3" layer="1" rot="R90"/>
+<smd name="P$2" x="0" y="-0.805" dx="0.508" dy="0.3" layer="1" rot="R90"/>
+<smd name="P$3" x="0.5" y="-0.805" dx="0.508" dy="0.3" layer="1" rot="R90"/>
+<smd name="P$4" x="0.5" y="0.805" dx="0.508" dy="0.3" layer="1" rot="R90"/>
+<smd name="P$5" x="0" y="0.805" dx="0.508" dy="0.3" layer="1" rot="R90"/>
+<smd name="P$6" x="-0.5" y="0.805" dx="0.508" dy="0.3" layer="1" rot="R90"/>
 <wire x1="-0.8" y1="0.6" x2="0.8" y2="0.6" width="0.127" layer="21"/>
 <wire x1="-0.8" y1="0.6" x2="-0.8" y2="-0.6" width="0.127" layer="21"/>
 <wire x1="0.8" y1="0.6" x2="0.8" y2="-0.6" width="0.127" layer="21"/>
