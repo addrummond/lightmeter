@@ -7706,7 +7706,7 @@ package type OT</description>
 <text x="0" y="6.731" size="0.4064" layer="27">&gt;VALUE</text>
 <smd name="P$1" x="-1.625" y="-5.15" dx="1.5" dy="2.5" layer="1" rot="R90"/>
 <smd name="P$2" x="-1.625" y="5.15" dx="1.5" dy="2.5" layer="1" rot="R90"/>
-<smd name="P$3" x="5.01" y="2.733" dx="1.5" dy="1.778" layer="1" rot="R180"/>
+<smd name="P$3" x="4.883" y="2.733" dx="1.246" dy="1.778" layer="1" rot="R180"/>
 <smd name="P$4" x="4.883" y="-2.733" dx="1.246" dy="1.778" layer="1" rot="R180"/>
 <wire x1="-3.425" y1="3.89999375" x2="2.2098" y2="3.89999375" width="0.127" layer="20"/>
 <wire x1="-3.425" y1="-3.89999375" x2="2.2098" y2="-3.89999375" width="0.127" layer="20"/>
