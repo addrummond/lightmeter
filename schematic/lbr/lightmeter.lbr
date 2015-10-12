@@ -1379,7 +1379,7 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <smd name="P$31" x="-1.25" y="2.3" dx="0.4" dy="0.25" layer="1" rot="R90"/>
 <smd name="P$32" x="-1.75" y="2.3" dx="0.4" dy="0.25" layer="1" rot="R90"/>
 <smd name="P$33" x="0" y="0" dx="3.3" dy="3.3" layer="1"/>
-<circle x="-1.905" y="-1.27" radius="0.0508" width="0.127" layer="1"/>
+<circle x="-1.905" y="-1.27" radius="0.0508" width="0.127" layer="21"/>
 </package>
 <package name="WQFN10">
 <smd name="P$9" x="0" y="0.9144" dx="0.1778" dy="0.80518125" layer="1"/>
