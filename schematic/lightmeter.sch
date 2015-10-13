@@ -10891,7 +10891,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="GND35" library="supply1" deviceset="GND" device=""/>
 <part name="C29" library="rcl" deviceset="C-EU" device="C0603" value="1u"/>
 <part name="U$2" library="lightmeter" deviceset="LIBAT" device=""/>
-<part name="GND32" library="supply1" deviceset="GND" device=""/>
 <part name="GND18" library="supply1" deviceset="GND" device=""/>
 <part name="GND19" library="supply1" deviceset="GND" device=""/>
 <part name="GND20" library="supply1" deviceset="GND" device=""/>
@@ -10995,7 +10994,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <text x="210.058" y="-63.754" size="1.778" layer="91">Reflective, ND filter</text>
 <text x="209.804" y="-87.884" size="1.778" layer="91">Incident, ND filter</text>
 <text x="210.058" y="-113.03" size="1.778" layer="91">Incident, no ND filter</text>
-<text x="106.68" y="33.02" size="1.778" layer="91">5V breakdown</text>
 <text x="165.1" y="127" size="1.778" layer="91">Bluetooth LE</text>
 </plain>
 <instances>
@@ -11061,7 +11059,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="GND35" gate="1" x="-124.46" y="-99.06"/>
 <instance part="C29" gate="G$1" x="-93.98" y="-81.28"/>
 <instance part="U$2" gate="G$1" x="-132.08" y="-12.7"/>
-<instance part="GND32" gate="1" x="101.6" y="15.24"/>
 <instance part="GND18" gate="1" x="177.8" y="-73.66" rot="R270"/>
 <instance part="GND19" gate="1" x="177.8" y="-99.06" rot="R270"/>
 <instance part="GND20" gate="1" x="170.18" y="-124.46" rot="R270"/>
@@ -11399,10 +11396,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="GND5" gate="1" pin="GND"/>
 <pinref part="R12" gate="G$1" pin="2"/>
 <wire x1="109.22" y1="2.54" x2="109.22" y2="-2.54" width="0.1524" layer="91"/>
-</segment>
-<segment>
-<pinref part="GND32" gate="1" pin="GND"/>
-<wire x1="101.6" y1="17.78" x2="101.6" y2="30.48" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="IC$8" gate="G$1" pin="GND4"/>
@@ -12032,16 +12025,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <label x="233.68" y="88.9" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
-<net name="PIEZONEG" class="0">
-<segment>
-<wire x1="93.98" y1="48.514" x2="93.98" y2="40.64" width="0.1524" layer="91"/>
-<wire x1="106.68" y1="40.64" x2="101.6" y2="40.64" width="0.1524" layer="91"/>
-<wire x1="101.6" y1="40.64" x2="93.98" y2="40.64" width="0.1524" layer="91"/>
-<wire x1="101.6" y1="35.56" x2="101.6" y2="40.64" width="0.1524" layer="91"/>
-<junction x="101.6" y="40.64"/>
-<label x="93.98" y="48.26" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
-</net>
 <net name="NRST" class="0">
 <segment>
 <pinref part="IC$5" gate="G$1" pin="NRST"/>
@@ -12278,12 +12261,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="J6" gate="G$1" pin="1"/>
 <wire x1="233.68" y1="-119.38" x2="238.76" y2="-119.38" width="0.1524" layer="91"/>
 <label x="238.76" y="-119.38" size="1.778" layer="95" xref="yes"/>
-</segment>
-</net>
-<net name="PIEZOPOS" class="0">
-<segment>
-<label x="121.92" y="40.64" size="1.778" layer="95" xref="yes"/>
-<wire x1="116.84" y1="40.64" x2="121.92" y2="40.64" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="SWDIO/USBD-" class="0">
@@ -12600,12 +12577,22 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="-30.48" y1="-43.18" x2="-30.48" y2="-45.72" width="0.1524" layer="91"/>
 <label x="-30.48" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
+<segment>
+<label x="106.68" y="68.58" size="1.778" layer="95" rot="R270" xref="yes"/>
+<pinref part="U$3" gate="G$1" pin="MOSI"/>
+<wire x1="106.68" y1="75.184" x2="106.68" y2="68.58" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="SPIMISO" class="0">
 <segment>
 <pinref part="IC$5" gate="G$1" pin="PA6"/>
 <wire x1="-35.56" y1="-43.18" x2="-35.56" y2="-45.72" width="0.1524" layer="91"/>
 <label x="-35.56" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
+</segment>
+<segment>
+<label x="111.76" y="68.58" size="1.778" layer="95" rot="R270" xref="yes"/>
+<pinref part="U$3" gate="G$1" pin="MISO"/>
+<wire x1="111.76" y1="75.184" x2="111.76" y2="68.58" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="SPICLK" class="0">
