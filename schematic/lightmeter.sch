@@ -10969,12 +10969,12 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="C35" library="rcl" deviceset="C-EU" device="C0201" value="100n"/>
 <part name="GND50" library="supply1" deviceset="GND" device=""/>
 <part name="GND51" library="supply1" deviceset="GND" device=""/>
-<part name="C36" library="rcl" deviceset="C-EU" device="C0402" value="100n"/>
+<part name="C36" library="rcl" deviceset="C-EU" device="C0402" value="4u7"/>
 <part name="C37" library="rcl" deviceset="C-EU" device="C0402" value="100n"/>
-<part name="C38" library="rcl" deviceset="C-EU" device="C0402" value="100n"/>
+<part name="C38" library="rcl" deviceset="C-EU" device="C0402" value="33n"/>
 <part name="GND52" library="supply1" deviceset="GND" device=""/>
 <part name="GND53" library="supply1" deviceset="GND" device=""/>
-<part name="X10" library="lightmeter" deviceset="CRYSTAL" device="CRYSTAL-2X1.6"/>
+<part name="X10" library="lightmeter" deviceset="CRYSTAL" device="CRYSTAL-2X1.6" value="16MHz"/>
 <part name="C39" library="rcl" deviceset="C-EU" device="C0402" value="12p"/>
 <part name="C40" library="rcl" deviceset="C-EU" device="C0402" value="12p"/>
 <part name="GND54" library="supply1" deviceset="GND" device=""/>

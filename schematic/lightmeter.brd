@@ -3491,10 +3491,10 @@ design rules under a new name.</description>
 <attribute name="SPICEPREFIX" value="R" x="18.5928" y="5.4102" size="1.778" layer="27" rot="R270" display="off"/>
 </element>
 <element name="C35" library="rcl" package="C0201" value="100n" x="23.876" y="10.3378" rot="R180"/>
-<element name="C36" library="rcl" package="C0402" value="100n" x="26.7462" y="4.445" rot="R270"/>
+<element name="C36" library="rcl" package="C0402" value="4u7" x="26.7462" y="4.445" rot="R270"/>
 <element name="C37" library="rcl" package="C0402" value="100n" x="26.67" y="6.2738"/>
-<element name="C38" library="rcl" package="C0402" value="100n" x="26.5176" y="8.3058" rot="R90"/>
-<element name="X10" library="lightmeter" package="CRYSTAL-2X1.6" value="CRYSTALCRYSTAL-2X1.6" x="23.2156" y="2.667" rot="R180"/>
+<element name="C38" library="rcl" package="C0402" value="33n" x="26.5176" y="8.3058" rot="R90"/>
+<element name="X10" library="lightmeter" package="CRYSTAL-2X1.6" value="16MHz" x="23.2156" y="2.667" rot="R180"/>
 <element name="C39" library="rcl" package="C0402" value="12p" x="25.3492" y="2.6924" rot="R90"/>
 <element name="C40" library="rcl" package="C0402" value="12p" x="19.9898" y="2.921" rot="R270"/>
 <element name="U$1" library="lightmeter" package="SOT666" value="USBLC6-2" x="17.4244" y="12.6746" rot="R270"/>
