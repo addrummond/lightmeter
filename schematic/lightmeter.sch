@@ -11998,6 +11998,11 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="228.6" y1="83.82" x2="233.68" y2="83.82" width="0.1524" layer="91"/>
 <label x="233.68" y="83.82" size="1.778" layer="95" xref="yes"/>
 </segment>
+<segment>
+<label x="106.68" y="68.58" size="1.778" layer="95" rot="R270" xref="yes"/>
+<pinref part="U$3" gate="G$1" pin="MOSI"/>
+<wire x1="106.68" y1="75.184" x2="106.68" y2="68.58" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="I2CSCL" class="0">
 <segment>
@@ -12023,6 +12028,11 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="IC$100" gate="G$1" pin="SCL"/>
 <wire x1="228.6" y1="88.9" x2="233.68" y2="88.9" width="0.1524" layer="91"/>
 <label x="233.68" y="88.9" size="1.778" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="U$3" gate="G$1" pin="SCK"/>
+<wire x1="96.52" y1="75.184" x2="96.52" y2="71.12" width="0.1524" layer="91"/>
+<label x="96.52" y="71.12" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 <net name="NRST" class="0">
@@ -12577,11 +12587,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <wire x1="-30.48" y1="-43.18" x2="-30.48" y2="-45.72" width="0.1524" layer="91"/>
 <label x="-30.48" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
-<segment>
-<label x="106.68" y="68.58" size="1.778" layer="95" rot="R270" xref="yes"/>
-<pinref part="U$3" gate="G$1" pin="MOSI"/>
-<wire x1="106.68" y1="75.184" x2="106.68" y2="68.58" width="0.1524" layer="91"/>
-</segment>
 </net>
 <net name="SPIMISO" class="0">
 <segment>
@@ -12593,6 +12598,11 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <label x="111.76" y="68.58" size="1.778" layer="95" rot="R270" xref="yes"/>
 <pinref part="U$3" gate="G$1" pin="MISO"/>
 <wire x1="111.76" y1="75.184" x2="111.76" y2="68.58" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="IC$5" gate="G$1" pin="PA11"/>
+<wire x1="0" y1="-7.62" x2="2.54" y2="-7.62" width="0.1524" layer="91"/>
+<label x="2.54" y="-7.62" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="SPICLK" class="0">
