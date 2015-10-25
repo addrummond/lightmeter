@@ -10959,8 +10959,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <part name="C1" library="rcl" deviceset="C-EU" device="C0402" value="1p8"/>
 <part name="C2" library="rcl" deviceset="C-EU" device="C0402" value="1p2"/>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
-<part name="C5" library="rcl" deviceset="C-EU" device="C0402" value="???"/>
-<part name="GND42" library="supply1" deviceset="GND" device=""/>
 <part name="C34" library="rcl" deviceset="C-EU" device="C0402" value="2n2"/>
 <part name="GND48" library="supply1" deviceset="GND" device=""/>
 <part name="R1" library="resistor" deviceset="R-EU_" device="R0402" value="22k"/>
@@ -11127,8 +11125,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="C1" gate="G$1" x="175.26" y="119.38" rot="R90"/>
 <instance part="C2" gate="G$1" x="185.42" y="109.22" rot="R180"/>
 <instance part="GND1" gate="1" x="185.42" y="101.6"/>
-<instance part="C5" gate="G$1" x="170.18" y="91.44" rot="R180"/>
-<instance part="GND42" gate="1" x="170.18" y="83.82"/>
 <instance part="C34" gate="G$1" x="157.48" y="91.44" rot="R180"/>
 <instance part="GND48" gate="1" x="157.48" y="83.82"/>
 <instance part="R1" gate="G$1" x="137.16" y="142.24" rot="R180"/>
@@ -11500,11 +11496,6 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="C2" gate="G$1" pin="1"/>
 <pinref part="GND1" gate="1" pin="GND"/>
 <wire x1="185.42" y1="106.68" x2="185.42" y2="104.14" width="0.1524" layer="91"/>
-</segment>
-<segment>
-<pinref part="C5" gate="G$1" pin="1"/>
-<wire x1="170.18" y1="88.9" x2="170.18" y2="86.36" width="0.1524" layer="91"/>
-<pinref part="GND42" gate="1" pin="GND"/>
 </segment>
 <segment>
 <pinref part="C34" gate="G$1" pin="1"/>
@@ -12493,10 +12484,7 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <pinref part="L3" gate="G$1" pin="2"/>
 <wire x1="167.64" y1="101.6" x2="170.18" y2="101.6" width="0.1524" layer="91"/>
 <wire x1="170.18" y1="101.6" x2="170.18" y2="99.06" width="0.1524" layer="91"/>
-<pinref part="C5" gate="G$1" pin="2"/>
-<wire x1="170.18" y1="99.06" x2="170.18" y2="96.52" width="0.1524" layer="91"/>
 <wire x1="170.18" y1="99.06" x2="157.48" y2="99.06" width="0.1524" layer="91"/>
-<junction x="170.18" y="99.06"/>
 <wire x1="157.48" y1="99.06" x2="157.48" y2="96.52" width="0.1524" layer="91"/>
 <pinref part="C34" gate="G$1" pin="2"/>
 <wire x1="157.48" y1="99.06" x2="139.446" y2="99.06" width="0.1524" layer="91"/>
