@@ -4924,8 +4924,8 @@ design rules under a new name.</description>
 <wire x1="6.6294" y1="22.5044" x2="5.461" y2="24.1808" width="0.3556" layer="16"/>
 <via x="5.461" y="24.1808" extent="1-16" drill="0.3302" shape="square"/>
 <wire x1="5.461" y1="24.1808" x2="5.4356" y2="24.6126" width="0.2032" layer="1"/>
-<wire x1="5.4356" y1="24.6126" x2="5.4356" y2="25.3238" width="0.2032" layer="1"/>
-<wire x1="5.4356" y1="25.3238" x2="5.936615625" y2="25.311303125" width="0.2032" layer="1"/>
+<wire x1="5.4356" y1="24.6126" x2="5.4356" y2="25.2984" width="0.2032" layer="1"/>
+<wire x1="5.4356" y1="25.2984" x2="5.936615625" y2="25.311303125" width="0.2032" layer="1"/>
 </signal>
 <signal name="WKUP">
 <contactref element="IC$5" pad="6"/>
