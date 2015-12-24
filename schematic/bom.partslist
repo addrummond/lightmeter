@@ -49,6 +49,9 @@
 1  $78171-0002              # Battery connector board header.               http://www2.mouser.com/ProductDetail/Molex/78171-0002/?qs=%2fha2pyFadujDYgbimE1tA0G9UYfEnSYVpQUcBkiYDylNxrKBFTTj5A%3d%3d
 1  $78172-0002              # Battery connector.                            http://www2.mouser.com/ProductDetail/Molex/78172-0002/?qs=%2fha2pyFadugB4HhgcxVWckhSeIb2pYHTri64FjDYM3IhGiznbRRWpA%3d%3d
 2  $78172-0411              # Battery crimp terminals.                      http://www.mouser.com/ProductDetail/Molex/78172-0411-Loose-Piece/?qs=sGAEpiMZZMurOll%2fasxKYWpaY7Ib3DiPf61NB7kXtDk%3d
+1  $2450BM14A0002T          # Balun for bluetooth                           http://www2.mouser.com/ProductDetail/Johanson/2450BM14A0002T/?qs=%2fha2pyFadujSS%2fBw2DkkBzgVOszqStrM%252bgfTkGTolkPm8xlCR%252b9Rtg%3d%3d
+1  $2450AT18A100E           # Antenna for bluetooth                         http://www2.mouser.com/ProductDetail/Johanson/2450AT18A100E/?qs=%2fha2pyFaduheg09XJzH1azVZtpYax9RgXRvA4o0ekxpMdtXIwMW11g%3d%3d
+
 
 #
 # Parts to be ordered elsewhere.
