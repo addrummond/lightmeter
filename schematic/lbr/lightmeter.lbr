@@ -2782,12 +2782,12 @@ diameter 7.62 mm, horizontal, grid 12.7 mm</description>
 <circle x="-1.016" y="-0.635" radius="0.127" width="0.1016" layer="21"/>
 </package>
 <package name="2450BM14A0002">
-<smd name="P$1" x="0.508" y="0.5461" dx="0.6096" dy="0.2032" layer="1" rot="R90"/>
-<smd name="P$2" x="0" y="0.5461" dx="0.6096" dy="0.2032" layer="1" rot="R90"/>
-<smd name="P$3" x="-0.508" y="0.5461" dx="0.6096" dy="0.2032" layer="1" rot="R90"/>
-<smd name="P$4" x="-0.508" y="-0.5461" dx="0.6096" dy="0.2032" layer="1" rot="R90"/>
-<smd name="P$5" x="0" y="-0.5461" dx="0.6096" dy="0.2032" layer="1" rot="R90"/>
-<smd name="P$6" x="0.508" y="-0.5461" dx="0.6096" dy="0.2032" layer="1" rot="R90"/>
+<smd name="P$1" x="0.508" y="0.5715" dx="0.5588" dy="0.2032" layer="1" rot="R90"/>
+<smd name="P$2" x="0" y="0.5715" dx="0.5588" dy="0.2032" layer="1" rot="R90"/>
+<smd name="P$3" x="-0.508" y="0.5715" dx="0.5588" dy="0.2032" layer="1" rot="R90"/>
+<smd name="P$4" x="-0.508" y="-0.5715" dx="0.5588" dy="0.2032" layer="1" rot="R90"/>
+<smd name="P$5" x="0" y="-0.5715" dx="0.5588" dy="0.2032" layer="1" rot="R90"/>
+<smd name="P$6" x="0.508" y="-0.5715" dx="0.5588" dy="0.2032" layer="1" rot="R90"/>
 <wire x1="-0.8001" y1="0.3937" x2="0.8001" y2="0.3937" width="0.127" layer="21"/>
 <wire x1="-0.8001" y1="-0.3937" x2="0.8001" y2="-0.3937" width="0.127" layer="21"/>
 <wire x1="-0.8001" y1="0.3937" x2="-0.8001" y2="-0.3937" width="0.127" layer="21"/>
