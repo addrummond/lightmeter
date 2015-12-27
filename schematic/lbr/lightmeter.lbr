@@ -2793,6 +2793,7 @@ diameter 7.62 mm, horizontal, grid 12.7 mm</description>
 <wire x1="-0.8001" y1="0.3937" x2="-0.8001" y2="-0.3937" width="0.127" layer="21"/>
 <wire x1="0.8001" y1="0.3937" x2="0.8001" y2="-0.3937" width="0.127" layer="21"/>
 <circle x="1.27" y="0.635" radius="0.254" width="0.127" layer="21"/>
+<text x="-2.54" y="1.27" size="1.27" layer="25">&gt;NAME</text>
 </package>
 <package name="2450AT18A100">
 <smd name="P$1" x="2.00025" y="0" dx="1.27" dy="0.8001" layer="1" rot="R90"/>
