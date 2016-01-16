@@ -16,7 +16,6 @@
 #include <exposure.h>
 #include <tables.h>
 #include <debugging.h>
-//#include <deviceconfig.h>
 #include <mymemset.h>
 #ifdef TEST
 #include <stdio.h>
@@ -84,7 +83,6 @@ FOR_EACH_AMP_STAGE(CASE)
     thirds += thirds_bit;
 
     ev_with_fracs_t avg = (ev_with_fracs_t)((wholes*120*3 + (thirds*(120/3)) + (eighths*(120/8)) + (tenths*(120/10)))/3);
-    //printf("TRYING %i 10=%i, 8=%i, 3=%i [%i, %i, %i]\n", avg, ev_with_fracs_get_nearest_tenths(avg), ev_with_fracs_get_nearest_eighths(avg), ev_with_fracs_get_nearest_thirds(avg), tenths, eighths, thirds);
 
     // The average gives us our starting point. Now we tweak the value to make
     // sure we get back the right number of tenths, eighths and thirds.
