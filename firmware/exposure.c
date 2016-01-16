@@ -379,9 +379,6 @@ uint_fast8_t iso_bcd_to_third_stops(uint8_t *digits, unsigned length)
 //     iso_given_aperture_shutter_speed(aperture, shutter_speed)
 ev_with_fracs_t z_given_x_y_ev(ev_with_fracs_t given_x_, ev_with_fracs_t given_y_, ev_with_fracs_t evwf, uint_fast8_t x) // x=0: aperture, x=1: shutter_speed
 {
-    // Update: Currently, ev_with_fracs_t is implemented as an integer value
-    // in 1/120 stop units, so the conversion below is trivial.
-
     // We use an internal represenation of values in 1/120 EV steps. This permits
     // exact division by 8, 10 and 3.
 
@@ -482,7 +479,7 @@ static int32_t log_base2(uint32_t x)
         y += 1U << LOG2_PRECISION;
     }
 
-    // ALEX: Was a uint64_t in the original code. Guessing that uint32_t will
+    // ALEX: Was a uint64_t in the original code. uint32_t will
     // be ok if we're not using lots of precision bits and given the range of
     // values that this function will be used for.
     //uint64_t z = x;
@@ -535,15 +532,15 @@ ev_with_fracs_t fps_and_angle_to_shutter_speed(uint_fast16_t fps, uint_fast16_t 
     return (ev_with_fracs_t)ev;
 }
 
-#define EXP2_PRECISION 8
-#define V_0_5          128
-#define V_0_11         28
-#define V_0_02         5
-#define EXP2_0_5       362
-#define EXP2_0_11      276
-#define EXP2_0_02      260
 static int32_t int32_exp2(int32_t x)
 {
+    const int32_t V_0_5 = 128;
+    const int32_t V_0_11 = 28;
+    const int32_t V_0_02 = 5;
+    const int32_t EXP2_0_5 = 362;
+    const int32_t EXP2_0_11 = 276;
+    const int32_t EXP2_0_02 = 260;
+
     int32_t ix = x >> EXP2_PRECISION;
     int32_t ir = 1 << EXP2_PRECISION;
     unsigned i;
@@ -570,12 +567,6 @@ static int32_t int32_exp2(int32_t x)
 
     return (m * ir) >> EXP2_PRECISION;
 }
-#undef V_0_5
-#undef V_0_11
-#undef V_0_048
-#undef EXP2_0_5
-#undef EXP2_0_11
-#undef EXP2_0_048
 
 static int32_t ev_at_100_to_lux(ev_with_fracs_t evwf)
 {
