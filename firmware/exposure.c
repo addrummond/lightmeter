@@ -1,11 +1,15 @@
-// Apertures are represented as unsigned 8-bit quantities
-// from 1.0 to 32 in 1/8-stop steps.
+// Apertures are represented as unsigned 16-bit quantities
+// from 1.0 to 32 in 1/120th of a stop steps.
 //
-// Shutter speeds are represented as unsigned 8-bit quantities
-// from 1 minute to 1/16000 in 1/8-stop steps. Some key points
-// on the scale are defined in exposure.h
+// Shutter speeds are represented as unsigned 16-bit quantities
+// from 1 minute to 1/16000 in 1/120th of a stop steps.
 //
-// ISO is represented as an unsigned 8-bit quantity giving 1/3-stops from ISO 6.
+// (120 is a multiple of 2, 3, 8 and 10, so we can calculate
+// for display in 1/2, 1/3, 1/8 or 1/10 stops without losing
+// any precision.)
+//
+// ISO is represented as an unsigned 8-bit quantity giving
+// 1/3-stops from ISO 6.
 
 #include <stddef.h>
 #include <stdint.h>
