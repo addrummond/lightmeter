@@ -144,10 +144,13 @@ void shutter_speed_to_string(ev_with_fracs_t evwf, shutter_string_output_t *sso,
         // TODO
         schars = 0;
     }
-    else { //if (precision_mode == PRECISION_MODE_TENTH) {
+    else if (precision_mode == PRECISION_MODE_TENTH) {
         schars = SHUTTER_SPEEDS_TENTH + (shutwholeev*10*2);
         uint_fast8_t tenths = ev_with_fracs_get_nearest_tenths(evwf);
         schars += tenths*2;
+    }
+    else {
+        assert(0);
     }
 
     uint_fast8_t last = 0;
@@ -204,10 +207,13 @@ void aperture_to_string(ev_with_fracs_t evwf, aperture_string_output_t *aso, pre
             i = (apwholeev*8*3) + (eighths*3);
             a = APERTURES_EIGHTH;
         }
-        else { //if (precision_mode == PRECISION_MODE_TENTH) {
+        else if (precision_mode == PRECISION_MODE_TENTH) {
             uint_fast8_t tenths = ev_with_fracs_get_nearest_tenths(evwf);
             i = (apwholeev*10*3) + (tenths*3);
             a = APERTURES_TENTH;
+        }
+        else {
+            assert(0);
         }
 
         unsigned bi = i/2; // Calculate index of first byte in array that we're interested in.
@@ -409,13 +415,16 @@ ev_with_fracs_t z_given_x_y_ev(ev_with_fracs_t given_x_, ev_with_fracs_t given_y
         r += given_y - the_iso;
         min = SHUTTER_SPEED_MIN_WHOLE_STOPS*120, max = SHUTTER_SPEED_MAX_WHOLE_STOPS*120;
     }
-    else { // x == 2
+    else if (x == 2) {
         int32_t iso_adjusted = the_ev + given_x - the_aperture;
         int32_t evdiff = given_ev - iso_adjusted;
         r = the_iso + evdiff;
         // Adjust for difference between reference shutter speed and actual shutter speed.
         r += given_y - the_speed;
         min = ISO_MIN_WHOLE_STOPS*120, max = ISO_MAX_WHOLE_STOPS*120;
+    }
+    else {
+        assert(0);
     }
 
     if (r < min)
