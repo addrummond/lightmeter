@@ -3,6 +3,10 @@
 #
 # TODO TODO Add two caps for ADC input pins (values to be determined).
 # TODO TODO Add two USB series resistors (values to be determiend).
+1  C0402       2n2
+1  C0603       10u
+1  R0402       22k
+2  C0402       12p
 1  R0402       10k
 1  R0402~1%    12k
 2  R0402~0.1%  500
@@ -10,11 +14,13 @@
 4  C0603       1u
 2  C0402       1u
 2  R0402       390k
-6  C0402       4u7
+8  C0402       4u7
+2  C0402       100n
+1  C0402       33n
 2  R0402       6k49
 5  R0402       0
 1  C0402       0u01
-10 C0402       0u1
+9  C0402       0u1
 1  R0402~1%    750
 
 #
@@ -45,12 +51,14 @@
 4  $BAT54WS-E3-18           # Diodes for pushbuttons                        http://www2.mouser.com/ProductDetail/Vishay-Semiconductors/BAT54WS-E3-18/?qs=sGAEpiMZZMtQ8nqTKtFS%2fD7QH7JJs%2flZ9YSVt88cA%2fQ%3d
 2  ${BAT 63-02V H6327}      # Low forward voltage diodes for power mux      http://www2.mouser.com/ProductDetail/Infineon/BAT-63-02V-H6327/?qs=%2fha2pyFaduhgr270Vp5VM0c3UQ4regg5ICQx0xIXESFepy2kRCOvMQ%3d%3d
 1  $ESD9B3.3ST5G            # Protection diode                              http://www2.mouser.com/ProductDetail/ON-Semiconductor/ESD9B33ST5G/?qs=sGAEpiMZZMsV8lMX1HNLj6UoLCX5vlRw
-1  $7A-8.000MAAE-T          # 8MHz crystal                                  http://www2.mouser.com/ProductDetail/TXC-Corporation/7A-8000MAAE-T/?qs=2ISWkumneuG8ToeCJKRyAw%3D%3D
+1  $XXXX  TODO              # 16MHz crystal for NRF
+1  $7A-8.000MAAE-T          # 8MHz crystal for STM32                        http://www2.mouser.com/ProductDetail/TXC-Corporation/7A-8000MAAE-T/?qs=2ISWkumneuG8ToeCJKRyAw%3D%3D
 1  $78171-0002              # Battery connector board header.               http://www2.mouser.com/ProductDetail/Molex/78171-0002/?qs=%2fha2pyFadujDYgbimE1tA0G9UYfEnSYVpQUcBkiYDylNxrKBFTTj5A%3d%3d
 1  $78172-0002              # Battery connector.                            http://www2.mouser.com/ProductDetail/Molex/78172-0002/?qs=%2fha2pyFadugB4HhgcxVWckhSeIb2pYHTri64FjDYM3IhGiznbRRWpA%3d%3d
 2  $78172-0411              # Battery crimp terminals.                      http://www.mouser.com/ProductDetail/Molex/78172-0411-Loose-Piece/?qs=sGAEpiMZZMurOll%2fasxKYWpaY7Ib3DiPf61NB7kXtDk%3d
 1  $2450BM14A0002T          # Balun for bluetooth                           http://www2.mouser.com/ProductDetail/Johanson/2450BM14A0002T/?qs=%2fha2pyFadujSS%2fBw2DkkBzgVOszqStrM%252bgfTkGTolkPm8xlCR%252b9Rtg%3d%3d
 1  $2450AT18A100E           # Antenna for bluetooth                         http://www2.mouser.com/ProductDetail/Johanson/2450AT18A100E/?qs=%2fha2pyFaduheg09XJzH1azVZtpYax9RgXRvA4o0ekxpMdtXIwMW11g%3d%3d
+1  $USBLC6-2P6              # Set of USB protection diodes                  http://www.mouser.com/ProductDetail/STMicroelectronics/USBLC6-2SC6/?qs=po45yt2pPpu%2FhNIlwQdTlg%3D%3D
 
 
 #
