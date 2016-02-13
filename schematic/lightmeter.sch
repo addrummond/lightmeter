@@ -9084,10 +9084,6 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <rectangle x1="0.2588" y1="-0.3048" x2="0.5588" y2="0.2951" layer="51"/>
 <rectangle x1="-0.1999" y1="-0.4001" x2="0.1999" y2="0.4001" layer="35"/>
 </package>
-<package name="SMALLSQUAREWIREHOLE">
-<pad name="P$1" x="0" y="0" drill="0.75" diameter="1.125" shape="square"/>
-<text x="-2.54" y="1.27" size="1.27" layer="25">&gt;NAME</text>
-</package>
 </packages>
 <symbols>
 <symbol name="P-MOS">
@@ -9489,10 +9485,6 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <text x="-2.54" y="-6.35" size="1.778" layer="96">&gt;VALUE</text>
 <pin name="1" x="5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1" rot="R180"/>
 <pin name="2" x="-5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1"/>
-</symbol>
-<symbol name="WIREATTACHMENT">
-<wire x1="-5.08" y1="0" x2="5.08" y2="0" width="0.254" layer="94"/>
-<pin name="P$1" x="7.62" y="0" visible="pin" length="middle" rot="R180"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -10601,21 +10593,6 @@ naming: grid - package width</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="WIREATTACHMENT">
-<gates>
-<gate name="G$1" symbol="WIREATTACHMENT" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="SMALLSQUAREWIREHOLE">
-<connects>
-<connect gate="G$1" pin="P$1" pad="P$1"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
 </devicesets>
 </library>
 <library name="adafruit">
@@ -11054,8 +11031,6 @@ naming: grid - package width</description>
 <part name="R13" library="resistor" deviceset="R-EU_" device="R0402" value="???%"/>
 <part name="GND56" library="supply1" deviceset="GND" device=""/>
 <part name="TR1" library="lightmeter" deviceset="THERMISTOR" device="R0402" value="???"/>
-<part name="W1" library="lightmeter" deviceset="WIREATTACHMENT" device=""/>
-<part name="W2" library="lightmeter" deviceset="WIREATTACHMENT" device=""/>
 <part name="R4" library="lightmeter" deviceset="CONNECTEDJUMPER" device="" value="RESISTOR 1k5"/>
 </parts>
 <sheets>
@@ -11220,8 +11195,6 @@ naming: grid - package width</description>
 <instance part="R13" gate="G$1" x="58.42" y="-149.86"/>
 <instance part="GND56" gate="1" x="68.58" y="-149.86" rot="R90"/>
 <instance part="TR1" gate="G$1" x="-27.94" y="-152.4"/>
-<instance part="W1" gate="G$1" x="-17.78" y="-160.02" rot="R90"/>
-<instance part="W2" gate="G$1" x="-10.16" y="-160.02" rot="R90"/>
 <instance part="R4" gate="G$1" x="-116.84" y="53.34"/>
 </instances>
 <busses>
@@ -12692,14 +12665,8 @@ naming: grid - package width</description>
 <net name="N$4" class="0">
 <segment>
 <pinref part="TR1" gate="G$1" pin="1"/>
-<pinref part="W1" gate="G$1" pin="P$1"/>
-<wire x1="-22.86" y1="-152.4" x2="-17.78" y2="-152.4" width="0.1524" layer="91"/>
-<pinref part="W2" gate="G$1" pin="P$1"/>
-<wire x1="-17.78" y1="-152.4" x2="-10.16" y2="-152.4" width="0.1524" layer="91"/>
-<junction x="-17.78" y="-152.4"/>
+<wire x1="-22.86" y1="-152.4" x2="0" y2="-152.4" width="0.1524" layer="91"/>
 <pinref part="U$6" gate="G$1" pin="THERM"/>
-<wire x1="-10.16" y1="-152.4" x2="0" y2="-152.4" width="0.1524" layer="91"/>
-<junction x="-10.16" y="-152.4"/>
 </segment>
 </net>
 </nets>
