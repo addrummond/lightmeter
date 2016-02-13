@@ -11020,7 +11020,6 @@ naming: grid - package width</description>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
 <part name="P+4" library="supply1" deviceset="VCC" device=""/>
 <part name="D7" library="lightmeter" deviceset="SCHOTTKY-DIODE" device="SOD-929"/>
-<part name="R4" library="resistor" deviceset="R-EU_" device="R0402" value="1k5"/>
 <part name="U$3" library="lightmeter" deviceset="NRF8001" device=""/>
 <part name="C7" library="rcl" deviceset="C-EU" device="C0402" value="2n2"/>
 <part name="GND48" library="supply1" deviceset="GND" device=""/>
@@ -11057,6 +11056,7 @@ naming: grid - package width</description>
 <part name="TR1" library="lightmeter" deviceset="THERMISTOR" device="R0402" value="???"/>
 <part name="W1" library="lightmeter" deviceset="WIREATTACHMENT" device=""/>
 <part name="W2" library="lightmeter" deviceset="WIREATTACHMENT" device=""/>
+<part name="R4" library="lightmeter" deviceset="CONNECTEDJUMPER" device="" value="RESISTOR 1k5"/>
 </parts>
 <sheets>
 <sheet>
@@ -11186,7 +11186,6 @@ naming: grid - package width</description>
 <instance part="GND7" gate="1" x="-101.6" y="-136.652"/>
 <instance part="P+4" gate="VCC" x="-114.3" y="-124.46" rot="R90"/>
 <instance part="D7" gate="G$1" x="-101.6" y="-129.54" rot="R90"/>
-<instance part="R4" gate="G$1" x="-101.6" y="54.102" rot="R90"/>
 <instance part="U$3" gate="G$1" x="104.14" y="105.664"/>
 <instance part="C7" gate="G$1" x="157.48" y="91.44" rot="R180"/>
 <instance part="GND48" gate="1" x="157.48" y="83.82"/>
@@ -11223,6 +11222,7 @@ naming: grid - package width</description>
 <instance part="TR1" gate="G$1" x="-27.94" y="-152.4"/>
 <instance part="W1" gate="G$1" x="-17.78" y="-160.02" rot="R90"/>
 <instance part="W2" gate="G$1" x="-10.16" y="-160.02" rot="R90"/>
+<instance part="R4" gate="G$1" x="-116.84" y="53.34"/>
 </instances>
 <busses>
 </busses>
@@ -11804,9 +11804,9 @@ naming: grid - package width</description>
 <label x="233.68" y="99.06" size="1.778" layer="95" xref="yes"/>
 </segment>
 <segment>
-<wire x1="-101.6" y1="49.022" x2="-94.742" y2="49.022" width="0.1524" layer="91"/>
-<label x="-94.742" y="49.022" size="1.778" layer="95" xref="yes"/>
-<pinref part="R4" gate="G$1" pin="1"/>
+<pinref part="R4" gate="G$1" pin="2"/>
+<wire x1="-124.46" y1="53.34" x2="-129.54" y2="53.34" width="0.1524" layer="91"/>
+<label x="-129.54" y="53.34" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="N$19" class="0">
@@ -12529,8 +12529,9 @@ naming: grid - package width</description>
 <segment>
 <wire x1="-83.82" y1="60.96" x2="-101.6" y2="60.96" width="0.1524" layer="91"/>
 <pinref part="U1" gate="G$1" pin="D-"/>
-<wire x1="-101.6" y1="60.96" x2="-101.6" y2="59.182" width="0.1524" layer="91"/>
-<pinref part="R4" gate="G$1" pin="2"/>
+<wire x1="-101.6" y1="60.96" x2="-101.6" y2="53.34" width="0.1524" layer="91"/>
+<pinref part="R4" gate="G$1" pin="1"/>
+<wire x1="-101.6" y1="53.34" x2="-109.22" y2="53.34" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$17" class="0">
