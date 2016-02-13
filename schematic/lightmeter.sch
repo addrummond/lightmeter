@@ -11030,7 +11030,7 @@ naming: grid - package width</description>
 <part name="GND42" library="supply1" deviceset="GND" device=""/>
 <part name="R13" library="resistor" deviceset="R-EU_" device="R0402" value="???%"/>
 <part name="GND56" library="supply1" deviceset="GND" device=""/>
-<part name="TR1" library="lightmeter" deviceset="THERMISTOR" device="R0402" value="???"/>
+<part name="TR1" library="lightmeter" deviceset="THERMISTOR" device="R0402" value="10k (neg)"/>
 <part name="R4" library="lightmeter" deviceset="CONNECTEDJUMPER" device="" value="RESISTOR 1k5"/>
 </parts>
 <sheets>
