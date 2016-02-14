@@ -9029,72 +9029,6 @@ diameter 5 mm, horizontal, grid 15.24 mm</description>
 <smd name="P$21" x="0" y="0" dx="2.69999375" dy="2.69999375" layer="1"/>
 <circle x="-2.54" y="1.27" radius="0.254" width="0.254" layer="21"/>
 </package>
-<package name="RS-2,5">
-<description>&lt;b&gt;VARISTOR&lt;/b&gt;</description>
-<wire x1="-0.381" y1="0" x2="0.381" y2="0" width="0.1524" layer="21"/>
-<circle x="-1.27" y="0" radius="1.27" width="0.1524" layer="21"/>
-<pad name="1" x="-1.27" y="0" drill="0.8128" shape="long" rot="R90"/>
-<pad name="2" x="1.27" y="0" drill="0.8128" shape="long" rot="R90"/>
-<text x="-2.54" y="1.524" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
-<text x="-2.54" y="3.048" size="1.27" layer="25" ratio="10">&gt;NAME</text>
-</package>
-<package name="R-5">
-<description>&lt;b&gt;VARISTOR&lt;/b&gt;</description>
-<wire x1="-1.27" y1="0.635" x2="1.27" y2="0.635" width="0.1524" layer="21"/>
-<wire x1="1.27" y1="-0.635" x2="-1.27" y2="-0.635" width="0.1524" layer="21"/>
-<wire x1="1.27" y1="0" x2="1.778" y2="0" width="0.1524" layer="21"/>
-<wire x1="1.27" y1="0.635" x2="1.27" y2="0" width="0.1524" layer="21"/>
-<wire x1="-1.778" y1="0" x2="-1.27" y2="0" width="0.1524" layer="21"/>
-<wire x1="-1.27" y1="0.635" x2="-1.27" y2="0" width="0.1524" layer="21"/>
-<wire x1="1.27" y1="0" x2="1.27" y2="-0.635" width="0.1524" layer="21"/>
-<wire x1="-1.27" y1="0" x2="-1.27" y2="-0.635" width="0.1524" layer="21"/>
-<pad name="1" x="-2.54" y="0" drill="0.8128" shape="octagon"/>
-<pad name="2" x="2.54" y="0" drill="0.8128" shape="octagon"/>
-<text x="-2.54" y="-2.286" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
-<text x="-1.27" y="1.016" size="1.27" layer="25" ratio="10">&gt;NAME</text>
-</package>
-<package name="R-7,5">
-<description>&lt;b&gt;VARISTOR&lt;/b&gt;</description>
-<wire x1="-2.54" y1="-1.27" x2="2.54" y2="-1.27" width="0.1524" layer="21"/>
-<wire x1="2.54" y1="1.27" x2="-2.54" y2="1.27" width="0.1524" layer="21"/>
-<wire x1="2.54" y1="0" x2="3.048" y2="0" width="0.1524" layer="21"/>
-<wire x1="2.54" y1="-1.27" x2="2.54" y2="0" width="0.1524" layer="21"/>
-<wire x1="-2.54" y1="0" x2="-3.048" y2="0" width="0.1524" layer="21"/>
-<wire x1="-2.54" y1="1.27" x2="-2.54" y2="0" width="0.1524" layer="21"/>
-<wire x1="2.54" y1="0" x2="2.54" y2="1.27" width="0.1524" layer="21"/>
-<wire x1="-2.54" y1="0" x2="-2.54" y2="-1.27" width="0.1524" layer="21"/>
-<pad name="1" x="-3.81" y="0" drill="0.8128" shape="octagon"/>
-<pad name="2" x="3.81" y="0" drill="0.8128" shape="octagon"/>
-<text x="-2.54" y="1.651" size="1.27" layer="25" ratio="10">&gt;NAME</text>
-<text x="-2.54" y="-2.921" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
-</package>
-<package name="R0402">
-<description>&lt;b&gt;RESISTOR&lt;/b&gt;</description>
-<wire x1="-0.245" y1="0.224" x2="0.245" y2="0.224" width="0.1524" layer="51"/>
-<wire x1="0.245" y1="-0.224" x2="-0.245" y2="-0.224" width="0.1524" layer="51"/>
-<wire x1="-1.473" y1="0.483" x2="1.473" y2="0.483" width="0.0508" layer="39"/>
-<wire x1="1.473" y1="0.483" x2="1.473" y2="-0.483" width="0.0508" layer="39"/>
-<wire x1="1.473" y1="-0.483" x2="-1.473" y2="-0.483" width="0.0508" layer="39"/>
-<wire x1="-1.473" y1="-0.483" x2="-1.473" y2="0.483" width="0.0508" layer="39"/>
-<smd name="1" x="-0.65" y="0" dx="0.7" dy="0.9" layer="1"/>
-<smd name="2" x="0.65" y="0" dx="0.7" dy="0.9" layer="1"/>
-<text x="-0.635" y="0.635" size="1.27" layer="25">&gt;NAME</text>
-<text x="-0.635" y="-1.905" size="1.27" layer="27">&gt;VALUE</text>
-<rectangle x1="-0.554" y1="-0.3048" x2="-0.254" y2="0.2951" layer="51"/>
-<rectangle x1="0.2588" y1="-0.3048" x2="0.5588" y2="0.2951" layer="51"/>
-<rectangle x1="-0.1999" y1="-0.4001" x2="0.1999" y2="0.4001" layer="35"/>
-</package>
-<package name="R0201">
-<description>&lt;b&gt;RESISTOR&lt;/b&gt; chip&lt;p&gt;
-Source: http://www.vishay.com/docs/20008/dcrcw.pdf</description>
-<smd name="1" x="-0.255" y="0" dx="0.28" dy="0.43" layer="1"/>
-<smd name="2" x="0.255" y="0" dx="0.28" dy="0.43" layer="1"/>
-<text x="-0.635" y="0.635" size="1.27" layer="25">&gt;NAME</text>
-<text x="-0.635" y="-1.905" size="1.27" layer="27">&gt;VALUE</text>
-<rectangle x1="-0.3" y1="-0.15" x2="-0.15" y2="0.15" layer="51"/>
-<rectangle x1="0.15" y1="-0.15" x2="0.3" y2="0.15" layer="51"/>
-<rectangle x1="-0.15" y1="-0.15" x2="0.15" y2="0.15" layer="21"/>
-</package>
 </packages>
 <symbols>
 <symbol name="P-MOS">
@@ -9484,18 +9418,6 @@ Source: http://www.vishay.com/docs/20008/dcrcw.pdf</description>
 <wire x1="-17.78" y1="-17.78" x2="-17.78" y2="17.78" width="0.254" layer="94"/>
 <text x="-5.08" y="0" size="1.27" layer="94">MCP73871</text>
 <text x="-5.08" y="7.62" size="1.27" layer="95">&gt;NAME</text>
-</symbol>
-<symbol name="THERMIST">
-<wire x1="2.54" y1="1.016" x2="2.54" y2="-1.016" width="0.254" layer="94"/>
-<wire x1="2.54" y1="-1.016" x2="-2.54" y2="-1.016" width="0.254" layer="94"/>
-<wire x1="-2.54" y1="-1.016" x2="-2.54" y2="1.016" width="0.254" layer="94"/>
-<wire x1="-2.54" y1="1.016" x2="2.54" y2="1.016" width="0.254" layer="94"/>
-<wire x1="3.1496" y1="-2.032" x2="2.032" y2="-2.032" width="0.254" layer="94"/>
-<wire x1="2.032" y1="-2.032" x2="-2.032" y2="2.032" width="0.254" layer="94"/>
-<text x="-2.54" y="3.81" size="1.778" layer="95">&gt;NAME</text>
-<text x="-2.54" y="-6.35" size="1.778" layer="96">&gt;VALUE</text>
-<pin name="1" x="5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1" rot="R180"/>
-<pin name="2" x="-5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -10560,59 +10482,6 @@ naming: grid - package width</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="THERMISTOR" prefix="R">
-<description>&lt;b&gt;THERMISTOR&lt;/b&gt;</description>
-<gates>
-<gate name="G$1" symbol="THERMIST" x="0" y="0"/>
-</gates>
-<devices>
-<device name="-2,5" package="RS-2,5">
-<connects>
-<connect gate="G$1" pin="1" pad="1"/>
-<connect gate="G$1" pin="2" pad="2"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="-5" package="R-5">
-<connects>
-<connect gate="G$1" pin="1" pad="1"/>
-<connect gate="G$1" pin="2" pad="2"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="-7,5" package="R-7,5">
-<connects>
-<connect gate="G$1" pin="1" pad="1"/>
-<connect gate="G$1" pin="2" pad="2"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="R0402" package="R0402">
-<connects>
-<connect gate="G$1" pin="1" pad="1"/>
-<connect gate="G$1" pin="2" pad="2"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="" package="R0201">
-<connects>
-<connect gate="G$1" pin="1" pad="1"/>
-<connect gate="G$1" pin="2" pad="2"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
 </devicesets>
 </library>
 <library name="adafruit">
@@ -11050,10 +10919,8 @@ naming: grid - package width</description>
 <part name="GND42" library="supply1" deviceset="GND" device=""/>
 <part name="R13" library="resistor" deviceset="R-EU_" device="R0402" value="???%"/>
 <part name="GND56" library="supply1" deviceset="GND" device=""/>
-<part name="TR1" library="lightmeter" deviceset="THERMISTOR" device="" value="10k (neg)"/>
 <part name="R4" library="lightmeter" deviceset="CONNECTEDJUMPER" device="" value="RESISTOR 1k5"/>
-<part name="R2" library="resistor" deviceset="R-EU_" device="R0201" value="???%"/>
-<part name="R14" library="resistor" deviceset="R-EU_" device="R0201" value="???%"/>
+<part name="R2" library="resistor" deviceset="R-EU_" device="R0402" value="15k"/>
 </parts>
 <sheets>
 <sheet>
@@ -11216,10 +11083,8 @@ naming: grid - package width</description>
 <instance part="GND42" gate="1" x="63.5" y="-142.24" rot="R90"/>
 <instance part="R13" gate="G$1" x="58.42" y="-149.86"/>
 <instance part="GND56" gate="1" x="68.58" y="-149.86" rot="R90"/>
-<instance part="TR1" gate="G$1" x="-27.94" y="-152.4"/>
 <instance part="R4" gate="G$1" x="-116.84" y="53.34"/>
 <instance part="R2" gate="G$1" x="-10.16" y="-152.4"/>
-<instance part="R14" gate="G$1" x="-22.86" y="-162.56"/>
 </instances>
 <busses>
 </busses>
@@ -11657,15 +11522,10 @@ naming: grid - package width</description>
 <wire x1="0" y1="-142.24" x2="-5.08" y2="-142.24" width="0.1524" layer="91"/>
 <wire x1="-5.08" y1="-142.24" x2="-5.08" y2="-147.32" width="0.1524" layer="91"/>
 <junction x="-5.08" y="-147.32"/>
-<pinref part="TR1" gate="G$1" pin="2"/>
-<wire x1="-33.02" y1="-152.4" x2="-35.56" y2="-152.4" width="0.1524" layer="91"/>
-<wire x1="-35.56" y1="-152.4" x2="-38.1" y2="-152.4" width="0.1524" layer="91"/>
 <wire x1="-38.1" y1="-152.4" x2="-38.1" y2="-147.32" width="0.1524" layer="91"/>
 <junction x="-38.1" y="-147.32"/>
-<wire x1="-35.56" y1="-152.4" x2="-35.56" y2="-162.56" width="0.1524" layer="91"/>
-<junction x="-35.56" y="-152.4"/>
-<wire x1="-35.56" y1="-162.56" x2="-27.94" y2="-162.56" width="0.1524" layer="91"/>
-<pinref part="R14" gate="G$1" pin="1"/>
+<pinref part="R2" gate="G$1" pin="1"/>
+<wire x1="-15.24" y1="-152.4" x2="-38.1" y2="-152.4" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="R12" gate="G$1" pin="2"/>
@@ -12697,17 +12557,6 @@ naming: grid - package width</description>
 <pinref part="U$6" gate="G$1" pin="THERM"/>
 <wire x1="0" y1="-152.4" x2="-5.08" y2="-152.4" width="0.1524" layer="91"/>
 <pinref part="R2" gate="G$1" pin="2"/>
-</segment>
-</net>
-<net name="N$5" class="0">
-<segment>
-<pinref part="R2" gate="G$1" pin="1"/>
-<pinref part="TR1" gate="G$1" pin="1"/>
-<wire x1="-15.24" y1="-152.4" x2="-17.78" y2="-152.4" width="0.1524" layer="91"/>
-<pinref part="R14" gate="G$1" pin="2"/>
-<wire x1="-17.78" y1="-152.4" x2="-22.86" y2="-152.4" width="0.1524" layer="91"/>
-<wire x1="-17.78" y1="-162.56" x2="-17.78" y2="-152.4" width="0.1524" layer="91"/>
-<junction x="-17.78" y="-152.4"/>
 </segment>
 </net>
 </nets>
