@@ -1,3 +1,10 @@
+#
+# See the following for a description of the method used to automatically
+# calculate dependencies for C modules.
+#
+#     http://scottmcpeak.com/autodepend/autodepend.html
+#
+
 CC=arm-none-eabi-gcc
 CFLAGS=-g -Wall -Os -mcpu=cortex-m0 -ffunction-sections -fdata-sections -nostdlib -mthumb -DSTM32F030 -DUSE_FULL_ASSERT -I ./ -I ./stm -Wall
 OBJS=accel.o bcd.o buttons.o debugging.o display.o exposure.o goetzel.o \
