@@ -23,7 +23,7 @@ OBJS=""
 # Arm STM stuff.
 $CC $CFLAGS -c ./stm/system_stm32f0xx.c -o ./stm/system_stm32f0xx.o
 OBJS="$OBJS ./stm/system_stm32f0xx.o"
-$CC $CFLAGS -c ./stm/startup_stm32f030.s -o ./stm/startup_stm32f030.o
+$CC $CFLAGS -c ./stm/startup_stm32f030.s -o ./stm/
 OBJS="$OBJS ./stm/startup_stm32f030.o"
 $CC $CFLAGS -c ./stm/stm32f0xx_gpio.c -o ./stm/stm32f0xx_gpio.o
 OBJS="$OBJS ./stm/stm32f0xx_gpio.o"

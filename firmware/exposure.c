@@ -543,6 +543,7 @@ ev_with_fracs_t fps_and_angle_to_shutter_speed(uint_fast16_t fps, uint_fast16_t 
     return (ev_with_fracs_t)ev;
 }
 
+#define EXP2_PRECISION 8
 static int32_t int32_exp2(int32_t x)
 {
     const int32_t V_0_5 = 128;
