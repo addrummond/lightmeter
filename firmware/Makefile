@@ -5,13 +5,13 @@
 #     http://scottmcpeak.com/autodepend/autodepend.html
 #
 
-CC=arm-none-eabi-gcc
-CFLAGS=-g -Wall -Os -mcpu=cortex-m0 -ffunction-sections -fdata-sections -nostdlib -mthumb -DSTM32F030 -DUSE_FULL_ASSERT -I ./ -I ./stm -Wall
-OBJS=accel.o bcd.o buttons.o debugging.o display.o exposure.o goetzel.o \
-     hamming.o hfsdp.o i2c.o main.o meter.o myassert.o mymemset.o piezo.o \
-     state.o sysinit.o ui.o menus/menu_strings.o menus/menu_strings_table.o \
-     bitmaps/bitmaps.o tables.o \
-     $(patsubst %.c,%.o,$(shell echo stm/*.c))
+CC := arm-none-eabi-gcc
+CFLAGS := -g -Wall -Os -mcpu=cortex-m0 -ffunction-sections -fdata-sections -nostdlib -mthumb -DSTM32F030 -DUSE_FULL_ASSERT -I ./ -I ./stm -Wall
+OBJS := accel.o bcd.o buttons.o debugging.o display.o exposure.o goetzel.o \
+        hamming.o hfsdp.o i2c.o main.o meter.o myassert.o mymemset.o piezo.o \
+        state.o sysinit.o ui.o menus/menu_strings.o menus/menu_strings_table.o \
+        bitmaps/bitmaps.o tables.o \
+        $(patsubst %.c,%.o,$(shell echo stm/*.c))
 
 bitmaps/bitmaps.h bitmaps/bitmaps.c: $(shell find ./bitmaps -name '*.png') bitmaps/process_bitmaps.py
 	cd bitmaps && python3 process_bitmaps.py output
