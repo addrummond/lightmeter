@@ -9,9 +9,9 @@ CC=arm-none-eabi-gcc
 CFLAGS=-g -Wall -Os -mcpu=cortex-m0 -ffunction-sections -fdata-sections -nostdlib -mthumb -DSTM32F030 -DUSE_FULL_ASSERT -I ./ -I ./stm -Wall
 OBJS=accel.o bcd.o buttons.o debugging.o display.o exposure.o goetzel.o \
      hamming.o hfsdp.o i2c.o main.o meter.o myassert.o mymemset.o piezo.o \
-		 state.o sysinit.o ui.o menus/menu_strings.o menus/menu_strings_table.o \
-		 bitmaps/bitmaps.o tables.o \
-		 $(patsubst %.c,%.o,$(shell echo stm/*.c))
+     state.o sysinit.o ui.o menus/menu_strings.o menus/menu_strings_table.o \
+     bitmaps/bitmaps.o tables.o \
+     $(patsubst %.c,%.o,$(shell echo stm/*.c))
 
 bitmaps/bitmaps.h bitmaps/bitmaps.c: $(shell find ./bitmaps -name '*.png') bitmaps/process_bitmaps.py
 	cd bitmaps && python3 process_bitmaps.py output
@@ -49,5 +49,5 @@ out.bin: out.elf
 clean:
 	rm -f bitmaps/bitmaps.c bitmaps/bitmaps.h; \
 	rm -f menus/menus_strings_table.c menus/menus_strings_table.h \
-  rm -f *.d bitmaps/*.d menus/*.d
+	rm -f *.d bitmaps/*.d menus/*.d \
 	rm -f *.o bitmaps/*.o menus/*.o
