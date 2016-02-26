@@ -135,18 +135,14 @@ void shutter_speed_to_string(ev_with_fracs_t evwf, shutter_string_output_t *sso,
         uint_fast8_t thirds = ev_with_fracs_get_nearest_thirds(evwf);
         schars += thirds*2;
     }
-    else if (precision_mode == PRECISION_MODE_EIGHTH) {
+    else if (precision_mode == PRECISION_MODE_EIGHTH || precision_mode == PRECISION_MODE_QUARTER || precision_mode == PRECISION_MODE_HALF) {
         schars = SHUTTER_SPEEDS_EIGHTH + (shutwholeev*8*2);
         uint_fast8_t eighths = ev_with_fracs_get_nearest_eighths(evwf);
+        if (precision_mode == PRECISION_MODE_QUARTER && eighths % 2 == 1)
+            ++eighths;
+        else if (precision_mode == PRECISION_MODE_HALF)
+            eighths = (eighths & ~0b111) + (((eighths%8)+1)/4)*4;
         schars += eighths*2;
-    }
-    else if (precision_mode == PRECISION_MODE_QUARTER) {
-        // TODO
-        schars = 0;
-    }
-    else if (precision_mode == PRECISION_MODE_HALF) {
-        // TODO
-        schars = 0;
     }
     else if (precision_mode == PRECISION_MODE_TENTH) {
         schars = SHUTTER_SPEEDS_TENTH + (shutwholeev*10*2);
