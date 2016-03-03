@@ -536,7 +536,9 @@ ev_with_fracs_t fps_and_angle_to_shutter_speed(uint_fast16_t fps, uint_fast16_t 
         ev += (1 << LOG2_PRECISION)/2;
     ev /= (1 << LOG2_PRECISION);
 
-    return (ev_with_fracs_t)ev;
+    ev_with_fracs_t ret;
+    ev_with_fracs_init_from_ths(ret, ev);
+    return ret;
 }
 
 #define EXP2_PRECISION 8

@@ -27,6 +27,8 @@ typedef struct aperture_string_output {
 typedef int_fast16_t ev_with_fracs_t;
 
 #define ev_with_fracs_init_from_120ths(evwf, v120) ((evwf) = (ev_with_fracs_t)v120)
+// Inits from whatever EV_WITH_FRACS_TH is.
+#define ev_with_fracs_init_from_ths(evwf, v) ev_with_fracs_init_from_120ths(evwf, v)
 
 #define ev_with_fracs_get_lowest_xths(evwf, x) \
     (((evwf)%EV_WITH_FRACS_TH)/(EV_WITH_FRACS_TH/(x)))
