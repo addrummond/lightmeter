@@ -11,7 +11,7 @@
 1  R0402~1%    12k
 2  R0402~0.1%  500
 1  R0402       15k
-4  C0603       1u
+2  C0603       1u
 2  C0402       1u
 2  R0402       390k
 9  C0402       4u7
@@ -40,7 +40,6 @@
 1  $NLAS5223BMNR2G          # Dual SPDT analogue switch                     http://www2.mouser.com/ProductDetail/ON-Semiconductor/NLAS5223BMNR2G/?qs=%2fha2pyFaduj5KXfVaFbsSqETtxvti8Ot4Ot9LAkMydCtyFXXu%2f4AvQ%3d%3d
 1  $P13165-1                # Piezo bender                                  http://www2.mouser.com/ProductDetail/DB-Unlimited/P13165-1/?qs=sGAEpiMZZMvxTCYhU%252bW9mXjY60jM%2flOSfuD9xrvhdaM%3d
 1  $LM3671MF-3.3/NOPB       # 3.3V buck regulator                           http://www.mouser.com/ProductDetail/Texas-Instruments/LM3671MF-33-NOPB/?qs=sGAEpiMZZMvu8NZDyZ4K0doCUJ5Ska9S
-1  $LP5907MFX-3.3/NOPB      # 3.3V LDO regulator                            http://www2.mouser.com/ProductDetail/Texas-Instruments/LP5907MFX-33-NOPB/?qs=%2fha2pyFaduh2Ph%2frSDS5WOkv6S6E%2fOKKyECTt0nlT46IWoCFItD0LFz%2fERmCSvsE
 1  $47491-0001              # Midmount USB connector                        http://www2.mouser.com/ProductDetail/Molex/47491-0001/?qs=%2fha2pyFadujzs%2fkc0f%2fEefbNlYhnHrR1tZMOZGo1i%2fQ%3d
 1  $MCP73832T-2DCI/OT       # LIPO battery charger IC                       http://www.mouser.com/ProductDetail/Microchip-Technology/MCP73832T-2DCI-OT/?qs=sGAEpiMZZMsfD%252bbMpEGFJbfJoD52oiVFLnpg9T8%252bTTA%3d
 1  $DMG1013T-7              # P-channel MOSFET for SCRPWR                   http://www2.mouser.com/ProductDetail/Diodes-Incorporated/DMG1013T-7/?qs=%2fha2pyFaduiS2Q1vGDX3gHRMAFPmP%252b1PMtjGPA4WtRr8gEtAPVkLtQ%3d%3d
