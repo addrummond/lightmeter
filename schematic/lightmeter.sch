@@ -10859,6 +10859,9 @@ naming: grid - package width</description>
 <part name="GND56" library="supply1" deviceset="GND" device=""/>
 <part name="R4" library="lightmeter" deviceset="CONNECTEDJUMPER" device="" value="RESISTOR 1k5"/>
 <part name="R2" library="resistor" deviceset="R-EU_" device="R0402" value="15k"/>
+<part name="J6" library="lightmeter" deviceset="CONNECTEDJUMPER" device=""/>
+<part name="GND27" library="supply1" deviceset="GND" device=""/>
+<part name="GND35" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -11016,6 +11019,9 @@ naming: grid - package width</description>
 <instance part="GND56" gate="1" x="68.58" y="-149.86" rot="R90"/>
 <instance part="R4" gate="G$1" x="-116.84" y="53.34"/>
 <instance part="R2" gate="G$1" x="-10.16" y="-152.4"/>
+<instance part="J6" gate="G$1" x="134.62" y="-147.32"/>
+<instance part="GND27" gate="1" x="149.86" y="-147.32" rot="R90"/>
+<instance part="GND35" gate="1" x="119.38" y="-147.32" rot="R270"/>
 </instances>
 <busses>
 </busses>
@@ -11452,6 +11458,16 @@ naming: grid - package width</description>
 <pinref part="R13" gate="G$1" pin="2"/>
 <pinref part="GND56" gate="1" pin="GND"/>
 <wire x1="63.5" y1="-149.86" x2="66.04" y2="-149.86" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="J6" gate="G$1" pin="1"/>
+<pinref part="GND27" gate="1" pin="GND"/>
+<wire x1="147.32" y1="-147.32" x2="142.24" y2="-147.32" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="J6" gate="G$1" pin="2"/>
+<pinref part="GND35" gate="1" pin="GND"/>
+<wire x1="121.92" y1="-147.32" x2="127" y2="-147.32" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="VCC" class="0">
