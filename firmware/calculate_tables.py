@@ -276,14 +276,14 @@ def output_test_table(of):
 #
 
 #
-# Shutter speeds are represented using 13 characters: 0-9, ''.', 'S' and 'X'.
+# Shutter speeds are represented using 12 characters: 0-9, '.', and 'X'.
+# The S postfix on speeds >= 1S is implicit.
 #
 # E.g.:
 #
-#     8      One eighth of a second
-#     5s     Five seconds
-#     1.25   One and one quarter seconds
-#     16X0   1/16000 of a second
+#     8      One eighth of a second or eight seconds.
+#     1.25   One and one quarter seconds.
+#     16X0   1/16000 of a second.
 #
 # We want a way to represent each character using 4 bits. There are max 5
 # characters per speed, so we have a total of (168*20)/8 = 420 bytes.
@@ -295,9 +295,8 @@ def output_test_table(of):
 shutter_speeds_bitmap = [
     None, # String terminator
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-    'S', # 12
-    '.', # 13
-    'X', # 14: = "00"
+    '.', # 12
+    'X', # 13: = "00"
 ]
 assert len(shutter_speeds_bitmap) <= 16
 
