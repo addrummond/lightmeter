@@ -1,6 +1,8 @@
 #ifndef I2C_H
 #define I2C_H
 
+#include <stm32f0xx_i2c.h>
+
 void i2c_init(void);
 void i2c_log_timeout(const char *msg, uint32_t length);
 
