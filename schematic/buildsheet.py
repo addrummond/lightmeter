@@ -5,7 +5,7 @@ import math
 import re
 import sys
 
-angle_re = re.compile(r"^M?R(\d+)$")
+angle_re = re.compile(r"^M?R(\d+)(?:\.\d+)?$")
 
 def rotate_coords(xy, angle):
     if angle is None:
@@ -13,7 +13,7 @@ def rotate_coords(xy, angle):
     angle = (angle/180)*math.pi
     x, y = xy
     x2 = (x * math.cos(angle)) - (y * math.sin(angle))
-    y2 = (x * math.sin(angle)) - (y * math.cos(angle))
+    y2 = (x * math.sin(angle)) + (y * math.cos(angle))
     return x2, y2
 
 class BoardInfo():
