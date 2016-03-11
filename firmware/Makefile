@@ -38,7 +38,7 @@ prereq: bitmaps/bitmaps.c menus/menus_strings_table.c tables.c stm/startup_stm32
 
 %.out: %.c
 	$(ARMCC) -c $(ARMCFLAGS) $*.c -o $*.out
-	$(ARMCC) -MM $(ARMCFLAGS) $*.c > $*.d
+	$(ARMCC) -MM $(ARMCFLAGS) $*.c | sed -e s/\.o:/\.out:/ > $*.d
 
 /stm/STM32F030K6_FLASH.ld: /stm/STM32F030K6_FLASH.ld
 
