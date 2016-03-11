@@ -5,6 +5,9 @@ import math
 import re
 import sys
 
+NORMAL_COLOR = colors.lightgrey
+HIGHLIGHT_COLOR = colors.black
+
 angle_re = re.compile(r"^M?R(\d+)(?:\.\d+)?$")
 
 def rotate_coords(xy, angle):
@@ -196,7 +199,7 @@ def render_component_pad(cv, c, p, highlight):
     pth.moveTo(corners[0][0], corners[0][1])
     for i in xrange(1, len(corners)):
         pth.lineTo(corners[i][0], corners[i][1])
-    cv.setFillColor(colors.red if highlight else colors.black)
+    cv.setFillColor(HIGHLIGHT_COLOR if highlight else NORMAL_COLOR)
     cv.drawPath(pth, fill=1, stroke=0)
 
 def render_components(cv, bi, on_layer, with_value):
