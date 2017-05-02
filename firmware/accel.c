@@ -40,7 +40,10 @@ void accel_init()
     //     F_READ    (1)
     //     ACTIVE    (0)
     accel_write_register(ACCEL_REG_CTRL_REG1, 0b10000001);
-    accel_write_register(ACCEL_REG_CTRL_REG2, 0);
-    accel_write_register(ACCEL_REG_CTRL_REG3, 0);
-    accel_write_register(ACCEL_REG_CTRL_REG4, 0);
+    accel_write_register(ACCEL_REG_CTRL_REG2, 0b00000100);
+    accel_write_register(ACCEL_REG_CTRL_REG3, 0b00101000);
+    accel_write_register(ACCEL_REG_CTRL_REG4, 0b10000000);
+
+    // Sleep timer is set in units of 1/320th of a millisecond (see p. 35 of datasheet).
+    accel_write_register(ACCEL_REG_ASLP_COUNT, 4);
 }

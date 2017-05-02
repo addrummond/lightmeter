@@ -199,12 +199,18 @@ static __attribute__ ((unused)) void test_accel()
     for (;;) {
         start = SysTick->VAL;
         end = SysTick->VAL - 400000;
-        int8_t v = accel_read_register(ACCEL_REG_OUT_X_MSB);
-        //debugging_writec("V: ");
-        //debugging_write_uint32(v);
-        //debugging_writec("\n");
+        int32_t x = (int32_t)accel_read_register(ACCEL_REG_OUT_X_MSB) + 127;
+        int32_t y = (int32_t)accel_read_register(ACCEL_REG_OUT_Y_MSB) + 127;
+        int32_t z = (int32_t)accel_read_register(ACCEL_REG_OUT_Z_MSB) + 127;
+        debugging_writec("ACCEL: ");
+        debugging_write_uint32(x);
+        debugging_writec(" ");
+        debugging_write_uint32(y);
+        debugging_writec(" ");
+        debugging_write_uint32(z);
+        debugging_writec("\n");
 
-        int lastx = 64-v;
+        /*int lastx = 64-v;
         if (lastx < 0)
             lastx = 0;
         if (lastx > 127)
@@ -216,7 +222,7 @@ static __attribute__ ((unused)) void test_accel()
             while (SysTick->VAL < start);
         while (SysTick->VAL > end);
 
-        display_write_page_array(zpa, 6, 1, lastx, 3);
+        display_write_page_array(zpa, 6, 1, lastx, 3);*/
     }
 }
 
@@ -382,8 +388,10 @@ int main()
     initialize_global_meter_state();
     initialize_global_transient_meter_state();
 
-    test_mic();
-    for(;;);
+    test_accel();
+
+    //test_mic();
+    //for(;;);
 
     //accel_init();
     //meter_init();
