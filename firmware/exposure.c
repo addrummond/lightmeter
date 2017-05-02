@@ -597,6 +597,23 @@ unsigned ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits)
     return uint32_to_bcd(lux, digits);
 }
 
+ev_with_fracs_t compensate_using_poly(ev_with_fracs_t evwf, const exposure_poly_t *poly)
+{
+    ev_with_fracs_t result = evwf;
+    result += poly->coeffs[0];
+
+    unsigned i;
+    for (i = 1; i <= EXPOSURE_POLY_MAX_DEGREE; ++i) {
+        ev_with_fracs_t v = evwf;
+        unsigned j;
+        for (j = 0; j < i; ++j) // Not efficient for high powers, but we won't be using any above 4.
+            v *= evwf;
+        result += v;
+    }
+
+    return result;
+}
+
 #ifdef TEST
 
 #include <stdio.h>

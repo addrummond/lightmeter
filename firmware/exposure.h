@@ -104,4 +104,12 @@ unsigned ev_at_100_to_bcd_lux(ev_with_fracs_t evwf, uint8_t *digits);
 // Integer divide with rounding.
 #define round_divide(n, by) (((n)/(by)) + (((n) % (by) > ((by)+1)/2) ? 1 : 0))
 
+#define EXPOSURE_POLY_MAX_DEGREE 4
+typedef struct exposure_poly {
+    // If EV value is greater than cutoff, no compensation is required.
+    ev_with_fracs_t cutoff;
+    // First is for x^0.
+    ev_with_fracs_t coeffs[EXPOSURE_POLY_MAX_DEGREE+1];
+} exposure_poly_t;
+
 #endif
